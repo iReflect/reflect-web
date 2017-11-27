@@ -1,0 +1,39 @@
+<div class="auth-page">
+  <div class="row">
+    <h1 class="text-xs-center">{{ title }}</h1>
+    <p class="text-xs-center">
+    </p>
+    <!--<ul class="error-messages" *ngIf="errors">-->
+      <!--<li *ngFor="let error of errors">-->
+        <!--{{ error }}-->
+      <!--</li>-->
+    <!--</ul>-->
+    <form [formGroup]="authForm" (ngSubmit)="submitForm()">
+      <fieldset [disabled]="isSubmitting">
+        <mat-form-field class="form-group">
+          <input matInput
+            formControlName="email"
+            placeholder="Email"
+            class="form-control form-control-lg"
+            type="text" />
+          <div mat-error *ngIf="authForm.get('email').touched && authForm.get('email').invalid" style="color: red;">
+            <div *ngIf="authForm.get('email').value !== ''; then inValidTemplate else requiredTemplate">
+            </div>
+            <ng-template #requiredTemplate>Email is required</ng-template>
+            <ng-template #inValidTemplate>Email is invalid</ng-template>
+          </div>
+        </mat-form-field>
+        <mat-form-field class="form-group">
+          <input matInput
+            formControlName="password"
+            placeholder="Password"
+            class="form-control form-control-lg"
+            type="password" />
+        </mat-form-field>
+        <button mat-button  class="btn btn-lg btn-primary pull-xs-right" [disabled]="!authForm.valid" type="submit">
+          {{ title }}
+        </button>
+      </fieldset>
+    </form>
+  </div>
+</div>
