@@ -14,15 +14,22 @@ import { AnonymousRequiredGuard } from './route-guards/anonymous-required.servic
 // Import Others
 import { throwIfAlreadyLoaded } from './module-import-guard';
 import { LoggerService } from './logger.service';
+import { MyOwnCustomMaterialModule } from '../my-own-custom-material.module';
+import { HeaderComponent } from './layout/header/header.component';
 
 @NgModule({
   imports: [
     HttpClientModule,
     FormsModule,
     SharedModule,
+    MyOwnCustomMaterialModule
   ],
-  declarations: [],
-  exports: [],
+  declarations: [
+    HeaderComponent
+  ],
+  exports: [
+    HeaderComponent
+  ],
   providers: [
     ApiService,
     ApiUrlService,

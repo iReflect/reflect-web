@@ -1,0 +1,14 @@
+<header>
+  <div class="header-container">
+    <div *ngIf="userLoggedIn">
+      <mat-toolbar>
+        <div class="loggedin-wrap">
+          <span>Welcome {{ user && user.name || 'User' }},</span>
+          <span class="logout-wrap">
+            <button mat-button (click)="logout()" [hidden]="logoutInProgress">Logout</button>
+          </span>
+        </div>
+      </mat-toolbar>
+    </div>
+  </div>
+</header>

@@ -2,7 +2,7 @@ import { Location } from '@angular/common';
 import { Injectable } from '@angular/core';
 
 import { environment } from '../../../environments/environment';
-import { ApiURLMap } from '../../../constants/api-urls';
+import {ApiURLMap, BASE_API_URL} from '../../../constants/api-urls';
 import { UtilsService } from '../../shared/utils/utils.service';
 
 @Injectable()
@@ -21,7 +21,7 @@ export class ApiUrlService {
       let url = ApiURLMap[key].replace(/\/:(\w+)\//g, function(match, keyword) {
           return urlParams[keyword] ? '/' + urlParams[keyword] + '/' : match;
       });
-      url = url.concat(queryParams);
+      url = BASE_API_URL.concat(url.concat(queryParams));
 
       if (environment.production) {
           return url;
