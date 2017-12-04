@@ -3,6 +3,7 @@ import { ApiService } from '../core/api/api.service';
 import { FEEDBACK_EVENT_STATES, SUBMITTED_EVENT, NEW_EVENT, IN_PROGRESS_EVENT } from '../../constants/app-constants';
 import { HomeService } from './home.service';
 import { FeedBackEventDataSource } from './home.data-source';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-home',
@@ -26,7 +27,7 @@ export class HomeComponent implements OnInit {
   dataSource = new FeedBackEventDataSource(this.homeService);
   displayedColumns = ['title', 'user', 'user_role', 'duration_start', 'duration_end', 'expiry_date', 'status'];
 
-  constructor(private apiService: ApiService, private homeService: HomeService) {
+  constructor(private router: Router, private homeService: HomeService) {
     this.dataSource.event_types = this.tabTypeList[0].feedback_event_list_type;
   }
 
@@ -44,6 +45,10 @@ export class HomeComponent implements OnInit {
       }
     }).map(data => data.feedback_event_list_type)[0];
     this.dataSource.connect();
+  }
+
+  navigateToFeedBackForm (row) {
+    this.router.navigateByUrl('/feedback-event/' + row.id + '');
   }
 
   parse_to_date (value) {

@@ -13,6 +13,7 @@ import { CoreModule } from './core/core.module';
 import { AppComponent } from './app.component';
 import { HomeModule } from './home/home.module';
 import { AccountModule } from './account/account.module';
+import { FeedbackModule } from './feedback/feedback.module';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { AccountModule } from './account/account.module';
     CoreModule,
     HomeModule,
     AccountModule,
+    FeedbackModule
   ],
   exports: [
     CommonModule,
