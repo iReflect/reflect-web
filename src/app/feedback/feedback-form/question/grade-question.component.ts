@@ -5,7 +5,11 @@ import { BaseQuestionComponent } from './question.base.component';
 @Component({
   selector: 'app-grade-question',
   templateUrl: './grade-question.component.html',
-  styles: [''],
+  styles: [`
+    mat-form-field {
+      width: 500px;
+    }
+  `],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

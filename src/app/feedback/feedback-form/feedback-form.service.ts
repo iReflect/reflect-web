@@ -22,6 +22,7 @@ export class FeedbackFormService {
         skill.questions.forEach(question => {
           group[question.id] = question.required ? new FormControl(question.value || '', Validators.required)
             : new FormControl(question.value || '');
+          group['comment_' + question.id] = new FormControl('');
         });
       });
     });
