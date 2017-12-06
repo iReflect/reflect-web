@@ -1,13 +1,6 @@
-<div class="auth-page">
+<div class="login-page">
   <div class="row">
     <h1 class="text-xs-center">{{ title }}</h1>
-    <p class="text-xs-center">
-    </p>
-    <!--<ul class="error-messages" *ngIf="errors">-->
-      <!--<li *ngFor="let error of errors">-->
-        <!--{{ error }}-->
-      <!--</li>-->
-    <!--</ul>-->
     <form [formGroup]="authForm" (ngSubmit)="submitForm()">
       <fieldset [disabled]="isSubmitting">
         <mat-form-field class="form-group">

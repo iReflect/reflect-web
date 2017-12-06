@@ -1,0 +1,76 @@
+<ng-container>
+  <div class="feedback-events-container" *ngIf="isDataLoaded">
+    <div class="feedback-event-details-container">
+      <p>Title: {{ feedback_event_data.title }}</p>
+      <p>Description: {{ feedback_event_data.description }}</p>
+      <p>Duration Start: {{ feedback_event_data.duration_start }}</p>
+      <p>Duration End: {{ feedback_event_data.duration_end }}</p>
+      <p>Expiry Date: {{ feedback_event_data.expiry_date }}</p>
+      <p *ngIf="feedback_event_data.submitted_at">Submitted At: {{ feedback_event_data.submitted_at }}</p>
+    </div>
+    <div class="feedback-form-container">
+      <form (ngSubmit)="onSubmit()" [formGroup]="form">
+
+        <div *ngFor="let category of feedback_event_data.categories" class="form-row">
+          <mat-accordion>
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  {{ category.title }}
+                </mat-panel-title>
+                <mat-panel-description>
+                  {{ category.description }}
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              <div *ngFor="let skill of category.skills" class="form-row">
+                <mat-accordion>
+                  <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>
+                        {{ skill.display_title }}
+                      </mat-panel-title>
+                      <mat-panel-description>
+                        {{ skill.description }}
+                      </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <div *ngFor="let question of skill.questions">
+                      <label [attr.for]="question.id"> Question {{question.id}}. {{question.text}}</label>
+                      <div [ngSwitch]="question.type">
+
+                        <app-multi-choice-question *ngSwitchCase="'multi-choice'" [formControlName]="'' + question.id"
+                                                   [id]="question.id" [formGroup]="form" [question]="question">
+                        </app-multi-choice-question>
+
+                        <app-grade-question [id]="question.id" [question]="question" [formGroup]="form"
+                                            *ngSwitchCase="'grade'" [formControlName]="'' + question.id">
+                          <!--<option *ngFor="let opt of question.options" [value]="opt.key">{{opt.value}}</option>-->
+                        </app-grade-question>
+
+                        <app-boolean-question [id]="question.id" [question]="question" [formGroup]="form"
+                                              *ngSwitchCase="'boolean'" [formControlName]="'' + question.id">
+                          <!--<option *ngFor="let opt of question.options" [value]="opt.key">{{opt.value}}</option>-->
+                        </app-boolean-question>
+                      </div>
+                      <mat-form-field class="form-group">
+                          <textarea matInput matTextareaAutosize
+                                    [formControlName]="'comment_' + question.id"
+                                    [formGroup]="form"
+                                    placeholder="Comments"
+                          ></textarea>
+                      </mat-form-field>
+                      <div class="errorMessage" *ngIf="!form.controls['' + question.id].valid">Question {{question.id}} is required</div>
+                    </div>
+                  </mat-expansion-panel>
+                </mat-accordion>
+              </div>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </div>
+
+        <div class="form-row">
+          <button mat-button type="submit" [disabled]="!form.valid">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-container>
