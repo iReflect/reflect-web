@@ -1,5 +1,5 @@
 import { MatButtonModule, MatInputModule, MatFormFieldModule,
-  MatToolbarModule, MatTabsModule, MatTableModule } from '@angular/material';
+  MatToolbarModule, MatTabsModule, MatTableModule, MatExpansionModule, MatSelectModule } from '@angular/material';
 import { NgModule } from '@angular/core';
 
 @NgModule({
@@ -9,7 +9,9 @@ import { NgModule } from '@angular/core';
     MatFormFieldModule,
     MatToolbarModule,
     MatTabsModule,
-    MatTableModule
+    MatTableModule,
+    MatExpansionModule,
+    MatSelectModule
   ],
   exports: [
     MatButtonModule,
@@ -17,7 +19,9 @@ import { NgModule } from '@angular/core';
     MatFormFieldModule,
     MatToolbarModule,
     MatTabsModule,
-    MatTableModule
+    MatTableModule,
+    MatExpansionModule,
+    MatSelectModule
   ],
 })
 export class MyOwnCustomMaterialModule { }

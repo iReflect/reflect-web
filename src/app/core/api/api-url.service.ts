@@ -21,7 +21,11 @@ export class ApiUrlService {
       let url = ApiURLMap[key].replace(/\/:(\w+)\//g, function(match, keyword) {
           return urlParams[keyword] ? '/' + urlParams[keyword] + '/' : match;
       });
-      url = BASE_API_URL.concat(url.concat(queryParams));
+
+      url = url.concat(queryParams);
+      if (BASE_API_URL) {
+        url = (BASE_API_URL || '').concat(url);
+      }
 
       if (environment.production) {
           return url;
