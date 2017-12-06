@@ -8,7 +8,7 @@ export class HomeService {
   constructor(private apiService: ApiService) {
   }
 
-  getFeedBackEventList(event_types = []): Observable<any> {
-    return this.apiService.apiGET('list_feedback_events', {'event_type': event_types});
+  getFeedBackEventList(statuses = []): Observable<any> {
+    return this.apiService.apiGET('list_feedback_events', {'status': statuses});
   }
 }

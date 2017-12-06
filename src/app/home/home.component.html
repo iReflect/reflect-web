@@ -1,9 +1,9 @@
 <ng-container>
   <div class="feedback-events-container" *ngIf="isListLoaded">
     <div class="feedback-event-stats-container">
-      <p>New Feedback event count: {{feedback_event_data.new_event_count}}</p>
-      <p>In Progress Feedback event count: {{feedback_event_data.in_progress_event_count}}</p>
-      <p>Submitted Feedback event count: {{feedback_event_data.submitted_event_count}}</p>
+      <p>New Feedback count: {{feedback_event_data.NewFeedbackCount}}</p>
+      <p>Draft / In Progress Feedback count: {{feedback_event_data.DraftFeedbackCount}}</p>
+      <p>Submitted Feedback count: {{feedback_event_data.SubmittedFeedbackCount}}</p>
     </div>
     <div class="feedback-event-list-container">
       <mat-tab-group class="feedback-event-tab-group" (selectedTabChange)="selectedTabChanged($event)">

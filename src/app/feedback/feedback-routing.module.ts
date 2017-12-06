@@ -9,7 +9,7 @@ import {LoginRequiredGuard} from '../core/route-guards/login-required.service';
 
 const routes: Routes = [
   {
-    path: 'feedback-event/:id',
+    path: 'feedbacks/:id',
     component: FeedbackFormComponent,
     pathMatch: 'prefix',
     canActivate: [LoginRequiredGuard]

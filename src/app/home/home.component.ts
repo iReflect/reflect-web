@@ -28,7 +28,7 @@ export class HomeComponent implements OnInit {
   displayedColumns = ['title', 'user', 'user_role', 'duration_start', 'duration_end', 'expiry_date', 'status'];
 
   constructor(private router: Router, private homeService: HomeService) {
-    this.dataSource.event_types = this.tabTypeList[0].feedback_event_list_type;
+    this.dataSource.statuses = this.tabTypeList[0].feedback_event_list_type;
   }
 
   ngOnInit() {
@@ -39,7 +39,7 @@ export class HomeComponent implements OnInit {
   }
 
   selectedTabChanged($event) {
-    this.dataSource.event_types = this.tabTypeList.filter((value, index) => {
+    this.dataSource.statuses = this.tabTypeList.filter((value, index) => {
       if (value && value.tabLabelText === $event.tab.textLabel) {
         return true;
       }
@@ -48,7 +48,7 @@ export class HomeComponent implements OnInit {
   }
 
   navigateToFeedBackForm (row) {
-    this.router.navigateByUrl('/feedback-event/' + row.id + '');
+    this.router.navigateByUrl('/feedbacks/' + row.ID + '');
   }
 
   parse_to_date (value) {
