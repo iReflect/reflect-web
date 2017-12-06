@@ -56,10 +56,10 @@ export class HomeComponent implements OnInit {
   }
 
   getUser(profile) {
-    return (profile && profile.user) ? profile.user.name : '';
+    return (profile && profile.User) ? (profile.User.FirstName + ' ' + profile.User.LastName).trim() : '';
   }
 
   getUserRole(profile) {
-    return (profile && profile.role) ? profile.role.title : '';
+    return (profile && profile.Role) ? profile.Role.Name : '';
   }
 }

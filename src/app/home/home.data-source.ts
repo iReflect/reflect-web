@@ -14,7 +14,7 @@ export class FeedBackEventDataSource extends DataSource<any> {
       event_data => {
         this._dataChange.next(event_data);
       });
-    return this._dataChange.asObservable().map(data => data['events']);
+    return this._dataChange.asObservable();
   }
   disconnect() {}
 

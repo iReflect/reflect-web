@@ -14,43 +14,43 @@
                 <!-- Title Column -->
                 <ng-container matColumnDef="title">
                   <mat-header-cell *matHeaderCellDef> Title </mat-header-cell>
-                  <mat-cell *matCellDef="let element"> {{element.title}} </mat-cell>
+                  <mat-cell *matCellDef="let element"> {{element.Title}} </mat-cell>
                 </ng-container>
 
                 <!-- User Column -->
                 <ng-container matColumnDef="user">
                   <mat-header-cell *matHeaderCellDef> User </mat-header-cell>
-                  <mat-cell *matCellDef="let element"> {{getUser(element.profile)}} </mat-cell>
+                  <mat-cell *matCellDef="let element"> {{getUser(element.ForUserProfile)}} </mat-cell>
                 </ng-container>
 
                 <!-- User Role Column -->
                 <ng-container matColumnDef="user_role">
                   <mat-header-cell *matHeaderCellDef> User Role </mat-header-cell>
-                  <mat-cell *matCellDef="let element"> {{getUserRole(element.profile)}} </mat-cell>
+                  <mat-cell *matCellDef="let element"> {{getUserRole(element.ForUserProfile)}} </mat-cell>
                 </ng-container>
 
                 <!-- Duration Start Column -->
                 <ng-container matColumnDef="duration_start">
                   <mat-header-cell *matHeaderCellDef> Duration Start Date </mat-header-cell>
-                  <mat-cell *matCellDef="let element"> {{parse_to_date(element.duration_start)}} </mat-cell>
+                  <mat-cell *matCellDef="let element"> {{parse_to_date(element.DurationStart)}} </mat-cell>
                 </ng-container>
 
                 <!-- Duration End Column -->
                 <ng-container matColumnDef="duration_end">
                   <mat-header-cell *matHeaderCellDef> Duration End Date </mat-header-cell>
-                  <mat-cell *matCellDef="let element"> {{parse_to_date(element.duration_end)}} </mat-cell>
+                  <mat-cell *matCellDef="let element"> {{parse_to_date(element.DurationEnd)}} </mat-cell>
                 </ng-container>
 
                 <!-- Expiry Column -->
                 <ng-container matColumnDef="expiry_date">
                   <mat-header-cell *matHeaderCellDef> Expiry Date </mat-header-cell>
-                  <mat-cell *matCellDef="let element"> {{parse_to_date(element.expiry_date)}} </mat-cell>
+                  <mat-cell *matCellDef="let element"> {{parse_to_date(element.ExpireAt)}} </mat-cell>
                 </ng-container>
 
                 <!-- Status Column -->
                 <ng-container matColumnDef="status">
                   <mat-header-cell *matHeaderCellDef> Status </mat-header-cell>
-                  <mat-cell *matCellDef="let element"> {{getStatusValue(element.status)}} </mat-cell>
+                  <mat-cell *matCellDef="let element"> {{getStatusValue(element.Status)}} </mat-cell>
                 </ng-container>
 
                 <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

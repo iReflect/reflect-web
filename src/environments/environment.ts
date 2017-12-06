@@ -5,5 +5,5 @@
 
 export const environment = {
   production: false,
-  API_PORT: 8000,
+  API_PORT: 3000,
 };
