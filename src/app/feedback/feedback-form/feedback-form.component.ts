@@ -11,6 +11,7 @@ import { FormGroup } from '@angular/forms';
 export class FeedbackFormComponent implements OnInit {
 
   private isDataLoaded = false;
+  dateFormat: 'MMMM dd, yyyy';
   form: FormGroup;
   private feedback_event_data: any;
   constructor (private feedBackFormService: FeedbackFormService, private activatedRoute: ActivatedRoute) {
@@ -23,7 +24,7 @@ export class FeedbackFormComponent implements OnInit {
           data => {
             this.feedback_event_data = data;
             this.isDataLoaded = true;
-            this.form = this.feedBackFormService.toFormGroup(data['categories']);
+            this.form = this.feedBackFormService.toFormGroup(data['Categories']);
           }
         );
       }

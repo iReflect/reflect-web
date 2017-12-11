@@ -24,10 +24,11 @@ export class HomeComponent implements OnInit {
       feedback_event_list_type: [SUBMITTED_EVENT]
     }
   ];
-  dataSource = new FeedBackEventDataSource(this.homeService);
+  dataSource: FeedBackEventDataSource;
   displayedColumns = ['title', 'user', 'user_role', 'duration_start', 'duration_end', 'expiry_date', 'status'];
 
   constructor(private router: Router, private homeService: HomeService) {
+    this.dataSource = new FeedBackEventDataSource(this.homeService);
     this.dataSource.statuses = this.tabTypeList[0].feedback_event_list_type;
   }
 

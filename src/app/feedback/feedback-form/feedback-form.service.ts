@@ -15,14 +15,15 @@ export class FeedbackFormService {
   }
 
   toFormGroup(question_data): FormGroup {
+    let skills;
     let group: any = {};
-
-    question_data.forEach(category => {
-      category.skills.forEach(skill => {
-        skill.questions.forEach(question => {
-          group[question.id] = question.required ? new FormControl(question.value || '', Validators.required)
-            : new FormControl(question.value || '');
-          group['comment_' + question.id] = new FormControl('');
+    Object.keys(question_data).forEach(categoryId => {
+      skills = question_data[categoryId].Skills;
+      Object.keys(skills).forEach(skillId => {
+        skills[skillId].Questions.forEach(question => {
+          group[question.ID] = question.required ? new FormControl(question.value || '', Validators.required)
+              : new FormControl(question.value || '');
+          group['comment_' + question.ID] = new FormControl('');
         });
       });
     });

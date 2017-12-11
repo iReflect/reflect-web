@@ -1,72 +1,59 @@
 <ng-container>
   <div class="feedback-events-container" *ngIf="isDataLoaded">
     <div class="feedback-event-details-container">
-      <p>Title: {{ feedback_event_data.title }}</p>
-      <p>Description: {{ feedback_event_data.description }}</p>
-      <p>Duration Start: {{ feedback_event_data.duration_start }}</p>
-      <p>Duration End: {{ feedback_event_data.duration_end }}</p>
-      <p>Expiry Date: {{ feedback_event_data.expiry_date }}</p>
-      <p *ngIf="feedback_event_data.submitted_at">Submitted At: {{ feedback_event_data.submitted_at }}</p>
+      <p>Title: {{ feedback_event_data.Title }}</p>
+      <p>Duration Start: {{ feedback_event_data.DurationStart | date:dateFormat}}</p>
+      <p>Duration End: {{ feedback_event_data.DurationEnd | date:dateFormat}}</p>
+      <p>Expiry Date: {{ feedback_event_data.ExpireAt | date:dateFormat}}</p>
+      <p *ngIf="feedback_event_data.SubmittedAt">Submitted At: {{ feedback_event_data.SubmittedAt | date:dateFormat}}</p>
     </div>
     <div class="feedback-form-container">
       <form (ngSubmit)="onSubmit()" [formGroup]="form">
-
-        <div *ngFor="let category of feedback_event_data.categories" class="form-row">
+        <div *ngFor="let category of feedback_event_data.Categories | values" class="form-row">
           <mat-accordion>
             <mat-expansion-panel>
               <mat-expansion-panel-header>
                 <mat-panel-title>
-                  {{ category.title }}
+                  {{ category.Title }}
                 </mat-panel-title>
                 <mat-panel-description>
-                  {{ category.description }}
+                  {{ category.Description }}
                 </mat-panel-description>
               </mat-expansion-panel-header>
-              <div *ngFor="let skill of category.skills" class="form-row">
+              <div *ngFor="let skill of category.Skills | values" class="form-row">
                 <mat-accordion>
                   <mat-expansion-panel>
                     <mat-expansion-panel-header>
                       <mat-panel-title>
-                        {{ skill.display_title }}
+                        {{ skill.DisplayTitle }}
                       </mat-panel-title>
                       <mat-panel-description>
-                        {{ skill.description }}
+                        {{ skill.Description }}
                       </mat-panel-description>
                     </mat-expansion-panel-header>
-                    <div *ngFor="let question of skill.questions">
-                      <label [attr.for]="question.id"> Question {{question.id}}. {{question.text}}</label>
-                      <div [ngSwitch]="question.type">
+                    <div *ngFor="let question of skill.Questions; let questionNo=index">
+                        <label [attr.for]="question.ID"> Question {{questionNo + 1}}. {{question.Text}}</label>
+                        <div [ngSwitch]="question.Type">
+                          <app-multi-choice-question [formGroup]="form" [id]="question.ID" [question]="question" *ngSwitchCase="1" [formControlName]="'' + question.ID"></app-multi-choice-question>
 
-                        <app-multi-choice-question *ngSwitchCase="'multi-choice'" [formControlName]="'' + question.id"
-                                                   [id]="question.id" [formGroup]="form" [question]="question">
-                        </app-multi-choice-question>
+                          <app-grade-question [formGroup]="form" [id]="question.ID" [question]="question" *ngSwitchCase="2" [formControlName]="'' + question.ID"></app-grade-question>
 
-                        <app-grade-question [id]="question.id" [question]="question" [formGroup]="form"
-                                            *ngSwitchCase="'grade'" [formControlName]="'' + question.id">
-                          <!--<option *ngFor="let opt of question.options" [value]="opt.key">{{opt.value}}</option>-->
-                        </app-grade-question>
-
-                        <app-boolean-question [id]="question.id" [question]="question" [formGroup]="form"
-                                              *ngSwitchCase="'boolean'" [formControlName]="'' + question.id">
-                          <!--<option *ngFor="let opt of question.options" [value]="opt.key">{{opt.value}}</option>-->
-                        </app-boolean-question>
+                          <app-boolean-question [formGroup]="form" [id]="question.ID" [question]="question" *ngSwitchCase="3" [formControlName]="'' + question.ID"></app-boolean-question>
+                        </div>
+                        <mat-form-field class="form-group">
+                            <textarea matInput matTextareaAutosize
+                                      [formControlName]="'comment_' + question.ID"
+                                      [formGroup]="form"
+                                      placeholder="Comments"
+                            ></textarea>
+                        </mat-form-field>
                       </div>
-                      <mat-form-field class="form-group">
-                          <textarea matInput matTextareaAutosize
-                                    [formControlName]="'comment_' + question.id"
-                                    [formGroup]="form"
-                                    placeholder="Comments"
-                          ></textarea>
-                      </mat-form-field>
-                      <div class="errorMessage" *ngIf="!form.controls['' + question.id].valid">Question {{question.id}} is required</div>
-                    </div>
                   </mat-expansion-panel>
                 </mat-accordion>
               </div>
             </mat-expansion-panel>
           </mat-accordion>
         </div>
-
         <div class="form-row">
           <button mat-button type="submit" [disabled]="!form.valid">Save</button>
         </div>
