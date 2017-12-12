@@ -1,4 +1,5 @@
 import { NgModule, Optional, SkipSelf } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -6,33 +7,30 @@ import { HttpClientModule } from '@angular/common/http';
 import { SharedModule } from '../shared/shared.module';
 
 // Import Custom Services
-import { ApiService } from './api/api.service';
-import { ApiUrlService } from './api/api-url.service';
 import { LoginRequiredGuard } from './route-guards/login-required.service';
 import { AnonymousRequiredGuard } from './route-guards/anonymous-required.service';
 
 // Import Others
 import { throwIfAlreadyLoaded } from './module-import-guard';
 import { LoggerService } from './logger.service';
-import { MyOwnCustomMaterialModule } from '../my-own-custom-material.module';
+import { CustomMaterialModule } from './custom-material/custom-material.module';
 import { HeaderComponent } from './layout/header/header.component';
 
 @NgModule({
   imports: [
+    CommonModule,
     HttpClientModule,
     FormsModule,
     SharedModule,
-    MyOwnCustomMaterialModule
+    CustomMaterialModule,
   ],
   declarations: [
     HeaderComponent
   ],
   exports: [
-    HeaderComponent
+    HeaderComponent,
   ],
   providers: [
-    ApiService,
-    ApiUrlService,
     LoggerService,
     LoginRequiredGuard,
     AnonymousRequiredGuard,

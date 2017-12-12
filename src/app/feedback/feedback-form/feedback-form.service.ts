@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
-import { ApiService } from '../../core/api/api.service';
 import { Observable } from 'rxjs/Observable';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Restangular } from 'ngx-restangular';
+import { ApiURLMap } from '../../../constants/api-urls';
 
 
 @Injectable()
 export class FeedbackFormService {
-  constructor(private apiService: ApiService) {
+  constructor(private restangular: Restangular) {
   }
 
   getFeedBackEventDetails(feedback_form_id): Observable<any> {
-    return this.apiService.apiGET('feedback_event_details',
-      {}, {'id': feedback_form_id});
+    return this.restangular.one(ApiURLMap.feedback_event_details.replace(':id', feedback_form_id)).get();
   }
 
   toFormGroup(question_data): FormGroup {

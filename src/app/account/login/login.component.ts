@@ -1,14 +1,15 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { ApiService } from '../../core/api/api.service';
+import { LoginService } from './login.service';
 import { UserDataStoreService } from '../../shared/data-stores/user-data-store.service';
+import { APP_ROUTE_URLS } from '../../../constants/app-constants';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
 
@@ -16,12 +17,12 @@ export class LoginComponent implements OnInit {
   errors: any;
   isSubmitting = false;
   authForm: FormGroup;
-  returnUrl: string;
+  returnUrl = '';
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private apiService: ApiService,
+    private loginService: LoginService,
     private userData: UserDataStoreService,
     private fb: FormBuilder
   ) {
@@ -32,20 +33,29 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
+  setReturnUrl() {
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+  }
+
+  ngOnInit() {
+    this.setReturnUrl();
+  }
+
+  getErrorMessage() {
+    let email = this.authForm.get('email');
+    return email.hasError('required') ? 'You must enter a value' :
+      email.hasError('email') ? 'Not a valid email' :
+        '';
   }
 
   submitForm() {
     this.isSubmitting = true;
     this.errors = {};
 
-    const credentials = this.authForm.value;
-    this.apiService.apiPOST('login', credentials)
-      .subscribe(
+    this.loginService.login(this.authForm.value).subscribe(
         data => {
           this.userData.updateUserMultipleValues(data);
-          this.router.navigateByUrl('/');
+          this.router.navigateByUrl(APP_ROUTE_URLS.root);
           this.isSubmitting = false;
         },
         err => {

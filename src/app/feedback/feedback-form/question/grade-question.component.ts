@@ -1,15 +1,12 @@
 import { Component, forwardRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { BaseQuestionComponent } from './question.base.component';
+import { GRADE_TYPE_QUESTION, QUESTION_TYPE_MAP } from '../../../../constants/app-constants';
 
 @Component({
   selector: 'app-grade-question',
   templateUrl: './grade-question.component.html',
-  styles: [`
-    mat-form-field {
-      width: 500px;
-    }
-  `],
+  styleUrls: ['./grade-question.component.scss'],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -21,6 +18,6 @@ import { BaseQuestionComponent } from './question.base.component';
 export class GradeQuestionComponent extends BaseQuestionComponent {
   constructor() {
     super();
-    this.type = 'grade';
+    this.type = QUESTION_TYPE_MAP[GRADE_TYPE_QUESTION];
   }
 }

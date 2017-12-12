@@ -1,0 +1,14 @@
+.login-card {
+  max-width: 30%;
+  margin: 4em auto;
+  text-align: center;
+
+  mat-form-field {
+    display: block;
+  }
+
+  mat-card-content {
+    padding: 16px;
+  }
+
+}

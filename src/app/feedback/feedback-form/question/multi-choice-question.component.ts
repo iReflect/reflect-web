@@ -1,15 +1,12 @@
 import { Component, forwardRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { BaseQuestionComponent } from './question.base.component';
+import { MULTIPLE_CHOICE_TYPE_QUESTION, QUESTION_TYPE_MAP } from '../../../../constants/app-constants';
 
 @Component({
   selector: 'app-multi-choice-question',
   templateUrl: './multi-choice-question.component.html',
-  styles: [`
-    mat-form-field {
-      width: 500px;
-    }
-  `],
+  styleUrls: ['./multi-choice-question.component.scss'],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -21,6 +18,6 @@ import { BaseQuestionComponent } from './question.base.component';
 export class MultiChoiceQuestionComponent extends BaseQuestionComponent {
   constructor() {
     super();
-    this.type = 'multi-choice';
+    this.type = QUESTION_TYPE_MAP[MULTIPLE_CHOICE_TYPE_QUESTION];
   }
 }

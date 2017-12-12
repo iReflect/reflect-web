@@ -5,7 +5,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
-
+import { RestangularModule } from 'ngx-restangular';
 import { CookieModule } from 'ngx-cookie';
 
 import { SharedModule } from './shared/shared.module';
@@ -14,6 +14,17 @@ import { AppComponent } from './app.component';
 import { HomeModule } from './home/home.module';
 import { AccountModule } from './account/account.module';
 import { FeedbackModule } from './feedback/feedback.module';
+
+import { environment } from '../environments/environment';
+import { CustomMaterialModule } from './core/custom-material/custom-material.module';
+
+export function RestangularConfigFactory (RestangularProvider) {
+  RestangularProvider.setBaseUrl(environment.apiHostUrl + environment.baseApiUrl);
+  RestangularProvider.setDefaultHeaders({
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  });
+}
 
 @NgModule({
   declarations: [
@@ -28,8 +39,10 @@ import { FeedbackModule } from './feedback/feedback.module';
     ReactiveFormsModule,
     CookieModule.forRoot(),
     RouterModule.forRoot([], {useHash: false}),
-    SharedModule,
+    RestangularModule.forRoot(RestangularConfigFactory),
+    CustomMaterialModule,
     CoreModule,
+    SharedModule,
     HomeModule,
     AccountModule,
     FeedbackModule

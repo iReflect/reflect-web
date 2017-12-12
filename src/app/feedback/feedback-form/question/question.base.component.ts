@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { ControlValueAccessor } from '@angular/forms';
 
 @Component({
-  template: `<div>Base Question Component</div>`
+  templateUrl: './question.base.component.html'
 })
 export class BaseQuestionComponent implements  ControlValueAccessor {
   type = 'base';

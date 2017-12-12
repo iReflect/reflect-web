@@ -1,14 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../core/api/api.service';
-import { FEEDBACK_EVENT_STATES, SUBMITTED_EVENT, NEW_EVENT, IN_PROGRESS_EVENT } from '../../constants/app-constants';
+import {
+  FEEDBACK_EVENT_STATES, SUBMITTED_EVENT, NEW_EVENT, IN_PROGRESS_EVENT,
+  APP_ROUTE_URLS
+} from '../../constants/app-constants';
 import { HomeService } from './home.service';
 import { FeedBackEventDataSource } from './home.data-source';
-import {Router} from "@angular/router";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
 
@@ -32,11 +34,15 @@ export class HomeComponent implements OnInit {
     this.dataSource.statuses = this.tabTypeList[0].feedback_event_list_type;
   }
 
-  ngOnInit() {
+  subscribeDataSource() {
     this.dataSource.dataChange$.subscribe(data => {
-        this.isListLoaded = true;
-        this.feedback_event_data = data;
+      this.isListLoaded = true;
+      this.feedback_event_data = data;
     });
+  }
+
+  ngOnInit() {
+    this.subscribeDataSource();
   }
 
   selectedTabChanged($event) {
@@ -49,7 +55,7 @@ export class HomeComponent implements OnInit {
   }
 
   navigateToFeedBackForm (row) {
-    this.router.navigateByUrl('/feedbacks/' + row.ID + '');
+    this.router.navigateByUrl(APP_ROUTE_URLS.feedback.replace(':id', row.ID));
   }
 
   parse_to_date (value) {

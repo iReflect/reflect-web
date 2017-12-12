@@ -34,11 +34,11 @@
                     <div *ngFor="let question of skill.Questions; let questionNo=index">
                         <label [attr.for]="question.ID"> Question {{questionNo + 1}}. {{question.Text}}</label>
                         <div [ngSwitch]="question.Type">
-                          <app-multi-choice-question [formGroup]="form" [id]="question.ID" [question]="question" *ngSwitchCase="1" [formControlName]="'' + question.ID"></app-multi-choice-question>
+                          <app-multi-choice-question *ngSwitchCase="multipleChoiceType" [formGroup]="form" [id]="question.ID" [question]="question" [formControlName]="'' + question.ID"></app-multi-choice-question>
 
-                          <app-grade-question [formGroup]="form" [id]="question.ID" [question]="question" *ngSwitchCase="2" [formControlName]="'' + question.ID"></app-grade-question>
+                          <app-grade-question *ngSwitchCase="gradeType" [formGroup]="form" [id]="question.ID" [question]="question" [formControlName]="'' + question.ID"></app-grade-question>
 
-                          <app-boolean-question [formGroup]="form" [id]="question.ID" [question]="question" *ngSwitchCase="3" [formControlName]="'' + question.ID"></app-boolean-question>
+                          <app-boolean-question *ngSwitchCase="booleanType" [formGroup]="form" [id]="question.ID" [question]="question" [formControlName]="'' + question.ID"></app-boolean-question>
                         </div>
                         <mat-form-field class="form-group">
                             <textarea matInput matTextareaAutosize

@@ -5,11 +5,14 @@ import { Routes, RouterModule } from '@angular/router';
 import { FeedbackFormComponent } from './feedback-form/feedback-form.component';
 
 // Import Guards
-import {LoginRequiredGuard} from '../core/route-guards/login-required.service';
+import { LoginRequiredGuard } from '../core/route-guards/login-required.service';
+
+// Import App Constants
+import { APP_ROUTE_URLS } from '../../constants/app-constants';
 
 const routes: Routes = [
   {
-    path: 'feedbacks/:id',
+    path: APP_ROUTE_URLS.feedback,
     component: FeedbackFormComponent,
     pathMatch: 'prefix',
     canActivate: [LoginRequiredGuard]

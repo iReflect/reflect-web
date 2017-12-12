@@ -1,23 +1,25 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ApiService } from '../../api/api.service';
 import { UserDataStoreService } from '../../../shared/data-stores/user-data-store.service';
+import { APP_ROUTE_URLS } from '../../../../constants/app-constants';
+import { Restangular } from 'ngx-restangular';
+import { ApiURLMap } from '../../../../constants/api-urls';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css']
+  styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
   @Input() userLoggedIn: boolean;
   logoutInProgress = false;
   user: any = {};
 
-  constructor(private router: Router, private apiService: ApiService,
+  constructor(private router: Router, private restAngular: Restangular,
               private userData: UserDataStoreService) {
   }
 
-  ngOnInit() {
+  subscribeUserData() {
     this.userData.token$.subscribe(
       token => this.userLoggedIn = Boolean(token)
     );
@@ -26,15 +28,19 @@ export class HeaderComponent implements OnInit {
     );
   }
 
+  ngOnInit() {
+    this.subscribeUserData();
+  }
+
   logout() {
     if (!this.logoutInProgress) {
       this.logoutInProgress = true;
-      return this.apiService.apiDELETE('logout').subscribe(
+      return this.restAngular.one(ApiURLMap.logout).post().subscribe(
         data => {
           this.userData.updateUserMultipleValues({});
           this.userData.setToken$('');
           this.logoutInProgress = false;
-          this.router.navigateByUrl('/login');
+          this.router.navigateByUrl(APP_ROUTE_URLS.login);
         }
       );
     }
