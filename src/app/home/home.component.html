@@ -1,10 +1,12 @@
 <ng-container>
   <div class="feedback-events-container" *ngIf="isListLoaded">
-    <div class="feedback-event-stats-container">
-      <p>New Feedback count: {{feedback_event_data.NewFeedbackCount}}</p>
-      <p>Draft / In Progress Feedback count: {{feedback_event_data.DraftFeedbackCount}}</p>
-      <p>Submitted Feedback count: {{feedback_event_data.SubmittedFeedbackCount}}</p>
-    </div>
+    <mat-card class="feedback-event-stats-container">
+      <mat-toolbar>
+        <mat-toolbar-row><span>New Feedbacks: {{feedback_event_data.NewFeedbackCount}}</span></mat-toolbar-row>
+        <mat-toolbar-row><span>Draft / In Progress Feedbacks: {{feedback_event_data.DraftFeedbackCount}}</span></mat-toolbar-row>
+        <mat-toolbar-row><span>Submitted Feedbacks: {{feedback_event_data.SubmittedFeedbackCount}}</span></mat-toolbar-row>
+      </mat-toolbar>
+    </mat-card>
     <div class="feedback-event-list-container">
       <mat-tab-group class="feedback-event-tab-group" (selectedTabChange)="selectedTabChanged($event)">
         <mat-tab *ngFor="let tab of tabTypeList" label="{{tab.tabLabelText}}">

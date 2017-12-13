@@ -1,12 +1,21 @@
 <ng-container>
   <div class="feedback-events-container" *ngIf="isDataLoaded">
-    <div class="feedback-event-details-container">
-      <p>Title: {{ feedback_event_data.Title }}</p>
-      <p>Duration Start: {{ feedback_event_data.DurationStart | date:dateFormat}}</p>
-      <p>Duration End: {{ feedback_event_data.DurationEnd | date:dateFormat}}</p>
-      <p>Expiry Date: {{ feedback_event_data.ExpireAt | date:dateFormat}}</p>
-      <p *ngIf="feedback_event_data.SubmittedAt">Submitted At: {{ feedback_event_data.SubmittedAt | date:dateFormat}}</p>
-    </div>
+    <mat-card class="feedback-event-details-container">
+      <mat-toolbar>
+        <mat-toolbar-row><h1>{{ feedback_event_data.Title }}</h1></mat-toolbar-row>
+        <mat-toolbar-row>
+          <span>
+            From {{ feedback_event_data.DurationStart | date:dateFormat}} To {{ feedback_event_data.DurationEnd | date:dateFormat}}
+          </span>
+        </mat-toolbar-row>
+        <mat-toolbar-row><span>Expires At: {{ feedback_event_data.ExpireAt | date:dateFormat}}</span></mat-toolbar-row>
+        <mat-toolbar-row *ngIf="feedback_event_data.SubmittedAt">
+          <span>
+            Submitted At: {{ feedback_event_data.SubmittedAt | date:dateFormat}}
+          </span>
+        </mat-toolbar-row>
+      </mat-toolbar>
+    </mat-card>
     <div class="feedback-form-container">
       <form (ngSubmit)="onSubmit()" [formGroup]="form">
         <div *ngFor="let category of feedback_event_data.Categories | values" class="form-row">

@@ -12,13 +12,13 @@ import { BOOLEAN_TYPE_QUESTION, GRADE_TYPE_QUESTION,
 })
 export class FeedbackFormComponent implements OnInit {
 
-  private isDataLoaded = false;
+  isDataLoaded = false;
   dateFormat: 'MMMM dd, yyyy';
   multipleChoiceType = MULTIPLE_CHOICE_TYPE_QUESTION;
   gradeType = GRADE_TYPE_QUESTION;
   booleanType = BOOLEAN_TYPE_QUESTION;
   form: FormGroup;
-  private feedback_event_data: any;
+  feedback_event_data: any;
   constructor (private feedBackFormService: FeedbackFormService, private activatedRoute: ActivatedRoute) {
   }
 

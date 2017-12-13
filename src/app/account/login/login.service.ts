@@ -12,4 +12,8 @@ export class LoginService {
   login(credentials: any): Observable<any> {
     return this.restAngular.one(ApiURLMap.login).post('', credentials);
   }
+
+  logout() {
+    return this.restAngular.one(ApiURLMap.logout).post();
+  }
 }

@@ -20,6 +20,7 @@ export const QUESTION_TYPE_MAP = {
 };
 
 export const APP_ROUTE_URLS = {
+  forwardSlash: '/',
   root: '',
   login: 'login',
   feedback: 'feedbacks/:id',

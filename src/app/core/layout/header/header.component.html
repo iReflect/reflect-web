@@ -3,10 +3,19 @@
     <div *ngIf="userLoggedIn">
       <mat-toolbar>
         <div class="loggedin-wrap">
-          <span>Welcome {{ user && user.name || 'User' }},</span>
-          <span class="logout-wrap">
-            <button mat-button (click)="logout()" [hidden]="logoutInProgress">Logout</button>
-          </span>
+          <div class="logo-wrap">
+            <h1><b>iReflect</b></h1>
+          </div>
+          <div class="header-contents">
+            <span>Welcome {{ user && user.name || 'User' }}</span>
+            <mat-menu #appMenu="matMenu" [overlapTrigger]="false">
+              <button mat-menu-item (click)="logout()" [hidden]="logoutInProgress"> Logout </button>
+            </mat-menu>
+
+            <button mat-icon-button [matMenuTriggerFor]="appMenu">
+              <mat-icon>menu</mat-icon>
+            </button>
+          </div>
         </div>
       </mat-toolbar>
     </div>

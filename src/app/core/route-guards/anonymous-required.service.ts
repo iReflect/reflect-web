@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 
 import { UserDataStoreService } from '../../shared/data-stores/user-data-store.service';
+import { APP_ROUTE_URLS } from '../../../constants/app-constants';
 
 
 @Injectable()
@@ -22,7 +23,7 @@ export class AnonymousRequiredGuard implements CanActivate {
             return true;
         }
 
-        this.router.navigateByUrl('/');
+        this.router.navigateByUrl(APP_ROUTE_URLS.forwardSlash);
         return false;
     }
 

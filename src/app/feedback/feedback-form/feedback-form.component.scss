@@ -1,3 +1,11 @@
 mat-form-field {
   width: 500px;
 }
+
+.feedback-event-details-container {
+  mat-toolbar-row {
+    color: black;
+    font-size: 15px;
+    max-height: 45px;
+  }
+}

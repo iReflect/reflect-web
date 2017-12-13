@@ -4,6 +4,7 @@ import { UserDataStoreService } from '../../../shared/data-stores/user-data-stor
 import { APP_ROUTE_URLS } from '../../../../constants/app-constants';
 import { Restangular } from 'ngx-restangular';
 import { ApiURLMap } from '../../../../constants/api-urls';
+import { LoginService } from '../../../account/login/login.service';
 
 @Component({
   selector: 'app-header',
@@ -15,8 +16,8 @@ export class HeaderComponent implements OnInit {
   logoutInProgress = false;
   user: any = {};
 
-  constructor(private router: Router, private restAngular: Restangular,
-              private userData: UserDataStoreService) {
+  constructor(private router: Router, private userData: UserDataStoreService,
+              private loginService: LoginService) {
   }
 
   subscribeUserData() {
@@ -35,10 +36,9 @@ export class HeaderComponent implements OnInit {
   logout() {
     if (!this.logoutInProgress) {
       this.logoutInProgress = true;
-      return this.restAngular.one(ApiURLMap.logout).post().subscribe(
+      return this.loginService.logout().subscribe(
         data => {
-          this.userData.updateUserMultipleValues({});
-          this.userData.setToken$('');
+          this.userData.clearUserData();
           this.logoutInProgress = false;
           this.router.navigateByUrl(APP_ROUTE_URLS.login);
         }

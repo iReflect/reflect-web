@@ -77,4 +77,9 @@ export class UserDataStoreService {
 
         this._userData.next(userValue);
     }
+
+  clearUserData () {
+    this.updateUserMultipleValues({});
+    this.setToken$('');
+  }
 }

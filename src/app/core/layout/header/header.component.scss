@@ -1,0 +1,28 @@
+.header-container {
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .26);
+  z-index: 3;
+  transition: .3s ease-in-out;
+  position: relative;
+  mat-toolbar {
+    background-color: #3293be;
+  }
+  .loggedin-wrap {
+    color: #FFF;
+    width: 100%;
+    h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+    .logo-wrap {
+      display: inline-flex;
+      padding: 2px;
+    }
+    .header-contents {
+      display: inline-flex;
+      float: right;
+      span {
+        margin: auto;
+      }
+    }
+  }
+}
