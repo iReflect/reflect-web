@@ -8,6 +8,7 @@ export class BaseQuestionComponent implements  ControlValueAccessor {
   type = 'base';
   selected: any;
   @Input() question;
+  @Input() disabled = false;
   private onTouchedCallback: () => void = () => {};
   private onChangeCallback: (_: any) => void = () => {};
 
@@ -15,10 +16,15 @@ export class BaseQuestionComponent implements  ControlValueAccessor {
     return this.selected;
   }
 
+  formatValue(value) {
+    // Formats the value in a format which is required in the form
+    return value;
+  }
+
   set value(v: any) {
     if (v !== this.selected) {
       this.selected = v;
-      this.onChangeCallback(v);
+      this.onChangeCallback(this.formatValue(v));
     }
   }
 
@@ -34,5 +40,9 @@ export class BaseQuestionComponent implements  ControlValueAccessor {
 
   registerOnTouched(fn: any) {
     this.onTouchedCallback = fn;
+  }
+
+  setDisabledState(isDisabled: boolean): void {
+    this.disabled = isDisabled;
   }
 }

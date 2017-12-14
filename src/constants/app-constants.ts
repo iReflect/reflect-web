@@ -25,3 +25,8 @@ export const APP_ROUTE_URLS = {
   login: 'login',
   feedback: 'feedbacks/:id',
 };
+
+
+export const ERRORS = {
+  questionResponseRequired: 'Answer is Required'
+};

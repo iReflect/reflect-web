@@ -20,4 +20,9 @@ export class MultiChoiceQuestionComponent extends BaseQuestionComponent {
     super();
     this.type = QUESTION_TYPE_MAP[MULTIPLE_CHOICE_TYPE_QUESTION];
   }
+
+  formatValue(value) {
+    return value.join(',');
+  }
+
 }

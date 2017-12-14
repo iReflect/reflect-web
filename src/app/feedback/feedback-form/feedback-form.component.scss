@@ -9,3 +9,15 @@ mat-form-field {
     max-height: 45px;
   }
 }
+
+.side-nav-content-block {
+  display: none;
+}
+
+mat-sidenav-container {
+  min-height: 200px;
+}
+
+.mat-list-item.active {
+  border-right: groove black;
+}
