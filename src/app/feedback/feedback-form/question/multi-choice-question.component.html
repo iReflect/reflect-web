@@ -1,0 +1,7 @@
+<div>
+  <mat-form-field>
+    <mat-select placeholder="Answer" multiple [disabled]="disabled" [(ngModel)]="value" (openedChange)="onTouchedCallback()">
+      <mat-option *ngFor="let opt of question.Options" [value]="'' + opt.id">{{opt.text}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
