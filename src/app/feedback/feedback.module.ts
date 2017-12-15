@@ -11,6 +11,9 @@ import { FeedbackRoutingModule } from './feedback-routing.module';
 import { FeedbackFormService } from './feedback-form/feedback-form.service';
 import { BaseQuestionComponent } from './feedback-form/question/question.base.component';
 import { CustomMaterialModule } from '../core/custom-material/custom-material.module';
+import { FeedbackFormListComponent } from './feedback-form-list/feedback-form-list.component';
+import { FeedbackFormListService } from './feedback-form-list/feedback-form-list.service';
+import { FeedBackListDataSource } from './feedback-form-list/feedback-form-list.data-source';
 
 @NgModule({
   imports: [
@@ -26,11 +29,16 @@ import { CustomMaterialModule } from '../core/custom-material/custom-material.mo
     BooleanQuestionComponent,
     GradeQuestionComponent,
     MultiChoiceQuestionComponent,
-    FeedbackFormComponent
+    FeedbackFormComponent,
+    FeedbackFormListComponent
   ],
   exports: [],
+  schemas: [
+    FeedBackListDataSource
+  ],
   providers: [
-    FeedbackFormService
+    FeedbackFormService,
+    FeedbackFormListService
   ]
 })
 export class FeedbackModule {}

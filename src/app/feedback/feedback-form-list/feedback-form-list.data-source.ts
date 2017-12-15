@@ -1,16 +1,19 @@
 import { DataSource } from '@angular/cdk/collections';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { HomeService } from './home.service';
+import { FeedbackFormListService } from './feedback-form-list.service';
+import { ActivatedRoute } from '@angular/router';
 
-export class FeedBackEventDataSource extends DataSource<any> {
+export class FeedBackListDataSource extends DataSource<any> {
   private _dataChange: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   statuses: any;
-  constructor(private homeService: HomeService) {
+  constructor(private feedbackFormListService: FeedbackFormListService, private route: ActivatedRoute) {
     super();
   }
   connect (): Observable<any[]> {
-    this.homeService.getFeedBackEventList(this.statuses).subscribe(
+    let queryParams;
+    this.route.queryParams.subscribe((params) => queryParams = params);
+    this.feedbackFormListService.getFeedBackEventList(queryParams).subscribe(
       event_data => {
         this._dataChange.next(event_data);
       });

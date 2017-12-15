@@ -24,6 +24,7 @@ export const APP_ROUTE_URLS = {
   root: '',
   login: 'login',
   feedback: 'feedbacks/:id',
+  feedbackList: 'feedbacks',
 };
 
 

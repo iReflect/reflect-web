@@ -33,6 +33,10 @@ export class HeaderComponent implements OnInit {
     this.subscribeUserData();
   }
 
+  navigateToRoot() {
+    this.router.navigateByUrl(APP_ROUTE_URLS.root);
+  }
+
   logout() {
     if (!this.logoutInProgress) {
       this.logoutInProgress = true;

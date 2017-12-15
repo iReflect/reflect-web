@@ -4,7 +4,7 @@
       <mat-toolbar>
         <div class="loggedin-wrap">
           <div class="logo-wrap">
-            <h1><b>iReflect</b></h1>
+            <a (click)="navigateToRoot()"><h1><b>iReflect</b></h1></a>
           </div>
           <div class="header-contents">
             <span>Welcome {{ user && user.name || 'User' }}</span>
