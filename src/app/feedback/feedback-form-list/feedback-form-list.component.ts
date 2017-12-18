@@ -36,6 +36,7 @@ export class FeedbackFormListComponent implements OnInit {
     this.route.queryParams.subscribe((params) => {
       queryParams = params;
       this.filters.status = queryParams.status ? (typeof queryParams.status === 'object' ? queryParams.status : [queryParams.status]) : [];
+      this.dataSource.setFilters(this.filters);
       this.dataSource.connect();
     });
     this.dataSource.dataChange$.subscribe(data => {
