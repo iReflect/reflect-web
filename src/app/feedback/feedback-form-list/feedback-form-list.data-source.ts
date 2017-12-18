@@ -6,14 +6,17 @@ import { ActivatedRoute } from '@angular/router';
 
 export class FeedBackListDataSource extends DataSource<any> {
   private _dataChange: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
-  statuses: any;
+  filters: any;
   constructor(private feedbackFormListService: FeedbackFormListService, private route: ActivatedRoute) {
     super();
   }
+
+  setFilters(filters: any) {
+    this.filters = filters;
+  }
+
   connect (): Observable<any[]> {
-    let queryParams;
-    this.route.queryParams.subscribe((params) => queryParams = params);
-    this.feedbackFormListService.getFeedBackEventList(queryParams).subscribe(
+    this.feedbackFormListService.getFeedBackEventList(this.filters).subscribe(
       event_data => {
         this._dataChange.next(event_data);
       });

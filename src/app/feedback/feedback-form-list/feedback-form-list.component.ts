@@ -6,6 +6,7 @@ import {
 } from '../../../constants/app-constants';
 import { ActivatedRoute, Router} from '@angular/router';
 import { FeedbackFormListService } from './feedback-form-list.service';
+import {UtilsService} from '../../shared/utils/utils.service';
 
 @Component({
   selector: 'app-feedback-form-list',
@@ -23,10 +24,10 @@ export class FeedbackFormListComponent implements OnInit {
   statusChoices;
 
   constructor(private router: Router, private feedbackFormListService: FeedbackFormListService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute, private utilService: UtilsService) {
     this.statusChoices = [];
     Object.keys(FEEDBACK_EVENT_STATES).forEach(key =>
-      this.statusChoices.push({value: key, label: FEEDBACK_EVENT_STATES[key]}))
+      this.statusChoices.push({value: key, label: FEEDBACK_EVENT_STATES[key]}));
     }
 
   initializeDataSource () {
@@ -43,8 +44,9 @@ export class FeedbackFormListComponent implements OnInit {
   }
 
   filterList() {
-    this.router.navigate([APP_ROUTE_URLS.feedbackList],
-      { queryParams: this.filters});
+    this.utilService.updateQueryParams(this.filters);
+    this.dataSource.setFilters(this.filters);
+    this.dataSource.connect();
   }
 
   ngOnInit() {

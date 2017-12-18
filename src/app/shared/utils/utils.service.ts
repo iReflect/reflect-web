@@ -70,17 +70,20 @@ export class UtilsService {
         return (res.length && res[res.length - 1 ] === '&') ? res.substring(0, res.length - 1 ) : res;
     }
 
-    public updateQueryParams(data: Object, update = true) {
+    public updateQueryParams(data: Object) {
         /**
          * data: data to be stored in query params without changing or reloading any component.
          * update: whether to update the query params or append value.
          */
-        const params = new URLSearchParams(window.location.search.substring(1));
+        // TODO: check alternate of URLSearchParams & update the code with recommended method.
+        const params = new URLSearchParams();
         _.forEach(data, (value: any, key) => {
             if (value || value === false) {
-                update ? params.set(key, value) : params.append(key, value);
-            } else {
-                params.delete(key);
+              if (value instanceof Array) {
+                value.forEach(v => params.append(key, v));
+              } else {
+                params.set(key, value);
+              }
             }
         });
         this.location.replaceState(window.location.pathname, params.toString());
