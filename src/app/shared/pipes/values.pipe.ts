@@ -1,4 +1,4 @@
-import {Pipe, PipeTransform} from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
 import * as _ from 'lodash';
 
 /* Pipe to return list of values of an object
@@ -9,7 +9,7 @@ import * as _ from 'lodash';
 */
 @Pipe({name: 'values'})
 export class ValuesPipe implements PipeTransform {
-  transform(obj, args: string[]): any {
-    return _.values(obj);
-  }
+    transform(obj, args: string[]): any {
+        return _.values(obj);
+    }
 }

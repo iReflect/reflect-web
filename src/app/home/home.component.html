@@ -1,10 +1,15 @@
 <ng-container>
-  <div class="feedback-events-container" *ngIf="isDataLoaded">
-    <mat-card class="feedback-event-stats-container">
+  <div class="feedback-container" *ngIf="isDataLoaded">
+    <mat-card class="feedback-stats-container">
       <mat-toolbar>
-        <mat-toolbar-row><span (click)="navigate(0)">New Feedbacks: {{feedback_event_data.NewFeedbackCount}}</span></mat-toolbar-row>
-        <mat-toolbar-row><span (click)="navigate(1)">Draft / In Progress Feedbacks: {{feedback_event_data.DraftFeedbackCount}}</span></mat-toolbar-row>
-        <mat-toolbar-row><span (click)="navigate(2)">Submitted Feedbacks: {{feedback_event_data.SubmittedFeedbackCount}}</span></mat-toolbar-row>
+        <mat-toolbar-row><span
+          (click)="navigate(0)">New Feedbacks: {{feedback_event_data.NewFeedbackCount}}</span>
+        </mat-toolbar-row>
+        <mat-toolbar-row><span (click)="navigate(1)">Draft / In Progress Feedbacks: {{feedback_event_data.DraftFeedbackCount}}</span>
+        </mat-toolbar-row>
+        <mat-toolbar-row><span
+          (click)="navigate(2)">Submitted Feedbacks: {{feedback_event_data.SubmittedFeedbackCount}}</span>
+        </mat-toolbar-row>
       </mat-toolbar>
     </mat-card>
   </div>

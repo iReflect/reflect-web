@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
+import { APP_ROUTE_URLS } from '../../../constants/app-constants';
 
 import { UserDataStoreService } from '../../shared/data-stores/user-data-store.service';
-import { APP_ROUTE_URLS } from '../../../constants/app-constants';
 
 
 @Injectable()

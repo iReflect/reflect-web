@@ -1,6 +1,6 @@
+import { Location } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { URLSearchParams } from '@angular/http';
-import { Location } from '@angular/common';
 
 import * as _ from 'lodash';
 
@@ -67,7 +67,7 @@ export class UtilsService {
         );
 
         // Trim appending &
-        return (res.length && res[res.length - 1 ] === '&') ? res.substring(0, res.length - 1 ) : res;
+        return (res.length && res[res.length - 1] === '&') ? res.substring(0, res.length - 1) : res;
     }
 
     public updateQueryParams(data: Object, update = true) {

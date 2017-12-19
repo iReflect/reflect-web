@@ -1,32 +1,31 @@
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
-
 // Custom Services
 import { UserDataStoreService } from './data-stores/user-data-store.service';
-import { UtilsService } from './utils/utils.service';
-
 // Custom Pipes
 import { ValuesPipe } from './pipes/values.pipe';
+import { UtilsService } from './utils/utils.service';
 
 @NgModule({
     imports: [
-      CommonModule,
-      FormsModule,
-      HttpClientModule,
-      RouterModule,
+        CommonModule,
+        FormsModule,
+        HttpClientModule,
+        RouterModule,
     ],
     declarations: [
-      ValuesPipe
+        ValuesPipe
     ],
     exports: [
-      ValuesPipe
+        ValuesPipe
     ],
     providers: [
-      UserDataStoreService,
-      UtilsService
+        UserDataStoreService,
+        UtilsService
     ]
 })
-export class SharedModule { }
+export class SharedModule {
+}

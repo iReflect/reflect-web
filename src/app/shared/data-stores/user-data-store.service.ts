@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import 'rxjs/add/operator/filter';
 import * as _ from 'lodash';
 import { CookieService } from 'ngx-cookie';
+import 'rxjs/add/operator/filter';
+
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { USER_AUTH_TOKEN_KEY } from '../../../constants/app-constants';
 
 
@@ -14,11 +14,12 @@ export class UserDataStoreService {
 
     private initial = '$initial';
 
-    private _userData: BehaviorSubject<any> = new BehaviorSubject({ [this.initial]: true });
+    private _userData: BehaviorSubject<any> = new BehaviorSubject({[this.initial]: true});
     public userData$ = this._userData.asObservable().filter(data => !(this.initial in data));
 
     // constructor() {}
-    constructor(private _cookieService: CookieService) { }
+    constructor(private _cookieService: CookieService) {
+    }
 
     get token$() {
 
@@ -52,7 +53,7 @@ export class UserDataStoreService {
     //   this._cookieService.put('user_info', JSON.stringify(data));
     // }
 
-    updateUserMultipleValues(userDict: any, updateToken= true) {
+    updateUserMultipleValues(userDict: any, updateToken = true) {
         /*
         Takes an Object and updates User dictionary with its Key-Value pair.
         It also serves as reset function if userDict is empty
@@ -78,8 +79,8 @@ export class UserDataStoreService {
         this._userData.next(userValue);
     }
 
-  clearUserData () {
-    this.updateUserMultipleValues({});
-    this.setToken$('');
-  }
+    clearUserData() {
+        this.updateUserMultipleValues({});
+        this.setToken$('');
+    }
 }

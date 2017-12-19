@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
 
 import * as _ from 'lodash';
-
 // App Constants
 import { APP_ROUTE_URLS } from '../../../constants/app-constants';
-
 // Custom Services
 import { UserDataStoreService } from '../../shared/data-stores/user-data-store.service';
 
@@ -28,15 +26,15 @@ export class LoginRequiredGuard implements CanActivate {
             this.userService.userData$.subscribe(
                 user => {
                     if (_.isEmpty(user)) {
-                      this.router.navigateByUrl(APP_ROUTE_URLS.login);
-                      return false;
+                        this.router.navigateByUrl(APP_ROUTE_URLS.login);
+                        return false;
                     }
                 }
             );
             return true;
         }
         // not logged in so redirect to login page with the return url and return false
-        this.router.navigateByUrl(APP_ROUTE_URLS.login, { queryParams: { returnUrl: state.url }});
+        this.router.navigateByUrl(APP_ROUTE_URLS.login, {queryParams: {returnUrl: state.url}});
         return false;
     }
 }

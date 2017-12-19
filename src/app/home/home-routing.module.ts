@@ -1,25 +1,23 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-
+import { RouterModule, Routes } from '@angular/router';
+// Import App Constants
+import { APP_ROUTE_URLS } from '../../constants/app-constants';
+// Import Guards
+import { LoginRequiredGuard } from '../core/route-guards/login-required.service';
 // Import Components
 import { HomeComponent } from './home.component';
 
-// Import Guards
-import { LoginRequiredGuard } from '../core/route-guards/login-required.service';
-
-// Import App Constants
-import { APP_ROUTE_URLS } from '../../constants/app-constants';
-
 const routes: Routes = [
-  {
-    path: APP_ROUTE_URLS.root,
-    component: HomeComponent,
-    canActivate: [LoginRequiredGuard]
-  },
+    {
+        path: APP_ROUTE_URLS.root,
+        component: HomeComponent,
+        canActivate: [LoginRequiredGuard]
+    },
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+    imports: [RouterModule.forChild(routes)],
+    exports: [RouterModule]
 })
-export class HomeRoutingModule { }
+export class HomeRoutingModule {
+}
