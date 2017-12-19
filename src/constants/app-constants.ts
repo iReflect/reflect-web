@@ -8,7 +8,7 @@ export const FEEDBACK_STATES = {
 export const FEEDBACK_STATES_LABEL = {
     [FEEDBACK_STATES.NEW]: 'New',
     [FEEDBACK_STATES.IN_PROGRESS]: 'Draft/In Progress',
-    [FEEDBACK_STATES.IN_PROGRESS]: 'Submitted'
+    [FEEDBACK_STATES.SUBMITTED]: 'Submitted'
 };
 
 export const QUESTION_TYPES = {
@@ -29,3 +29,5 @@ export const APP_ROUTE_URLS = {
 export const ERRORS = {
     questionResponseRequired: 'Answer is Required'
 };
+
+export const QUESTION_RESPONSE_SEPARATOR = ',';

@@ -1,14 +1,12 @@
-import { Component, Input } from '@angular/core';
+import { Input } from '@angular/core';
 import { ControlValueAccessor } from '@angular/forms';
 
 export class BaseQuestionComponent implements ControlValueAccessor {
     selected: any;
     @Input() question;
     @Input() disabled = false;
-    private onTouchedCallback: () => void = () => {
-    };
-    private onChangeCallback: (_: any) => void = () => {
-    };
+    private onTouchedCallback: () => void = () => {};
+    private onChangeCallback: (_: any) => void = () => {};
 
     get value(): any {
         return this.selected;

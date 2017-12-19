@@ -25,6 +25,7 @@ export function RestangularConfigFactory(RestangularProvider) {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
     });
+    RestangularProvider.setRequestSuffix('/');
 }
 
 const routes: Routes = [

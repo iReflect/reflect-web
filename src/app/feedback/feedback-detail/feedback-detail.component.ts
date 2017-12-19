@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import {
-    ERRORS, QUESTION_TYPES
+    ERRORS, FEEDBACK_STATES, QUESTION_TYPES
 } from '../../../constants/app-constants';
 import { FeedbackDetailService } from './feedback-detail.service';
 
@@ -37,7 +37,8 @@ export class FeedbackDetailComponent implements OnInit {
                         let categoryIDList = Object.keys(data['Categories']);
                         this.selectedNav = parseInt(categoryIDList.length > 0 ? categoryIDList[0] : '0', 10);
                         this.isDataLoaded = true;
-                        this.form = this.feedBackService.toFormGroup(data['Categories']);
+                        this.form = this.feedBackService.toFormGroup(data['Categories'],
+                            data['Status'] ? data['Status'] === FEEDBACK_STATES.SUBMITTED : false);
                     }
                 );
             }
@@ -58,7 +59,12 @@ export class FeedbackDetailComponent implements OnInit {
         }
     }
 
-    onSubmit(saveAsDraft = false) {
-        this.feedBackService.postData(this.feedbackId, {'data': this.form.value, 'saveAsDraft': saveAsDraft});
+    onSubmit(saveAndSubmit = false) {
+        let status = this.feedbackData['Status'];
+        if (saveAndSubmit) {
+            status = FEEDBACK_STATES.SUBMITTED;
+        }
+        this.feedBackService.submitData(this.feedbackId, {'data': this.form.value, 'saveAndSubmit': saveAndSubmit,
+            'status': status});
     }
 }

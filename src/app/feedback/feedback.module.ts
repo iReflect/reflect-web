@@ -11,7 +11,6 @@ import { FeedbackDetailService } from './feedback-detail/feedback-detail.service
 import { BooleanQuestionComponent } from './feedback-detail/question/boolean-question.component';
 import { GradeQuestionComponent } from './feedback-detail/question/grade-question.component';
 import { MultiChoiceQuestionComponent } from './feedback-detail/question/multi-choice-question.component';
-import { BaseQuestionComponent } from './feedback-detail/question/question.base.component';
 import { FeedbackRoutingModule } from './feedback-routing.module';
 
 @NgModule({
@@ -24,7 +23,6 @@ import { FeedbackRoutingModule } from './feedback-routing.module';
         CustomMaterialModule
     ],
     declarations: [
-        BaseQuestionComponent,
         BooleanQuestionComponent,
         GradeQuestionComponent,
         MultiChoiceQuestionComponent,

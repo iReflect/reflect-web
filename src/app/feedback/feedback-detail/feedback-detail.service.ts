@@ -3,7 +3,6 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Restangular } from 'ngx-restangular';
 import { Observable } from 'rxjs/Observable';
 import { ApiURLMap } from '../../../constants/api-urls';
-import { QUESTION_TYPES } from "../../../constants/app-constants";
 
 
 @Injectable()
@@ -12,7 +11,7 @@ export class FeedbackDetailService {
     }
 
     getFeedBack(feedbackId): Observable<any> {
-        return this.restangular.one(ApiURLMap,feedbackId).get();
+        return this.restangular.one(ApiURLMap.feedback).one(feedbackId).get();
     }
 
     toFormGroup(questionData, isDisabled = false): FormGroup {
@@ -25,13 +24,9 @@ export class FeedbackDetailService {
             Object.keys(skills).forEach(skillId => {
                 skillGroup = {};
                 skills[skillId].Questions.forEach(question => {
-                    let questionResponse = (question.Response || '').toString();
-                    if (question.Type === QUESTION_TYPES.MULTIPLE_CHOICE) {
-                        questionResponse = questionResponse.split(',').filter((response) => !!response);
-                    }
                     questionGroup = {
                         'response': new FormControl({
-                            value: questionResponse,
+                            value: question.Response || '',
                             disabled: isDisabled
                         }, Validators.required),
                         'comment': new FormControl({value: question.Comment || '', disabled: isDisabled})
@@ -45,7 +40,7 @@ export class FeedbackDetailService {
         return new FormGroup(formGroup);
     }
 
-    postData(feedbackId, data): Observable<any> {
-        return this.restangular.one(ApiURLMap.feedback, feedbackId).post('', data);
+    submitData(feedbackId, data): Observable<any> {
+        return this.restangular.one(ApiURLMap.feedback, feedbackId).customPUT(data);
     }
 }

@@ -16,10 +16,10 @@
           </span>
         </mat-toolbar-row>
         <mat-toolbar-row>
-          <button mat-button (click)="onSubmit(true)" [disabled]="!form.valid">Save as Draft</button>
+          <button mat-button (click)="onSubmit()" [disabled]="!form.valid">Save as Draft</button>
         </mat-toolbar-row>
         <mat-toolbar-row>
-          <button mat-button (click)="onSubmit()" [disabled]="!form.valid">Save and Submit</button>
+          <button mat-button (click)="onSubmit(true)" [disabled]="!form.valid">Save and Submit</button>
         </mat-toolbar-row>
       </mat-toolbar>
     </mat-card>
