@@ -6,7 +6,8 @@ import {
 } from '../../../constants/app-constants';
 import { ActivatedRoute, Router} from '@angular/router';
 import { FeedbackFormListService } from './feedback-form-list.service';
-import {UtilsService} from '../../shared/utils/utils.service';
+import { UtilsService } from '../../shared/utils/utils.service';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-feedback-form-list',
@@ -16,7 +17,6 @@ import {UtilsService} from '../../shared/utils/utils.service';
 export class FeedbackFormListComponent implements OnInit {
 
   isListLoaded = false;
-  showFilters = false;
   dataSource: FeedBackListDataSource;
   displayedColumns = ['title', 'user', 'user_role', 'duration_start', 'duration_end', 'expiry_date', 'status'];
   filters = {'status': []};
@@ -31,13 +31,15 @@ export class FeedbackFormListComponent implements OnInit {
     }
 
   initializeDataSource () {
-    this.dataSource = new FeedBackListDataSource(this.feedbackFormListService, this.route);
+    this.dataSource = new FeedBackListDataSource(this.feedbackFormListService);
     let queryParams;
     this.route.queryParams.subscribe((params) => {
       queryParams = params;
       this.filters.status = queryParams.status ? (typeof queryParams.status === 'object' ? queryParams.status : [queryParams.status]) : [];
-      this.dataSource.setFilters(this.filters);
-      this.dataSource.connect();
+      if (_.isEmpty(this.filters.status)) {
+        this.filters.status = this.defaultStatusFilters.map(value => value.toString());
+      }
+      this.filterList();
     });
     this.dataSource.dataChange$.subscribe(data => {
       this.isListLoaded = true;
@@ -45,8 +47,12 @@ export class FeedbackFormListComponent implements OnInit {
   }
 
   filterList() {
-    this.utilService.updateQueryParams(this.filters);
-    this.dataSource.setFilters(this.filters);
+    let appliedFilters = Object.assign({}, this.filters);
+    if (this.filters.status.length === this.statusChoices.length) {
+      delete appliedFilters.status;
+    }
+    this.utilService.updateQueryParams(appliedFilters);
+    this.dataSource.setFilters(appliedFilters);
     this.dataSource.connect();
   }
 

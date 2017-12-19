@@ -3,7 +3,6 @@
     <mat-toolbar class="mat-elevation-z2">
       <span>Feedbacks</span>
       <span class="fill-remaining-space"></span>
-      <!--<button mat-icon-button (click)="toggleFilters()"><mat-icon matTooltip="Filters">filter_list</mat-icon></button>-->
       <div class="filter-wrap">
         <mat-form-field>
           <mat-label ngFor="status">Status:</mat-label>
@@ -13,16 +12,6 @@
         </mat-form-field>
       </div>
     </mat-toolbar>
-    <div class="filter-wrap" [ngClass]="{'active': showFilters}">
-      <div>
-        <!--<mat-form-field>-->
-          <!--<mat-select multiple [(ngModel)]="filters.status">-->
-            <!--<mat-option *ngFor="let choice of statusChoices" [value]="choice.value">{{choice.label}}</mat-option>-->
-          <!--</mat-select>-->
-        <!--</mat-form-field>-->
-      </div>
-
-    </div>
     <div class="feedback-event-tab-content">
       <div class="feedback-event-table-container mat-elevation-z5">
         <mat-table #table [dataSource]="dataSource">
@@ -65,9 +54,7 @@
           <!-- Status Column -->
           <ng-container matColumnDef="status">
             <mat-header-cell *matHeaderCellDef> Status </mat-header-cell>
-            <!--<mat-basic-chip>-->
               <mat-cell *matCellDef="let element"> {{getStatusValue(element.Status)}} </mat-cell>
-            <!--</mat-basic-chip>-->
           </ng-container>
 
           <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
