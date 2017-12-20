@@ -1,0 +1,27 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #sidenav class="side-nav" mode="side" opened="true" fixedInViewport="true" [fixedTopGap]="60">
+    <mat-nav-list (mouseover)="hide = false" (mouseleave)="hide = true">
+      <mat-list-item>
+        <a routerLink=".">
+          <mat-icon mat-list-icon>home</mat-icon>
+          <span [hidden]="hide">Dashboard</span>
+        </a>
+      </mat-list-item>
+      <mat-list-item>
+        <a routerLink="./feedbacks/">
+          <mat-icon mat-list-icon>home</mat-icon>
+          <span [hidden]="hide">Feedbacks</span>
+        </a>
+      </mat-list-item>
+      <mat-list-item>
+        <a routerLink=".">
+          <mat-icon mat-list-icon>home</mat-icon>
+          <span [hidden]="hide">Team Feedbacks</span>
+        </a>
+      </mat-list-item>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content class="side-nav-content">
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>
