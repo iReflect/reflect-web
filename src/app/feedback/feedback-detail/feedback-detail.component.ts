@@ -1,5 +1,5 @@
 ///<reference path="../../../../node_modules/@angular/core/src/metadata/directives.d.ts"/>
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ERRORS, FEEDBACK_STATES, QUESTION_TYPES } from '../../../constants/app-constants';
@@ -12,6 +12,9 @@ import { FeedbackService } from "../../shared/services/feedback.service";
 })
 export class FeedbackDetailComponent implements OnInit {
 
+    @Input()
+    service: FeedbackService;
+
     isDataLoaded = false;
     dateFormat: 'MMMM dd, yyyy';
     multipleChoiceType = QUESTION_TYPES.MULTIPLE_CHOICE;
@@ -22,21 +25,21 @@ export class FeedbackDetailComponent implements OnInit {
     selectedNav: number;
     feedbackId;
 
-    constructor(private feedBackService: FeedbackService, private activatedRoute: ActivatedRoute) {
+    constructor(private activatedRoute: ActivatedRoute) {
     }
 
     getFeedBack() {
         this.activatedRoute.params.subscribe(
             params => {
                 this.feedbackId = params['id'];
-                this.feedBackService.getFeedBack(this.feedbackId).subscribe(
+                this.service.getFeedBack(this.feedbackId).subscribe(
                     response => {
                         let data = response.data;
                         this.feedbackData = data;
-                        let categoryIDList = Object.keys(data['Categories']);
+                        const categoryIDList = Object.keys(data['Categories']);
                         this.selectedNav = parseInt(categoryIDList.length > 0 ? categoryIDList[0] : '0', 10);
                         this.isDataLoaded = true;
-                        this.form = this.feedBackService.toFormGroup(data['Categories'],
+                        this.form = this.service.toFormGroup(data['Categories'],
                             data['Status'] ? data['Status'] === FEEDBACK_STATES.SUBMITTED : false);
                     }
                 );
@@ -63,7 +66,7 @@ export class FeedbackDetailComponent implements OnInit {
         if (saveAndSubmit) {
             status = FEEDBACK_STATES.SUBMITTED;
         }
-        this.feedBackService.submitData(this.feedbackId, {
+        this.service.submitData(this.feedbackId, {
             'data': this.form.value, 'saveAndSubmit': saveAndSubmit,
             'status': status
         });

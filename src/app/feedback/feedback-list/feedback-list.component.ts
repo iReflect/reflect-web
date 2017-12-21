@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as _ from 'lodash';
 import { APP_ROUTE_URLS, FEEDBACK_STATES, FEEDBACK_STATES_LABEL } from '../../../constants/app-constants';
@@ -13,6 +13,12 @@ import { FeedBackListDataSource } from './feedback-list.data-source';
 })
 export class FeedbackListComponent implements OnInit {
 
+    @Input()
+    service: FeedbackService;
+
+    @Input()
+    feedbackDetailURL: string;
+
     isListLoaded = false;
     dataSource: FeedBackListDataSource;
     displayedColumns = ['title', 'user', 'user_role', 'duration_start', 'duration_end', 'expiry_date', 'status'];
@@ -20,15 +26,16 @@ export class FeedbackListComponent implements OnInit {
     defaultStatusFilters = [FEEDBACK_STATES.NEW, FEEDBACK_STATES.IN_PROGRESS];
     statusChoices;
 
-    constructor(private router: Router, private feedbackService: FeedbackService,
-                private route: ActivatedRoute, private urlHelperService: UrlHelperService) {
+    constructor(private router: Router,
+                private route: ActivatedRoute,
+                private urlHelperService: UrlHelperService) {
         this.statusChoices = [];
         Object.keys(FEEDBACK_STATES_LABEL).forEach(key =>
             this.statusChoices.push({value: key, label: FEEDBACK_STATES_LABEL[key]}));
     }
 
     initializeDataSource() {
-        this.dataSource = new FeedBackListDataSource(this.feedbackService);
+        this.dataSource = new FeedBackListDataSource(this.service);
         let queryParams;
         this.route.queryParams.subscribe((params) => {
             queryParams = params;
@@ -45,7 +52,7 @@ export class FeedbackListComponent implements OnInit {
     }
 
     filterList() {
-        let appliedFilters = Object.assign({}, this.filters);
+        const appliedFilters = Object.assign({}, this.filters);
         if (this.filters.status.length === this.statusChoices.length) {
             delete appliedFilters.status;
         }
@@ -59,7 +66,7 @@ export class FeedbackListComponent implements OnInit {
     }
 
     navigateToFeedBack(row) {
-        this.router.navigateByUrl(APP_ROUTE_URLS.feedback.replace(':id', row.ID));
+        this.router.navigateByUrl(this.feedbackDetailURL.replace(':id', row.ID));
     }
 
     parseToDate(value) {
