@@ -5,12 +5,12 @@ import { APP_ROUTE_URLS } from '../../constants/app-constants';
 // Import Guards
 import { LoginRequiredGuard } from '../core/route-guards/login-required.service';
 // Import Components
-import { HomeComponent } from './home.component';
+import {DashboardComponent} from './dashboard/dashboard.component';
 
 const routes: Routes = [
     {
         path: APP_ROUTE_URLS.root,
-        component: HomeComponent,
+        component: DashboardComponent,
         canActivate: [LoginRequiredGuard]
     },
 ];

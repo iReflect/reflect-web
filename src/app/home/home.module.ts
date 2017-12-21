@@ -1,9 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { CustomMaterialModule } from '../core/custom-material/custom-material.module';
+import { FeedBackListDataSource } from '../feedback/feedback-list/feedback-list.data-source';
 import { SharedModule } from '../shared/shared.module';
+import { DashboardFeedbackListComponent } from './dashboard-feedback-list/dashboard-feedback-list.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 import { HomeRoutingModule } from './home-routing.module';
-import { HomeComponent } from './home.component';
+import { HomeService } from './home.service';
 
 
 @NgModule({
@@ -14,10 +17,16 @@ import { HomeComponent } from './home.component';
         CustomMaterialModule
     ],
     declarations: [
-        HomeComponent,
+        DashboardComponent,
+        DashboardFeedbackListComponent,
     ],
     exports: [],
-    providers: []
+    schemas: [
+        FeedBackListDataSource
+    ],
+    providers: [
+        HomeService
+    ]
 })
 export class HomeModule {
 }

@@ -1,0 +1,8 @@
+mat-row, mat-header-row {
+  &:nth-child(odd) {
+    background-color: #f5f5f5;
+  }
+  mat-cell {
+    font-size: 13px;
+  }
+}
