@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { Restangular } from 'ngx-restangular';
 
 import { ApiURLMap } from '../../../constants/api-urls';
-import { BaseFeedbackListService } from './base-feedback-list.service';
+import { BaseFeedbackDetailService } from './base-feedback-detail.service';
 
 
 @Injectable()
-export class FeedbackListService extends BaseFeedbackListService {
+export class MyFeedbackDetailService extends BaseFeedbackDetailService {
     apiURL = null;
 
     constructor(restAngular: Restangular) {
