@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {HomeService} from '../home.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FeedBackListDataSource} from '../../feedback/feedback-list/feedback-list.data-source';
@@ -19,6 +19,14 @@ export class DashboardFeedbackListComponent implements OnInit {
     @Input()
     filters: any;
 
+    @Output()
+    newFeedbackCount: EventEmitter<number> = new EventEmitter<number>();
+    @Output()
+    draftFeedbackCount: EventEmitter<number> = new EventEmitter<number>();
+    @Output()
+    submittedFeedbackCount: EventEmitter<number> = new EventEmitter<number>();
+
+
     isListLoaded = false;
     displayedColumns = ['title', 'user', 'userRole'];
 
@@ -35,6 +43,9 @@ export class DashboardFeedbackListComponent implements OnInit {
         this.dataSource.connect();
         this.dataSource.dataChange$.subscribe(data => {
             this.isListLoaded = true;
+            this.newFeedbackCount.emit(this.dataSource.newFeedbackCount);
+            this.draftFeedbackCount.emit(this.dataSource.draftFeedbackCount);
+            this.submittedFeedbackCount.emit(this.dataSource.submittedFeedbackCount);
         });
     }
 

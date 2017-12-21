@@ -15,7 +15,22 @@ export class DashboardComponent implements OnInit {
     inProgressFeedbackFilters: any = {'status': FEEDBACK_STATES.IN_PROGRESS, 'perPage': 5};
     submittedFeedbackFilters: any = {'status': FEEDBACK_STATES.SUBMITTED, 'perPage': 5};
 
+    newFeedbackCount: number;
+    draftFeedbackCount: number;
+    submittedFeedbackCount: number;
+
+
     constructor(private service: HomeService, private router: Router) {
+    }
+
+    setNewFeedbackCount (count) {
+        this.newFeedbackCount = count;
+    }
+    setDraftFeedbackCount (count) {
+        this.draftFeedbackCount = count;
+    }
+    setSubmittedFeedbackCount (count) {
+        this.submittedFeedbackCount = count;
     }
 
     ngOnInit() {

@@ -12,7 +12,7 @@
   overflow: hidden;
 }
 
-.test {
+:host /deep/ .show-more-button {
   width: 100%;
-  float: right;
+  align-content: right !important;
 }

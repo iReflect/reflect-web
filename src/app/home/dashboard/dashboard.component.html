@@ -9,16 +9,18 @@
           <mat-card class="new-feedback-card">
             <mat-toolbar>
               <span>New Feedback</span>
+              <span>Total: {{newFeedbackCount}}</span>
               <div class="show-more-button">
                 <a routerLink="./feedbacks/" [queryParams]="{status: 0}">
-                  <mat-icon mat-list-icon>home</mat-icon>
+                  see all
                 </a>
               </div>
             </mat-toolbar>
             <app-dashboard-feedback-list
               [service]="service"
               [feedbackDetailURL]="feedbackDetailURL"
-              [filters]="newFeedbackFilters">
+              [filters]="newFeedbackFilters"
+              (newFeedbackCount)="setNewFeedbackCount($event)">
             </app-dashboard-feedback-list>
           </mat-card>
         </mat-grid-tile>
@@ -26,16 +28,18 @@
           <mat-card class="draft-feedback-card">
             <mat-toolbar>
               <span>Draft/In Progress Feedback</span>
+              <span>Total: {{draftFeedbackCount}}</span>
               <div class="show-more-button">
                 <a routerLink="./feedbacks/" [queryParams]="{status: 1}">
-                  <mat-icon mat-list-icon>home</mat-icon>
+                  see all
                 </a>
               </div>
             </mat-toolbar>
             <app-dashboard-feedback-list
               [service]="service"
               [feedbackDetailURL]="feedbackDetailURL"
-              [filters]="inProgressFeedbackFilters">
+              [filters]="inProgressFeedbackFilters"
+              (draftFeedbackCount)="setDraftFeedbackCount($event)">
             </app-dashboard-feedback-list>
           </mat-card>
         </mat-grid-tile>
@@ -43,16 +47,18 @@
           <mat-card class="draft-feedback-card">
             <mat-toolbar>
               <span>Submitted Feedback</span>
+              <span>Total: {{submittedFeedbackCount}}</span>
               <div class="show-more-button">
                 <a routerLink="./feedbacks/" [queryParams]="{status: 2}">
-                  <mat-icon mat-list-icon>home</mat-icon>
+                  see all
                 </a>
               </div>
             </mat-toolbar>
             <app-dashboard-feedback-list
               [service]="service"
               [feedbackDetailURL]="feedbackDetailURL"
-              [filters]="submittedFeedbackFilters">
+              [filters]="submittedFeedbackFilters"
+              (submittedFeedbackCount)="setSubmittedFeedbackCount($event)">
             </app-dashboard-feedback-list>
           </mat-card>
         </mat-grid-tile>

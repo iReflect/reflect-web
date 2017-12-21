@@ -34,6 +34,12 @@
             <mat-cell *matCellDef="let element"> {{getUserRole(element.ForUserProfile)}}</mat-cell>
           </ng-container>
 
+          <!-- Team Column -->
+          <ng-container matColumnDef="team">
+            <mat-header-cell *matHeaderCellDef> Team</mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{getTeam(element.Team)}}</mat-cell>
+          </ng-container>
+
           <!-- Duration Start Column -->
           <ng-container matColumnDef="duration_start">
             <mat-header-cell *matHeaderCellDef> Duration Start Date</mat-header-cell>
