@@ -6,7 +6,6 @@ import { SharedModule } from '../shared/shared.module';
 import { DashboardFeedbackListComponent } from './dashboard-feedback-list/dashboard-feedback-list.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { HomeRoutingModule } from './home-routing.module';
-import { HomeService } from './home.service';
 
 
 @NgModule({
@@ -24,9 +23,7 @@ import { HomeService } from './home.service';
     schemas: [
         FeedBackListDataSource
     ],
-    providers: [
-        HomeService
-    ]
+    providers: []
 })
 export class HomeModule {
 }

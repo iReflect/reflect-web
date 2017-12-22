@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import {HomeService} from '../home.service';
-import {Router} from '@angular/router';
-import {APP_ROUTE_URLS, FEEDBACK_STATES} from '../../../constants/app-constants';
+import { Router } from '@angular/router';
+import { APP_ROUTE_URLS, FEEDBACK_STATES } from '../../../constants/app-constants';
+import { FeedbackService } from "../../shared/services/feedback.service";
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+    selector: 'app-dashboard',
+    templateUrl: './dashboard.component.html',
+    styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
 
@@ -20,16 +20,18 @@ export class DashboardComponent implements OnInit {
     submittedFeedbackCount: number;
 
 
-    constructor(private service: HomeService, private router: Router) {
+    constructor(private service: FeedbackService, private router: Router) {
     }
 
-    setNewFeedbackCount (count) {
+    setNewFeedbackCount(count) {
         this.newFeedbackCount = count;
     }
-    setDraftFeedbackCount (count) {
+
+    setDraftFeedbackCount(count) {
         this.draftFeedbackCount = count;
     }
-    setSubmittedFeedbackCount (count) {
+
+    setSubmittedFeedbackCount(count) {
         this.submittedFeedbackCount = count;
     }
 

@@ -1,17 +1,17 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {HomeService} from '../home.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {FeedBackListDataSource} from '../../feedback/feedback-list/feedback-list.data-source';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Router } from '@angular/router';
+import { FeedBackListDataSource } from '../../feedback/feedback-list/feedback-list.data-source';
+import { FeedbackService } from "../../shared/services/feedback.service";
 
 @Component({
-  selector: 'app-dashboard-feedback-list',
-  templateUrl: './dashboard-feedback-list.component.html',
-  styleUrls: ['./dashboard-feedback-list.component.scss']
+    selector: 'app-dashboard-feedback-list',
+    templateUrl: './dashboard-feedback-list.component.html',
+    styleUrls: ['./dashboard-feedback-list.component.scss']
 })
 export class DashboardFeedbackListComponent implements OnInit {
 
     @Input()
-    service: HomeService;
+    service: FeedbackService;
 
     @Input()
     feedbackDetailURL: string;
@@ -21,8 +21,10 @@ export class DashboardFeedbackListComponent implements OnInit {
 
     @Output()
     newFeedbackCount: EventEmitter<number> = new EventEmitter<number>();
+
     @Output()
     draftFeedbackCount: EventEmitter<number> = new EventEmitter<number>();
+
     @Output()
     submittedFeedbackCount: EventEmitter<number> = new EventEmitter<number>();
 
