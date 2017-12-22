@@ -4,7 +4,6 @@ import { CustomMaterialModule } from '../core/custom-material/custom-material.mo
 import { SharedModule } from '../shared/shared.module';
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
-import { HomeService } from './home.service';
 
 
 @NgModule({
@@ -18,9 +17,7 @@ import { HomeService } from './home.service';
         HomeComponent,
     ],
     exports: [],
-    providers: [
-        HomeService
-    ]
+    providers: []
 })
 export class HomeModule {
 }

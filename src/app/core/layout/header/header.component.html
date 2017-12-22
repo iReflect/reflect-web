@@ -7,9 +7,9 @@
             <a (click)="navigateToRoot()"><h1><b>iReflect</b></h1></a>
           </div>
           <div class="header-contents">
-            <span>Welcome {{ user && user.name || 'User' }}</span>
+            <span>Welcome {{ user.FirstName || 'User' }}</span>
             <mat-menu #appMenu="matMenu" [overlapTrigger]="false">
-              <button mat-menu-item (click)="logout()" [hidden]="logoutInProgress"> Logout</button>
+              <button mat-menu-item (click)="logout()" [hidden]="logoutInProgress">Logout</button>
             </mat-menu>
 
             <button mat-icon-button [matMenuTriggerFor]="appMenu">

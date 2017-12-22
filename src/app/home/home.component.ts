@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { APP_ROUTE_URLS } from '../../constants/app-constants';
-import { HomeService } from './home.service';
+import { FeedbackService } from "../shared/services/feedback.service";
 
 @Component({
     selector: 'app-home',
@@ -10,16 +10,16 @@ import { HomeService } from './home.service';
 })
 export class HomeComponent implements OnInit {
 
-    feedback_event_data: any = {};
+    feedbackData: any = {};
     isDataLoaded = false;
 
-    constructor(private homeService: HomeService, private router: Router) {
+    constructor(private feedbackService: FeedbackService, private router: Router) {
     }
 
     getFeedbacks() {
-        this.homeService.getFeedBacks().subscribe(data => {
+        this.feedbackService.getFeedBacks().subscribe(response => {
             this.isDataLoaded = true;
-            this.feedback_event_data = data;
+            this.feedbackData = response.data;
         });
     }
 

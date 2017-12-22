@@ -8,8 +8,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { CookieModule } from 'ngx-cookie';
 import { RestangularModule } from 'ngx-restangular';
 import { APP_ROUTE_URLS } from '../constants/app-constants';
-
-import { environment } from '../environments/environment';
 import { AccountModule } from './account/account.module';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
@@ -20,12 +18,12 @@ import { HomeModule } from './home/home.module';
 import { SharedModule } from './shared/shared.module';
 
 export function RestangularConfigFactory(RestangularProvider) {
-    RestangularProvider.setBaseUrl(environment.apiHostUrl);
     RestangularProvider.setDefaultHeaders({
         'Content-Type': 'application/json',
         'Accept': 'application/json'
     });
     RestangularProvider.setRequestSuffix('/');
+    RestangularProvider.setDefaultHttpFields({withCredentials: true});
 }
 
 const routes: Routes = [

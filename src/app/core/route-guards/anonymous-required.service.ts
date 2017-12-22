@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
 import { APP_ROUTE_URLS } from '../../../constants/app-constants';
-
-import { UserDataStoreService } from '../../shared/data-stores/user-data-store.service';
+import { UserStoreService } from "../../shared/stores/user.store.service";
 
 
 @Injectable()
@@ -10,9 +9,9 @@ export class AnonymousRequiredGuard implements CanActivate {
 
     userLoggedIn = false;
 
-    constructor(private router: Router, private userService: UserDataStoreService) {
+    constructor(private router: Router, private userStoreService: UserStoreService) {
 
-        this.userService.token$.subscribe(
+        this.userStoreService.token$.subscribe(
             token => this.userLoggedIn = Boolean(token)
         );
     }

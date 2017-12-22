@@ -6,7 +6,6 @@ import { SharedModule } from '../shared/shared.module';
 
 import { AccountRoutingModule } from './account-routing.module';
 import { LoginComponent } from './login/login.component';
-import { LoginService } from './login/login.service';
 
 @NgModule({
     imports: [
@@ -20,9 +19,7 @@ import { LoginService } from './login/login.service';
         LoginComponent
     ],
     exports: [],
-    providers: [
-        LoginService
-    ]
+    providers: []
 })
 export class AccountModule {
 }

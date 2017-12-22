@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { APP_ROUTE_URLS, FEEDBACK_STATES_LABEL, FEEDBACK_STATES } from '../../../constants/app-constants';
-import { FeedBackListDataSource } from './feedback-list.data-source';
-import { FeedbackListService } from './feedback-list.service';
-import { UtilsService } from '../../shared/utils/utils.service';
 import * as _ from 'lodash';
+import { APP_ROUTE_URLS, FEEDBACK_STATES, FEEDBACK_STATES_LABEL } from '../../../constants/app-constants';
+import { FeedbackService } from "../../shared/services/feedback.service";
+import { UrlHelperService } from '../../shared/utils/url-helper.service';
+import { FeedBackListDataSource } from './feedback-list.data-source';
 
 @Component({
     selector: 'app-feedback-list',
@@ -20,15 +20,15 @@ export class FeedbackListComponent implements OnInit {
     defaultStatusFilters = [FEEDBACK_STATES.NEW, FEEDBACK_STATES.IN_PROGRESS];
     statusChoices;
 
-    constructor(private router: Router, private feedbackListService: FeedbackListService,
-                private route: ActivatedRoute, private utilService: UtilsService) {
+    constructor(private router: Router, private feedbackService: FeedbackService,
+                private route: ActivatedRoute, private urlHelperService: UrlHelperService) {
         this.statusChoices = [];
         Object.keys(FEEDBACK_STATES_LABEL).forEach(key =>
             this.statusChoices.push({value: key, label: FEEDBACK_STATES_LABEL[key]}));
     }
 
     initializeDataSource() {
-        this.dataSource = new FeedBackListDataSource(this.feedbackListService);
+        this.dataSource = new FeedBackListDataSource(this.feedbackService);
         let queryParams;
         this.route.queryParams.subscribe((params) => {
             queryParams = params;
@@ -49,7 +49,7 @@ export class FeedbackListComponent implements OnInit {
         if (this.filters.status.length === this.statusChoices.length) {
             delete appliedFilters.status;
         }
-        this.utilService.updateQueryParams(appliedFilters);
+        this.urlHelperService.updateQueryParams(appliedFilters);
         this.dataSource.setFilters(appliedFilters);
         this.dataSource.connect();
     }

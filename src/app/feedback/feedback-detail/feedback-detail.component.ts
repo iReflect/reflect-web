@@ -2,10 +2,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import {
-    ERRORS, FEEDBACK_STATES, QUESTION_TYPES
-} from '../../../constants/app-constants';
-import { FeedbackDetailService } from './feedback-detail.service';
+import { ERRORS, FEEDBACK_STATES, QUESTION_TYPES } from '../../../constants/app-constants';
+import { FeedbackService } from "../../shared/services/feedback.service";
 
 @Component({
     selector: 'app-feedback-detail',
@@ -24,7 +22,7 @@ export class FeedbackDetailComponent implements OnInit {
     selectedNav: number;
     feedbackId;
 
-    constructor(private feedBackService: FeedbackDetailService, private activatedRoute: ActivatedRoute) {
+    constructor(private feedBackService: FeedbackService, private activatedRoute: ActivatedRoute) {
     }
 
     getFeedBack() {
@@ -32,7 +30,8 @@ export class FeedbackDetailComponent implements OnInit {
             params => {
                 this.feedbackId = params['id'];
                 this.feedBackService.getFeedBack(this.feedbackId).subscribe(
-                    data => {
+                    response => {
+                        let data = response.data;
                         this.feedbackData = data;
                         let categoryIDList = Object.keys(data['Categories']);
                         this.selectedNav = parseInt(categoryIDList.length > 0 ? categoryIDList[0] : '0', 10);
@@ -64,7 +63,9 @@ export class FeedbackDetailComponent implements OnInit {
         if (saveAndSubmit) {
             status = FEEDBACK_STATES.SUBMITTED;
         }
-        this.feedBackService.submitData(this.feedbackId, {'data': this.form.value, 'saveAndSubmit': saveAndSubmit,
-            'status': status});
+        this.feedBackService.submitData(this.feedbackId, {
+            'data': this.form.value, 'saveAndSubmit': saveAndSubmit,
+            'status': status
+        });
     }
 }

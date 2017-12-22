@@ -15,13 +15,6 @@
                    type="text"/>
             <mat-error *ngIf="authForm.get('email').invalid">{{getErrorMessage()}}</mat-error>
           </mat-form-field>
-          <mat-form-field class="form-group">
-            <input matInput
-                   formControlName="password"
-                   placeholder="Password"
-                   class="form-control form-control-lg"
-                   type="password" />
-          </mat-form-field>
           <button mat-raised-button color="primary" class="btn btn-lg btn-primary pull-xs-right"
                   [disabled]="!authForm.valid" type="submit">
             {{ title }}

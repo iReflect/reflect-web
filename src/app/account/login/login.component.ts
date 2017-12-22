@@ -2,9 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { APP_ROUTE_URLS } from '../../../constants/app-constants';
-import { UserDataStoreService } from '../../shared/data-stores/user-data-store.service';
-
-import { LoginService } from './login.service';
+import { AuthService } from "../../shared/services/auth.service";
+import { UserStoreService } from "../../shared/stores/user.store.service";
 
 @Component({
     selector: 'app-login',
@@ -18,16 +17,16 @@ export class LoginComponent implements OnInit {
     isSubmitting = false;
     authForm: FormGroup;
     returnUrl = '';
+    state = '';
 
     constructor(private route: ActivatedRoute,
                 private router: Router,
-                private loginService: LoginService,
-                private userData: UserDataStoreService,
+                private authService: AuthService,
+                private userStoreService: UserStoreService,
                 private fb: FormBuilder) {
         // use FormBuilder to create a form group
         this.authForm = this.fb.group({
-            'email': ['', [Validators.required, Validators.email]],
-            'password': ['', Validators.required]
+            'email': ['', [Validators.required, Validators.email]]
         });
     }
 
@@ -35,8 +34,13 @@ export class LoginComponent implements OnInit {
         this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || APP_ROUTE_URLS.forwardSlash;
     }
 
+    setStateUrl() {
+        this.authService.login().subscribe(response => this.state = response.data["State"]);
+    }
+
     ngOnInit() {
         this.setReturnUrl();
+        this.setStateUrl();
     }
 
     getErrorMessage() {
@@ -49,15 +53,18 @@ export class LoginComponent implements OnInit {
     submitForm() {
         this.isSubmitting = true;
         this.errors = {};
-
-        this.loginService.login(this.authForm.value).subscribe(
-            data => {
-                this.userData.updateUserMultipleValues(data);
+        let queryParams = {
+            code: encodeURIComponent(this.authForm.value.email),
+            state: this.state
+        };
+        this.authService.auth(queryParams).subscribe(
+            response => {
+                this.userStoreService.updateUserData(response.data);
                 this.router.navigateByUrl(APP_ROUTE_URLS.root);
                 this.isSubmitting = false;
             },
-            err => {
-                this.errors = err;
+            error => {
+                this.errors = error.data;
                 this.isSubmitting = false;
             }
         );

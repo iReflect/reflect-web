@@ -3,12 +3,12 @@
     <mat-card class="feedback-stats-container">
       <mat-toolbar>
         <mat-toolbar-row><span
-          (click)="navigate(0)">New Feedbacks: {{feedback_event_data.NewFeedbackCount}}</span>
+          (click)="navigate(0)">New Feedbacks: {{feedbackData.NewFeedbackCount}}</span>
         </mat-toolbar-row>
-        <mat-toolbar-row><span (click)="navigate(1)">Draft / In Progress Feedbacks: {{feedback_event_data.DraftFeedbackCount}}</span>
+        <mat-toolbar-row><span (click)="navigate(1)">Draft / In Progress Feedbacks: {{feedbackData.DraftFeedbackCount}}</span>
         </mat-toolbar-row>
         <mat-toolbar-row><span
-          (click)="navigate(2)">Submitted Feedbacks: {{feedback_event_data.SubmittedFeedbackCount}}</span>
+          (click)="navigate(2)">Submitted Feedbacks: {{feedbackData.SubmittedFeedbackCount}}</span>
         </mat-toolbar-row>
       </mat-toolbar>
     </mat-card>

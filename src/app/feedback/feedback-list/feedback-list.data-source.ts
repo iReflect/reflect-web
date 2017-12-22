@@ -1,13 +1,13 @@
 import { DataSource } from '@angular/cdk/collections';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
-import { FeedbackListService } from './feedback-list.service';
+import { FeedbackService } from "../../shared/services/feedback.service";
 
 export class FeedBackListDataSource extends DataSource<any> {
     filters: any;
-    private _dataChange: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+    private dataChange: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
 
-    constructor(private feedbackListService: FeedbackListService) {
+    constructor(private feedbackService: FeedbackService) {
         super();
     }
 
@@ -16,15 +16,15 @@ export class FeedBackListDataSource extends DataSource<any> {
     }
 
     get dataChange$() {
-        return this._dataChange.asObservable();
+        return this.dataChange.asObservable();
     }
 
     connect (): Observable<any[]> {
-        this.feedbackListService.getFeedBackList(this.filters).subscribe(
-            event_data => {
-                this._dataChange.next(event_data);
+        this.feedbackService.getFeedBacks(this.filters).subscribe(
+            response => {
+                this.dataChange.next(response.data);
             });
-        return this._dataChange.asObservable().map(data => data['Feedbacks']);
+        return this.dataChange.asObservable().map(data => data['Feedbacks']);
     }
 
     disconnect() {

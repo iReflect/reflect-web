@@ -1,17 +1,24 @@
 import { Injectable } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Restangular } from 'ngx-restangular';
+import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Observable } from 'rxjs/Observable';
-import { ApiURLMap } from '../../../constants/api-urls';
+import { API_URLS } from '../../../constants/api-urls';
+import { RestApiHelperService } from "../utils/rest-api-helper.service";
 
 
 @Injectable()
-export class FeedbackDetailService {
-    constructor(private restangular: Restangular) {
+export class FeedbackService {
+    private restangular;
+
+    constructor(private restApiHelperService: RestApiHelperService) {
+        this.restangular = restApiHelperService.getDataApiHelper();
+    }
+
+    getFeedBacks(queryParams = {}): Observable<any> {
+        return this.restangular.one(API_URLS.feedback).get(queryParams);
     }
 
     getFeedBack(feedbackId): Observable<any> {
-        return this.restangular.one(ApiURLMap.feedback).one(feedbackId).get();
+        return this.restangular.one(API_URLS.feedback).one(feedbackId).get();
     }
 
     toFormGroup(questionData, isDisabled = false): FormGroup {
@@ -41,6 +48,6 @@ export class FeedbackDetailService {
     }
 
     submitData(feedbackId, data): Observable<any> {
-        return this.restangular.one(ApiURLMap.feedback, feedbackId).customPUT(data);
+        return this.restangular.one(API_URLS.feedback, feedbackId).customPUT(data);
     }
 }

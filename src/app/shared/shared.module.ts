@@ -3,11 +3,14 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-// Custom Services
-import { UserDataStoreService } from './data-stores/user-data-store.service';
 // Custom Pipes
 import { ValuesPipe } from './pipes/values.pipe';
-import { UtilsService } from './utils/utils.service';
+import { AuthService } from "./services/auth.service";
+import { FeedbackService } from "./services/feedback.service";
+import { UserService } from "./services/user.service";
+import { UserStoreService } from "./stores/user.store.service";
+import { RestApiHelperService } from "./utils/rest-api-helper.service";
+import { UrlHelperService } from './utils/url-helper.service';
 
 @NgModule({
     imports: [
@@ -23,8 +26,12 @@ import { UtilsService } from './utils/utils.service';
         ValuesPipe
     ],
     providers: [
-        UserDataStoreService,
-        UtilsService
+        UrlHelperService,
+        AuthService,
+        UserService,
+        FeedbackService,
+        UserStoreService,
+        RestApiHelperService
     ]
 })
 export class SharedModule {
