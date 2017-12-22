@@ -1,0 +1,18 @@
+.new-feedback-card, .draft-feedback-card, .submitted-feedback-card {
+  width: 100%;
+}
+
+:host /deep/ .mat-grid-tile .mat-figure {
+  align-items: baseline !important;
+  overflow: hidden;
+}
+
+:host /deep/ .mat-grid-tile {
+  height: 100% !important;
+  overflow: hidden;
+}
+
+:host /deep/ .show-more-button {
+  width: 100%;
+  align-content: right !important;
+}

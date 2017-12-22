@@ -21,7 +21,7 @@ export class FeedbackListComponent implements OnInit {
 
     isListLoaded = false;
     dataSource: FeedBackListDataSource;
-    displayedColumns = ['title', 'user', 'user_role', 'duration_start', 'duration_end', 'expiry_date', 'status'];
+    displayedColumns = ['title', 'user', 'user_role', 'team', 'duration_start', 'duration_end', 'expiry_date', 'status'];
     filters = {'status': []};
     defaultStatusFilters = [FEEDBACK_STATES.NEW, FEEDBACK_STATES.IN_PROGRESS];
     statusChoices;
@@ -86,6 +86,10 @@ export class FeedbackListComponent implements OnInit {
 
     getUserRole(profile) {
         return (profile && profile.Role) ? profile.Role.Name : '';
+    }
+
+    getTeam(team) {
+        return team ? team.Name : '';
     }
 
 }

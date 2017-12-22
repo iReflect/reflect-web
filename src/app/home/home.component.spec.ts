@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HomeComponent } from './home.component';
+// TODO: delete this file
 
 describe('HomeComponent', () => {
     let component: HomeComponent;

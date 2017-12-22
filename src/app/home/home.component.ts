@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { APP_ROUTE_URLS } from '../../constants/app-constants';
 import { FeedbackService } from "../shared/services/feedback.service";
 
+// TODO: delete this file
 @Component({
     selector: 'app-home',
     templateUrl: './home.component.html',
