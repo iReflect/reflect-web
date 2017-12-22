@@ -16,6 +16,7 @@ import { FeedbackModule } from './feedback/feedback.module';
 import { HomeModule } from './home/home.module';
 
 import { SharedModule } from './shared/shared.module';
+import {SidenavComponent} from './sidenav/sidenav.component';
 
 export function RestangularConfigFactory(RestangularProvider) {
     RestangularProvider.setDefaultHeaders({
@@ -36,7 +37,8 @@ const routes: Routes = [
 
 @NgModule({
     declarations: [
-        AppComponent
+        AppComponent,
+        SidenavComponent
     ],
     imports: [
         CommonModule,
