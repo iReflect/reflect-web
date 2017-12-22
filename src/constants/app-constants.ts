@@ -23,6 +23,8 @@ export const APP_ROUTE_URLS = {
     login: 'login',
     feedback: 'feedbacks/:id',
     feedbackList: 'feedbacks',
+    teamFeedback: 'team/feedbacks/:id',
+    teamFeedbackList: 'team/feedbacks',
 };
 
 
