@@ -5,7 +5,7 @@ import { APP_ROUTE_URLS } from '../../constants/app-constants';
 // Import Guards
 import { LoginRequiredGuard } from '../core/route-guards/login-required.service';
 // Import Components
-import {DashboardComponent} from './dashboard/dashboard.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 const routes: Routes = [
     {

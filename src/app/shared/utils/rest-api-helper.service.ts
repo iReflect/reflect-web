@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Router } from "@angular/router";
-import { Restangular } from "ngx-restangular";
-import { APP_ROUTE_URLS } from "../../../constants/app-constants";
-import { environment } from "../../../environments/environment";
-import { UserStoreService } from "../stores/user.store.service";
+import { Router } from '@angular/router';
+import { Restangular } from 'ngx-restangular';
+import { APP_ROUTE_URLS } from '../../../constants/app-constants';
+import { environment } from '../../../environments/environment';
+import { UserStoreService } from '../stores/user.store.service';
 
 @Injectable()
 export class RestApiHelperService {
@@ -13,7 +13,7 @@ export class RestApiHelperService {
 
     constructor(private restangular: Restangular,
                 userStoreService: UserStoreService,
-                router: Router,) {
+                router: Router) {
         this.restangular = restangular.withConfig(function (RestangularProvider) {
             RestangularProvider.addErrorInterceptor((response) => {
                 if (response.status === 401) {
@@ -24,10 +24,8 @@ export class RestApiHelperService {
                 return true;
             });
             RestangularProvider.setFullResponse(true);
-            RestangularProvider.setFullRequestInterceptor
 
-
-        })
+        });
     }
 
     public getDataApiHelper() {

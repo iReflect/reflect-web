@@ -1,9 +1,9 @@
-///<reference path="../../../../node_modules/@angular/core/src/metadata/directives.d.ts"/>
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { ERRORS, FEEDBACK_STATES, QUESTION_TYPES } from '../../../constants/app-constants';
-import { FeedbackService } from "../../shared/services/feedback.service";
+import { API_RESPONSE_MESSAGES, FEEDBACK_STATES, QUESTION_TYPES } from '../../../constants/app-constants';
+import { FeedbackService } from '../../shared/services/feedback.service';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
     selector: 'app-feedback-detail',
@@ -15,20 +15,24 @@ export class FeedbackDetailComponent implements OnInit {
     @Input()
     service: FeedbackService;
 
-    isDataLoaded = false;
-    dateFormat: 'MMMM dd, yyyy';
     multipleChoiceType = QUESTION_TYPES.MULTIPLE_CHOICE;
     gradeType = QUESTION_TYPES.GRADING;
     booleanType = QUESTION_TYPES.BOOLEAN;
     form: FormGroup;
     feedbackData: any;
-    selectedNav: number;
-    feedbackId;
+    feedbackId: number;
+    isFormSubmitted = false;
+    submittedState: number;
+    submittedAt: string;
+    isDataLoaded = false;
+    dateFormat = 'MMMM dd, yyyy';
+    snackBarDuration = 2000; // in ms
 
-    constructor(private activatedRoute: ActivatedRoute) {
+    constructor(private activatedRoute: ActivatedRoute, private snackBar: MatSnackBar) {
     }
 
     getFeedBack() {
+        this.submittedState = FEEDBACK_STATES.SUBMITTED;
         this.activatedRoute.params.subscribe(
             params => {
                 this.feedbackId = params['id'];
@@ -36,11 +40,10 @@ export class FeedbackDetailComponent implements OnInit {
                     response => {
                         let data = response.data;
                         this.feedbackData = data;
-                        const categoryIDList = Object.keys(data['Categories']);
-                        this.selectedNav = parseInt(categoryIDList.length > 0 ? categoryIDList[0] : '0', 10);
+                        this.submittedAt = data['SubmittedAt'];
                         this.isDataLoaded = true;
-                        this.form = this.service.toFormGroup(data['Categories'],
-                            data['Status'] ? data['Status'] === FEEDBACK_STATES.SUBMITTED : false);
+                        this.isFormSubmitted = data['Status'] ? data['Status'] === this.submittedState : false;
+                        this.form = this.service.toFormGroup(data['Categories'], this.isFormSubmitted);
                     }
                 );
             }
@@ -51,24 +54,29 @@ export class FeedbackDetailComponent implements OnInit {
         this.getFeedBack();
     }
 
-    showHideNav(categoryID) {
-        this.selectedNav = categoryID;
-    }
-
-    getRequiredErrorMessage(questionControl: FormControl) {
-        if (questionControl.touched && questionControl.errors && questionControl.errors.required) {
-            return ERRORS.questionResponseRequired;
-        }
-    }
-
     onSubmit(saveAndSubmit = false) {
-        let status = this.feedbackData['Status'];
+        let status = this.feedbackData['Status'], submittedAt;
         if (saveAndSubmit) {
             status = FEEDBACK_STATES.SUBMITTED;
+            submittedAt = new Date().toISOString();
         }
-        this.service.submitData(this.feedbackId, {
-            'data': this.form.value, 'saveAndSubmit': saveAndSubmit,
-            'status': status
-        });
+        this.service.submitData(this.feedbackId, {data: this.form.value, saveAndSubmit: saveAndSubmit,
+            status: status, submittedAt: submittedAt}).subscribe(
+            (response) => {
+                this.isFormSubmitted = status === FEEDBACK_STATES.SUBMITTED;
+                this.snackBar.open(
+                    this.isFormSubmitted ? API_RESPONSE_MESSAGES.feedBackSubmitted : API_RESPONSE_MESSAGES.feedBackSaved,
+                    '',
+                    {duration: this.snackBarDuration}
+                );
+                if (this.isFormSubmitted) {
+                    this.submittedAt = submittedAt;
+                    this.form.disable();
+                }
+            },
+            (error) => {
+                this.snackBar.open(error.data.message || API_RESPONSE_MESSAGES.error, '', {duration: this.snackBarDuration});
+            }
+        );
     }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
 import { APP_ROUTE_URLS } from '../../../constants/app-constants';
-import { UserStoreService } from "../../shared/stores/user.store.service";
+import { UserStoreService } from '../../shared/stores/user.store.service';
 
 
 @Injectable()

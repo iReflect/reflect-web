@@ -7,9 +7,9 @@ import { CustomMaterialModule } from '../core/custom-material/custom-material.mo
 import { SharedModule } from '../shared/shared.module';
 import { FeedbackDetailComponent } from './feedback-detail/feedback-detail.component';
 
-import { BooleanQuestionComponent } from './feedback-detail/question/boolean-question.component';
-import { GradeQuestionComponent } from './feedback-detail/question/grade-question.component';
-import { MultiChoiceQuestionComponent } from './feedback-detail/question/multi-choice-question.component';
+import { BooleanQuestionComponent } from './question/boolean-question.component';
+import { GradeQuestionComponent } from './question/grade-question.component';
+import { MultiChoiceQuestionComponent } from './question/multi-choice-question.component';
 import { FeedbackListComponent } from './feedback-list/feedback-list.component';
 // Data Source
 import { FeedBackListDataSource } from './feedback-list/feedback-list.data-source';
@@ -19,6 +19,9 @@ import { MyFeedbackDetailComponent } from './my-feedback-detail/my-feedback-deta
 import { MyFeedbackListComponent } from './my-feedback-list/my-feedback-list.component';
 import { TeamFeedbackDetailComponent } from './team-feedback-detail/team-feedback-detail.component';
 import { TeamFeedbackListComponent } from './team-feedback-list/team-feedback-list.component';
+import { CategoryComponent } from './category/category.component';
+import { SkillComponent } from './skill/skill.component';
+import { QuestionResponseComponent } from './question-response/question-response.component';
 
 @NgModule({
     imports: [
@@ -33,6 +36,9 @@ import { TeamFeedbackListComponent } from './team-feedback-list/team-feedback-li
         BooleanQuestionComponent,
         GradeQuestionComponent,
         MultiChoiceQuestionComponent,
+        QuestionResponseComponent,
+        SkillComponent,
+        CategoryComponent,
         FeedbackDetailComponent,
         FeedbackListComponent,
         MyFeedbackListComponent,

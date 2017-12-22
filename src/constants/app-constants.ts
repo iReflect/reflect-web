@@ -17,6 +17,13 @@ export const QUESTION_TYPES = {
     BOOLEAN: 2
 };
 
+export const COMMENT_TOOLTIP_MAP = {
+    addComment: 'Add Comment',
+    editComment: 'Edit Comment',
+    viewComment: 'View Comment',
+    hideComment: 'Hide Comment',
+};
+
 export const APP_ROUTE_URLS = {
     forwardSlash: '/',
     root: '',
@@ -27,9 +34,10 @@ export const APP_ROUTE_URLS = {
     teamFeedbackList: 'team/feedbacks',
 };
 
-
-export const ERRORS = {
-    questionResponseRequired: 'Answer is Required'
+export const API_RESPONSE_MESSAGES = {
+    feedBackSaved: 'Feedback saved successfully!!',
+    feedBackSubmitted: 'Feedback submitted successfully!!',
+    error: 'Some Error Occurred!!'
 };
 
 export const QUESTION_RESPONSE_SEPARATOR = ',';

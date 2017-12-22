@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { APP_ROUTE_URLS } from '../../../constants/app-constants';
-import { AuthService } from "../../shared/services/auth.service";
-import { UserStoreService } from "../../shared/stores/user.store.service";
+import { AuthService } from '../../shared/services/auth.service';
+import { UserStoreService } from '../../shared/stores/user.store.service';
 
 @Component({
     selector: 'app-login',
@@ -35,7 +35,7 @@ export class LoginComponent implements OnInit {
     }
 
     setStateUrl() {
-        this.authService.login().subscribe(response => this.state = response.data["State"]);
+        this.authService.login().subscribe(response => this.state = response.data['State']);
     }
 
     ngOnInit() {

@@ -4,7 +4,7 @@ import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from
 import * as _ from 'lodash';
 // App Constants
 import { APP_ROUTE_URLS } from '../../../constants/app-constants';
-import { UserStoreService } from "../../shared/stores/user.store.service";
+import { UserStoreService } from '../../shared/stores/user.store.service';
 
 
 @Injectable()

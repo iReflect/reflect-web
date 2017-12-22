@@ -6,6 +6,6 @@ export const API_URLS = {
     // TODO: Update it to team feedback URL.
     teamFeedback: '/feedbacks',
     user: {
-        current: "/users/current"
+        current: '/users/current'
     }
 };

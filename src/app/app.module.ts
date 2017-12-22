@@ -16,7 +16,7 @@ import { FeedbackModule } from './feedback/feedback.module';
 import { HomeModule } from './home/home.module';
 
 import { SharedModule } from './shared/shared.module';
-import {SidenavComponent} from './sidenav/sidenav.component';
+import { SideNavComponent } from './sidenav/sidenav.component';
 
 export function RestangularConfigFactory(RestangularProvider) {
     RestangularProvider.setDefaultHeaders({
@@ -25,6 +25,7 @@ export function RestangularConfigFactory(RestangularProvider) {
     });
     RestangularProvider.setRequestSuffix('/');
     RestangularProvider.setDefaultHttpFields({withCredentials: true});
+    RestangularProvider.setFullResponse(true);
 }
 
 const routes: Routes = [
@@ -38,7 +39,7 @@ const routes: Routes = [
 @NgModule({
     declarations: [
         AppComponent,
-        SidenavComponent
+        SideNavComponent
     ],
     imports: [
         CommonModule,
