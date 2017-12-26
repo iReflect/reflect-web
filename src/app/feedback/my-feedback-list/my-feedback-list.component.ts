@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { FeedbackService } from "../../shared/services/feedback.service";
+import { Component } from '@angular/core';
+import { FeedbackService } from '../../shared/services/feedback.service';
 import { APP_ROUTE_URLS } from '../../../constants/app-constants';
 
 @Component({

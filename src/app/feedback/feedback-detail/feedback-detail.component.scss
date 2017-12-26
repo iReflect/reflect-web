@@ -2,22 +2,36 @@ mat-form-field {
   width: 500px;
 }
 
-.feedback-detail-container {
-  mat-toolbar-row {
-    color: black;
-    font-size: 15px;
-    max-height: 45px;
+.feedback-details {
+  div:not(.action-buttons) {
+    float: left;
+    margin: -10px;
+  }
+  .action-buttons {
+    float: right;
+    margin: -18px;
+    button {
+      margin-right: 5px;
+      color: white;
+    }
+    .save-draft {
+      background-color: #3293d2;
+    }
+    .save-submit {
+      background-color: #64e63c;
+    }
   }
 }
 
-.side-nav-content-block {
-  display: none;
-}
-
-mat-sidenav-container {
-  min-height: 200px;
-}
-
-.mat-list-item.active {
-  border-right: groove black;
+.feedback-form-container {
+  display: flex;
+  .feedback-form {
+    width: 75%;
+    margin-left: 25px;
+    margin-top: 11px;
+    margin-bottom: 25px;
+  }
+  .empty-block {
+    width: 25%;
+  }
 }

@@ -1,0 +1,19 @@
+<mat-expansion-panel [expanded]="true">
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      {{category.Title}}
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+  <div [formGroup]="form">
+      <mat-toolbar>
+        {{category.Description}}
+      </mat-toolbar>
+      <div  class="form-row">
+        <app-skill *ngFor="let skill of category.Skills | values"
+                   [formGroupName]="''+skill.ID"
+                   [skill]="skill"
+                   [form]="form.controls[skill.ID]">
+        </app-skill>
+      </div>
+  </div>
+</mat-expansion-panel>

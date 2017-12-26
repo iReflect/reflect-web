@@ -1,100 +1,30 @@
 <ng-container>
-  <div class="feedback-detail-container" *ngIf="isDataLoaded">
-    <mat-card class="feedback-details-container">
-      <mat-toolbar>
-        <mat-toolbar-row><h1>{{ feedbackData.Title }}</h1></mat-toolbar-row>
-        <mat-toolbar-row>
-          <span>
-            From {{ feedbackData.DurationStart | date:dateFormat}} To {{ feedbackData.DurationEnd | date:dateFormat}}
-          </span>
-        </mat-toolbar-row>
-        <mat-toolbar-row><span>Expires At: {{ feedbackData.ExpireAt | date:dateFormat}}</span>
-        </mat-toolbar-row>
-        <mat-toolbar-row *ngIf="feedbackData.SubmittedAt">
-          <span>
-            Submitted At: {{ feedbackData.SubmittedAt | date:dateFormat}}
-          </span>
-        </mat-toolbar-row>
-        <mat-toolbar-row>
-          <button mat-button (click)="onSubmit()" [disabled]="!form.valid">Save as Draft</button>
-        </mat-toolbar-row>
-        <mat-toolbar-row>
-          <button mat-button (click)="onSubmit(true)" [disabled]="!form.valid">Save and Submit</button>
-        </mat-toolbar-row>
-      </mat-toolbar>
+  <div class="feedback-container" *ngIf="isDataLoaded">
+    <mat-card class="feedback-details">
+      <div>
+        <span><b>{{ feedbackData.Title }}</b></span>&nbsp;|&nbsp;
+        <span>From {{ feedbackData.DurationStart | date:dateFormat}} To {{ feedbackData.DurationEnd | date:dateFormat}}</span>&nbsp;|&nbsp;
+        <span>Expires At: {{ feedbackData.ExpireAt | date:dateFormat}}</span>
+        <span *ngIf="isFormSubmitted && submittedAt">
+        &nbsp;|&nbsp; Submitted At: {{ submittedAt | date:dateFormat}}
+        </span>
+      </div>
+      <div class="action-buttons" *ngIf="!isFormSubmitted">
+        <button mat-raised-button class="save-draft" (click)="onSubmit()">Save as Draft</button>
+        <button mat-raised-button class="save-submit" (click)="onSubmit(true)" [disabled]="!form.valid">Save and Submit</button>
+      </div>
     </mat-card>
-    <div class="feedback-detail-container">
-      <mat-toolbar class="feedback-detail-toolbar">
-        <button mat-icon-button (click)="snav.toggle()">
-          <mat-icon>menu</mat-icon>
-        </button>
-        <h3 class="example-app-name">Please fill up the feedback form</h3>
-      </mat-toolbar>
-      <mat-sidenav-container>
-        <mat-sidenav #snav mode="side" opened="true" [fixedInViewport]="false">
-          <mat-nav-list>
-            <a mat-list-item (click)="showHideNav(category.ID)"
-               [ngClass]="{'active': selectedNav == category.ID}"
-               [matTooltip]="category.Description" matTooltipPosition="after"
-               *ngFor="let category of feedbackData.Categories | values">
-              <span>{{category.Title}}</span>
-            </a>
-          </mat-nav-list>
-        </mat-sidenav>
-        <mat-sidenav-content>
-          <div [formGroup]="form">
-            <div *ngFor="let category of feedbackData.Categories | values" class="form-row">
-              <div [formGroupName]="''+category.ID"
-                   [ngClass]="{'side-nav-content-block': selectedNav !== category.ID}">
-                <div *ngFor="let skill of category.Skills | values" class="form-row">
-                  <mat-accordion [formGroupName]="''+skill.ID">
-                    <mat-expansion-panel>
-                      <mat-expansion-panel-header>
-                        <mat-panel-title>
-                          {{ skill.DisplayTitle }}
-                        </mat-panel-title>
-                        <mat-panel-description>
-                          {{ skill.Description }}
-                        </mat-panel-description>
-                      </mat-expansion-panel-header>
-                      <div *ngFor="let question of skill.Questions; let questionNo=index">
-                        <div class="question-group" [formGroupName]="''+question.ResponseID">
-                          <label [attr.for]="question.ID"> Question {{questionNo + 1}}.
-                            {{question.Text}}</label>
-                          <div [ngSwitch]="question.Type">
-                            <app-multi-choice-question *ngSwitchCase="multipleChoiceType"
-                                                       [id]="question.ID"
-                                                       [question]="question"
-                                                       formControlName="response"></app-multi-choice-question>
-
-                            <app-grade-question *ngSwitchCase="gradeType" [id]="question.ID"
-                                                [question]="question"
-                                                formControlName="response"></app-grade-question>
-
-                            <app-boolean-question *ngSwitchCase="booleanType"
-                                                  [id]="question.ID" [question]="question"
-                                                  formControlName="response"></app-boolean-question>
-                          </div>
-                          <mat-error
-                            *ngIf="form.controls[category.ID].controls[skill.ID].controls[question.ResponseID].controls.response.invalid">
-                            {{getRequiredErrorMessage(form.controls[category.ID].controls[skill.ID].controls[question.ResponseID].controls.response)}}
-                          </mat-error>
-                          <mat-form-field class="form-group">
-                                <textarea matInput matTextareaAutosize
-                                          formControlName="comment"
-                                          placeholder="Comments"
-                                ></textarea>
-                          </mat-form-field>
-                        </div>
-                      </div>
-                    </mat-expansion-panel>
-                  </mat-accordion>
-                </div>
-              </div>
-            </div>
-          </div>
-        </mat-sidenav-content>
-      </mat-sidenav-container>
+    <div class="feedback-form-container">
+      <div class="feedback-form">
+        <div [formGroup]="form">
+          <app-category *ngFor="let category of feedbackData.Categories | values"
+                        [formGroupName]="''+category.ID"
+                        [form]="form.controls[category.ID]"
+                        [category]="category">
+          </app-category>
+        </div>
+      </div>
+      <div class="empty-block"></div>
     </div>
   </div>
 </ng-container>

@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { FeedBackListDataSource } from '../../feedback/feedback-list/feedback-list.data-source';
-import { FeedbackService } from "../../shared/services/feedback.service";
+import { FeedbackService } from '../../shared/services/feedback.service';
 
 @Component({
     selector: 'app-dashboard-feedback-list',

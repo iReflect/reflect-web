@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { APP_ROUTE_URLS } from '../../../../constants/app-constants';
-import { AuthService } from "../../../shared/services/auth.service";
-import { UserService } from "../../../shared/services/user.service";
-import { UserStoreService } from "../../../shared/stores/user.store.service";
+import { AuthService } from '../../../shared/services/auth.service';
+import { UserService } from '../../../shared/services/user.service';
+import { UserStoreService } from '../../../shared/stores/user.store.service';
 
 @Component({
     selector: 'app-header',
