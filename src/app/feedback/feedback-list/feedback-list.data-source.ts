@@ -2,6 +2,7 @@ import { DataSource } from '@angular/cdk/collections';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { FeedbackService } from '../../shared/services/feedback.service';
+import { TeamFeedbackService } from "../../shared/services/team-feedback.service";
 
 export class FeedBackListDataSource extends DataSource<any> {
     filters: any;
@@ -11,7 +12,7 @@ export class FeedBackListDataSource extends DataSource<any> {
     public draftFeedbackCount: number;
     public submittedFeedbackCount: number;
 
-    constructor(private feedbackService: FeedbackService) {
+    constructor(private service: FeedbackService | TeamFeedbackService) {
         super();
     }
 
@@ -23,8 +24,8 @@ export class FeedBackListDataSource extends DataSource<any> {
         return this.dataChange.asObservable();
     }
 
-    connect (): Observable<any[]> {
-        this.feedbackService.getFeedBacks(this.filters).subscribe(
+    connect(): Observable<any[]> {
+        this.service.getFeedBacks(this.filters).subscribe(
             response => {
                 this.dataChange.next(response.data);
             });

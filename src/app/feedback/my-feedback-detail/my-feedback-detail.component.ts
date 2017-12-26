@@ -7,6 +7,6 @@ import { FeedbackService } from '../../shared/services/feedback.service';
 })
 export class MyFeedbackDetailComponent {
 
-    constructor(private service: FeedbackService) {
+    constructor(public service: FeedbackService) {
     }
 }

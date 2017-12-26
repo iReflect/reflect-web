@@ -10,7 +10,7 @@ export class MyFeedbackListComponent {
 
     feedbackDetailURL: string;
 
-    constructor(private service: FeedbackService) {
+    constructor(public service: FeedbackService) {
         this.feedbackDetailURL = APP_ROUTE_URLS.feedback;
     }
 }

@@ -9,9 +9,19 @@
         &nbsp;|&nbsp; Submitted At: {{ submittedAt | date:dateFormat}}
         </span>
       </div>
-      <div class="action-buttons" *ngIf="!isFormSubmitted">
-        <button mat-raised-button class="save-draft" (click)="onSubmit()">Save as Draft</button>
-        <button mat-raised-button class="save-submit" (click)="onSubmit(true)" [disabled]="!form.valid">Save and Submit</button>
+      <div class="action-buttons" *ngIf="showControls">
+        <button mat-raised-button
+                *ngIf="!isFormSubmitted"
+                class="save-draft"
+                (click)="onSubmit()">
+          Save as Draft
+        </button>
+        <button mat-raised-button *ngIf="!isFormSubmitted"
+                class="save-submit"
+                (click)="onSubmit(true)"
+                [disabled]="!form.valid">
+          Save and Submit
+        </button>
       </div>
     </mat-card>
     <div class="feedback-form-container">

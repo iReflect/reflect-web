@@ -1,8 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Injectable, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as _ from 'lodash';
 import { FEEDBACK_STATES, FEEDBACK_STATES_LABEL } from '../../../constants/app-constants';
-import { FeedbackService } from '../../shared/services/feedback.service';
+import { FeedbackService } from "../../shared/services/feedback.service";
+import { TeamFeedbackService } from "../../shared/services/team-feedback.service";
 import { UrlHelperService } from '../../shared/utils/url-helper.service';
 import { FeedBackListDataSource } from './feedback-list.data-source';
 
@@ -14,7 +15,10 @@ import { FeedBackListDataSource } from './feedback-list.data-source';
 export class FeedbackListComponent implements OnInit {
 
     @Input()
-    service: FeedbackService;
+    service: FeedbackService | TeamFeedbackService;
+
+    @Input()
+    title: string;
 
     @Input()
     feedbackDetailURL: string;

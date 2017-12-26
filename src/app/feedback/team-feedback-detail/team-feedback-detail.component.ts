@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FeedbackService } from '../../shared/services/feedback.service';
+import { TeamFeedbackService } from "../../shared/services/team-feedback.service";
 
 @Component({
     selector: 'app-team-feedback-detail-page',
@@ -7,6 +7,6 @@ import { FeedbackService } from '../../shared/services/feedback.service';
 })
 export class TeamFeedbackDetailComponent {
 
-    constructor(private service: FeedbackService) {
+    constructor(public service: TeamFeedbackService) {
     }
 }

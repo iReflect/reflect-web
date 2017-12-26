@@ -1,9 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { API_RESPONSE_MESSAGES, FEEDBACK_STATES, QUESTION_TYPES } from '../../../constants/app-constants';
-import { FeedbackService } from '../../shared/services/feedback.service';
 import { MatSnackBar } from '@angular/material';
+import { ActivatedRoute } from '@angular/router';
+import { API_RESPONSE_MESSAGES, FEEDBACK_STATES } from '../../../constants/app-constants';
+import { FeedbackService } from "../../shared/services/feedback.service";
+import { TeamFeedbackService } from "../../shared/services/team-feedback.service";
 
 @Component({
     selector: 'app-feedback-detail',
@@ -13,11 +14,11 @@ import { MatSnackBar } from '@angular/material';
 export class FeedbackDetailComponent implements OnInit {
 
     @Input()
-    service: FeedbackService;
+    service: FeedbackService | TeamFeedbackService;
 
-    multipleChoiceType = QUESTION_TYPES.MULTIPLE_CHOICE;
-    gradeType = QUESTION_TYPES.GRADING;
-    booleanType = QUESTION_TYPES.BOOLEAN;
+    @Input()
+    showControls = false;
+
     form: FormGroup;
     feedbackData: any;
     feedbackId: number;
@@ -43,7 +44,7 @@ export class FeedbackDetailComponent implements OnInit {
                         this.submittedAt = data['SubmittedAt'];
                         this.isDataLoaded = true;
                         this.isFormSubmitted = data['Status'] ? data['Status'] === this.submittedState : false;
-                        this.form = this.service.toFormGroup(data['Categories'], this.isFormSubmitted);
+                        this.form = this.service.toFormGroup(data['Categories'], this.isFormSubmitted && this.showControls);
                     }
                 );
             }
@@ -55,13 +56,18 @@ export class FeedbackDetailComponent implements OnInit {
     }
 
     onSubmit(saveAndSubmit = false) {
+        if (!this.showControls) {
+            return;
+        }
         let status = this.feedbackData['Status'], submittedAt;
         if (saveAndSubmit) {
             status = FEEDBACK_STATES.SUBMITTED;
             submittedAt = new Date().toISOString();
         }
-        this.service.submitData(this.feedbackId, {data: this.form.value, saveAndSubmit: saveAndSubmit,
-            status: status, submittedAt: submittedAt}).subscribe(
+        this.service.submitData(this.feedbackId, {
+            data: this.form.value, saveAndSubmit: saveAndSubmit,
+            status: status, submittedAt: submittedAt
+        }).subscribe(
             (response) => {
                 this.isFormSubmitted = status === FEEDBACK_STATES.SUBMITTED;
                 this.snackBar.open(

@@ -4,7 +4,7 @@ export const API_URLS = {
     logout: '/logout',
     feedback: '/feedbacks',
     // TODO: Update it to team feedback URL.
-    teamFeedback: '/feedbacks',
+    teamFeedback: 'teams/feedbacks',
     user: {
         current: '/users/current'
     }
