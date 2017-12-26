@@ -1,4 +1,11 @@
 <ng-container>
+  <mat-toolbar>
+    <mat-toolbar-row>
+      <span class="list-title">{{title}}</span>
+      <span class="list-count">Total: {{feedbackCount}}</span>
+      <span><a mat-button (click)="navigateToList()">See All</a></span>
+    </mat-toolbar-row>
+  </mat-toolbar>
   <div class="feedback-list-container" *ngIf="isListLoaded">
     <mat-table #table [dataSource]="dataSource">
       <!-- Title Column -->

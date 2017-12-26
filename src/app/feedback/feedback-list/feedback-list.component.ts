@@ -36,16 +36,13 @@ export class FeedbackListComponent implements OnInit {
 
     initializeDataSource() {
         this.dataSource = new FeedBackListDataSource(this.service);
-        let queryParams;
-        this.route.queryParams.subscribe((params) => {
-            queryParams = params;
-            this.filters.status = queryParams.status ? (typeof queryParams.status === 'object' ?
-                queryParams.status : [queryParams.status]) : [];
-            if (_.isEmpty(this.filters.status)) {
-                this.filters.status = this.defaultStatusFilters.map(value => value.toString());
-            }
-            this.filterList();
-        });
+        let queryParams = this.route.snapshot.queryParams;
+        this.filters.status = queryParams.status ? (typeof queryParams.status === 'object' ?
+            queryParams.status : [queryParams.status]) : [];
+        if (_.isEmpty(this.filters.status)) {
+            this.filters.status = this.defaultStatusFilters.map(value => value.toString());
+        }
+        this.filterList();
         this.dataSource.dataChange$.subscribe(data => {
             this.isListLoaded = true;
         });

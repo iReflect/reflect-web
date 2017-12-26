@@ -4,61 +4,37 @@
       <span>Dashboard</span>
     </mat-toolbar>
     <div class="feedback-container">
-      <mat-grid-list cols="2" rowHeight="200px">
-        <mat-grid-tile [colspan]="2" [rowspan]="1" class="new-feedback-container">
+      <mat-grid-list cols="1" rowHeight="fit">
+        <mat-grid-tile [colspan]="1" class="new-feedback-container">
           <mat-card class="new-feedback-card">
-            <mat-toolbar>
-              <span>New Feedback</span>
-              <span>Total: {{newFeedbackCount}}</span>
-              <div class="show-more-button">
-                <a routerLink="./feedbacks/" [queryParams]="{status: 0}">
-                  see all
-                </a>
-              </div>
-            </mat-toolbar>
             <app-dashboard-feedback-list
               [service]="service"
+              title="New Feedback"
               [feedbackDetailURL]="feedbackDetailURL"
-              [filters]="newFeedbackFilters"
-              (newFeedbackCount)="setNewFeedbackCount($event)">
+              [listType]="feedbackStates.NEW"
+              [filters]="newFeedbackFilters">
             </app-dashboard-feedback-list>
           </mat-card>
         </mat-grid-tile>
-        <mat-grid-tile [colspan]="1" [rowspan]="1" class="draft-feedback-container">
+        <mat-grid-tile [colspan]="1" class="draft-feedback-container">
           <mat-card class="draft-feedback-card">
-            <mat-toolbar>
-              <span>Draft/In Progress Feedback</span>
-              <span>Total: {{draftFeedbackCount}}</span>
-              <div class="show-more-button">
-                <a routerLink="./feedbacks/" [queryParams]="{status: 1}">
-                  see all
-                </a>
-              </div>
-            </mat-toolbar>
             <app-dashboard-feedback-list
               [service]="service"
+              title="Draft/In Progress Feedback"
               [feedbackDetailURL]="feedbackDetailURL"
               [filters]="inProgressFeedbackFilters"
-              (draftFeedbackCount)="setDraftFeedbackCount($event)">
+              [listType]="feedbackStates.IN_PROGRESS">
             </app-dashboard-feedback-list>
           </mat-card>
         </mat-grid-tile>
-        <mat-grid-tile [colspan]="1" [rowspan]="1" class="submitted-feedback-container">
+        <mat-grid-tile [colspan]="1" class="submitted-feedback-container">
           <mat-card class="draft-feedback-card">
-            <mat-toolbar>
-              <span>Submitted Feedback</span>
-              <span>Total: {{submittedFeedbackCount}}</span>
-              <div class="show-more-button">
-                <a routerLink="./feedbacks/" [queryParams]="{status: 2}">
-                  see all
-                </a>
-              </div>
-            </mat-toolbar>
             <app-dashboard-feedback-list
               [service]="service"
+              title="Submitted Feedback"
               [feedbackDetailURL]="feedbackDetailURL"
               [filters]="submittedFeedbackFilters"
-              (submittedFeedbackCount)="setSubmittedFeedbackCount($event)">
+              [listType]="feedbackStates.SUBMITTED">
             </app-dashboard-feedback-list>
           </mat-card>
         </mat-grid-tile>

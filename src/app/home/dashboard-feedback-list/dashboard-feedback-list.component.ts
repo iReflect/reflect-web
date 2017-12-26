@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FeedBackListDataSource } from '../../feedback/feedback-list/feedback-list.data-source';
 import { FeedbackService } from '../../shared/services/feedback.service';
+import { APP_ROUTE_URLS, FEEDBACK_STATES } from '../../../constants/app-constants';
 
 @Component({
     selector: 'app-dashboard-feedback-list',
@@ -19,15 +20,13 @@ export class DashboardFeedbackListComponent implements OnInit {
     @Input()
     filters: any;
 
-    @Output()
-    newFeedbackCount: EventEmitter<number> = new EventEmitter<number>();
+    @Input()
+    title: string;
 
-    @Output()
-    draftFeedbackCount: EventEmitter<number> = new EventEmitter<number>();
+    @Input()
+    listType: number;
 
-    @Output()
-    submittedFeedbackCount: EventEmitter<number> = new EventEmitter<number>();
-
+    feedbackCount: number;
 
     isListLoaded = false;
     displayedColumns = ['title', 'user', 'userRole'];
@@ -45,10 +44,18 @@ export class DashboardFeedbackListComponent implements OnInit {
         this.dataSource.connect();
         this.dataSource.dataChange$.subscribe(data => {
             this.isListLoaded = true;
-            this.newFeedbackCount.emit(this.dataSource.newFeedbackCount);
-            this.draftFeedbackCount.emit(this.dataSource.draftFeedbackCount);
-            this.submittedFeedbackCount.emit(this.dataSource.submittedFeedbackCount);
+            if (this.listType === FEEDBACK_STATES.NEW) {
+                this.feedbackCount = this.dataSource.newFeedbackCount;
+            } else if (this.listType === FEEDBACK_STATES.IN_PROGRESS) {
+                this.feedbackCount = this.dataSource.draftFeedbackCount;
+            } else if (this.listType === FEEDBACK_STATES.SUBMITTED) {
+                this.feedbackCount = this.dataSource.submittedFeedbackCount;
+            }
         });
+    }
+
+    navigateToList() {
+        this.router.navigate([APP_ROUTE_URLS.feedbackList], {queryParams: {'status': this.listType}});
     }
 
     navigateToFeedBack(row) {
