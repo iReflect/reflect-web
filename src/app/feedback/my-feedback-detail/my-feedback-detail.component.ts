@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FeedbackService } from '../../shared/services/feedback.service';
+import { APP_ROUTE_URLS } from '../../../constants/app-constants';
 
 @Component({
     selector: 'app-feedback-detail-page',
@@ -7,6 +8,9 @@ import { FeedbackService } from '../../shared/services/feedback.service';
 })
 export class MyFeedbackDetailComponent {
 
+    feedbackListURL: string;
+
     constructor(public service: FeedbackService) {
+        this.feedbackListURL = APP_ROUTE_URLS.feedbackList;
     }
 }

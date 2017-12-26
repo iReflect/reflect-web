@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { API_RESPONSE_MESSAGES, FEEDBACK_STATES } from '../../../constants/app-constants';
-import { FeedbackService } from "../../shared/services/feedback.service";
-import { TeamFeedbackService } from "../../shared/services/team-feedback.service";
+import { FeedbackService } from '../../shared/services/feedback.service';
+import { TeamFeedbackService } from '../../shared/services/team-feedback.service';
 
 @Component({
     selector: 'app-feedback-detail',
@@ -19,6 +19,9 @@ export class FeedbackDetailComponent implements OnInit {
     @Input()
     showControls = false;
 
+    @Input()
+    feedbackListURL: string;
+
     form: FormGroup;
     feedbackData: any;
     feedbackId: number;
@@ -29,7 +32,7 @@ export class FeedbackDetailComponent implements OnInit {
     dateFormat = 'MMMM dd, yyyy';
     snackBarDuration = 2000; // in ms
 
-    constructor(private activatedRoute: ActivatedRoute, private snackBar: MatSnackBar) {
+    constructor(private activatedRoute: ActivatedRoute, private snackBar: MatSnackBar, private router: Router) {
     }
 
     getFeedBack() {
@@ -45,6 +48,13 @@ export class FeedbackDetailComponent implements OnInit {
                         this.isDataLoaded = true;
                         this.isFormSubmitted = data['Status'] ? data['Status'] === this.submittedState : false;
                         this.form = this.service.toFormGroup(data['Categories'], this.isFormSubmitted && this.showControls);
+                    },
+                    error => {
+                        this.snackBar.open(error.data.message || API_RESPONSE_MESSAGES.error,
+                            '', {duration: this.snackBarDuration})
+                            .afterDismissed().subscribe(() => {
+                            this.router.navigateByUrl(this.feedbackListURL);
+                        });
                     }
                 );
             }
