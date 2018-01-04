@@ -1,0 +1,6 @@
+.app-root {
+  min-height: calc(100vh - 64px);
+  &.logged-in {
+    background-color: lightgray;
+  }
+}

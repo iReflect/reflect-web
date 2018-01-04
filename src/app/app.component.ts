@@ -1,19 +1,18 @@
 import { Component } from '@angular/core';
-import {FormControl, Validators} from '@angular/forms';
+import { UserStoreService } from './shared/stores/user.store.service';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'app';
+    userLoggedIn = false;
 
-  email = new FormControl('', [Validators.required, Validators.email]);
+    constructor(private userStoreService: UserStoreService) {
 
-  getErrorMessage() {
-    return this.email.hasError('required') ? 'You must enter a value' :
-        this.email.hasError('email') ? 'Not a valid email' :
-            '';
-  }
+        this.userStoreService.token$.subscribe(
+            token => this.userLoggedIn = Boolean(token)
+        );
+    }
 }

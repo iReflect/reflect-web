@@ -1,0 +1,27 @@
+<ng-container>
+  <div class="login-page">
+    <mat-card class="login-card">
+      <mat-toolbar color="primary">
+        <span>{{ title }}</span>
+      </mat-toolbar>
+      <mat-card-content>
+        <form [formGroup]="authForm" (ngSubmit)="submitForm()">
+          <!--<fieldset [disabled]="isSubmitting">-->
+          <mat-form-field class="form-group">
+            <input matInput required
+                   formControlName="email"
+                   placeholder="Email"
+                   class="form-control form-control-lg"
+                   type="text"/>
+            <mat-error *ngIf="authForm.get('email').invalid">{{getErrorMessage()}}</mat-error>
+          </mat-form-field>
+          <button mat-raised-button color="primary" class="btn btn-lg btn-primary pull-xs-right"
+                  [disabled]="!authForm.valid" type="submit">
+            {{ title }}
+          </button>
+          <!--</fieldset>-->
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</ng-container>

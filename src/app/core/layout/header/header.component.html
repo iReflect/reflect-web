@@ -1,0 +1,23 @@
+<header>
+  <div class="header-container">
+    <div *ngIf="userLoggedIn">
+      <mat-toolbar>
+        <div class="loggedin-wrap">
+          <div class="logo-wrap">
+            <a (click)="navigateToRoot()"><h1><b>iReflect</b></h1></a>
+          </div>
+          <div class="header-contents">
+            <span>Welcome {{ user.FirstName || 'User' }}</span>
+            <mat-menu #appMenu="matMenu" [overlapTrigger]="false">
+              <button mat-menu-item (click)="logout()" [hidden]="logoutInProgress">Logout</button>
+            </mat-menu>
+
+            <button mat-icon-button [matMenuTriggerFor]="appMenu">
+              <mat-icon>menu</mat-icon>
+            </button>
+          </div>
+        </div>
+      </mat-toolbar>
+    </div>
+  </div>
+</header>

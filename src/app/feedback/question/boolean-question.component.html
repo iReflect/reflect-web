@@ -1,0 +1,7 @@
+<div>
+  <mat-radio-group [disabled]="disabled" class="question-radio-group" [(ngModel)]="value">
+    <mat-radio-button class="question-radio-button" *ngFor="let opt of question.Options" [value]="'' + opt.id">
+      {{opt.text}}
+    </mat-radio-button>
+  </mat-radio-group>
+</div>
