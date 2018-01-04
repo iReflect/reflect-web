@@ -1,6 +1,6 @@
 import { AppPage } from './app.po';
 
-describe('angular4-material-sample App', () => {
+describe('reflect-web App', () => {
     let page: AppPage;
 
     beforeEach(() => {
