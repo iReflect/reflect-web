@@ -1,32 +1,43 @@
 export const USER_AUTH_TOKEN_KEY = 'user_auth_token';
-export const NEW_EVENT = 0;
-export const IN_PROGRESS_EVENT = 1;
-export const SUBMITTED_EVENT = 2;
 
-export const FEEDBACK_EVENT_STATES = {
-  [IN_PROGRESS_EVENT]: 'Draft/In Progress',
-  [NEW_EVENT]: 'New',
-  [SUBMITTED_EVENT]: 'Submitted'
+export const FEEDBACK_STATES = {
+    NEW: 0,
+    IN_PROGRESS: 1,
+    SUBMITTED: 2
+};
+export const FEEDBACK_STATES_LABEL = {
+    [FEEDBACK_STATES.NEW]: 'New',
+    [FEEDBACK_STATES.IN_PROGRESS]: 'Draft/In Progress',
+    [FEEDBACK_STATES.SUBMITTED]: 'Submitted'
 };
 
-export const MULTIPLE_CHOICE_TYPE_QUESTION = 1;
-export const GRADE_TYPE_QUESTION = 2;
-export const BOOLEAN_TYPE_QUESTION = 3;
+export const QUESTION_TYPES = {
+    MULTIPLE_CHOICE: 0,
+    GRADING: 1,
+    BOOLEAN: 2
+};
 
-export const QUESTION_TYPE_MAP = {
-  [MULTIPLE_CHOICE_TYPE_QUESTION]: 'Multiple Choice',
-  [GRADE_TYPE_QUESTION]: 'Grade',
-  [BOOLEAN_TYPE_QUESTION]: 'Boolean'
+export const COMMENT_TOOLTIP_MAP = {
+    addComment: 'Add Comment',
+    editComment: 'Edit Comment',
+    viewComment: 'View Comment',
+    hideComment: 'Hide Comment',
 };
 
 export const APP_ROUTE_URLS = {
-  forwardSlash: '/',
-  root: '',
-  login: 'login',
-  feedback: 'feedbacks/:id',
+    forwardSlash: '/',
+    root: '',
+    login: 'login',
+    feedback: 'feedbacks/:id',
+    feedbackList: 'feedbacks',
+    teamFeedback: 'team/feedbacks/:id',
+    teamFeedbackList: 'team/feedbacks',
 };
 
-
-export const ERRORS = {
-  questionResponseRequired: 'Answer is Required'
+export const API_RESPONSE_MESSAGES = {
+    feedBackSaved: 'Feedback saved successfully!!',
+    feedBackSubmitted: 'Feedback submitted successfully!!',
+    error: 'Some Error Occurred!!'
 };
+
+export const QUESTION_RESPONSE_SEPARATOR = ',';

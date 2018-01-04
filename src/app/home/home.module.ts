@@ -1,29 +1,29 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HomeComponent } from './home.component';
-import { SharedModule } from '../shared/shared.module';
-import { HomeRoutingModule } from './home-routing.module';
-import { HomeService } from './home.service';
-import { FeedBackEventDataSource } from './home.data-source';
+import { NgModule } from '@angular/core';
 import { CustomMaterialModule } from '../core/custom-material/custom-material.module';
+import { FeedBackListDataSource } from '../feedback/feedback-list/feedback-list.data-source';
+import { SharedModule } from '../shared/shared.module';
+import { DashboardFeedbackListComponent } from './dashboard-feedback-list/dashboard-feedback-list.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { HomeRoutingModule } from './home-routing.module';
 
 
 @NgModule({
-  imports: [
-    CommonModule,
-    HomeRoutingModule,
-    SharedModule,
-    CustomMaterialModule
-  ],
-  declarations: [
-    HomeComponent,
-  ],
-  exports: [],
-  schemas: [
-    FeedBackEventDataSource
-  ],
-  providers: [
-    HomeService
-  ]
+    imports: [
+        CommonModule,
+        HomeRoutingModule,
+        SharedModule,
+        CustomMaterialModule
+    ],
+    declarations: [
+        DashboardComponent,
+        DashboardFeedbackListComponent,
+    ],
+    exports: [],
+    schemas: [
+        FeedBackListDataSource
+    ],
+    providers: []
 })
-export class HomeModule {}
+export class HomeModule {
+}

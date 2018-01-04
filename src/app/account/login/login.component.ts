@@ -1,67 +1,72 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-
-import { LoginService } from './login.service';
-import { UserDataStoreService } from '../../shared/data-stores/user-data-store.service';
 import { APP_ROUTE_URLS } from '../../../constants/app-constants';
+import { AuthService } from '../../shared/services/auth.service';
+import { UserStoreService } from '../../shared/stores/user.store.service';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+    selector: 'app-login',
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
 
-  title: String = 'Sign in';
-  errors: any;
-  isSubmitting = false;
-  authForm: FormGroup;
-  returnUrl = '';
+    title: String = 'Sign in';
+    errors: any;
+    isSubmitting = false;
+    authForm: FormGroup;
+    returnUrl = '';
+    state = '';
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private loginService: LoginService,
-    private userData: UserDataStoreService,
-    private fb: FormBuilder
-  ) {
-    // use FormBuilder to create a form group
-    this.authForm = this.fb.group({
-      'email': ['', [Validators.required, Validators.email]],
-      'password': ['', Validators.required]
-    });
-  }
+    constructor(private route: ActivatedRoute,
+                private router: Router,
+                private authService: AuthService,
+                private userStoreService: UserStoreService,
+                private fb: FormBuilder) {
+        // use FormBuilder to create a form group
+        this.authForm = this.fb.group({
+            'email': ['', [Validators.required, Validators.email]]
+        });
+    }
 
-  setReturnUrl() {
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || APP_ROUTE_URLS.forwardSlash;
-  }
+    setReturnUrl() {
+        this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || APP_ROUTE_URLS.forwardSlash;
+    }
 
-  ngOnInit() {
-    this.setReturnUrl();
-  }
+    setStateUrl() {
+        this.authService.login().subscribe(response => this.state = response.data['State']);
+    }
 
-  getErrorMessage() {
-    let email = this.authForm.get('email');
-    return email.hasError('required') ? 'You must enter a value' :
-      email.hasError('email') ? 'Not a valid email' :
-        '';
-  }
+    ngOnInit() {
+        this.setReturnUrl();
+        this.setStateUrl();
+    }
 
-  submitForm() {
-    this.isSubmitting = true;
-    this.errors = {};
+    getErrorMessage() {
+        let email = this.authForm.get('email');
+        return email.hasError('required') ? 'You must enter a value' :
+            email.hasError('email') ? 'Not a valid email' :
+                '';
+    }
 
-    this.loginService.login(this.authForm.value).subscribe(
-        data => {
-          this.userData.updateUserMultipleValues(data);
-          this.router.navigateByUrl(APP_ROUTE_URLS.root);
-          this.isSubmitting = false;
-        },
-        err => {
-            this.errors = err;
-            this.isSubmitting = false;
-        }
-      );
-  }
+    submitForm() {
+        this.isSubmitting = true;
+        this.errors = {};
+        let queryParams = {
+            code: encodeURIComponent(this.authForm.value.email),
+            state: this.state
+        };
+        this.authService.auth(queryParams).subscribe(
+            response => {
+                this.userStoreService.updateUserData(response.data);
+                this.router.navigateByUrl(APP_ROUTE_URLS.root);
+                this.isSubmitting = false;
+            },
+            error => {
+                this.errors = error.data;
+                this.isSubmitting = false;
+            }
+        );
+    }
 }

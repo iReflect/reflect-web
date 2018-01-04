@@ -1,0 +1,44 @@
+<ng-container>
+  <div class="dashboard-container">
+    <mat-toolbar class="mat-elevation-z2">
+      <span>Dashboard</span>
+    </mat-toolbar>
+    <div class="feedback-container">
+      <mat-grid-list cols="1" rowHeight="fit">
+        <mat-grid-tile [colspan]="1" class="new-feedback-container">
+          <mat-card class="new-feedback-card">
+            <app-dashboard-feedback-list
+              [service]="service"
+              title="New Feedback"
+              [feedbackDetailURL]="feedbackDetailURL"
+              [listType]="feedbackStates.NEW"
+              [filters]="newFeedbackFilters">
+            </app-dashboard-feedback-list>
+          </mat-card>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="1" class="draft-feedback-container">
+          <mat-card class="draft-feedback-card">
+            <app-dashboard-feedback-list
+              [service]="service"
+              title="Draft/In Progress Feedback"
+              [feedbackDetailURL]="feedbackDetailURL"
+              [filters]="inProgressFeedbackFilters"
+              [listType]="feedbackStates.IN_PROGRESS">
+            </app-dashboard-feedback-list>
+          </mat-card>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="1" class="submitted-feedback-container">
+          <mat-card class="draft-feedback-card">
+            <app-dashboard-feedback-list
+              [service]="service"
+              title="Submitted Feedback"
+              [feedbackDetailURL]="feedbackDetailURL"
+              [filters]="submittedFeedbackFilters"
+              [listType]="feedbackStates.SUBMITTED">
+            </app-dashboard-feedback-list>
+          </mat-card>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </div>
+  </div>
+</ng-container>

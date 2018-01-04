@@ -1,6 +1,11 @@
-export const ApiURLMap = {
-  'login': 'login/',
-  'logout': 'logout/',
-  'list_feedback_events': 'feedbacks/',
-  'feedback_event_details': 'feedbacks/:id/'
+export const API_URLS = {
+    login: '/login',
+    auth: '/auth',
+    logout: '/logout',
+    feedback: '/feedbacks',
+    // TODO: Update it to team feedback URL.
+    teamFeedback: 'teams/feedbacks',
+    user: {
+        current: '/users/current'
+    }
 };
