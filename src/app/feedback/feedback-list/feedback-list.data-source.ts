@@ -2,7 +2,7 @@ import { DataSource } from '@angular/cdk/collections';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { FeedbackService } from '../../shared/services/feedback.service';
-import { TeamFeedbackService } from "../../shared/services/team-feedback.service";
+import { TeamFeedbackService } from '../../shared/services/team-feedback.service';
 
 export class FeedBackListDataSource extends DataSource<any> {
     filters: any;

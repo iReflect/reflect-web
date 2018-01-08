@@ -17,6 +17,7 @@ import { HomeModule } from './home/home.module';
 
 import { SharedModule } from './shared/shared.module';
 import { SideNavComponent } from './sidenav/sidenav.component';
+import { RetrospectiveModule } from './retrospective/retrospective.module';
 
 export function RestangularConfigFactory(RestangularProvider) {
     RestangularProvider.setDefaultHeaders({
@@ -56,7 +57,8 @@ const routes: Routes = [
         SharedModule,
         HomeModule,
         AccountModule,
-        FeedbackModule
+        FeedbackModule,
+        RetrospectiveModule,
     ],
     exports: [
         CommonModule,
