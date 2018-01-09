@@ -33,12 +33,14 @@ export const APP_ROUTE_URLS = {
     teamFeedback: 'team/feedbacks/:id',
     teamFeedbackList: 'team/feedbacks',
     retroSpectiveList: 'retrospectives',
+    retroSpectiveCreate: 'retrospectives/create',
 };
 
 export const API_RESPONSE_MESSAGES = {
     feedBackSaved: 'Feedback saved successfully!!',
     feedBackSubmitted: 'Feedback submitted successfully!!',
-    error: 'Some Error Occurred!!'
+    error: 'Some Error Occurred!!',
+    retroCreated: 'Retro Created successfully!!'
 };
 
 export const QUESTION_RESPONSE_SEPARATOR = ',';

@@ -8,17 +8,21 @@ import { RetrospectiveRoutingModule } from './retrospective-routing.module';
 
 // Import Components
 import { RetrospectiveListComponent } from './retrospective-list/retrospective-list.component';
+import { RetrospectiveCreateComponent } from './retrospective-create/retrospective-create.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
     imports: [
         CommonModule,
         SharedModule,
+        ReactiveFormsModule,
         CustomMaterialModule,
         RetrospectiveRoutingModule
     ],
     declarations: [
         RetrospectiveListComponent,
+        RetrospectiveCreateComponent,
     ],
     exports: [],
     providers: []

@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import * as RetroSpectiveListJson from '../../../fixtures/retrospective-list-response.json';
+import * as RetroSpectiveConfigOptions from '../../../fixtures/retrospective-config-options.json';
 import { RestApiHelperService } from '../utils/rest-api-helper.service';
+import { Observable } from 'rxjs/Observable';
 
 
 @Injectable()
@@ -14,5 +16,16 @@ export class RetrospectiveService {
     getRetrospectives(): any {
         // TODO: Replace the dummy json with the Actual API once it is ready
         return RetroSpectiveListJson;
+    }
+
+    getRetroConfigOptions(): any {
+        // TODO: Replace the dummy json with the Actual API once it is ready
+        return RetroSpectiveConfigOptions;
+    }
+
+    createRetro(retroConfig: any): any {
+        // TODO: Replace the dummy json with the Actual API once it is ready
+        console.log(retroConfig);
+        return {success: true, error: ''};
     }
 }

@@ -1,0 +1,18 @@
+.create-retro {
+  mat-form-field {
+    width: 250px;
+  }
+  mat-toolbar {
+    .fill-remaining-space {
+      width: 90%;
+    }
+    .action-buttons {
+      width: 10%;
+      button {
+        margin-right: 5px;
+        color: white;
+        background-color: #3293be;
+      }
+    }
+  }
+}
