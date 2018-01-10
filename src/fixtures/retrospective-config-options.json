@@ -19,44 +19,6 @@
       "Active": true
     }
   ],
-  "TimeProviders": [
-    {
-      "Type": "gsheet",
-      "DisplayTitle": "Google Sheets",
-      "Fields": [
-        {
-          "FieldName": "Credentials",
-          "FieldDisplayName": "Google Credentials",
-          "Type": "string",
-          "Required": true
-        },
-        {
-          "FieldName": "SheetID",
-          "FieldDisplayName": "SpreadSheet ID",
-          "Type": "string",
-          "Required": true
-        }
-      ]
-    },
-    {
-      "Type": "standup",
-      "DisplayTitle": "Team StandUps",
-      "Fields": [
-        {
-          "FieldName": "Name",
-          "FieldDisplayName": "Full Name",
-          "Type": "string",
-          "Required": true
-        },
-        {
-          "FieldName": "StoryIDs",
-          "FieldDisplayName": "Story IDs",
-          "Type": "string",
-          "Required": false
-        }
-      ]
-    }
-  ],
   "TaskProviders": [
     {
       "Type": "jira",

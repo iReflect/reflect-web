@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 import { API_RESPONSE_MESSAGES } from '../../../constants/app-constants';
 
@@ -14,33 +14,35 @@ export class RetrospectiveCreateComponent implements OnInit {
     retroFormGroup: FormGroup;
     isDataLoaded = false;
 
-    // These are the possible options for the teams, time and task providers
+    // These are the possible options for the teams and task providers
     teamOptions: any = [];
     taskProviderOptions: any = [];
-    timeProviderOptions: any = [];
 
-    // Since we are dynamically generating the time and task provider's form, these are the possible fields
-    selectedTimeProviderFields: any = [];
-    selectedTaskProviderFields: any = [];
+    // Since we are dynamically generating the task provider's form, these are the possible fields
+    selectedTaskProviderFields: any = {};
 
     // Keys used for form controls and provider lookups
-    timeProviderKey = 'timeProvider';
     taskProviderKey = 'taskProvider';
+    taskProviderConfigKey = 'taskProviderConfig';
+    selectedTaskProviderKey = 'selectedTaskProvider';
 
     constructor(private service: RetrospectiveService, private snackBar: MatSnackBar) { }
 
+    // If we want to add a new task provider, then this method would be helpful
+    createNewTaskProviderControl(): FormGroup {
+        return new FormGroup({
+            [this.selectedTaskProviderKey]: new FormControl('', Validators.required),
+            [this.taskProviderConfigKey]: new FormGroup({})
+        });
+    }
+
     getConfigOptions() {
-        let configOptions: any;
-        configOptions = this.service.getRetroConfigOptions();
-        this.teamOptions = configOptions['Teams'] || [];
-        this.taskProviderOptions = configOptions['TaskProviders'] || [];
-        this.timeProviderOptions = configOptions['TimeProviders'] || [];
+        this.teamOptions = this.service.getTeamList()['Teams'] || [];
+        this.taskProviderOptions = this.service.getTaskProvidersList()['TaskProviders'] || [];
         this.retroFormGroup = new FormGroup({
             'team': new FormControl('', Validators.required),
-            'selectedTimeProvider': new FormControl('', Validators.required),
-            'selectedTaskProvider': new FormControl('', Validators.required),
-            [this.timeProviderKey]: new FormGroup({}),
-            [this.taskProviderKey]: new FormGroup({}),
+            'hoursPerSprint': new FormControl('', Validators.required),
+            [this.taskProviderKey]: new FormArray([this.createNewTaskProviderControl()]),
         });
         this.isDataLoaded = true;
     }
@@ -50,13 +52,8 @@ export class RetrospectiveCreateComponent implements OnInit {
     }
 
     createRetro() {
-        let retroConfig, response: any;
-        retroConfig = this.retroFormGroup.value;
-        response = this.service.createRetro({
-            'team': retroConfig['team'],
-            [retroConfig['selectedTaskProvider']]: retroConfig[this.taskProviderKey],
-            [retroConfig['selectedTimeProvider']]: retroConfig[this.timeProviderKey],
-        });
+        let response: any;
+        response = this.service.createRetro(this.retroFormGroup.value);
         if (response.success) {
             this.snackBar.open(API_RESPONSE_MESSAGES.retroCreated, '', {duration: 2000});
             // TODO: Redirect to retro detail page
@@ -65,32 +62,20 @@ export class RetrospectiveCreateComponent implements OnInit {
         }
     }
 
-    onProviderChange(providerType: string) {
+    onProviderChange(providerType: string, index: any) {
         return selectedProvider => {
-            let fieldsGroup, filterProvider, createControlFromField: any;
+            let fieldsGroup: any, formArrayControl: FormGroup;
             fieldsGroup = {};
+            if (providerType === this.taskProviderKey) {
+                this.selectedTaskProviderFields[index] = this.taskProviderOptions.filter(
+                    provider => provider.Type === selectedProvider)[0]['Fields'];
 
-            // callback for filtering selected provider
-            filterProvider = provider => provider.Type === selectedProvider;
-
-            // callback for dynamically generating form controls using providers fields
-            createControlFromField = field => {
-                fieldsGroup[field.FieldName] = new FormControl('',
-                    field.Required ? Validators.required : null);
-            };
-            if (providerType === this.timeProviderKey) {
-                this.selectedTimeProviderFields = this.timeProviderOptions.filter(filterProvider)[0]['Fields'];
-
-                this.selectedTimeProviderFields.forEach(createControlFromField);
-
-                this.retroFormGroup.setControl(this.timeProviderKey, new FormGroup(fieldsGroup, Validators.required));
-
-            } else if (providerType === this.taskProviderKey) {
-                this.selectedTaskProviderFields = this.taskProviderOptions.filter(filterProvider)[0]['Fields'];
-
-                this.selectedTaskProviderFields.forEach(createControlFromField);
-
-                this.retroFormGroup.setControl(this.taskProviderKey, new FormGroup(fieldsGroup, Validators.required));
+                this.selectedTaskProviderFields[index].forEach(field => {
+                    fieldsGroup[field.FieldName] = new FormControl('',
+                        field.Required ? Validators.required : null);
+                });
+                formArrayControl = <FormGroup>(<FormArray>(this.retroFormGroup.controls[this.taskProviderKey])).controls[index];
+                formArrayControl.setControl(this.taskProviderConfigKey, new FormGroup(fieldsGroup, Validators.required));
             }
         };
     }

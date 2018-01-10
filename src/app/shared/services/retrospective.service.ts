@@ -18,9 +18,14 @@ export class RetrospectiveService {
         return RetroSpectiveListJson;
     }
 
-    getRetroConfigOptions(): any {
+    getTeamList(): any {
         // TODO: Replace the dummy json with the Actual API once it is ready
-        return RetroSpectiveConfigOptions;
+        return {'Teams': RetroSpectiveConfigOptions['Teams']};
+    }
+
+    getTaskProvidersList(): any {
+        // TODO: Replace the dummy json with the Actual API once it is ready
+        return {'TaskProviders': RetroSpectiveConfigOptions['TaskProviders']};
     }
 
     createRetro(retroConfig: any): any {
