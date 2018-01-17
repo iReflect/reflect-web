@@ -18,37 +18,53 @@ export class RetrospectiveCreateComponent implements OnInit {
     teamOptions: any = [];
     taskProviderOptions: any = [];
 
-    // Since we are dynamically generating the task provider's form, these are the possible fields
-    selectedTaskProviderFields: any = {};
+    // It is used to render the task provider components (When we add a task provider,
+    // a new entry will be made in this list with a true value (as of now))
+    taskProvidersList: any = [];
+    // Maintains the task providers count
+    taskProvidersIndex = -1;
 
     // Keys used for form controls and provider lookups
     taskProviderKey = 'taskProvider';
-    taskProviderConfigKey = 'taskProviderConfig';
-    selectedTaskProviderKey = 'selectedTaskProvider';
 
     constructor(private service: RetrospectiveService, private snackBar: MatSnackBar) { }
 
-    // If we want to add a new task provider, then this method would be helpful
-    createNewTaskProviderControl(): FormGroup {
-        return new FormGroup({
-            [this.selectedTaskProviderKey]: new FormControl('', Validators.required),
-            [this.taskProviderConfigKey]: new FormGroup({})
-        });
+    taskProviderInitialized(index) {
+        return taskProviderFormGroup => {
+            if (this.taskProvidersList[index]) {
+                (<FormArray>this.retroFormGroup.controls[this.taskProviderKey])
+                    .setControl(index, taskProviderFormGroup);
+            }
+        };
     }
 
     getConfigOptions() {
         this.teamOptions = this.service.getTeamList()['Teams'] || [];
         this.taskProviderOptions = this.service.getTaskProvidersList()['TaskProviders'] || [];
+        this.isDataLoaded = true;
+    }
+
+    createRetroFormGroup() {
         this.retroFormGroup = new FormGroup({
+            'title': new FormControl('', Validators.required),
             'team': new FormControl('', Validators.required),
             'hoursPerSprint': new FormControl('', Validators.required),
-            [this.taskProviderKey]: new FormArray([this.createNewTaskProviderControl()]),
+            'projectName': new FormControl('', Validators.required),
         });
-        this.isDataLoaded = true;
+    }
+
+    addTaskProvider() {
+        if (!this.retroFormGroup.contains(this.taskProviderKey)) {
+            this.retroFormGroup.addControl(this.taskProviderKey, new FormArray([]));
+        }
+        (<FormArray>this.retroFormGroup.controls[this.taskProviderKey]).push(new FormGroup({}));
+        this.taskProvidersList[++this.taskProvidersIndex] = true;
     }
 
     ngOnInit() {
         this.getConfigOptions();
+        this.createRetroFormGroup();
+        this.addTaskProvider();
     }
 
     createRetro() {
@@ -62,21 +78,4 @@ export class RetrospectiveCreateComponent implements OnInit {
         }
     }
 
-    onProviderChange(providerType: string, index: any) {
-        return selectedProvider => {
-            let fieldsGroup: any, formArrayControl: FormGroup;
-            fieldsGroup = {};
-            if (providerType === this.taskProviderKey) {
-                this.selectedTaskProviderFields[index] = this.taskProviderOptions.filter(
-                    provider => provider.Type === selectedProvider)[0]['Fields'];
-
-                this.selectedTaskProviderFields[index].forEach(field => {
-                    fieldsGroup[field.FieldName] = new FormControl('',
-                        field.Required ? Validators.required : null);
-                });
-                formArrayControl = <FormGroup>(<FormArray>(this.retroFormGroup.controls[this.taskProviderKey])).controls[index];
-                formArrayControl.setControl(this.taskProviderConfigKey, new FormGroup(fieldsGroup, Validators.required));
-            }
-        };
-    }
 }

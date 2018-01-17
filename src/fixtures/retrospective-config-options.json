@@ -23,13 +23,8 @@
     {
       "Type": "jira",
       "DisplayTitle": "JIRA",
+      "SupportedAuthTypes": ["basicAuth"],
       "Fields": [
-        {
-          "FieldName": "Credentials",
-          "FieldDisplayName": "JIRA Credentials",
-          "Type": "string",
-          "Required": true
-        },
         {
           "FieldName": "BaseURL",
           "FieldDisplayName": "Base URL of the project",
@@ -53,13 +48,8 @@
     {
       "Type": "pivotal",
       "DisplayTitle": "Pivotal Tracker",
+      "SupportedAuthTypes": ["basicAuth", "apiToken"],
       "Fields": [
-        {
-          "FieldName": "Credentials",
-          "FieldDisplayName": "Pivotal Tracker Credentials",
-          "Type": "string",
-          "Required": true
-        },
         {
           "FieldName": "ProjectID",
           "FieldDisplayName": "Project ID",

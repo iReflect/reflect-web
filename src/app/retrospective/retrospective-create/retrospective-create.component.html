@@ -7,6 +7,23 @@
   </mat-toolbar>
   <mat-card>
     <mat-card-header>
+      <mat-card-title><b>Retrospective Details</b></mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div>
+        <mat-form-field floatLabel="always">
+          <mat-label></mat-label>
+          <input matInput formControlName="title" placeholder="Retrospective Title">
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field floatLabel="always">
+          <mat-label></mat-label>
+          <input matInput type="number" formControlName="hoursPerSprint" placeholder="Specify hours per sprint">
+        </mat-form-field>
+      </div>
+    </mat-card-content>
+    <mat-card-header>
       <mat-card-title><b>Team</b></mat-card-title>
     </mat-card-header>
     <mat-card-content>
@@ -21,7 +38,7 @@
       <div>
         <mat-form-field floatLabel="always">
           <mat-label></mat-label>
-          <input matInput type="number" formControlName="hoursPerSprint" placeholder="Specify hours per sprint">
+          <input matInput formControlName="projectName" placeholder="Specify Project Name">
         </mat-form-field>
       </div>
     </mat-card-content>
@@ -31,22 +48,12 @@
       <mat-card-title><b>Task Provider</b></mat-card-title>
     </mat-card-header>
     <mat-card-content [formArrayName]="taskProviderKey">
-      <div *ngFor="let control of retroFormGroup.controls[taskProviderKey].controls; let providerIndex = index;">
+      <div *ngFor="let _ of taskProvidersList; let providerIndex = index;">
         <div [formGroupName]="providerIndex">
-          <mat-form-field floatLabel="always">
-            <mat-label></mat-label>
-            <mat-select [formControlName]="selectedTaskProviderKey" placeholder="Select a Task Provider"
-                        (selectionChange)="onProviderChange(taskProviderKey, providerIndex)($event.value)">
-              <mat-option *ngFor="let provider of taskProviderOptions" [value]="provider.Type">{{provider.DisplayTitle}}</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <div [formGroupName]="taskProviderConfigKey">
-            <div *ngFor="let field of selectedTaskProviderFields[providerIndex]">
-              <mat-form-field>
-                <input matInput [placeholder]="field.FieldDisplayName" [formControlName]="field.FieldName"/>
-              </mat-form-field>
-            </div>
-          </div>
+          <app-task-provider
+            [taskProviderOptions]="taskProviderOptions"
+            (initializedTaskProvider)="taskProviderInitialized(providerIndex)($event)">
+          </app-task-provider>
         </div>
       </div>
     </mat-card-content>

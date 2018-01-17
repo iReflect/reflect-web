@@ -1,0 +1,68 @@
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+
+@Component({
+  selector: 'app-task-provider',
+  templateUrl: './task-provider.component.html',
+  styleUrls: ['./task-provider.component.scss']
+})
+export class TaskProviderComponent implements OnInit {
+
+    @Input() taskProviderOptions: any = [];
+    @Output() initializedTaskProvider = new EventEmitter<FormGroup>();
+
+    taskProviderConfigKey = 'taskProviderConfig';
+    selectedTaskProviderKey = 'selectedTaskProvider';
+    taskProviderFormGroup: FormGroup;
+    isInitialized = false;
+    showConfigFields = false;
+
+    // Since we are dynamically generating the task provider's form, these are the possible fields
+    selectedTaskProviderConfigOptions: any = {};
+
+    constructor() { }
+
+    ngOnInit() {
+        this.initializeTaskProvider();
+    }
+
+    initializeTaskProvider() {
+        if (!this.taskProviderFormGroup) {
+            this.taskProviderFormGroup = new FormGroup({
+                [this.selectedTaskProviderKey]: new FormControl('', Validators.required),
+                [this.taskProviderConfigKey]: new FormGroup({}),
+                'Credentials': new FormGroup({}),
+            });
+            this.initializedTaskProvider.emit(this.taskProviderFormGroup);
+            this.isInitialized = true;
+        }
+    }
+
+    onProviderChange(selectedProvider) {
+        let configFieldsGroup: any, credentialFieldsGroup: any, selectedTaskProvider: any;
+        configFieldsGroup = {};
+        selectedTaskProvider = this.taskProviderOptions.filter(provider => provider.Type === selectedProvider)[0];
+
+        this.showConfigFields = false;
+
+        selectedTaskProvider['Fields'].forEach(field => {
+            configFieldsGroup[field.FieldName] = new FormControl('',
+                field.Required ? Validators.required : null);
+        });
+        this.taskProviderFormGroup.setControl(this.taskProviderConfigKey,
+            new FormGroup(configFieldsGroup, Validators.required));
+
+        credentialFieldsGroup = {
+            'type': new FormControl('', Validators.required),
+            'data': new FormGroup({})
+        };
+        this.taskProviderFormGroup.setControl('Credentials',
+                new FormGroup(credentialFieldsGroup));
+
+        this.selectedTaskProviderConfigOptions = {
+            'fields': selectedTaskProvider['Fields'],
+            'supportedAuthTypes': selectedTaskProvider['SupportedAuthTypes']
+        };
+        this.showConfigFields = true;
+    }
+}
