@@ -20,5 +20,9 @@ mat-row, mat-header-row {
   }
   mat-cell {
     font-size: 13px;
+    span.latest-sprint-link, span.retro-dashboard-link {
+      color: #3293be;
+      cursor: pointer;
+    }
   }
 }

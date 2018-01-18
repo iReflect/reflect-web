@@ -14,13 +14,10 @@
           <!-- Title Column -->
           <ng-container matColumnDef="title">
             <mat-header-cell *matHeaderCellDef>Title</mat-header-cell>
-            <mat-cell *matCellDef="let element"> {{element.Title}}</mat-cell>
-          </ng-container>
-
-          <!-- User Column -->
-          <ng-container matColumnDef="created_by">
-            <mat-header-cell *matHeaderCellDef>Created By</mat-header-cell>
-            <mat-cell *matCellDef="let element"> {{element.CreatedBy.Email}}</mat-cell>
+            <mat-cell *matCellDef="let element"
+                      (click)="navigateToRetroSpectiveDetail(element)">
+              <span matTooltip="Link to the Retrospective Dashboard" class="retro-dashboard-link">{{element.Title}}</span>
+            </mat-cell>
           </ng-container>
 
           <!-- Team Column -->
@@ -30,14 +27,22 @@
           </ng-container>
 
           <!-- Created At Column -->
-          <ng-container matColumnDef="created_at">
+          <ng-container matColumnDef="updated_at">
             <mat-header-cell *matHeaderCellDef>Created At</mat-header-cell>
-            <mat-cell *matCellDef="let element"> {{parseToDate(element.CreatedAt)}}</mat-cell>
+            <mat-cell *matCellDef="let element"> {{parseToDate(element.UpdatedAt)}}</mat-cell>
+          </ng-container>
+
+          <!-- Latest Sprint Column -->
+          <ng-container matColumnDef="latest_sprint">
+            <mat-header-cell *matHeaderCellDef>Latest Sprint</mat-header-cell>
+            <mat-cell *matCellDef="let element"
+                      (click)="navigateToLatestSprint(element)">
+              <span matTooltip="Link to the Latest Sprint" class="latest-sprint-link">Latest Sprint</span>
+            </mat-cell>
           </ng-container>
 
           <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-          <mat-row *matRowDef="let row; columns: displayedColumns;"
-                   (click)="navigateToRetroSpectiveDetail(row)"></mat-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
         </mat-table>
       </div>
     </div>

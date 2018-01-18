@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { RetrospectiveListDataSource } from './retrospective-list.data-source';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
+import { Router } from '@angular/router';
+import { APP_ROUTE_URLS } from '../../../constants/app-constants';
 
 @Component({
   selector: 'app-retrospective-list',
@@ -10,9 +12,9 @@ import { RetrospectiveService } from '../../shared/services/retrospective.servic
 export class RetrospectiveListComponent implements OnInit {
 
     dataSource: RetrospectiveListDataSource;
-    displayedColumns = ['title', 'team', 'created_by', 'created_at'];
+    displayedColumns = ['title', 'team', 'updated_at', 'latest_sprint'];
 
-    constructor(private service: RetrospectiveService) { }
+    constructor(private service: RetrospectiveService, private router: Router) { }
 
     initializeDataSource() {
         this.dataSource = new RetrospectiveListDataSource(this.service);
@@ -24,6 +26,15 @@ export class RetrospectiveListComponent implements OnInit {
 
     createNewRetro() {
         // redirect to create new retro page
+    }
+
+    navigateToLatestSprint(row) {
+        this.service.getRetroSpectiveLatestSprint(row.ID).subscribe((sprintData) => {
+            alert('Redirecting to the sprint dashboard');
+            this.router.navigateByUrl(APP_ROUTE_URLS.sprintDashboard.replace(
+                ':retrospectiveID', row.ID).replace(
+                    ':sprintID', sprintData.SprintID));
+        });
     }
 
     ngOnInit() {

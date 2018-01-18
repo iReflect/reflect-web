@@ -15,6 +15,13 @@ const routes: Routes = [
         component: RetrospectiveListComponent,
         canActivate: [LoginRequiredGuard]
     },
+    {
+        path: APP_ROUTE_URLS.sprintDashboard,
+        // Redirect to Retrospective list component as of now,
+        // replace with sprint dashboard component
+        redirectTo: APP_ROUTE_URLS.retroSpectiveList,
+        canActivate: [LoginRequiredGuard]
+    },
 ];
 
 @NgModule({
