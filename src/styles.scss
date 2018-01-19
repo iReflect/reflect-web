@@ -6,3 +6,18 @@ body {
   font-family: 'Roboto', Helvetica Neue Light, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;
   margin: 0;
 }
+
+.custom-mat-table {
+  mat-row, mat-header-row {
+    &:nth-child(odd) {
+      background-color: #f5f5f5;
+    }
+    mat-cell {
+      font-size: 13px;
+    }
+  }
+  .link-type-cell {
+    color: #3293be;
+    cursor: pointer;
+  }
+}

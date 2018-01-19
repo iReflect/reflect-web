@@ -21,8 +21,8 @@ export class RetrospectiveListComponent implements OnInit {
         this.dataSource = new RetrospectiveListDataSource(this.service);
     }
 
-    navigateToRetroSpectiveDetail(row) {
-        // redirect to retro detail page
+    navigateToRetroSpectiveDashboard(row) {
+        this.router.navigateByUrl(APP_ROUTE_URLS.retroSpectiveDashboard.replace(':retroSpectiveID', row.ID));
     }
 
     createNewRetro() {

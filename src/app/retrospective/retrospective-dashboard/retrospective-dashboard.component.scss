@@ -1,5 +1,5 @@
-.retro-list-header {
-  div {
+.retro-details {
+  div:not(.action-buttons) {
     float: left;
     margin: -10px;
   }
@@ -9,7 +9,9 @@
     button {
       margin-right: 5px;
       color: white;
-      background-color: #64e63c;
+    }
+    .add-sprint {
+      background-color: #3293d2;
     }
   }
 }

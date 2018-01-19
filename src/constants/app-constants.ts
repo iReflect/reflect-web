@@ -34,6 +34,7 @@ export const APP_ROUTE_URLS = {
     teamFeedbackList: 'team/feedbacks',
     retroSpectiveList: 'retrospectives',
     retroSpectiveCreate: 'retrospectives/create',
+    retroSpectiveDashboard: 'retrospectives/:retroSpectiveID/dashboard',
 };
 
 export const API_RESPONSE_MESSAGES = {
@@ -44,3 +45,14 @@ export const API_RESPONSE_MESSAGES = {
 };
 
 export const QUESTION_RESPONSE_SEPARATOR = ',';
+
+export const SPRINT_STATES = {
+    DRAFT: 0,
+    ACTIVE: 1,
+    FREEZED: 2
+};
+export const SPRINT_STATES_LABEL = {
+    [SPRINT_STATES.DRAFT]: 'Draft',
+    [SPRINT_STATES.ACTIVE]: 'Active',
+    [SPRINT_STATES.FREEZED]: 'Freezed'
+};

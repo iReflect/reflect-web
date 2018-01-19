@@ -1,8 +1,13 @@
 import { Injectable } from '@angular/core';
-import * as RetroSpectiveListJson from '../../../fixtures/retrospective-list-response.json';
-import * as RetroSpectiveConfigOptions from '../../../fixtures/retrospective-config-options.json';
 import { RestApiHelperService } from '../utils/rest-api-helper.service';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/of';
+
+// Import Mocked API responses json
+import * as RetroSpectiveListJson from '../../../fixtures/retrospective-list-response.json';
+import * as RetroSpectiveConfigOptions from '../../../fixtures/retrospective-config-options.json';
+import * as RetroSpectiveGetJson from '../../../fixtures/retrospective-get-response.json';
+import * as SprintListJson from '../../../fixtures/sprint-list-response.json';
 
 
 @Injectable()
@@ -16,6 +21,16 @@ export class RetrospectiveService {
     getRetrospectives(): any {
         // TODO: Replace the dummy json with the Actual API once it is ready
         return RetroSpectiveListJson;
+    }
+
+    getRetrospectiveByID(retroSpectiveID): Observable<any> {
+        // TODO: Replace the dummy json with the Actual API once it is ready
+        return Observable.of(RetroSpectiveGetJson[retroSpectiveID]);
+    }
+
+    listSprintByRetrospectiveID(retroSpectiveID): Observable<any> {
+        // TODO: Replace the dummy json with the Actual API once it is ready
+        return Observable.of(SprintListJson);
     }
 
     getTeamList(): any {
