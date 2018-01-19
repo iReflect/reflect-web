@@ -9,7 +9,7 @@ import { LoginRequiredGuard } from '../core/route-guards/login-required.service'
 // Import Components
 import { RetrospectiveListComponent } from './retrospective-list/retrospective-list.component';
 import { SprintDetailComponent } from './sprint-detail/sprint-detail.component';
-import { SprintMemberSummaryComponent } from './sprint-member-summary/sprint-member-summary.component';
+import { RetrospectiveDashboardComponent } from './retrospective-dashboard/retrospective-dashboard.component';
 
 const routes: Routes = [
     {
@@ -20,6 +20,11 @@ const routes: Routes = [
     {
         path: APP_ROUTE_URLS.sprintDetails,
         component: SprintDetailComponent,
+        canActivate: [LoginRequiredGuard]
+    },
+    {
+        path: APP_ROUTE_URLS.retroSpectiveDashboard,
+        component: RetrospectiveDashboardComponent,
         canActivate: [LoginRequiredGuard]
     }
 ];
