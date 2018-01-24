@@ -1,10 +1,16 @@
+mat-card {
+  width: calc(100% - 70px);
+  height: calc(100% - 70px);
+  overflow: auto;
+}
 .create-retro {
   mat-form-field {
-    width: 250px;
+    width: 100%;
   }
   mat-toolbar {
-    .fill-remaining-space {
-      width: 90%;
+    background-color: rgba(0, 0, 0, 0);
+    .fill-space {
+      width: 40%;
     }
     .action-buttons {
       width: 10%;

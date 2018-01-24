@@ -23,6 +23,7 @@
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+reflect-web.iml
 
 # environment
 /src/environments/environment.ts

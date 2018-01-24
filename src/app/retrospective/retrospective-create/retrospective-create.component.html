@@ -1,61 +1,72 @@
 <div class="create-retro" *ngIf="isDataLoaded" [formGroup]="retroFormGroup">
+  <mat-grid-list cols="2" rowHeight="250px">
+    <mat-grid-tile>
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title><b>Retrospective Details</b></mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div>
+            <mat-form-field floatLabel="always">
+              <mat-label></mat-label>
+              <input matInput formControlName="title" placeholder="Retrospective Title">
+            </mat-form-field>
+          </div>
+          <div>
+            <mat-form-field floatLabel="always">
+              <mat-label></mat-label>
+              <input matInput type="number" formControlName="hoursPerStoryPoint" placeholder="Specify hours per story point">
+            </mat-form-field>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+    <mat-grid-tile [rowspan]="2">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title><b>Task Provider</b></mat-card-title>
+        </mat-card-header>
+        <mat-card-content [formArrayName]="taskProviderKey">
+          <div *ngFor="let _ of taskProvidersList; let providerIndex = index;">
+            <div [formGroupName]="providerIndex">
+              <app-task-provider
+                [taskProviderOptions]="taskProviderOptions"
+                (initializedTaskProvider)="taskProviderInitialized(providerIndex)($event)">
+              </app-task-provider>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title><b>Team</b></mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div>
+            <mat-form-field floatLabel="always">
+              <mat-label></mat-label>
+              <mat-select formControlName="team" placeholder="Select a Team">
+                <mat-option *ngFor="let team of teamOptions" [value]="team.ID">{{team.Name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div>
+            <mat-form-field floatLabel="always">
+              <mat-label></mat-label>
+              <input matInput formControlName="projectName" placeholder="Specify Project Name">
+            </mat-form-field>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+  </mat-grid-list>
   <mat-toolbar>
-    <div class="fill-remaining-space"></div>
+    <div class="fill-space"></div>
     <div class="action-buttons">
-      <button mat-raised-button [disabled]="!retroFormGroup.valid" (click)="createRetro()">Create Retro</button>
+      <button mat-raised-button (click)="onCloseClick()">Cancel</button>
+      <button mat-raised-button [disabled]="!retroFormGroup.valid" (click)="onSaveClick()">Create Retro</button>
     </div>
   </mat-toolbar>
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title><b>Retrospective Details</b></mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <div>
-        <mat-form-field floatLabel="always">
-          <mat-label></mat-label>
-          <input matInput formControlName="title" placeholder="Retrospective Title">
-        </mat-form-field>
-      </div>
-      <div>
-        <mat-form-field floatLabel="always">
-          <mat-label></mat-label>
-          <input matInput type="number" formControlName="hoursPerStoryPoint" placeholder="Specify hours per story point">
-        </mat-form-field>
-      </div>
-    </mat-card-content>
-    <mat-card-header>
-      <mat-card-title><b>Team</b></mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <div>
-        <mat-form-field floatLabel="always">
-          <mat-label></mat-label>
-          <mat-select formControlName="team" placeholder="Select a Team">
-            <mat-option *ngFor="let team of teamOptions" [value]="team.ID">{{team.Name}}</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-      <div>
-        <mat-form-field floatLabel="always">
-          <mat-label></mat-label>
-          <input matInput formControlName="projectName" placeholder="Specify Project Name">
-        </mat-form-field>
-      </div>
-    </mat-card-content>
-  </mat-card>
-  <mat-card>
-    <mat-card-header>
-      <mat-card-title><b>Task Provider</b></mat-card-title>
-    </mat-card-header>
-    <mat-card-content [formArrayName]="taskProviderKey">
-      <div *ngFor="let _ of taskProvidersList; let providerIndex = index;">
-        <div [formGroupName]="providerIndex">
-          <app-task-provider
-            [taskProviderOptions]="taskProviderOptions"
-            (initializedTaskProvider)="taskProviderInitialized(providerIndex)($event)">
-          </app-task-provider>
-        </div>
-      </div>
-    </mat-card-content>
-  </mat-card>
 </div>
