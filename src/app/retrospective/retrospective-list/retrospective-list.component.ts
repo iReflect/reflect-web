@@ -32,7 +32,7 @@ export class RetrospectiveListComponent implements OnInit {
         // redirect to retro detail page
     }
 
-    createNewRetroDialog() {
+    showCreateRetroModal() {
         this.getConfigOptions();
         const dialogRef = this.dialog.open(RetrospectiveCreateComponent, {
             width: '90%',
