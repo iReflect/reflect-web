@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { RetrospectiveListDataSource } from './retrospective-list.data-source';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { API_RESPONSE_MESSAGES } from '../../../constants/app-constants';
-import { MatDialog, MatSnackBar } from "@angular/material";
-import { RetrospectiveCreateComponent } from "../retrospective-create/retrospective-create.component";
+import { MatDialog, MatSnackBar } from '@angular/material';
+import { RetrospectiveCreateComponent } from '../retrospective-create/retrospective-create.component';
 
 @Component({
   selector: 'app-retrospective-list',
@@ -32,25 +32,27 @@ export class RetrospectiveListComponent implements OnInit {
         // redirect to retro detail page
     }
 
-    createNewRetro() {
-        // this.router.navigateByUrl(APP_ROUTE_URLS.retroSpectiveCreate);
-        let dialogRef = this.dialog.open(RetrospectiveCreateComponent, {
+    createNewRetroDialog() {
+        this.getConfigOptions();
+        const dialogRef = this.dialog.open(RetrospectiveCreateComponent, {
             width: '90%',
             height: '90%',
             data: {
                 teamOptions: this.teamOptions,
                 taskProviderOptions: this.taskProviderOptions,
                 isDataLoaded: this.isDataLoaded
-            }
+            },
+            maxWidth: 950,
         });
 
         dialogRef.afterClosed().subscribe(result => {
-            this.createRetro(result);
+            if (result) {
+                this.createRetro(result);
+            }
         });
     }
 
     ngOnInit() {
-        this.getConfigOptions();
         this.initializeDataSource();
     }
 
@@ -68,8 +70,7 @@ export class RetrospectiveListComponent implements OnInit {
     }
 
     createRetro(formValue) {
-        let response: any;
-        response = this.service.createRetro(formValue);
+        const response = this.service.createRetro(formValue);
         if (response.success) {
             this.snackBar.open(API_RESPONSE_MESSAGES.retroCreated, '', {duration: 2000});
             // TODO: Redirect to retro detail page

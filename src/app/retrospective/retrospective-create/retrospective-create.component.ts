@@ -32,14 +32,6 @@ export class RetrospectiveCreateComponent implements OnInit {
         this.taskProviderOptions = data.taskProviderOptions;
     }
 
-    onCloseClick(): void {
-        this.dialogRef.close();
-    }
-
-    onSaveClick(): void {
-        this.dialogRef.close(this.retroFormGroup.value);
-    }
-
     taskProviderInitialized(index) {
         return taskProviderFormGroup => {
             if (this.taskProvidersList[index]) {

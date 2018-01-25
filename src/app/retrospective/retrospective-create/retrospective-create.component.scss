@@ -3,22 +3,23 @@ mat-card {
   height: calc(100% - 70px);
   overflow: auto;
 }
+
+mat-grid-list {
+  min-width: 600px;
+}
+
+.task-provider {
+  height: 470px !important;
+}
+
 .create-retro {
   mat-form-field {
     width: 100%;
   }
-  mat-toolbar {
-    background-color: rgba(0, 0, 0, 0);
-    .fill-space {
-      width: 40%;
-    }
-    .action-buttons {
-      width: 10%;
-      button {
-        margin-right: 5px;
-        color: white;
-        background-color: #3293be;
-      }
-    }
-  }
+}
+
+button .mat-raised-button {
+  margin-right: 5px;
+  color: white;
+  background-color: #3293be;
 }

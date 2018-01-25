@@ -1,4 +1,5 @@
 <div class="create-retro" *ngIf="isDataLoaded" [formGroup]="retroFormGroup">
+  <h2 mat-dialog-title>Create a New Retro</h2>
   <mat-grid-list cols="2" rowHeight="250px">
     <mat-grid-tile>
       <mat-card>
@@ -17,23 +18,6 @@
               <mat-label></mat-label>
               <input matInput type="number" formControlName="hoursPerStoryPoint" placeholder="Specify hours per story point">
             </mat-form-field>
-          </div>
-        </mat-card-content>
-      </mat-card>
-    </mat-grid-tile>
-    <mat-grid-tile [rowspan]="2">
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title><b>Task Provider</b></mat-card-title>
-        </mat-card-header>
-        <mat-card-content [formArrayName]="taskProviderKey">
-          <div *ngFor="let _ of taskProvidersList; let providerIndex = index;">
-            <div [formGroupName]="providerIndex">
-              <app-task-provider
-                [taskProviderOptions]="taskProviderOptions"
-                (initializedTaskProvider)="taskProviderInitialized(providerIndex)($event)">
-              </app-task-provider>
-            </div>
           </div>
         </mat-card-content>
       </mat-card>
@@ -61,12 +45,26 @@
         </mat-card-content>
       </mat-card>
     </mat-grid-tile>
+    <mat-grid-tile [colspan]="2"[rowspan]="2" class="task-provider">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title><b>Task Provider</b></mat-card-title>
+        </mat-card-header>
+        <mat-card-content [formArrayName]="taskProviderKey">
+          <div *ngFor="let _ of taskProvidersList; let providerIndex = index;">
+            <div [formGroupName]="providerIndex">
+              <app-task-provider
+                [taskProviderOptions]="taskProviderOptions"
+                (initializedTaskProvider)="taskProviderInitialized(providerIndex)($event)">
+              </app-task-provider>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
   </mat-grid-list>
-  <mat-toolbar>
-    <div class="fill-space"></div>
-    <div class="action-buttons">
-      <button mat-raised-button (click)="onCloseClick()">Cancel</button>
-      <button mat-raised-button [disabled]="!retroFormGroup.valid" (click)="onSaveClick()">Create Retro</button>
-    </div>
-  </mat-toolbar>
+  <mat-dialog-actions>
+      <button mat-raised-button mat-dialog-close>Cancel</button>
+      <button mat-raised-button [disabled]="!retroFormGroup.valid" [mat-dialog-close]="retroFormGroup.value">Create Retro</button>
+  </mat-dialog-actions>
 </div>

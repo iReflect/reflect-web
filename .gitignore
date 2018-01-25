@@ -16,6 +16,7 @@
 *.launch
 .settings/
 *.sublime-workspace
+reflect-web.iml
 
 # IDE - VSCode
 .vscode/*
@@ -23,7 +24,6 @@
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-reflect-web.iml
 
 # environment
 /src/environments/environment.ts
