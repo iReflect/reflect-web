@@ -48,4 +48,8 @@ export class RetrospectiveService {
         console.log(retroConfig);
         return {success: true, error: ''};
     }
+
+    createSprint(sprintDetails) {
+        console.log('Sprint created with values: ' + sprintDetails);
+    }
 }

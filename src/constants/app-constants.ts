@@ -41,7 +41,8 @@ export const API_RESPONSE_MESSAGES = {
     feedBackSaved: 'Feedback saved successfully!!',
     feedBackSubmitted: 'Feedback submitted successfully!!',
     error: 'Some Error Occurred!!',
-    retroCreated: 'Retro Created successfully!!'
+    retroCreated: 'Retro Created successfully!!',
+    sprintCreated: 'Sprint Created Successfully!'
 };
 
 export const QUESTION_RESPONSE_SEPARATOR = ',';

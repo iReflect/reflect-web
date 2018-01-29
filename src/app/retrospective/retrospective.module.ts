@@ -12,6 +12,7 @@ import { RetrospectiveCreateComponent } from './retrospective-create/retrospecti
 import { ReactiveFormsModule } from '@angular/forms';
 import { RetrospectiveDashboardComponent } from './retrospective-dashboard/retrospective-dashboard.component';
 import { SprintListComponent } from './sprint-list/sprint-list.component';
+import { SprintCreateComponent } from './sprint-create/sprint-create.component';
 
 
 @NgModule({
@@ -27,9 +28,13 @@ import { SprintListComponent } from './sprint-list/sprint-list.component';
         RetrospectiveCreateComponent,
         RetrospectiveDashboardComponent,
         SprintListComponent,
+        SprintCreateComponent,
     ],
     exports: [],
-    providers: []
+    providers: [],
+    entryComponents: [
+        SprintCreateComponent
+    ]
 })
 export class RetrospectiveModule {
 }
