@@ -39,7 +39,8 @@ export const APP_ROUTE_URLS = {
 export const API_RESPONSE_MESSAGES = {
     feedBackSaved: 'Feedback saved successfully!!',
     feedBackSubmitted: 'Feedback submitted successfully!!',
-    error: 'Some Error Occurred!!'
+    error: 'Some Error Occurred!!',
+    retroCreated: 'Retro Created successfully!!'
 };
 
 export const QUESTION_RESPONSE_SEPARATOR = ',';

@@ -26,6 +26,7 @@ import { LoginRequiredGuard } from './route-guards/login-required.service';
     ],
     exports: [
         HeaderComponent,
+        CustomMaterialModule
     ],
     providers: [
         LoggerService,
