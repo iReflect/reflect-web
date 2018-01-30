@@ -1,5 +1,5 @@
 <div [formGroup]="taskProviderFormGroup" *ngIf="isInitialized">
-  <mat-form-field floatLabel="always">
+  <mat-form-field floatLabel="always" class="task-provider-select">
     <mat-label></mat-label>
     <mat-select [formControlName]="selectedTaskProviderKey" placeholder="Select a Task Provider"
                 (selectionChange)="onProviderChange($event.value)">
@@ -7,18 +7,38 @@
     </mat-select>
   </mat-form-field>
   <div *ngIf="showConfigFields">
-    <div formGroupName="Credentials">
-      <app-task-provider-auth
-        [authFormGroup]="taskProviderFormGroup.controls['Credentials']"
-        [supportedAuthTypes]="selectedTaskProviderConfigOptions['supportedAuthTypes']"
-      ></app-task-provider-auth>
-    </div>
-    <div [formGroupName]="taskProviderConfigKey">
-      <div *ngFor="let field of selectedTaskProviderConfigOptions['fields']">
-        <mat-form-field>
-          <input matInput [placeholder]="field.FieldDisplayName" [formControlName]="field.FieldName"/>
-        </mat-form-field>
-      </div>
-    </div>
+    <mat-grid-list cols="2" rowHeight="300px">
+      <mat-grid-tile>
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>Credentials</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div formGroupName="Credentials">
+              <app-task-provider-auth
+                [authFormGroup]="taskProviderFormGroup.controls['Credentials']"
+                [supportedAuthTypes]="selectedTaskProviderConfigOptions['supportedAuthTypes']"
+              ></app-task-provider-auth>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </mat-grid-tile>
+      <mat-grid-tile>
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>Provider Configurations</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div [formGroupName]="taskProviderConfigKey">
+              <div *ngFor="let field of selectedTaskProviderConfigOptions['fields']">
+                <mat-form-field>
+                  <input matInput [placeholder]="field.FieldDisplayName" [formControlName]="field.FieldName"/>
+                </mat-form-field>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </mat-grid-tile>
+    </mat-grid-list>
   </div>
 </div>

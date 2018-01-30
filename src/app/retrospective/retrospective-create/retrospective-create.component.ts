@@ -1,8 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { RetrospectiveService } from '../../shared/services/retrospective.service';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material';
-import { API_RESPONSE_MESSAGES } from '../../../constants/app-constants';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
   selector: 'app-retrospective-create',
@@ -27,7 +25,12 @@ export class RetrospectiveCreateComponent implements OnInit {
     // Keys used for form controls and provider lookups
     taskProviderKey = 'taskProvider';
 
-    constructor(private service: RetrospectiveService, private snackBar: MatSnackBar) { }
+    constructor(public dialogRef: MatDialogRef<RetrospectiveCreateComponent>,
+                @Inject(MAT_DIALOG_DATA) public data: any) {
+        this.isDataLoaded = data.isDataLoaded;
+        this.teamOptions = data.teamOptions;
+        this.taskProviderOptions = data.taskProviderOptions;
+    }
 
     taskProviderInitialized(index) {
         return taskProviderFormGroup => {
@@ -36,12 +39,6 @@ export class RetrospectiveCreateComponent implements OnInit {
                     .setControl(index, taskProviderFormGroup);
             }
         };
-    }
-
-    getConfigOptions() {
-        this.teamOptions = this.service.getTeamList()['Teams'] || [];
-        this.taskProviderOptions = this.service.getTaskProvidersList()['TaskProviders'] || [];
-        this.isDataLoaded = true;
     }
 
     createRetroFormGroup() {
@@ -62,20 +59,8 @@ export class RetrospectiveCreateComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.getConfigOptions();
         this.createRetroFormGroup();
         this.addTaskProvider();
-    }
-
-    createRetro() {
-        let response: any;
-        response = this.service.createRetro(this.retroFormGroup.value);
-        if (response.success) {
-            this.snackBar.open(API_RESPONSE_MESSAGES.retroCreated, '', {duration: 2000});
-            // TODO: Redirect to retro detail page
-        } else {
-            this.snackBar.open(API_RESPONSE_MESSAGES.error, '', {duration: 2000});
-        }
     }
 
 }

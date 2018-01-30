@@ -1,18 +1,25 @@
+mat-card {
+  width: calc(100% - 70px);
+  height: calc(100% - 70px);
+  overflow: auto;
+}
+
+mat-grid-list {
+  min-width: 600px;
+}
+
+.task-provider {
+  height: 470px !important;
+}
+
 .create-retro {
   mat-form-field {
-    width: 250px;
+    width: 100%;
   }
-  mat-toolbar {
-    .fill-remaining-space {
-      width: 90%;
-    }
-    .action-buttons {
-      width: 10%;
-      button {
-        margin-right: 5px;
-        color: white;
-        background-color: #3293be;
-      }
-    }
-  }
+}
+
+button .mat-raised-button {
+  margin-right: 5px;
+  color: white;
+  background-color: #3293be;
 }
