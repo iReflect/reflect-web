@@ -32,6 +32,8 @@ export const APP_ROUTE_URLS = {
     feedbackList: 'feedbacks',
     teamFeedback: 'team/feedbacks/:id',
     teamFeedbackList: 'team/feedbacks',
+    retroSpectiveList: 'retrospectives',
+    sprintDashboard: 'retrospectives/:retrospectiveID/sprint/:sprintID',
 };
 
 export const API_RESPONSE_MESSAGES = {

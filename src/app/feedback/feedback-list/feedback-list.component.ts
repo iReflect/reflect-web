@@ -2,8 +2,8 @@ import { Component, Injectable, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as _ from 'lodash';
 import { FEEDBACK_STATES, FEEDBACK_STATES_LABEL } from '../../../constants/app-constants';
-import { FeedbackService } from "../../shared/services/feedback.service";
-import { TeamFeedbackService } from "../../shared/services/team-feedback.service";
+import { FeedbackService } from '../../shared/services/feedback.service';
+import { TeamFeedbackService } from '../../shared/services/team-feedback.service';
 import { UrlHelperService } from '../../shared/utils/url-helper.service';
 import { FeedBackListDataSource } from './feedback-list.data-source';
 
