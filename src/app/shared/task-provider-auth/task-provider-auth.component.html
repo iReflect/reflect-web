@@ -1,0 +1,28 @@
+<div [formGroup]="authFormGroup">
+  <mat-form-field floatLabel="always">
+    <mat-label></mat-label>
+    <mat-select formControlName="type" placeholder="Select an Auth Type"
+                (selectionChange)="onAuthTypeChange($event.value)">
+      <mat-option *ngFor="let option of supportedAuthTypeConfigList" [value]="option.type">{{option.displayName}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <div formGroupName="data">
+    <div *ngIf="selectedAuthType === 'basicAuth'">
+      <div>
+        <mat-form-field>
+          <input matInput placeholder="Username" formControlName="username"/>
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field>
+          <input matInput type="password" placeholder="Password" formControlName="password"/>
+        </mat-form-field>
+      </div>
+    </div>
+    <div *ngIf="selectedAuthType === 'apiToken'">
+      <mat-form-field>
+        <input matInput placeholder="API Token" formControlName="apiToken"/>
+      </mat-form-field>
+    </div>
+  </div>
+</div>
