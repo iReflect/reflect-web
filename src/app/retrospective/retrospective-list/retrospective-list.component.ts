@@ -58,7 +58,7 @@ export class RetrospectiveListComponent implements OnInit {
     navigateToLatestSprint(row) {
         this.service.getRetroSpectiveLatestSprint(row.ID).subscribe((sprintData) => {
             alert('Redirecting to the sprint dashboard');
-            this.router.navigateByUrl(APP_ROUTE_URLS.sprintDashboard.replace(
+            this.router.navigateByUrl(APP_ROUTE_URLS.sprintDetails.replace(
                 ':retrospectiveID', row.ID).replace(
                     ':sprintID', sprintData.SprintID));
         });

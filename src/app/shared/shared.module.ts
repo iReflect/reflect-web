@@ -16,6 +16,7 @@ import { RetrospectiveService } from './services/retrospective.service';
 import { CustomMaterialModule } from '../core/custom-material/custom-material.module';
 import { TaskProviderComponent } from './task-provider/task-provider.component';
 import { TaskProviderAuthComponent } from './task-provider-auth/task-provider-auth.component';
+import { BasicModalComponent } from './basic-modal/basic-modal.component';
 
 @NgModule({
     imports: [
@@ -29,7 +30,8 @@ import { TaskProviderAuthComponent } from './task-provider-auth/task-provider-au
     declarations: [
         ValuesPipe,
         TaskProviderAuthComponent,
-        TaskProviderComponent
+        TaskProviderComponent,
+        BasicModalComponent
     ],
     exports: [
         ValuesPipe,
@@ -44,7 +46,7 @@ import { TaskProviderAuthComponent } from './task-provider-auth/task-provider-au
         UserStoreService,
         RetrospectiveService,
         RestApiHelperService
-    ]
+    ],
 })
 export class SharedModule {
 }

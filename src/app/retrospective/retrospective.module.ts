@@ -5,27 +5,34 @@ import { NgModule } from '@angular/core';
 import { CustomMaterialModule } from '../core/custom-material/custom-material.module';
 import { SharedModule } from '../shared/shared.module';
 import { RetrospectiveRoutingModule } from './retrospective-routing.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // Import Components
 import { RetrospectiveListComponent } from './retrospective-list/retrospective-list.component';
 import { RetrospectiveCreateComponent } from './retrospective-create/retrospective-create.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { SprintDetailComponent } from './sprint-detail/sprint-detail.component';
+import { BasicModalComponent } from '../shared/basic-modal/basic-modal.component';
 
 
 @NgModule({
     imports: [
         CommonModule,
-        SharedModule,
+        FormsModule,
         ReactiveFormsModule,
         CustomMaterialModule,
+        SharedModule,
         RetrospectiveRoutingModule
     ],
     declarations: [
         RetrospectiveListComponent,
         RetrospectiveCreateComponent,
+        SprintDetailComponent
     ],
     exports: [],
-    providers: []
+    providers: [],
+    entryComponents: [
+        BasicModalComponent
+    ]
 })
 export class RetrospectiveModule {
 }

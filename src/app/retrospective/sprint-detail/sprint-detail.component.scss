@@ -1,0 +1,41 @@
+.card-header {
+  color: rgba(0,0,0,.54);
+  font-weight: 500;
+  height: 48px;
+  font-size: 14px;
+  padding: 0;
+}
+
+.date-font {
+  font-family: Calibri;
+}
+
+.back-icon {
+  cursor: pointer;
+}
+
+.flex-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.status-button {
+  background: #0052CC !important;
+  color: #FFFFFF !important;
+}
+
+.sync-error {
+  margin-top: 15%;
+  margin-left: 32%;
+  width: 30%;
+  text-align: center;
+}
+
+.circular-icon {
+  border-radius: 50%;
+  background-color: #6dcaf3;
+  color: #ffffff;
+  line-height: 22px;
+  font-size: 32px;
+  cursor: pointer;
+}

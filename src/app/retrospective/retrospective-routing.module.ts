@@ -8,11 +8,17 @@ import { LoginRequiredGuard } from '../core/route-guards/login-required.service'
 
 // Import Components
 import { RetrospectiveListComponent } from './retrospective-list/retrospective-list.component';
+import {SprintDetailComponent} from "./sprint-detail/sprint-detail.component";
 
 const routes: Routes = [
     {
         path: APP_ROUTE_URLS.retroSpectiveList,
         component: RetrospectiveListComponent,
+        canActivate: [LoginRequiredGuard]
+    },
+    {
+        path: APP_ROUTE_URLS.sprintDetails,
+        component: SprintDetailComponent,
         canActivate: [LoginRequiredGuard]
     }
 ];

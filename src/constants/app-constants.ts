@@ -33,14 +33,32 @@ export const APP_ROUTE_URLS = {
     teamFeedback: 'team/feedbacks/:id',
     teamFeedbackList: 'team/feedbacks',
     retroSpectiveList: 'retrospectives',
-    sprintDashboard: 'retrospectives/:retrospectiveID/sprint/:sprintID',
+    sprintDetails: 'retrospectives/:retrospectiveId/sprint/:sprintId',
 };
 
 export const API_RESPONSE_MESSAGES = {
     feedBackSaved: 'Feedback saved successfully!!',
     feedBackSubmitted: 'Feedback submitted successfully!!',
     error: 'Some Error Occurred!!',
-    retroCreated: 'Retro Created successfully!!'
+    retroCreated: 'Retro Created successfully!!',
+    sprintActivated: 'Sprint activated successfully!!',
+    sprintFrozen: 'Sprint frozen successfully!!',
+    sprintDiscarded: 'Sprint discarded successfully!!',
+    computationInitiated: 'Computation Initiated Successfully!!'
 };
 
 export const QUESTION_RESPONSE_SEPARATOR = ',';
+
+export const SPRINT_STATES = {
+    DRAFT: 0,
+    ACTIVE: 1,
+    FROZEN: 2,
+    DISCARDED: 3
+};
+
+export const SPRINT_STATES_LABEL = {
+    [SPRINT_STATES.DRAFT]: 'Draft',
+    [SPRINT_STATES.ACTIVE]: 'Active',
+    [SPRINT_STATES.FROZEN]: 'Frozen',
+    [SPRINT_STATES.DISCARDED]: 'Discarded'
+};
