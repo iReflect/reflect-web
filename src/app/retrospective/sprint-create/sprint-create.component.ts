@@ -1,20 +1,11 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import * as _ from 'lodash';
-
-function startValidator(control: FormControl) {
-    return {
-        error: {
-            valid: true
-        }
-    }
-}
 
 @Component({
   selector: 'app-sprint-create',
   templateUrl: './sprint-create.component.html',
-  styleUrls: ['./sprint-create.component.scss']
+  styleUrls: ['./sprint-create.component.scss'],
 })
 export class SprintCreateComponent implements OnInit {
 
@@ -37,42 +28,39 @@ export class SprintCreateComponent implements OnInit {
         }, this.validateForm.bind(this));
     }
 
-    get title() {
+    get titleControl() {
         return this.sprintFormGroup.get('title');
     }
 
-    get startDate() {
+    get startDateControl() {
         return this.sprintFormGroup.get('startDate');
     }
 
-    get endDate() {
+    get endDateControl() {
         return this.sprintFormGroup.get('endDate');
     }
 
-    validateForm(group: FormGroup) {
+    validateForm(sprintFormGroup: FormGroup) {
         this.errors = {};
-        const formValue = group.value;
+        const sprintFormValue = sprintFormGroup.value;
 
-        if (formValue.startDate && !formValue.endDate) {
+        if (sprintFormValue.startDate && !sprintFormValue.endDate) {
             this.errors.endShouldExist = true;
         }
-        if (!formValue.startDate && formValue.endDate) {
+        if (!sprintFormValue.startDate && sprintFormValue.endDate) {
             this.errors.startShouldExist = true;
         }
-        if (formValue.startDate && formValue.endDate && formValue.startDate > formValue.endDate) {
+        if (sprintFormValue.startDate && sprintFormValue.endDate && sprintFormValue.startDate > sprintFormValue.endDate) {
             this.errors.startGreaterThanEnd = true;
         }
 
-        if (!formValue.title) {
+        if (!sprintFormValue.title) {
             this.errors.titleRequired = true;
-        } else if (!formValue.startDate && !formValue.endDate && !formValue.sprintId && !group.controls.startDate.invalid && !group.controls.endDate.invalid) {
+        } else if (!sprintFormValue.startDate && !sprintFormValue.endDate && !sprintFormValue.sprintId
+            && this.startDateControl.valid && this.endDateControl.valid) {
             this.errors.atleastOne = true;
         }
 
-        if ((!formValue.startDate && !formValue.endDate && formValue.sprintId) || (formValue.startDate && formValue.endDate && formValue.startDate < formValue.endDate)) {
-            return null;
-        }
-        console.log(this.errors);
         return this.errors;
     }
 

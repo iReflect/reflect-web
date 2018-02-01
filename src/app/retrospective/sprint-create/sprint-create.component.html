@@ -3,8 +3,8 @@
   <div>
     <mat-form-field floatLabel="always">
       <mat-label></mat-label>
-      <input matInput id="title" formControlName="title" placeholder="Sprint Title" required>
-      <mat-error *ngIf="title.invalid && (title.dirty || title.touched)">
+      <input matInput formControlName="title" placeholder="Sprint Title" required>
+      <mat-error *ngIf="titleControl.invalid && (titleControl.dirty || titleControl.touched)">
         Title is required.
       </mat-error>
     </mat-form-field>
@@ -23,7 +23,7 @@
       <mat-error *ngIf="errors.startShouldExist">
         Start Date is required.
       </mat-error>
-      <mat-error *ngIf="startDate.invalid && (startDate.dirty || startDate.touched)">
+      <mat-error *ngIf="startDateControl.invalid && (startDateControl.dirty || startDateControl.touched)">
         It should be a valid date.
       </mat-error>
     </mat-form-field>
@@ -41,7 +41,7 @@
       <mat-error *ngIf="errors.startGreaterThanEnd">
         End date should be greater than the Start date.
       </mat-error>
-      <mat-error *ngIf="endDate.invalid && (endDate.dirty || endDate.touched)">
+      <mat-error *ngIf="endDateControl.invalid && (endDateControl.dirty || endDateControl.touched)">
         It should be a valid date.
       </mat-error>
     </mat-form-field>
@@ -52,7 +52,7 @@
   <div>
     <mat-dialog-actions>
       <button mat-raised-button mat-dialog-close>Cancel</button>
-      <button mat-raised-button [disabled]="!sprintFormGroup.valid" [mat-dialog-close]="sprintFormGroup.value">Create Sprint</button>
+      <button mat-raised-button [disabled]="sprintFormGroup.invalid" [mat-dialog-close]="sprintFormGroup.value">Create Sprint</button>
     </mat-dialog-actions>
   </div>
 </div>

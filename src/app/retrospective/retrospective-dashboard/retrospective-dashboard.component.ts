@@ -36,26 +36,22 @@ export class RetrospectiveDashboardComponent implements OnInit {
         const dialogRef = this.dialog.open(SprintCreateComponent, {
             width: '70%',
             height: '70%',
-            data: {
-            },
             maxWidth: 950,
         });
 
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
-                this.createSprint(result);
+                this.service.createSprint(result).subscribe(
+                    () => {
+                        this.snackBar.open(API_RESPONSE_MESSAGES.sprintCreated, '', {duration: 2000});
+                        // TODO: Redirect to sprint details page
+                    },
+                    () => {
+                        this.snackBar.open(API_RESPONSE_MESSAGES.error, '', {duration: 2000});
+                    }
+                );
             }
         });
-    }
-
-    createSprint(formValue) {
-        const response = this.service.createRetro(formValue);
-        if (response.success) {
-            this.snackBar.open(API_RESPONSE_MESSAGES.sprintCreated, '', {duration: 2000});
-            // TODO: Redirect to sprint details page
-        } else {
-            this.snackBar.open(API_RESPONSE_MESSAGES.error, '', {duration: 2000});
-        }
     }
 
     ngOnInit() {

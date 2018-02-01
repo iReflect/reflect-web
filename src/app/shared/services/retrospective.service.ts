@@ -49,7 +49,13 @@ export class RetrospectiveService {
         return {success: true, error: ''};
     }
 
-    createSprint(sprintDetails) {
+    createSprint(sprintDetails): Observable<any> {
         console.log('Sprint created with values: ' + sprintDetails);
+        const odds = Math.floor(Math.random() * Math.floor(2));
+        if (odds) {
+            return Observable.of('Success!');
+        } else {
+            return Observable.throw('Server Error!');
+        }
     }
 }
