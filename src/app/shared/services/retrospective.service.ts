@@ -5,6 +5,7 @@ import * as SprintListJson from '../../../fixtures/sprint-list-response.json';
 import { RestApiHelperService } from '../utils/rest-api-helper.service';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
+import {API_URLS} from "../../../constants/api-urls";
 
 
 @Injectable()
@@ -46,43 +47,42 @@ export class RetrospectiveService {
     getSprintDetails(id: number): Observable<any> {
         // TODO: Replace the dummy json with the actual API once it is ready
         const sprints = SprintListJson['Sprints'];
-        // console.log('RetroService: sprints are: ' + JSON.stringify(sprints);
-        // const sprintRequired = sprints.filter((sprint) => sprint.ID === id);
-        // console.log('RetroService: sprintRequired is: ' + JSON.stringify(sprintRequired));
         if(sprints.length >= id) {
             return Observable.of(sprints[id-1]);
         } else {
-            return Observable.throw('Server Error');
+            return Observable.throw('An Error Occured');
         }
     }
 
-    activateSprint(): Observable<any> {
-        return this.changeSprintStatus();
+    activateSprint(sprintID): Observable<any> {
+        return this.changeSprintStatus(API_URLS.activateSprint.replace(':sprintID', sprintID));
     }
 
-    freezeSprint(): Observable<any> {
-        return this.changeSprintStatus();
+    freezeSprint(sprintID): Observable<any> {
+        return this.changeSprintStatus(API_URLS.freezeSprint.replace(':sprintID', sprintID));
     }
 
-    discardSprint(): Observable<any> {
-        return this.changeSprintStatus();
+    discardSprint(sprintID): Observable<any> {
+        return this.changeSprintStatus(API_URLS.discardSprint.replace(':sprintID', sprintID));
     }
 
-    changeSprintStatus() {
+    changeSprintStatus(url): Observable<any> {
+        // TODO: Make API calls with passed url
         const odds = Math.floor(Math.random() * Math.floor(2));
         if (odds) {
-            return Observable.of('Success!');
+            return Observable.of({});
         } else {
-            return Observable.throw('Server Error!');
+            return Observable.throw('Some Error!');
         }
     }
 
     initiateComputation(): Observable<any> {
+        // TODO: Make API Calls
         const odds = Math.floor(Math.random() * Math.floor(2));
         if (odds) {
-            return Observable.of('Success!');
+            return Observable.of({});
         } else {
-            return Observable.throw('Server Error!');
+            return Observable.throw('Some Error!');
         }
     }
 }

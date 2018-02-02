@@ -33,7 +33,7 @@ export const APP_ROUTE_URLS = {
     teamFeedback: 'team/feedbacks/:id',
     teamFeedbackList: 'team/feedbacks',
     retroSpectiveList: 'retrospectives',
-    sprintDetails: 'retrospectives/:retrospectiveId/sprint/:sprintId',
+    sprintDetails: 'retrospectives/:retrospectiveID/sprint/:sprintID',
 };
 
 export const API_RESPONSE_MESSAGES = {
@@ -44,7 +44,7 @@ export const API_RESPONSE_MESSAGES = {
     sprintActivated: 'Sprint activated successfully!!',
     sprintFrozen: 'Sprint frozen successfully!!',
     sprintDiscarded: 'Sprint discarded successfully!!',
-    computationInitiated: 'Computation Initiated Successfully!!'
+    sprintComputationInitiated: 'Sprint Computation Initiated Successfully!!'
 };
 
 export const QUESTION_RESPONSE_SEPARATOR = ',';
@@ -62,3 +62,17 @@ export const SPRINT_STATES_LABEL = {
     [SPRINT_STATES.FROZEN]: 'Frozen',
     [SPRINT_STATES.DISCARDED]: 'Discarded'
 };
+
+export const SPRINT_ACTIONS = {
+    ACTIVATE: 0,
+    FREEZE: 1,
+    DISCARD: 2
+};
+
+export const SPRINT_ACTIONS_LABEL = {
+    [SPRINT_ACTIONS.ACTIVATE]: 'Activate',
+    [SPRINT_ACTIONS.FREEZE]: 'Freeze',
+    [SPRINT_ACTIONS.DISCARD]: 'Discard'
+};
+
+export const SNACKBAR_DURATION = 2000;

@@ -25,14 +25,15 @@ import { BasicModalComponent } from '../shared/basic-modal/basic-modal.component
     ],
     declarations: [
         RetrospectiveListComponent,
-        RetrospectiveCreateComponent,
-        SprintDetailComponent
+        SprintDetailComponent,
+        RetrospectiveCreateComponent
     ],
     exports: [],
     providers: [],
     entryComponents: [
-        BasicModalComponent
+        RetrospectiveCreateComponent
     ]
+
 })
 export class RetrospectiveModule {
 }

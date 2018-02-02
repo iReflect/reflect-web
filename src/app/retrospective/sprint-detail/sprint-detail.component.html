@@ -4,7 +4,7 @@
       <mat-card-title>{{sprintDetails.Title}}</mat-card-title>
     </div>
    <div>
-     <span matTooltip="Retrospective dashboard" matTooltipPosition="before">
+     <span class="dashboard-back" matTooltip="Retrospective dashboard" matTooltipPosition="before">
        <span (click)="navigateToRetrospectiveDashboard()" class="circular-icon">
          &nbsp;<mat-icon class="back-icon">arrow_back</mat-icon>&nbsp;
        </span>
@@ -12,24 +12,25 @@
    </div>
   </div>
   <mat-card-content class="flex-container">
-    <div class="flex-element">
-      <p mat-line class="date-font">{{sprintDetails.StartDate | date: dateFormat}} to {{sprintDetails.EndDate | date: dateFormat}}</p>
-      <p mat-line class="date-font">Last Synced At: {{sprintDetails.LastSyncedAt | date: dateFormat}}</p>
-      <p mat-line class="date-font">Total Time Spent: {{sprintDetails.TotalTimeSpent}} Hours</p>
-    </div>
     <div>
-      <div style="text-align: right;">
-        <mat-form-field *ngIf="sprintStatus !== 'Frozen'">
-          <mat-select placeholder="{{sprintStatus}}" [(ngModel)]="selectedValue" (selectionChange)="stateChange($event.value, $event.source)">
-            <!--<mat-option>{{sprintStatus}}</mat-option>-->
-            <mat-option *ngIf="sprintStatus === 'Draft'" value="activate">Activate</mat-option>
-            <mat-option *ngIf="sprintStatus === 'Active'" value="freeze">Freeze</mat-option>
-            <mat-option *ngIf="sprintStatus !== 'Frozen'" value="discard">Discard</mat-option>
+      <p mat-line>{{sprintDetails.StartDate | date: dateFormat}} to {{sprintDetails.EndDate | date: dateFormat}}</p>
+      <p mat-line>Last Synced At: {{sprintDetails.LastSyncedAt | date: dateFormat}}</p>
+      <p mat-line>Total Time Spent: {{sprintDetails.TotalTimeSpent}} Hours</p>
+    </div>
+    <div class="sprint-actions">
+      <div *ngIf="sprintStatus !== sprintStates.FROZEN">
+        <mat-form-field>
+          <mat-select placeholder="{{sprintStatesLabel[sprintStatus]}}" [(ngModel)]="selectedValue" (selectionChange)="stateChange($event.value)">
+            <mat-option *ngIf="sprintStatus === sprintStates.DRAFT" [value]="sprintActions.ACTIVATE">{{sprintActionsLabel[sprintActions.ACTIVATE]}}</mat-option>
+            <mat-option *ngIf="sprintStatus === sprintStates.ACTIVE" [value]="sprintActions.FREEZE">{{sprintActionsLabel[sprintActions.FREEZE]}}</mat-option>
+            <mat-option *ngIf="sprintStatus !== sprintStates.FROZEN" [value]="sprintActions.DISCARD">{{sprintActionsLabel[sprintActions.DISCARD]}}</mat-option>
           </mat-select>
         </mat-form-field>
-        <button mat-button class="status-button" *ngIf="sprintStatus === 'Frozen'" disabled>Frozen <mat-icon>done</mat-icon></button>
       </div>
-      <div style="text-align: right;">
+      <div class="status-freeze" *ngIf="sprintStatus === sprintStates.FROZEN">
+        <span>Frozen <mat-icon class="green-icon">done</mat-icon></span>
+      </div>
+      <div>
         <button mat-button (click)="initiateComputation()" *ngIf="!sprintDetails.isSyncInProgress">Refresh <mat-icon>refresh</mat-icon></button>
       </div>
     </div>
@@ -41,11 +42,11 @@
     <mat-tab label="Tab 1">Content 1</mat-tab>
     <mat-tab label="Tab 2">Content 2</mat-tab>
   </mat-tab-group>
-  <mat-card class="sync-error" *ngIf="!sprintDetails.LastSyncedAt">
-    <mat-error *ngIf="!sprintDetails.LastSyncedAt && !sprintDetails.isSyncInProgress">
+  <mat-card class="sync-error-card" *ngIf="!sprintDetails.LastSyncedAt">
+    <mat-error *ngIf="!sprintDetails.isSyncInProgress">
       Please Refresh to fetch data!
     </mat-error>
-    <mat-error *ngIf="!sprintDetails.LastSyncedAt && sprintDetails.isSyncInProgress">
+    <mat-error *ngIf="sprintDetails.isSyncInProgress">
       Please Wait! Sync in Progress!
     </mat-error>
   </mat-card>

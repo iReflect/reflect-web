@@ -7,5 +7,9 @@ export const API_URLS = {
     teamFeedback: 'teams/feedbacks',
     user: {
         current: '/users/current'
-    }
+    },
+    // TODO: update these routes with actual API
+    activateSprint: '/activate/:sprintID',
+    freezeSprint: '/freeze/:sprintID',
+    discardSprint: 'discard/:sprintID'
 };

@@ -2,21 +2,28 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
-import { API_RESPONSE_MESSAGES, APP_ROUTE_URLS, SPRINT_STATES_LABEL } from '../../../constants/app-constants';
+import {
+    API_RESPONSE_MESSAGES, APP_ROUTE_URLS, SNACKBAR_DURATION, SPRINT_ACTIONS, SPRINT_ACTIONS_LABEL, SPRINT_STATES,
+    SPRINT_STATES_LABEL
+} from '../../../constants/app-constants';
 import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.component';
 
 @Component({
-  selector: 'app-sprint-detail',
-  templateUrl: './sprint-detail.component.html',
-  styleUrls: ['./sprint-detail.component.scss']
+    selector: 'app-sprint-detail',
+    templateUrl: './sprint-detail.component.html',
+    styleUrls: ['./sprint-detail.component.scss']
 })
 export class SprintDetailComponent implements OnInit {
     sprintDetails: any;
     retrospectiveId: number;
-    sprintId: number;
     dateFormat = 'MMMM dd, yyyy';
     sprintStatus;
     selectedValue;
+    sprintStates = SPRINT_STATES;
+    sprintStatesLabel = SPRINT_STATES_LABEL;
+    sprintActions = SPRINT_ACTIONS;
+    sprintActionsLabel = SPRINT_ACTIONS_LABEL;
+
 
     constructor(private retrospectiveService: RetrospectiveService,
                 private snackBar: MatSnackBar,
@@ -26,29 +33,37 @@ export class SprintDetailComponent implements OnInit {
 
     ngOnInit() {
         this.activatedRoute.params.subscribe((params: Params) => {
-            this.sprintId = params['sprintId'];
-            this.retrospectiveId = params['retrospectiveId'];
+            this.retrospectiveId = params['retrospectiveID'];
+            this.retrospectiveService.getSprintDetails(params['sprintID']).subscribe(
+                // TODO: replace this data with response and access data using response.data
+                (data) => {
+                    this.sprintDetails = data;
+                },
+                () => {
+                    this.snackBar.open(API_RESPONSE_MESSAGES.error, '', {duration: SNACKBAR_DURATION});
+                }
+            );
         });
-        this.retrospectiveService.getSprintDetails(this.sprintId).subscribe(
-            (data) => {
-                this.sprintDetails = data;
-            },
-            () => {
-                this.snackBar.open(API_RESPONSE_MESSAGES.error, '', {duration: 2000});
-            }
-        );
-        this.sprintStatus = SPRINT_STATES_LABEL[this.sprintDetails.Status];
+        this.sprintStatus = this.sprintDetails.Status;
     }
 
     navigateToRetrospectiveDashboard() {
-        this.router.navigateByUrl(APP_ROUTE_URLS.retroSpectiveList + '/' + this.retrospectiveId);
+        // TODO: change this route to retrospective dashboard
+        this.router.navigateByUrl(APP_ROUTE_URLS.retroSpectiveList);
+    }
+
+    sprintStateChangeError(errorMessage) {
+        if (errorMessage) {
+            this.snackBar.open(errorMessage, '', {duration: SNACKBAR_DURATION});
+        }
+        this.selectedValue = undefined;
     }
 
     stateChange(action) {
-        if (action) {
+        if (action >= 0 && action <= 3) {
             const dialogRef = this.dialog.open(BasicModalComponent, {
                 data: {
-                    content: 'Are you sure you want to ' + action + ' sprint?',
+                    content: 'Are you sure you want to ' + this.sprintActionsLabel[action] + ' sprint?',
                     confirmBtn: 'Yes',
                     cancelBtn: 'Cancel'
                 },
@@ -57,62 +72,48 @@ export class SprintDetailComponent implements OnInit {
 
             dialogRef.afterClosed().subscribe(result => {
                 if (result) {
-                    if(action === 'activate') {
-                        this.retrospectiveService.activateSprint().subscribe(
+                    if(action === this.sprintActions.ACTIVATE) {
+                        this.retrospectiveService.activateSprint(this.sprintDetails.ID).subscribe(
                             () => {
-                                this.sprintStatus = 'Active';
-                                this.snackBar.open(API_RESPONSE_MESSAGES.sprintActivated, '', {duration: 2000});
+                                this.sprintStatus = this.sprintStates.ACTIVE;
+                                this.snackBar.open(API_RESPONSE_MESSAGES.sprintActivated, '', {duration: SNACKBAR_DURATION});
                             },
-                            () => {
-                                this.snackBar.open(API_RESPONSE_MESSAGES.error, '', {duration: 2000});
-                                this.selectedValue = undefined;
-                            }
+                            () => this.sprintStateChangeError(API_RESPONSE_MESSAGES.error)
                         );
-                    } else if (action === 'freeze') {
-                        this.retrospectiveService.freezeSprint().subscribe(
+                    } else if (action === this.sprintActions.FREEZE) {
+                        this.retrospectiveService.freezeSprint(this.sprintDetails.ID).subscribe(
                             () => {
-                                this.sprintStatus = 'Frozen';
-                                this.snackBar.open(API_RESPONSE_MESSAGES.sprintFrozen, '', {duration: 2000});
+                                this.sprintStatus =  this.sprintStates.FROZEN;
+                                this.snackBar.open(API_RESPONSE_MESSAGES.sprintFrozen, '', {duration: SNACKBAR_DURATION});
                             },
-                            () => {
-                                this.snackBar.open(API_RESPONSE_MESSAGES.error, '', {duration: 2000});
-                                this.selectedValue = undefined;
-                            }
+                            () => this.sprintStateChangeError(API_RESPONSE_MESSAGES.error)
                         );
-                    } else if (action === 'discard') {
-                        this.retrospectiveService.discardSprint().subscribe(
+                    } else if (action === this.sprintActions.DISCARD) {
+                        this.retrospectiveService.discardSprint(this.sprintDetails.ID).subscribe(
                             () => {
-                                this.snackBar.open(API_RESPONSE_MESSAGES.sprintDiscarded, '', {duration: 2000});
+                                this.snackBar.open(API_RESPONSE_MESSAGES.sprintDiscarded, '', {duration: SNACKBAR_DURATION});
                                 this.navigateToRetrospectiveDashboard();
                             },
-                            () => {
-                                this.snackBar.open(API_RESPONSE_MESSAGES.error, '', {duration: 2000});
-                                this.selectedValue = undefined;
-                            }
+                            () => this.sprintStateChangeError(API_RESPONSE_MESSAGES.error)
                         );
                     } else {
-                        this.snackBar.open(API_RESPONSE_MESSAGES.error, '', {duration: 2000});
-                        this.selectedValue = undefined;
+                        this.sprintStateChangeError('Please select a valid option!')
                     }
                 } else {
-                    this.selectedValue = undefined;
+                    this.sprintStateChangeError('');
                 }
             });
-
-        } else {
-            this.selectedValue = undefined;
         }
     }
 
     initiateComputation() {
-        // TODO: Make API Calls
         this.retrospectiveService.initiateComputation().subscribe(
             () => {
-                this.snackBar.open(API_RESPONSE_MESSAGES.computationInitiated, '', {duration: 2000});
-                this.sprintStatus.isSyncInProgress = true;
+                this.snackBar.open(API_RESPONSE_MESSAGES.sprintComputationInitiated, '', {duration: SNACKBAR_DURATION});
+                this.sprintDetails.isSyncInProgress = true;
             },
             () => {
-                this.snackBar.open(API_RESPONSE_MESSAGES.error, '', {duration: 2000});
+                this.snackBar.open(API_RESPONSE_MESSAGES.error, '', {duration: SNACKBAR_DURATION});
             }
         );
     }
