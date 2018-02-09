@@ -9,6 +9,7 @@ import { LoginRequiredGuard } from '../core/route-guards/login-required.service'
 // Import Components
 import { RetrospectiveListComponent } from './retrospective-list/retrospective-list.component';
 import { SprintDetailComponent } from './sprint-detail/sprint-detail.component';
+import { SprintMemberSummaryComponent } from './sprint-member-summary/sprint-member-summary.component';
 
 const routes: Routes = [
     {

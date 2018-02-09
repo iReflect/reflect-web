@@ -17,7 +17,12 @@ import { CustomMaterialModule } from '../core/custom-material/custom-material.mo
 import { TaskProviderComponent } from './task-provider/task-provider.component';
 import { TaskProviderAuthComponent } from './task-provider-auth/task-provider-auth.component';
 import { BasicModalComponent } from './basic-modal/basic-modal.component';
-import {RetrospectiveCreateComponent} from "../retrospective/retrospective-create/retrospective-create.component";
+import { PercentageRendererComponent } from './ag-grid-renderers/percentage-renderer/percentage-renderer.component';
+import { AgGridModule } from 'ag-grid-angular';
+import { RatingRendererComponent } from './ag-grid-renderers/rating-renderer/rating-renderer.component';
+import { RatingEditorComponent } from './ag-grid-editors/rating-editor/rating-editor.component';
+import { VacationRendererComponent } from './ag-grid-renderers/vacation-renderer/vacation-renderer.component';
+import { DeleteButtonRendererComponent } from './ag-grid-renderers/delete-button-renderer/delete-button-renderer.component';
 
 @NgModule({
     imports: [
@@ -26,13 +31,25 @@ import {RetrospectiveCreateComponent} from "../retrospective/retrospective-creat
         HttpClientModule,
         RouterModule,
         ReactiveFormsModule,
-        CustomMaterialModule
+        CustomMaterialModule,
+        AgGridModule.withComponents([
+            PercentageRendererComponent,
+            RatingRendererComponent,
+            RatingEditorComponent,
+            VacationRendererComponent,
+            DeleteButtonRendererComponent
+        ])
     ],
     declarations: [
         ValuesPipe,
         TaskProviderAuthComponent,
         TaskProviderComponent,
-        BasicModalComponent
+        BasicModalComponent,
+        PercentageRendererComponent,
+        RatingRendererComponent,
+        RatingEditorComponent,
+        VacationRendererComponent,
+        DeleteButtonRendererComponent
     ],
     exports: [
         ValuesPipe,

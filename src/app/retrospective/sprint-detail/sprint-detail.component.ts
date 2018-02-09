@@ -7,6 +7,7 @@ import {
     SPRINT_STATES_LABEL
 } from '../../../constants/app-constants';
 import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.component';
+import * as _ from 'lodash';
 
 @Component({
     selector: 'app-sprint-detail',
@@ -15,7 +16,8 @@ import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.compon
 })
 export class SprintDetailComponent implements OnInit {
     sprintDetails: any;
-    retrospectiveId: number;
+    retrospectiveID: number;
+    sprintID: number;
     dateFormat = 'MMMM dd, yyyy';
     sprintStatus;
     selectedValue;
@@ -33,18 +35,19 @@ export class SprintDetailComponent implements OnInit {
 
     ngOnInit() {
         this.activatedRoute.params.subscribe((params: Params) => {
-            this.retrospectiveId = params['retrospectiveID'];
-            this.retrospectiveService.getSprintDetails(params['sprintID']).subscribe(
+            this.retrospectiveID = params['retrospectiveID'];
+            this.sprintID = params['sprintID'];
+            this.retrospectiveService.getSprintDetails(this.sprintID).subscribe(
                 // TODO: replace this data with response and access data using response.data
                 (data) => {
                     this.sprintDetails = data;
+                    this.sprintStatus = data.Status;
                 },
                 () => {
                     this.snackBar.open(API_RESPONSE_MESSAGES.error, '', {duration: SNACKBAR_DURATION});
                 }
             );
         });
-        this.sprintStatus = this.sprintDetails.Status;
     }
 
     navigateToRetrospectiveDashboard() {
@@ -60,7 +63,7 @@ export class SprintDetailComponent implements OnInit {
     }
 
     stateChange(action) {
-        if (action >= 0 && action <= 3) {
+        if (_.includes(this.sprintActions, action)) {
             const dialogRef = this.dialog.open(BasicModalComponent, {
                 data: {
                     content: 'Are you sure you want to ' + this.sprintActionsLabel[action] + ' sprint?',
@@ -72,8 +75,8 @@ export class SprintDetailComponent implements OnInit {
 
             dialogRef.afterClosed().subscribe(result => {
                 if (result) {
-                    if(action === this.sprintActions.ACTIVATE) {
-                        this.retrospectiveService.activateSprint(this.sprintDetails.ID).subscribe(
+                    if (action === this.sprintActions.ACTIVATE) {
+                        this.retrospectiveService.activateSprint(this.sprintID).subscribe(
                             () => {
                                 this.sprintStatus = this.sprintStates.ACTIVE;
                                 this.snackBar.open(API_RESPONSE_MESSAGES.sprintActivated, '', {duration: SNACKBAR_DURATION});
@@ -81,7 +84,7 @@ export class SprintDetailComponent implements OnInit {
                             () => this.sprintStateChangeError(API_RESPONSE_MESSAGES.error)
                         );
                     } else if (action === this.sprintActions.FREEZE) {
-                        this.retrospectiveService.freezeSprint(this.sprintDetails.ID).subscribe(
+                        this.retrospectiveService.freezeSprint(this.sprintID).subscribe(
                             () => {
                                 this.sprintStatus =  this.sprintStates.FROZEN;
                                 this.snackBar.open(API_RESPONSE_MESSAGES.sprintFrozen, '', {duration: SNACKBAR_DURATION});
@@ -89,7 +92,7 @@ export class SprintDetailComponent implements OnInit {
                             () => this.sprintStateChangeError(API_RESPONSE_MESSAGES.error)
                         );
                     } else if (action === this.sprintActions.DISCARD) {
-                        this.retrospectiveService.discardSprint(this.sprintDetails.ID).subscribe(
+                        this.retrospectiveService.discardSprint(this.sprintID).subscribe(
                             () => {
                                 this.snackBar.open(API_RESPONSE_MESSAGES.sprintDiscarded, '', {duration: SNACKBAR_DURATION});
                                 this.navigateToRetrospectiveDashboard();

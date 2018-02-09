@@ -9,7 +9,7 @@ export const API_URLS = {
         current: '/users/current'
     },
     // TODO: update these routes with actual API
-    activateSprint: '/activate/:sprintID',
-    freezeSprint: '/freeze/:sprintID',
-    discardSprint: 'discard/:sprintID'
+    activateSprint: '/sprint/:sprintID/activate',
+    freezeSprint: '/sprint/:sprintID/freeze',
+    discardSprint: '/sprint/:sprintID/discard'
 };
