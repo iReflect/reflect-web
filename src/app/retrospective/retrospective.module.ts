@@ -11,13 +11,17 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RetrospectiveListComponent } from './retrospective-list/retrospective-list.component';
 import { RetrospectiveCreateComponent } from './retrospective-create/retrospective-create.component';
 import { SprintDetailComponent } from './sprint-detail/sprint-detail.component';
-import { BasicModalComponent } from '../shared/basic-modal/basic-modal.component';
+import { AgGridModule } from 'ag-grid-angular';
+import { SprintMemberSummaryComponent } from './sprint-member-summary/sprint-member-summary.component';
 
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
+        AgGridModule.withComponents([
+            SprintMemberSummaryComponent
+        ]),
         ReactiveFormsModule,
         CustomMaterialModule,
         SharedModule,
@@ -26,7 +30,8 @@ import { BasicModalComponent } from '../shared/basic-modal/basic-modal.component
     declarations: [
         RetrospectiveListComponent,
         SprintDetailComponent,
-        RetrospectiveCreateComponent
+        RetrospectiveCreateComponent,
+        SprintMemberSummaryComponent
     ],
     exports: [],
     providers: [],

@@ -36,13 +36,16 @@
     </div>
   </mat-card-content>
 </mat-card>
-
-<div>
-  <mat-tab-group *ngIf="sprintDetails.LastSyncedAt">
-    <mat-tab label="Tab 1">Content 1</mat-tab>
+<div *ngIf="sprintDetails.LastSyncedAt">
+  <mat-tab-group [dynamicHeight]="true">
+    <mat-tab label="Sprint Members Summary">
+        <app-sprint-member-summary [retrospectiveID]="retrospectiveID" [sprintID]="sprintID"></app-sprint-member-summary>
+    </mat-tab>
     <mat-tab label="Tab 2">Content 2</mat-tab>
   </mat-tab-group>
-  <mat-card class="sync-error-card" *ngIf="!sprintDetails.LastSyncedAt">
+</div>
+<div *ngIf="!sprintDetails.LastSyncedAt">
+  <mat-card class="sync-error-card">
     <mat-error *ngIf="!sprintDetails.isSyncInProgress">
       Please Refresh to fetch data!
     </mat-error>

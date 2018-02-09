@@ -42,3 +42,11 @@
 .sprint-actions {
   text-align: right;
 }
+
+mat-tab-group {
+  border: 1px solid #E8E8E8;
+
+  mat-tab {
+    height: 100%;
+  }
+}
