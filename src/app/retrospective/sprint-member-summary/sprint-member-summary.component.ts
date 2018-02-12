@@ -169,6 +169,7 @@ export class SprintMemberSummaryComponent implements OnInit {
                 filter: 'text',
                 cellEditor: 'agLargeTextCellEditor',
                 editable: true,
+                tooltip: (params) => params.value,
                 onCellValueChanged: (cellParams) => {
                     if (cellParams.newValue !== cellParams.oldValue) {
                         this.updateMemberDetails(cellParams);

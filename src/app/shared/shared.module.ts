@@ -24,7 +24,6 @@ import { RatingEditorComponent } from './ag-grid-editors/rating-editor/rating-ed
 import { VacationRendererComponent } from './ag-grid-renderers/vacation-renderer/vacation-renderer.component';
 import { DeleteButtonRendererComponent } from './ag-grid-renderers/delete-button-renderer/delete-button-renderer.component';
 import { RetrospectButtonRendererComponent } from './ag-grid-renderers/retrospect-button-renderer/retrospect-button-renderer.component';
-import { TooltipTextRendererComponent } from './ag-grid-renderers/tooltip-text-renderer/tooltip-text-renderer.component';
 
 @NgModule({
     imports: [
@@ -41,7 +40,6 @@ import { TooltipTextRendererComponent } from './ag-grid-renderers/tooltip-text-r
             VacationRendererComponent,
             DeleteButtonRendererComponent,
             RetrospectButtonRendererComponent,
-            TooltipTextRendererComponent
         ])
     ],
     declarations: [
@@ -55,7 +53,6 @@ import { TooltipTextRendererComponent } from './ag-grid-renderers/tooltip-text-r
         VacationRendererComponent,
         DeleteButtonRendererComponent,
         RetrospectButtonRendererComponent,
-        TooltipTextRendererComponent
     ],
     exports: [
         ValuesPipe,
