@@ -1,0 +1,13 @@
+<div>
+  <div>
+    <button mat-button (click)="createRowData()">Refresh Data</button>
+  </div>
+  <div class="ag-grid-container">
+    <ag-grid-angular
+      class="ag-theme-material"
+      [gridOptions]="gridOptions"
+      (gridReady)="onGridReady($event)"
+      [stopEditingWhenGridLosesFocus]="true">
+    </ag-grid-angular>
+  </div>
+</div>
