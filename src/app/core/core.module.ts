@@ -35,7 +35,7 @@ import { LoginRequiredGuard } from './route-guards/login-required.service';
         LoggerService,
         LoginRequiredGuard,
         AnonymousRequiredGuard,
-        {provide: MAT_DATE_LOCALE, useValue: 'en-GB'},
+        {provide: MAT_DATE_LOCALE, useValue: 'en'},
         {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
         {provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS},
     ],

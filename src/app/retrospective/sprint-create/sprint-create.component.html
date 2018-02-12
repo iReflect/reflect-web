@@ -11,7 +11,7 @@
     &nbsp; &nbsp; &nbsp; &nbsp;
     <mat-form-field floatLabel="always">
       <mat-label></mat-label>
-      <input matInput formControlName="sprintId" placeholder="Sprint ID">
+      <input matInput formControlName="sprintID" placeholder="Sprint ID">
     </mat-form-field>
   </div>
   <div>
@@ -32,7 +32,7 @@
 
     <mat-form-field floatLabel="always">
       <mat-label></mat-label>
-      <input matInput id="endDate" [min]="sprintFormGroup.controls['startDate'].value" formControlName="endDate" [matDatepicker]="endDatePicker" placeholder="Choose End date">
+      <input matInput id="endDate" [min]="startDateControl" formControlName="endDate" [matDatepicker]="endDatePicker" placeholder="Choose End date">
       <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
       <mat-datepicker #endDatePicker></mat-datepicker>
       <mat-error *ngIf="errors.endShouldExist">

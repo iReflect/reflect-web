@@ -12,8 +12,7 @@ export class SprintCreateComponent implements OnInit {
     sprintFormGroup: FormGroup;
     errors: any = { };
 
-    constructor(public dialogRef: MatDialogRef<SprintCreateComponent>,
-                @Inject(MAT_DIALOG_DATA) public data: any) { }
+    constructor(@Inject(MAT_DIALOG_DATA) public data: any) { }
 
     ngOnInit() {
         this.createSprintFormGroup();
@@ -24,7 +23,7 @@ export class SprintCreateComponent implements OnInit {
             'title': new FormControl('', Validators.required),
             'startDate': new FormControl(''),
             'endDate': new FormControl(''),
-            'sprintId': new FormControl(''),
+            'sprintID': new FormControl(''),
         }, this.validateForm.bind(this));
     }
 
@@ -43,7 +42,6 @@ export class SprintCreateComponent implements OnInit {
     validateForm(sprintFormGroup: FormGroup) {
         this.errors = {};
         const sprintFormValue = sprintFormGroup.value;
-
         if (sprintFormValue.startDate && !sprintFormValue.endDate) {
             this.errors.endShouldExist = true;
         }
@@ -53,14 +51,12 @@ export class SprintCreateComponent implements OnInit {
         if (sprintFormValue.startDate && sprintFormValue.endDate && sprintFormValue.startDate > sprintFormValue.endDate) {
             this.errors.startGreaterThanEnd = true;
         }
-
         if (!sprintFormValue.title) {
             this.errors.titleRequired = true;
-        } else if (!sprintFormValue.startDate && !sprintFormValue.endDate && !sprintFormValue.sprintId
+        } else if (!sprintFormValue.startDate && !sprintFormValue.endDate && !sprintFormValue.sprintID
             && this.startDateControl.valid && this.endDateControl.valid) {
             this.errors.atleastOne = true;
         }
-
         return this.errors;
     }
 

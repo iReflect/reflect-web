@@ -50,12 +50,12 @@ export class RetrospectiveService {
     }
 
     createSprint(sprintDetails): Observable<any> {
-        console.log('Sprint created with values: ' + sprintDetails);
+        console.log('Sprint created with values: ' + JSON.stringify(sprintDetails));
         const odds = Math.floor(Math.random() * Math.floor(2));
         if (odds) {
-            return Observable.of('Success!');
+            return Observable.of({'data': 'Success!'});
         } else {
-            return Observable.throw('Server Error!');
+            return Observable.throw({'error': 'Server Error!'});
         }
     }
 }
