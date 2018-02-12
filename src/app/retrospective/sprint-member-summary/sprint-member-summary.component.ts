@@ -17,16 +17,16 @@ import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.compon
 })
 export class SprintMemberSummaryComponent implements OnInit {
     params: any;
+    members: any[];
     gridOptions: GridOptions;
-    public rowData: any[];
-    public columnDefs: any[];
+    rowData: any[];
+    columnDefs: any[];
     private gridApi: GridApi;
     private columnApi: ColumnApi;
-    members: any[];
+    sprintTime: any;
     selectedMemberID: any;
     @Input() retrospectiveID;
     @Input() sprintID;
-    sprintTime: any;
 
     constructor(private snackBar: MatSnackBar,
                 public dialog: MatDialog,
