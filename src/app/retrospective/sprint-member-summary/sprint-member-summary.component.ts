@@ -25,6 +25,16 @@ export class SprintMemberSummaryComponent implements OnInit {
     private columnApi: ColumnApi;
     private sprintTime: any;
 
+    params: any;
+    members: any[];
+    gridOptions: GridOptions;
+    rowData: any[];
+    columnDefs: any[];
+    private gridApi: GridApi;
+    private columnApi: ColumnApi;
+    sprintTime: any;
+    selectedMemberID: any;
+
     @Input() retrospectiveID;
     @Input() sprintID;
 
