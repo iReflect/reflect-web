@@ -5,7 +5,6 @@ import { MatDialog, MatSnackBar } from '@angular/material';
 import { RetrospectButtonRendererComponent } from '../../shared/ag-grid-renderers/retrospect-button-renderer/retrospect-button-renderer.component';
 import { API_RESPONSE_MESSAGES, SNACKBAR_DURATION } from '../../../constants/app-constants';
 import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.component';
-import { TooltipTextRendererComponent } from '../../shared/ag-grid-renderers/tooltip-text-renderer/tooltip-text-renderer.component';
 
 @Component({
     selector: 'app-sprint-task-summary',
@@ -29,8 +28,7 @@ export class SprintTaskSummaryComponent implements OnInit {
             columnDefs: this.columnDefs,
             rowHeight: 48,
             frameworkComponents: {
-                'retrospectButtonRenderer': RetrospectButtonRendererComponent,
-                'taskSummaryRenderer': TooltipTextRendererComponent
+                'retrospectButtonRenderer': RetrospectButtonRendererComponent
             }
         };
     }
@@ -71,7 +69,7 @@ export class SprintTaskSummaryComponent implements OnInit {
                 headerName: 'Task Summary',
                 field: 'Task Summary',
                 width: 300,
-                cellRenderer: 'taskSummaryRenderer',
+                tooltip: (params) => params.value,
                 pinned: true
             },
             {

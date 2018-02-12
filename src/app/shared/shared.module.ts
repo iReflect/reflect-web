@@ -24,7 +24,6 @@ import { NumericCellEditorComponent } from './ag-grid-editors/numeric-cell-edito
 import { RatingRendererComponent } from './ag-grid-renderers/rating-renderer/rating-renderer.component';
 import { DeleteButtonRendererComponent } from './ag-grid-renderers/delete-button-renderer/delete-button-renderer.component';
 import { RetrospectButtonRendererComponent } from './ag-grid-renderers/retrospect-button-renderer/retrospect-button-renderer.component';
-import { TooltipTextRendererComponent } from './ag-grid-renderers/tooltip-text-renderer/tooltip-text-renderer.component';
 
 @NgModule({
     imports: [
@@ -41,7 +40,6 @@ import { TooltipTextRendererComponent } from './ag-grid-renderers/tooltip-text-r
             DeleteButtonRendererComponent
             VacationRendererComponent,
             RetrospectButtonRendererComponent,
-            TooltipTextRendererComponent
         ])
     ],
     declarations: [
@@ -55,7 +53,6 @@ import { TooltipTextRendererComponent } from './ag-grid-renderers/tooltip-text-r
         NumericCellEditorComponent
         VacationRendererComponent,
         RetrospectButtonRendererComponent,
-        TooltipTextRendererComponent
     ],
     exports: [
         ValuesPipe,
