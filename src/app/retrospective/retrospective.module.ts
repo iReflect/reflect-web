@@ -13,6 +13,7 @@ import { RetrospectiveCreateComponent } from './retrospective-create/retrospecti
 import { SprintDetailComponent } from './sprint-detail/sprint-detail.component';
 import { AgGridModule } from 'ag-grid-angular';
 import { SprintMemberSummaryComponent } from './sprint-member-summary/sprint-member-summary.component';
+import { SprintTaskSummaryComponent } from './sprint-task-summary/sprint-task-summary.component';
 
 
 @NgModule({
@@ -31,7 +32,8 @@ import { SprintMemberSummaryComponent } from './sprint-member-summary/sprint-mem
         RetrospectiveListComponent,
         SprintDetailComponent,
         RetrospectiveCreateComponent,
-        SprintMemberSummaryComponent
+        SprintMemberSummaryComponent,
+        SprintTaskSummaryComponent
     ],
     exports: [],
     providers: [],

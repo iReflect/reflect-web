@@ -41,7 +41,9 @@
     <mat-tab label="Sprint Members Summary">
         <app-sprint-member-summary [retrospectiveID]="retrospectiveID" [sprintID]="sprintID"></app-sprint-member-summary>
     </mat-tab>
-    <mat-tab label="Tab 2">Content 2</mat-tab>
+    <mat-tab label="Sprint Task Summary">
+        <app-sprint-task-summary></app-sprint-task-summary>
+    </mat-tab>
   </mat-tab-group>
 </div>
 <div *ngIf="!sprintDetails.LastSyncedAt">

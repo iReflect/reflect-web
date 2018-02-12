@@ -7,6 +7,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import { API_URLS } from '../../../constants/api-urls';
 import * as SprintMemberDetails from '../../../fixtures/sprint-member-details-response.json';
+import * as SprintTaskDetails from '../../../fixtures/sprint-task-details-response.json';
 
 @Injectable()
 export class RetrospectiveService {
@@ -90,6 +91,15 @@ export class RetrospectiveService {
         const odds = Math.floor(Math.random() * Math.floor(10));
         if (odds) {
             return Observable.of(SprintMemberDetails);
+        } else {
+            return Observable.throw({'error': 'Some Error!'});
+        }
+    }
+
+    getSprintTaskDetails(): Observable<any> {
+        const odds = Math.floor(Math.random() * Math.floor(10));
+        if (odds) {
+            return Observable.of(SprintTaskDetails);
         } else {
             return Observable.throw({'error': 'Some Error!'});
         }
