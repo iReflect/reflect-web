@@ -1,0 +1,39 @@
+<mat-card>
+  <mat-card-header>{{data.task['Task ID']}}: {{data.task['Task Summary']}}</mat-card-header>
+  <mat-card-content>
+    <div>
+      <div>
+        <span>Assignee:</span> {{data.task['Assignee']}}
+      </div>
+      <div>
+        <span>Estimates:</span> {{data.task['Estimates']}}
+      </div>
+      <div>
+        <span>Status:</span> {{data.task['Status']}}
+      </div>
+      <div>
+        <span>Story Type:</span> {{data.task['Story Type']}}
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+<div>
+  <div>
+    <mat-select placeholder="Select a Member" [(ngModel)]="selectedMemberID">
+      <mat-option *ngFor="let member of members" [value]="member.ID">
+        {{member.Name}}
+      </mat-option>
+    </mat-select>
+  </div>
+  <div>
+    <button mat-button (click)="addNewMember()">Add Member</button>
+  </div>
+</div>
+<div class="ag-grid-container">
+  <ag-grid-angular
+    class="ag-theme-material"
+    [gridOptions]="gridOptions"
+    (gridReady)="onGridReady($event)"
+    [stopEditingWhenGridLosesFocus]="true">
+  </ag-grid-angular>
+</div>

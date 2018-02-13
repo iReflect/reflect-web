@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { RetrospectButtonRendererComponent } from '../../shared/ag-grid-renderers/retrospect-button-renderer/retrospect-button-renderer.component';
 import { API_RESPONSE_MESSAGES, SNACKBAR_DURATION } from '../../../constants/app-constants';
-import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.component';
-import { TooltipTextRendererComponent } from '../../shared/ag-grid-renderers/tooltip-text-renderer/tooltip-text-renderer.component';
+import { RetrospectTaskModalComponent } from '../retrospect-task-modal/retrospect-task-modal.component';
 
 @Component({
     selector: 'app-sprint-task-summary',
@@ -13,12 +12,14 @@ import { TooltipTextRendererComponent } from '../../shared/ag-grid-renderers/too
     styleUrls: ['./sprint-task-summary.component.scss']
 })
 export class SprintTaskSummaryComponent implements OnInit {
-    params: any;
     gridOptions: GridOptions;
-    public rowData: any[];
-    public columnDefs: any[];
+    private params: any;
+    private rowData: any[];
+    private columnDefs: any[];
     private gridApi: GridApi;
     private columnApi: ColumnApi;
+    @Input() retrospectiveID;
+    @Input() sprintID;
 
     constructor(private snackBar: MatSnackBar,
                 public dialog: MatDialog,
@@ -29,8 +30,7 @@ export class SprintTaskSummaryComponent implements OnInit {
             columnDefs: this.columnDefs,
             rowHeight: 48,
             frameworkComponents: {
-                'retrospectButtonRenderer': RetrospectButtonRendererComponent,
-                'taskSummaryRenderer': TooltipTextRendererComponent
+                'retrospectButtonRenderer': RetrospectButtonRendererComponent
             }
         };
     }
@@ -64,14 +64,14 @@ export class SprintTaskSummaryComponent implements OnInit {
             {
                 headerName: 'Task ID',
                 field: 'Task ID',
-                width: 70,
+                width: 114,
                 pinned: true
             },
             {
                 headerName: 'Task Summary',
                 field: 'Task Summary',
                 width: 300,
-                cellRenderer: 'taskSummaryRenderer',
+                tooltip: (params) => params.value,
                 pinned: true
             },
             {
@@ -90,7 +90,7 @@ export class SprintTaskSummaryComponent implements OnInit {
                 width: 230
             },
             {
-                headerName: 'Total Sprint Hours',
+                headerName: 'Sprint Hours',
                 field: 'Sprint Hours',
                 width: 130
             },
@@ -116,17 +116,19 @@ export class SprintTaskSummaryComponent implements OnInit {
         return columnDefs;
     }
 
-    retrospectSprint(task) {
-        const dialogRef = this.dialog.open(BasicModalComponent, {
+    retrospectSprint(params) {
+        const dialogRef = this.dialog.open(RetrospectTaskModalComponent, {
+            width: '90%',
             data: {
-                content: 'Are you sure you want to retrospect this Task?',
-                confirmBtn: 'Yes',
-                cancelBtn: 'Cancel'
+                task: params.data,
+                sprintID: this.sprintID,
+                retrospectiveID: this.retrospectiveID
             },
-            disableClose: true
+            maxWidth: 950,
         });
 
         dialogRef.afterClosed().subscribe(result => {
+            // TODO: change table data after changing values in modal
         });
     }
 }

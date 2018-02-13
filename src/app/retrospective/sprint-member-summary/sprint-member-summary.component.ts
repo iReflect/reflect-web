@@ -119,7 +119,6 @@ export class SprintMemberSummaryComponent implements OnInit {
                     if (cellParams.newValue !== NaN && cellParams.newValue >= 0 && cellParams.newValue <= 100 && cellParams.newValue !== cellParams.oldValue) {
                         this.updateMemberDetails(cellParams);
                     } else {
-                        console.log(cellParams.newValue);
                         this.snackBar.open(API_RESPONSE_MESSAGES.allocationNumberError, '', {duration: SNACKBAR_DURATION});
                         this.revertCellValue(cellParams);
                     }
@@ -168,6 +167,7 @@ export class SprintMemberSummaryComponent implements OnInit {
                 width: 500,
                 filter: 'text',
                 cellEditor: 'agLargeTextCellEditor',
+                tooltip: (params) => params.value,
                 editable: true,
                 onCellValueChanged: (cellParams) => {
                     if (cellParams.newValue !== cellParams.oldValue) {

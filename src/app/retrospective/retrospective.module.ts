@@ -14,6 +14,7 @@ import { SprintDetailComponent } from './sprint-detail/sprint-detail.component';
 import { AgGridModule } from 'ag-grid-angular';
 import { SprintMemberSummaryComponent } from './sprint-member-summary/sprint-member-summary.component';
 import { SprintTaskSummaryComponent } from './sprint-task-summary/sprint-task-summary.component';
+import { RetrospectTaskModalComponent } from './retrospect-task-modal/retrospect-task-modal.component';
 
 
 @NgModule({
@@ -21,7 +22,9 @@ import { SprintTaskSummaryComponent } from './sprint-task-summary/sprint-task-su
         CommonModule,
         FormsModule,
         AgGridModule.withComponents([
-            SprintMemberSummaryComponent
+            SprintMemberSummaryComponent,
+            SprintTaskSummaryComponent,
+            RetrospectTaskModalComponent
         ]),
         ReactiveFormsModule,
         CustomMaterialModule,
@@ -33,7 +36,8 @@ import { SprintTaskSummaryComponent } from './sprint-task-summary/sprint-task-su
         SprintDetailComponent,
         RetrospectiveCreateComponent,
         SprintMemberSummaryComponent,
-        SprintTaskSummaryComponent
+        SprintTaskSummaryComponent,
+        RetrospectTaskModalComponent
     ],
     exports: [],
     providers: [],
