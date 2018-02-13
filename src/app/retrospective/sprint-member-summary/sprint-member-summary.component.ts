@@ -7,6 +7,7 @@ import { API_RESPONSE_MESSAGES, SNACKBAR_DURATION } from '../../../constants/app
 import { RatingRendererComponent } from '../../shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
 import { RatingEditorComponent } from '../../shared/ag-grid-editors/rating-editor/rating-editor.component';
 import { DeleteButtonRendererComponent } from '../../shared/ag-grid-renderers/delete-button-renderer/delete-button-renderer.component';
+import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.component';
 import { NumericCellEditorComponent } from '../../shared/ag-grid-editors/numeric-cell-editor/numeric-cell-editor.component';
 
 @Component({
@@ -15,25 +16,17 @@ import { NumericCellEditorComponent } from '../../shared/ag-grid-editors/numeric
     styleUrls: ['./sprint-member-summary.component.scss']
 })
 export class SprintMemberSummaryComponent implements OnInit {
+    params: any;
     members: any[];
     selectedMemberID: any;
     gridOptions: GridOptions;
 
+    private rowData: any[];
     private columnDefs: any[];
     private params: any;
     private gridApi: GridApi;
     private columnApi: ColumnApi;
     private sprintTime: any;
-
-    params: any;
-    members: any[];
-    gridOptions: GridOptions;
-    rowData: any[];
-    columnDefs: any[];
-    private gridApi: GridApi;
-    private columnApi: ColumnApi;
-    sprintTime: any;
-    selectedMemberID: any;
 
     @Input() retrospectiveID;
     @Input() sprintID;
