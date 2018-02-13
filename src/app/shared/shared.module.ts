@@ -21,9 +21,7 @@ import { BasicModalComponent } from './basic-modal/basic-modal.component';
 import { AgGridModule } from 'ag-grid-angular';
 import { RatingEditorComponent } from './ag-grid-editors/rating-editor/rating-editor.component';
 import { NumericCellEditorComponent } from './ag-grid-editors/numeric-cell-editor/numeric-cell-editor.component';
-import { PercentageRendererComponent } from './ag-grid-renderers/percentage-renderer/percentage-renderer.component';
 import { RatingRendererComponent } from './ag-grid-renderers/rating-renderer/rating-renderer.component';
-import { VacationRendererComponent } from './ag-grid-renderers/vacation-renderer/vacation-renderer.component';
 import { DeleteButtonRendererComponent } from './ag-grid-renderers/delete-button-renderer/delete-button-renderer.component';
 
 @NgModule({
@@ -37,9 +35,7 @@ import { DeleteButtonRendererComponent } from './ag-grid-renderers/delete-button
         AgGridModule.withComponents([
             RatingEditorComponent,
             NumericCellEditorComponent,
-            PercentageRendererComponent,
             RatingRendererComponent,
-            VacationRendererComponent,
             DeleteButtonRendererComponent
         ])
     ],
@@ -48,10 +44,8 @@ import { DeleteButtonRendererComponent } from './ag-grid-renderers/delete-button
         TaskProviderAuthComponent,
         TaskProviderComponent,
         BasicModalComponent,
-        PercentageRendererComponent,
         RatingRendererComponent,
         RatingEditorComponent,
-        VacationRendererComponent,
         DeleteButtonRendererComponent,
         NumericCellEditorComponent
     ],
