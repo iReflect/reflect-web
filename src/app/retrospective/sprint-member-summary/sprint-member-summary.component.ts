@@ -1,14 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
-import { PercentageRendererComponent } from '../../shared/ag-grid-renderers/percentage-renderer/percentage-renderer.component';
-import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { MatDialog, MatSnackBar } from '@angular/material';
+import { RetrospectiveService } from '../../shared/services/retrospective.service';
+import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.component';
 import { API_RESPONSE_MESSAGES, SNACKBAR_DURATION } from '../../../constants/app-constants';
 import { RatingRendererComponent } from '../../shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
 import { RatingEditorComponent } from '../../shared/ag-grid-editors/rating-editor/rating-editor.component';
-import { VacationRendererComponent } from '../../shared/ag-grid-renderers/vacation-renderer/vacation-renderer.component';
 import { DeleteButtonRendererComponent } from '../../shared/ag-grid-renderers/delete-button-renderer/delete-button-renderer.component';
-import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.component';
 import { NumericCellEditorComponent } from '../../shared/ag-grid-editors/numeric-cell-editor/numeric-cell-editor.component';
 
 @Component({
@@ -69,8 +67,6 @@ export class SprintMemberSummaryComponent implements OnInit {
                 'ratingEditor': RatingEditorComponent,
                 'ratingRenderer': RatingRendererComponent,
                 'deleteButtonRenderer': DeleteButtonRendererComponent,
-                'vacationRenderer': VacationRendererComponent,
-                'percentageRenderer': PercentageRendererComponent,
                 'numericEditor': NumericCellEditorComponent
             }
         };
@@ -119,7 +115,7 @@ export class SprintMemberSummaryComponent implements OnInit {
                 width: 235,
                 valueParser: 'Number(newValue)',
                 cellEditor: 'numericEditor',
-                cellRenderer: 'percentageRenderer',
+                valueFormatter: (params) => params.value + '%',
                 onCellValueChanged: (cellParams) => {
                     if (cellParams.newValue !== cellParams.oldValue) {
                         if (cellParams.newValue >= 0 && cellParams.newValue <= 100) {
@@ -138,7 +134,7 @@ export class SprintMemberSummaryComponent implements OnInit {
                 width: 235,
                 valueParser: 'Number(newValue)',
                 cellEditor: 'numericEditor',
-                cellRenderer: 'percentageRenderer',
+                valueFormatter: (params) => params.value + '%',
                 onCellValueChanged: (cellParams) => {
                     if (cellParams.newValue !== cellParams.oldValue) {
                         if (cellParams.newValue >= 0 && cellParams.newValue <= 100) {
@@ -158,7 +154,7 @@ export class SprintMemberSummaryComponent implements OnInit {
                 valueParser: 'Number(newValue)',
                 filter: 'agNumberColumnFilter',
                 cellEditor: 'numericEditor',
-                cellRenderer: 'vacationRenderer',
+                valueFormatter: (params) => params.value + (params.value === 1 ? ' day' : ' days'),
                 onCellValueChanged: (cellParams) => {
                     if (cellParams.newValue !== cellParams.oldValue) {
                         if (cellParams.newValue >= 0 && cellParams.newValue < this.sprintTime) {
