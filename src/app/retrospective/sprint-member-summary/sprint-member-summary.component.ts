@@ -9,6 +9,7 @@ import { RatingEditorComponent } from '../../shared/ag-grid-editors/rating-edito
 import { VacationRendererComponent } from '../../shared/ag-grid-renderers/vacation-renderer/vacation-renderer.component';
 import { DeleteButtonRendererComponent } from '../../shared/ag-grid-renderers/delete-button-renderer/delete-button-renderer.component';
 import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.component';
+import { NumericCellEditorComponent } from '../../shared/ag-grid-editors/numeric-cell-editor/numeric-cell-editor.component';
 
 @Component({
     selector: 'app-sprint-member-summary',
@@ -16,15 +17,17 @@ import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.compon
     styleUrls: ['./sprint-member-summary.component.scss']
 })
 export class SprintMemberSummaryComponent implements OnInit {
-    params: any;
     members: any[];
+    selectedMemberID: any;
     gridOptions: GridOptions;
-    rowData: any[];
-    columnDefs: any[];
+
+    private rowData: any[];
+    private columnDefs: any[];
+    private params: any;
     private gridApi: GridApi;
     private columnApi: ColumnApi;
-    sprintTime: any;
-    selectedMemberID: any;
+    private sprintTime: any;
+
     @Input() retrospectiveID;
     @Input() sprintID;
 
@@ -35,7 +38,6 @@ export class SprintMemberSummaryComponent implements OnInit {
         this.retrospectiveService.getRetroMembers(this.retrospectiveID).subscribe(
             data => {
                 this.members = data.members;
-                this.sprintTime = data.TotalTime;
             },
             () => {
                 this.snackBar.open(API_RESPONSE_MESSAGES.getRetrospectiveMembersError, '', {duration: SNACKBAR_DURATION});
@@ -68,7 +70,8 @@ export class SprintMemberSummaryComponent implements OnInit {
                 'ratingRenderer': RatingRendererComponent,
                 'deleteButtonRenderer': DeleteButtonRendererComponent,
                 'vacationRenderer': VacationRendererComponent,
-                'percentageRenderer': PercentageRendererComponent
+                'percentageRenderer': PercentageRendererComponent,
+                'numericEditor': NumericCellEditorComponent
             }
         };
     }
@@ -88,6 +91,7 @@ export class SprintMemberSummaryComponent implements OnInit {
                 data => {
                     this.rowData = data['Sprint']['Members'];
                     this.gridApi.setRowData(this.rowData);
+                    this.sprintTime = data['Sprint']['TotalTime'];
                 },
                 () => {
                     this.snackBar.open(API_RESPONSE_MESSAGES.getSprintMemberDetails, '', {duration: SNACKBAR_DURATION});
@@ -114,14 +118,16 @@ export class SprintMemberSummaryComponent implements OnInit {
                 editable: true,
                 width: 235,
                 valueParser: 'Number(newValue)',
+                cellEditor: 'numericEditor',
                 cellRenderer: 'percentageRenderer',
                 onCellValueChanged: (cellParams) => {
-                    if (cellParams.newValue !== NaN && cellParams.newValue >= 0 && cellParams.newValue <= 100 && cellParams.newValue !== cellParams.oldValue) {
-                        this.updateMemberDetails(cellParams);
-                    } else {
-                        console.log(cellParams.newValue);
-                        this.snackBar.open(API_RESPONSE_MESSAGES.allocationNumberError, '', {duration: SNACKBAR_DURATION});
-                        this.revertCellValue(cellParams);
+                    if (cellParams.newValue !== cellParams.oldValue) {
+                        if (cellParams.newValue >= 0 && cellParams.newValue <= 100) {
+                            this.updateMemberDetails(cellParams);
+                        } else {
+                            this.snackBar.open(API_RESPONSE_MESSAGES.allocationNumberError, '', {duration: SNACKBAR_DURATION});
+                            this.revertCellValue(cellParams);
+                        }
                     }
                 }
             },
@@ -131,13 +137,16 @@ export class SprintMemberSummaryComponent implements OnInit {
                 editable: true,
                 width: 235,
                 valueParser: 'Number(newValue)',
+                cellEditor: 'numericEditor',
                 cellRenderer: 'percentageRenderer',
                 onCellValueChanged: (cellParams) => {
-                    if (cellParams.newValue !== NaN && cellParams.newValue >= 0 && cellParams.newValue <= 100 && cellParams.newValue !== cellParams.oldValue) {
-                        this.updateMemberDetails(cellParams);
-                    } else {
-                        this.snackBar.open(API_RESPONSE_MESSAGES.expectationNumberError, '', {duration: SNACKBAR_DURATION});
-                        this.revertCellValue(cellParams);
+                    if (cellParams.newValue !== cellParams.oldValue) {
+                        if (cellParams.newValue >= 0 && cellParams.newValue <= 100) {
+                            this.updateMemberDetails(cellParams);
+                        } else {
+                            this.snackBar.open(API_RESPONSE_MESSAGES.expectationNumberError, '', {duration: SNACKBAR_DURATION});
+                            this.revertCellValue(cellParams);
+                        }
                     }
                 }
             },
@@ -148,17 +157,20 @@ export class SprintMemberSummaryComponent implements OnInit {
                 width: 130,
                 valueParser: 'Number(newValue)',
                 filter: 'agNumberColumnFilter',
+                cellEditor: 'numericEditor',
                 cellRenderer: 'vacationRenderer',
                 onCellValueChanged: (cellParams) => {
-                    if (cellParams.newValue !== NaN && cellParams.newValue >= 0 && cellParams.newValue < this.sprintTime && cellParams.newValue !== cellParams.oldValue) {
-                        this.updateMemberDetails(cellParams);
-                    } else {
-                        if (cellParams.newValue === NaN || cellParams.newValue < 0) {
-                            this.snackBar.open(API_RESPONSE_MESSAGES.vacationNumberError, '', {duration: SNACKBAR_DURATION});
-                         } else if (cellParams.newValue >= this.sprintTime) {
-                            this.snackBar.open(API_RESPONSE_MESSAGES.vacationTimeError, '', {duration: SNACKBAR_DURATION});
+                    if (cellParams.newValue !== cellParams.oldValue) {
+                        if (cellParams.newValue >= 0 && cellParams.newValue < this.sprintTime) {
+                            this.updateMemberDetails(cellParams);
+                        } else {
+                            if (cellParams.newValue === NaN || cellParams.newValue < 0) {
+                                this.snackBar.open(API_RESPONSE_MESSAGES.vacationNumberError, '', {duration: SNACKBAR_DURATION});
+                            } else if (cellParams.newValue >= this.sprintTime) {
+                                this.snackBar.open(API_RESPONSE_MESSAGES.vacationTimeError, '', {duration: SNACKBAR_DURATION});
+                            }
+                            this.revertCellValue(cellParams);
                         }
-                        this.revertCellValue(cellParams);
                     }
                 }
             },
