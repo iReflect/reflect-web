@@ -19,7 +19,6 @@ export class SprintMemberSummaryComponent implements OnInit {
     selectedMemberID: any;
     gridOptions: GridOptions;
 
-    private rowData: any[];
     private columnDefs: any[];
     private params: any;
     private gridApi: GridApi;
@@ -32,7 +31,14 @@ export class SprintMemberSummaryComponent implements OnInit {
     constructor(private snackBar: MatSnackBar,
                 public dialog: MatDialog,
                 private retrospectiveService: RetrospectiveService) {
+        this.getRetroMembers();
+        this.columnDefs = this.createColumnDefs();
+        this.setGridOptions();
+    }
 
+    ngOnInit() { }
+
+    getRetroMembers() {
         this.retrospectiveService.getRetroMembers(this.retrospectiveID).subscribe(
             data => {
                 this.members = data.members;
@@ -41,10 +47,10 @@ export class SprintMemberSummaryComponent implements OnInit {
                 this.snackBar.open(API_RESPONSE_MESSAGES.getRetrospectiveMembersError, '', {duration: SNACKBAR_DURATION});
             }
         );
+    }
 
-        this.columnDefs = this.createColumnDefs();
+    setGridOptions() {
         this.gridOptions = <GridOptions>{
-            rowData: this.rowData,
             columnDefs: this.columnDefs,
             rowHeight: 48,
             frameworkComponents: {
@@ -55,8 +61,6 @@ export class SprintMemberSummaryComponent implements OnInit {
             }
         };
     }
-
-    ngOnInit() {}
 
     onGridReady(params) {
         this.params = params;
@@ -69,8 +73,7 @@ export class SprintMemberSummaryComponent implements OnInit {
         this.retrospectiveService.getSprintMemberDetails()
             .subscribe(
                 data => {
-                    this.rowData = data['Sprint']['Members'];
-                    this.gridApi.setRowData(this.rowData);
+                    this.gridApi.setRowData(data['Sprint']['Members']);
                     this.sprintTime = data['Sprint']['TotalTime'];
                 },
                 () => {
@@ -164,7 +167,6 @@ export class SprintMemberSummaryComponent implements OnInit {
                 onCellValueChanged: (cellParams) => {
                     if (cellParams.newValue !== cellParams.oldValue) {
                         this.updateMemberDetails(cellParams);
-                        this.gridApi.setRowData(this.rowData);
                     }
                 }
             },
@@ -181,7 +183,6 @@ export class SprintMemberSummaryComponent implements OnInit {
                 onCellValueChanged: (cellParams) => {
                     if (cellParams.newValue !== cellParams.oldValue) {
                         this.updateMemberDetails(cellParams);
-                        this.gridApi.setRowData(this.rowData);
                     }
                 }
             },
@@ -253,7 +254,10 @@ export class SprintMemberSummaryComponent implements OnInit {
     updateMemberDetails(params) {
         const cellData = params.data;
         this.retrospectiveService.updateMember(cellData).subscribe(
-            () => { },
+            () => {
+                this.gridApi.updateRowData({update: [cellData]});
+                this.snackBar.open(API_RESPONSE_MESSAGES.memberUpdated, '', {duration: SNACKBAR_DURATION});
+            },
             () => {
                 this.snackBar.open(API_RESPONSE_MESSAGES.updateSprintMemberError, '', {duration: SNACKBAR_DURATION});
                 this.revertCellValue(params);

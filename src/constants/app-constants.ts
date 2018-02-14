@@ -54,7 +54,8 @@ export const API_RESPONSE_MESSAGES = {
     memberNotSelectedError: 'Please select a member to add!',
     addSprintMemberError: 'Error adding new sprint member!',
     updateSprintMemberError: 'Error updating sprint member details!',
-    deleteSprintMemberError: 'Error deleting sprint member!'
+    deleteSprintMemberError: 'Error deleting sprint member!',
+    memberUpdated: 'Member Updated Successfully!'
 };
 
 export const QUESTION_RESPONSE_SEPARATOR = ',';
