@@ -45,6 +45,7 @@ export class SprintDetailComponent implements OnInit {
                 },
                 err => {
                     this.snackBar.open(err.error, '', {duration: SNACKBAR_DURATION});
+                    this.navigateToRetrospectiveDashboard();
                 }
             );
         });
