@@ -55,6 +55,7 @@ export const API_RESPONSE_MESSAGES = {
     vacationNumberError: 'Vacations must be a positive integer!',
     vacationTimeError: 'Number of vacations must be less than total sprint time!',
     memberNotSelectedError: 'Please select a member to add!',
+    memberAlreadyPresent: 'Error: Member already present!',
     addSprintMemberError: 'Error adding new sprint member!',
     updateSprintMemberError: 'Error updating sprint member details!',
     deleteSprintMemberError: 'Error deleting sprint member!'

@@ -13,7 +13,8 @@ import { RatingEditorComponent } from '../../shared/ag-grid-editors/rating-edito
     styleUrls: ['./retrospect-task-modal.component.scss']
 })
 export class RetrospectTaskModalComponent implements OnInit {
-    members: any[];
+    memberIDs: any[] = [];
+    sprintMembers: any[];
     selectedMemberID: number;
     gridOptions: GridOptions;
 
@@ -31,7 +32,7 @@ export class RetrospectTaskModalComponent implements OnInit {
 
         this.retrospectiveService.getSprintMembers(data.sprintID).subscribe(
             response => {
-                this.members = response.members;
+                this.sprintMembers = response.members;
             },
             () => {
                 this.snackBar.open(API_RESPONSE_MESSAGES.getSprintMembersError, '', {duration: SNACKBAR_DURATION});
@@ -66,6 +67,7 @@ export class RetrospectTaskModalComponent implements OnInit {
                     this.rowData = data['Members'];
                     this.gridApi.setRowData(this.rowData);
                     data['Members'].map(member => {
+                        this.memberIDs.push(member['ID']);
                         this.totalTaskStoryPoints += member['Total Story Points'];
                         return member;
                     });
@@ -165,11 +167,14 @@ export class RetrospectTaskModalComponent implements OnInit {
     addNewMember() {
         if (this.selectedMemberID === undefined) {
             this.snackBar.open(API_RESPONSE_MESSAGES.memberNotSelectedError, '', {duration: SNACKBAR_DURATION});
+        } else if (this.memberIDs.indexOf(this.selectedMemberID) !== -1) {
+            this.snackBar.open(API_RESPONSE_MESSAGES.memberAlreadyPresent, '', {duration: SNACKBAR_DURATION});
         } else {
             this.retrospectiveService.getNewTaskMemberDetails(this.selectedMemberID, this.data.task['Task ID'])
                 .subscribe(
                     newMember => {
                         this.gridApi.updateRowData({ add: [newMember] });
+                        this.memberIDs.push(this.selectedMemberID);
                     },
                     () => {
                         this.snackBar.open(API_RESPONSE_MESSAGES.addSprintMemberError, '', {duration: SNACKBAR_DURATION});

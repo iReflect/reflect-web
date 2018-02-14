@@ -100,7 +100,7 @@ export class SprintDetailComponent implements OnInit {
                             () => this.sprintStateChangeError(API_RESPONSE_MESSAGES.error)
                         );
                     } else {
-                        this.sprintStateChangeError('Please select a valid option!')
+                        this.sprintStateChangeError('Please select a valid option!');
                     }
                 } else {
                     this.sprintStateChangeError('');
