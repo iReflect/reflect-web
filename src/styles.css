@@ -19,7 +19,3 @@ div .ag-theme-material .ag-cell-inline-editing {
 mat-drawer-content {
   height: auto;
 }
-
-.ag-bl-full-height-center {
-  width: 1200px !important;
-}
