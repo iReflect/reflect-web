@@ -46,22 +46,6 @@ export class SprintMemberSummaryComponent implements OnInit {
         this.gridOptions = <GridOptions>{
             rowData: this.rowData,
             columnDefs: this.columnDefs,
-            groupSelectsChildren: true,
-            groupDefaultExpanded: -1,
-            getRowNodeId: (data) => data.ID,
-            autoGroupColumnDef: {
-                headerName: 'Name',
-                field: 'name',
-                width: 250,
-                editable: true
-            },
-            defaultColDef: {
-                checkboxSelection: params => {
-                    const isGrouping = this.columnApi.getRowGroupColumns().length > 0;
-                    return params.colIndex === 0 && !isGrouping;
-                }
-            },
-            rowSelection: 'multiple',
             rowHeight: 48,
             frameworkComponents: {
                 'ratingEditor': RatingEditorComponent,
