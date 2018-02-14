@@ -9,19 +9,18 @@ import { RATING_STATES_LABEL } from '../../../../constants/app-constants';
   styleUrls: ['./rating-editor.component.scss']
 })
 export class RatingEditorComponent implements ICellEditorAngularComp, AfterViewInit {
-    columnWidth: string;
+    value: string;
     values: [ string ];
-    params: ICellEditorParams;
     ratingStatesLabel = RATING_STATES_LABEL;
+
+    private params: ICellEditorParams;
     private selectedIndex: number;
     @ViewChild('group', {read: ViewContainerRef}) public group;
-    value: string;
 
     constructor() { }
 
     agInit(params: any): void {
         this.params = params;
-        this.columnWidth = params.column.actualWidth + 'px';
         this.values = params.values;
         this.value = this.params.value;
         this.selectedIndex = this.values.findIndex((item) => {
@@ -58,6 +57,5 @@ export class RatingEditorComponent implements ICellEditorAngularComp, AfterViewI
 
     onSelectChange(e): void {
         this.params.stopEditing();
-        // TODO: api calls for update
     }
 }
