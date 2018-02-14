@@ -58,7 +58,8 @@ export const API_RESPONSE_MESSAGES = {
     memberAlreadyPresent: 'Error: Member already present!',
     addSprintMemberError: 'Error adding new sprint member!',
     updateSprintMemberError: 'Error updating sprint member details!',
-    deleteSprintMemberError: 'Error deleting sprint member!'
+    deleteSprintMemberError: 'Error deleting sprint member!',
+    memberUpdated: 'Member Updated Successfully!'
 };
 
 export const QUESTION_RESPONSE_SEPARATOR = ',';

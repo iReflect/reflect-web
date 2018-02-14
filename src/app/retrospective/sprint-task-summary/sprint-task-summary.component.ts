@@ -14,7 +14,6 @@ import { RetrospectTaskModalComponent } from '../retrospect-task-modal/retrospec
 export class SprintTaskSummaryComponent implements OnInit {
     gridOptions: GridOptions;
     private params: any;
-    private rowData: any[];
     private columnDefs: any[];
     private gridApi: GridApi;
     private columnApi: ColumnApi;
@@ -26,7 +25,6 @@ export class SprintTaskSummaryComponent implements OnInit {
                 private retrospectiveService: RetrospectiveService) {
         this.columnDefs = this.createColumnDefs();
         this.gridOptions = <GridOptions>{
-            rowData: this.rowData,
             columnDefs: this.columnDefs,
             rowHeight: 48,
             frameworkComponents: {
@@ -50,8 +48,7 @@ export class SprintTaskSummaryComponent implements OnInit {
         this.retrospectiveService.getSprintTaskDetails()
             .subscribe(
                 data => {
-                    this.rowData = data['Sprint']['Tasks'];
-                    this.gridApi.setRowData(this.rowData);
+                    this.gridApi.setRowData(data['Sprint']['Tasks']);
                 },
                 () => {
                     this.snackBar.open(API_RESPONSE_MESSAGES.getSprintMemberDetails, '', {duration: SNACKBAR_DURATION});

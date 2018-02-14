@@ -20,7 +20,6 @@ export class RetrospectTaskModalComponent implements OnInit {
 
     private totalTaskStoryPoints = 0;
     private params: any;
-    private rowData: any[];
     private columnDefs: any;
     private gridApi: any;
     private columnApi: any;
@@ -29,8 +28,15 @@ export class RetrospectTaskModalComponent implements OnInit {
                 private snackBar: MatSnackBar,
                 public dialogRef: MatDialogRef<RetrospectiveCreateComponent>,
                 @Inject(MAT_DIALOG_DATA) public data: any) {
+        this.getSprintMembers();
+        this.columnDefs = this.createColumnDefs();
+        this.setGridOptions();
+    }
 
-        this.retrospectiveService.getSprintMembers(data.sprintID).subscribe(
+    ngOnInit() { }
+
+    getSprintMembers() {
+        this.retrospectiveService.getSprintMembers(this.data.sprintID).subscribe(
             response => {
                 this.sprintMembers = response.members;
             },
@@ -38,10 +44,10 @@ export class RetrospectTaskModalComponent implements OnInit {
                 this.snackBar.open(API_RESPONSE_MESSAGES.getSprintMembersError, '', {duration: SNACKBAR_DURATION});
             }
         );
+    }
 
-        this.columnDefs = this.createColumnDefs();
+    setGridOptions() {
         this.gridOptions = <GridOptions>{
-            rowData: this.rowData,
             columnDefs: this.columnDefs,
             rowHeight: 48,
             frameworkComponents: {
@@ -50,8 +56,6 @@ export class RetrospectTaskModalComponent implements OnInit {
             }
         };
     }
-
-    ngOnInit() { }
 
     onGridReady(params) {
         this.params = params;
@@ -64,8 +68,7 @@ export class RetrospectTaskModalComponent implements OnInit {
         this.retrospectiveService.getTaskMemberDetails(this.data.task.ID)
             .subscribe(
                 data => {
-                    this.rowData = data['Members'];
-                    this.gridApi.setRowData(this.rowData);
+                    this.gridApi.setRowData(data['Members']);
                     data['Members'].map(member => {
                         this.memberIDs.push(member['ID']);
                         this.totalTaskStoryPoints += member['Total Story Points'];
@@ -111,7 +114,6 @@ export class RetrospectTaskModalComponent implements OnInit {
                             memberDetails['Total Story Points'] += cellParams.newValue - cellParams.oldValue;
                             this.totalTaskStoryPoints += cellParams.newValue - cellParams.oldValue;
                             this.updateMemberDetails(cellParams, memberDetails);
-                            this.gridApi.setRowData(this.rowData);
                         } else {
                             if (newStoryPoints > this.data.task['Estimates']) {
                                 this.snackBar.open(API_RESPONSE_MESSAGES.taskStoryPointsEstimatesError, '', {duration: SNACKBAR_DURATION});
@@ -139,7 +141,6 @@ export class RetrospectTaskModalComponent implements OnInit {
                 onCellValueChanged: (cellParams) => {
                     if (cellParams.newValue !== cellParams.oldValue) {
                         this.updateMemberDetails(cellParams, cellParams.data);
-                        this.gridApi.setRowData(this.rowData);
                     }
                 }
             },
@@ -156,7 +157,6 @@ export class RetrospectTaskModalComponent implements OnInit {
                 onCellValueChanged: (cellParams) => {
                     if (cellParams.newValue !== cellParams.oldValue) {
                         this.updateMemberDetails(cellParams, cellParams.data);
-                        this.gridApi.setRowData(this.rowData);
                     }
                 }
             }
@@ -185,7 +185,9 @@ export class RetrospectTaskModalComponent implements OnInit {
 
     updateMemberDetails(params, memberDetails) {
         this.retrospectiveService.updateTaskMember(memberDetails).subscribe(
-            () => { },
+            () => {
+                this.snackBar.open(API_RESPONSE_MESSAGES.memberUpdated, '', {duration: SNACKBAR_DURATION});
+            },
             () => {
                 this.snackBar.open(API_RESPONSE_MESSAGES.updateSprintMemberError, '', {duration: SNACKBAR_DURATION});
                 this.revertCellValue(params);
