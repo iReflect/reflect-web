@@ -1,14 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
-import { PercentageRendererComponent } from '../../shared/ag-grid-renderers/percentage-renderer/percentage-renderer.component';
-import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { MatDialog, MatSnackBar } from '@angular/material';
+import { RetrospectiveService } from '../../shared/services/retrospective.service';
+import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.component';
 import { API_RESPONSE_MESSAGES, SNACKBAR_DURATION } from '../../../constants/app-constants';
 import { RatingRendererComponent } from '../../shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
 import { RatingEditorComponent } from '../../shared/ag-grid-editors/rating-editor/rating-editor.component';
-import { VacationRendererComponent } from '../../shared/ag-grid-renderers/vacation-renderer/vacation-renderer.component';
 import { DeleteButtonRendererComponent } from '../../shared/ag-grid-renderers/delete-button-renderer/delete-button-renderer.component';
-import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.component';
+import { NumericCellEditorComponent } from '../../shared/ag-grid-editors/numeric-cell-editor/numeric-cell-editor.component';
 
 @Component({
     selector: 'app-sprint-member-summary',
@@ -16,64 +15,52 @@ import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.compon
     styleUrls: ['./sprint-member-summary.component.scss']
 })
 export class SprintMemberSummaryComponent implements OnInit {
-    params: any;
-    gridOptions: GridOptions;
-    public rowData: any[];
-    public columnDefs: any[];
-    private gridApi: GridApi;
-    private columnApi: ColumnApi;
     members: any[];
     selectedMemberID: any;
+    gridOptions: GridOptions;
+
+    private columnDefs: any[];
+    private params: any;
+    private gridApi: GridApi;
+    private columnApi: ColumnApi;
+    private sprintTime: any;
+
     @Input() retrospectiveID;
     @Input() sprintID;
-    sprintTime: any;
 
     constructor(private snackBar: MatSnackBar,
                 public dialog: MatDialog,
                 private retrospectiveService: RetrospectiveService) {
+        this.getRetroMembers();
+        this.columnDefs = this.createColumnDefs();
+        this.setGridOptions();
+    }
 
+    ngOnInit() { }
+
+    getRetroMembers() {
         this.retrospectiveService.getRetroMembers(this.retrospectiveID).subscribe(
             data => {
                 this.members = data.members;
-                this.sprintTime = data.TotalTime;
             },
             () => {
                 this.snackBar.open(API_RESPONSE_MESSAGES.getRetrospectiveMembersError, '', {duration: SNACKBAR_DURATION});
             }
         );
+    }
 
-        this.columnDefs = this.createColumnDefs();
+    setGridOptions() {
         this.gridOptions = <GridOptions>{
-            rowData: this.rowData,
             columnDefs: this.columnDefs,
-            groupSelectsChildren: true,
-            groupDefaultExpanded: -1,
-            getRowNodeId: (data) => data.ID,
-            autoGroupColumnDef: {
-                headerName: 'Name',
-                field: 'name',
-                width: 250,
-                editable: true
-            },
-            defaultColDef: {
-                checkboxSelection: params => {
-                    const isGrouping = this.columnApi.getRowGroupColumns().length > 0;
-                    return params.colIndex === 0 && !isGrouping;
-                }
-            },
-            rowSelection: 'multiple',
             rowHeight: 48,
             frameworkComponents: {
                 'ratingEditor': RatingEditorComponent,
                 'ratingRenderer': RatingRendererComponent,
                 'deleteButtonRenderer': DeleteButtonRendererComponent,
-                'vacationRenderer': VacationRendererComponent,
-                'percentageRenderer': PercentageRendererComponent
+                'numericEditor': NumericCellEditorComponent
             }
         };
     }
-
-    ngOnInit() {}
 
     onGridReady(params) {
         this.params = params;
@@ -86,8 +73,8 @@ export class SprintMemberSummaryComponent implements OnInit {
         this.retrospectiveService.getSprintMemberDetails()
             .subscribe(
                 data => {
-                    this.rowData = data['Sprint']['Members'];
-                    this.gridApi.setRowData(this.rowData);
+                    this.gridApi.setRowData(data['Sprint']['Members']);
+                    this.sprintTime = data['Sprint']['TotalTime'];
                 },
                 () => {
                     this.snackBar.open(API_RESPONSE_MESSAGES.getSprintMemberDetails, '', {duration: SNACKBAR_DURATION});
@@ -114,14 +101,16 @@ export class SprintMemberSummaryComponent implements OnInit {
                 editable: true,
                 width: 235,
                 valueParser: 'Number(newValue)',
-                cellRenderer: 'percentageRenderer',
+                cellEditor: 'numericEditor',
+                valueFormatter: (params) => params.value + '%',
                 onCellValueChanged: (cellParams) => {
-                    if (cellParams.newValue !== NaN && cellParams.newValue >= 0 && cellParams.newValue <= 100 && cellParams.newValue !== cellParams.oldValue) {
-                        this.updateMemberDetails(cellParams);
-                    } else {
-                        console.log(cellParams.newValue);
-                        this.snackBar.open(API_RESPONSE_MESSAGES.allocationNumberError, '', {duration: SNACKBAR_DURATION});
-                        this.revertCellValue(cellParams);
+                    if (cellParams.newValue !== cellParams.oldValue) {
+                        if (cellParams.newValue >= 0 && cellParams.newValue <= 100) {
+                            this.updateMemberDetails(cellParams);
+                        } else {
+                            this.snackBar.open(API_RESPONSE_MESSAGES.allocationNumberError, '', {duration: SNACKBAR_DURATION});
+                            this.revertCellValue(cellParams);
+                        }
                     }
                 }
             },
@@ -131,13 +120,16 @@ export class SprintMemberSummaryComponent implements OnInit {
                 editable: true,
                 width: 235,
                 valueParser: 'Number(newValue)',
-                cellRenderer: 'percentageRenderer',
+                cellEditor: 'numericEditor',
+                valueFormatter: (params) => params.value + '%',
                 onCellValueChanged: (cellParams) => {
-                    if (cellParams.newValue !== NaN && cellParams.newValue >= 0 && cellParams.newValue <= 100 && cellParams.newValue !== cellParams.oldValue) {
-                        this.updateMemberDetails(cellParams);
-                    } else {
-                        this.snackBar.open(API_RESPONSE_MESSAGES.expectationNumberError, '', {duration: SNACKBAR_DURATION});
-                        this.revertCellValue(cellParams);
+                    if (cellParams.newValue !== cellParams.oldValue) {
+                        if (cellParams.newValue >= 0 && cellParams.newValue <= 100) {
+                            this.updateMemberDetails(cellParams);
+                        } else {
+                            this.snackBar.open(API_RESPONSE_MESSAGES.expectationNumberError, '', {duration: SNACKBAR_DURATION});
+                            this.revertCellValue(cellParams);
+                        }
                     }
                 }
             },
@@ -148,17 +140,20 @@ export class SprintMemberSummaryComponent implements OnInit {
                 width: 130,
                 valueParser: 'Number(newValue)',
                 filter: 'agNumberColumnFilter',
-                cellRenderer: 'vacationRenderer',
+                cellEditor: 'numericEditor',
+                valueFormatter: (params) => params.value + (params.value === 1 ? ' day' : ' days'),
                 onCellValueChanged: (cellParams) => {
-                    if (cellParams.newValue !== NaN && cellParams.newValue >= 0 && cellParams.newValue < this.sprintTime && cellParams.newValue !== cellParams.oldValue) {
-                        this.updateMemberDetails(cellParams);
-                    } else {
-                        if (cellParams.newValue === NaN || cellParams.newValue < 0) {
-                            this.snackBar.open(API_RESPONSE_MESSAGES.vacationNumberError, '', {duration: SNACKBAR_DURATION});
-                         } else if (cellParams.newValue >= this.sprintTime) {
-                            this.snackBar.open(API_RESPONSE_MESSAGES.vacationTimeError, '', {duration: SNACKBAR_DURATION});
+                    if (cellParams.newValue !== cellParams.oldValue) {
+                        if (cellParams.newValue >= 0 && cellParams.newValue < this.sprintTime) {
+                            this.updateMemberDetails(cellParams);
+                        } else {
+                            if (cellParams.newValue === NaN || cellParams.newValue < 0) {
+                                this.snackBar.open(API_RESPONSE_MESSAGES.vacationNumberError, '', {duration: SNACKBAR_DURATION});
+                            } else if (cellParams.newValue >= this.sprintTime) {
+                                this.snackBar.open(API_RESPONSE_MESSAGES.vacationTimeError, '', {duration: SNACKBAR_DURATION});
+                            }
+                            this.revertCellValue(cellParams);
                         }
-                        this.revertCellValue(cellParams);
                     }
                 }
             },
@@ -173,7 +168,6 @@ export class SprintMemberSummaryComponent implements OnInit {
                 onCellValueChanged: (cellParams) => {
                     if (cellParams.newValue !== cellParams.oldValue) {
                         this.updateMemberDetails(cellParams);
-                        this.gridApi.setRowData(this.rowData);
                     }
                 }
             },
@@ -190,7 +184,6 @@ export class SprintMemberSummaryComponent implements OnInit {
                 onCellValueChanged: (cellParams) => {
                     if (cellParams.newValue !== cellParams.oldValue) {
                         this.updateMemberDetails(cellParams);
-                        this.gridApi.setRowData(this.rowData);
                     }
                 }
             },
@@ -262,7 +255,10 @@ export class SprintMemberSummaryComponent implements OnInit {
     updateMemberDetails(params) {
         const cellData = params.data;
         this.retrospectiveService.updateMember(cellData).subscribe(
-            () => { },
+            () => {
+                this.gridApi.updateRowData({update: [cellData]});
+                this.snackBar.open(API_RESPONSE_MESSAGES.memberUpdated, '', {duration: SNACKBAR_DURATION});
+            },
             () => {
                 this.snackBar.open(API_RESPONSE_MESSAGES.updateSprintMemberError, '', {duration: SNACKBAR_DURATION});
                 this.revertCellValue(params);

@@ -17,11 +17,11 @@ import { CustomMaterialModule } from '../core/custom-material/custom-material.mo
 import { TaskProviderComponent } from './task-provider/task-provider.component';
 import { TaskProviderAuthComponent } from './task-provider-auth/task-provider-auth.component';
 import { BasicModalComponent } from './basic-modal/basic-modal.component';
-import { PercentageRendererComponent } from './ag-grid-renderers/percentage-renderer/percentage-renderer.component';
+// Ag-grid components
 import { AgGridModule } from 'ag-grid-angular';
-import { RatingRendererComponent } from './ag-grid-renderers/rating-renderer/rating-renderer.component';
 import { RatingEditorComponent } from './ag-grid-editors/rating-editor/rating-editor.component';
-import { VacationRendererComponent } from './ag-grid-renderers/vacation-renderer/vacation-renderer.component';
+import { NumericCellEditorComponent } from './ag-grid-editors/numeric-cell-editor/numeric-cell-editor.component';
+import { RatingRendererComponent } from './ag-grid-renderers/rating-renderer/rating-renderer.component';
 import { DeleteButtonRendererComponent } from './ag-grid-renderers/delete-button-renderer/delete-button-renderer.component';
 import { RetrospectButtonRendererComponent } from './ag-grid-renderers/retrospect-button-renderer/retrospect-button-renderer.component';
 
@@ -34,12 +34,11 @@ import { RetrospectButtonRendererComponent } from './ag-grid-renderers/retrospec
         ReactiveFormsModule,
         CustomMaterialModule,
         AgGridModule.withComponents([
-            PercentageRendererComponent,
-            RatingRendererComponent,
             RatingEditorComponent,
-            VacationRendererComponent,
             DeleteButtonRendererComponent,
             RetrospectButtonRendererComponent,
+            NumericCellEditorComponent,
+            RatingRendererComponent
         ])
     ],
     declarations: [
@@ -47,12 +46,11 @@ import { RetrospectButtonRendererComponent } from './ag-grid-renderers/retrospec
         TaskProviderAuthComponent,
         TaskProviderComponent,
         BasicModalComponent,
-        PercentageRendererComponent,
         RatingRendererComponent,
         RatingEditorComponent,
-        VacationRendererComponent,
         DeleteButtonRendererComponent,
         RetrospectButtonRendererComponent,
+        NumericCellEditorComponent
     ],
     exports: [
         ValuesPipe,

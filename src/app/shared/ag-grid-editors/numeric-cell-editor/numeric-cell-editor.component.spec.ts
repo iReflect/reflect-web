@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { VacationRendererComponent } from './vacation-renderer.component';
+import { NumericCellEditorComponent } from './numeric-cell-editor.component';
 
-describe('VacationRendererComponent', () => {
-  let component: VacationRendererComponent;
-  let fixture: ComponentFixture<VacationRendererComponent>;
+describe('NumericCellEditorComponent', () => {
+  let component: NumericCellEditorComponent;
+  let fixture: ComponentFixture<NumericCellEditorComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ VacationRendererComponent ]
+      declarations: [ NumericCellEditorComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(VacationRendererComponent);
+    fixture = TestBed.createComponent(NumericCellEditorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
