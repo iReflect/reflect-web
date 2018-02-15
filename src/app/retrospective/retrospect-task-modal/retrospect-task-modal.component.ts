@@ -6,6 +6,7 @@ import { RetrospectiveCreateComponent } from '../retrospective-create/retrospect
 import { GridOptions } from 'ag-grid';
 import { RatingRendererComponent } from '../../shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
 import { RatingEditorComponent } from '../../shared/ag-grid-editors/rating-editor/rating-editor.component';
+import {NumericCellEditorComponent} from "../../shared/ag-grid-editors/numeric-cell-editor/numeric-cell-editor.component";
 
 @Component({
     selector: 'app-retrospect-task-modal',
@@ -52,7 +53,8 @@ export class RetrospectTaskModalComponent implements OnInit {
             rowHeight: 48,
             frameworkComponents: {
                 'ratingEditor': RatingEditorComponent,
-                'ratingRenderer': RatingRendererComponent
+                'ratingRenderer': RatingRendererComponent,
+                'numericEditor': NumericCellEditorComponent
             }
         };
     }
@@ -76,7 +78,8 @@ export class RetrospectTaskModalComponent implements OnInit {
                     });
                 },
                 () => {
-                    this.snackBar.open(API_RESPONSE_MESSAGES.getSprintMemberDetails, '', {duration: SNACKBAR_DURATION});
+                    this.snackBar.open(API_RESPONSE_MESSAGES.getSprintMemberDetailsError, '', {duration: SNACKBAR_DURATION});
+                    this.dialogRef.close();
                 }
             );
     }
@@ -105,7 +108,7 @@ export class RetrospectTaskModalComponent implements OnInit {
                 editable: true,
                 width: 185,
                 valueParser: 'Number(newValue)',
-                // TODO: set cell renderer to numeric cell renderer
+                cellEditor: 'numericEditor',
                 onCellValueChanged: (cellParams) => {
                     const newStoryPoints = this.totalTaskStoryPoints + cellParams.newValue - cellParams.oldValue;
                     if (cellParams.newValue !== cellParams.oldValue) {
@@ -187,6 +190,7 @@ export class RetrospectTaskModalComponent implements OnInit {
         this.retrospectiveService.updateTaskMember(memberDetails).subscribe(
             () => {
                 this.snackBar.open(API_RESPONSE_MESSAGES.memberUpdated, '', {duration: SNACKBAR_DURATION});
+                this.gridApi.updateRowData({update: [memberDetails]});
             },
             () => {
                 this.snackBar.open(API_RESPONSE_MESSAGES.updateSprintMemberError, '', {duration: SNACKBAR_DURATION});

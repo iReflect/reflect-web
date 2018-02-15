@@ -1,8 +1,10 @@
-import {Component, Input, OnInit} from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { MatDialog, MatSnackBar } from '@angular/material';
-import { RetrospectButtonRendererComponent } from '../../shared/ag-grid-renderers/retrospect-button-renderer/retrospect-button-renderer.component';
+import {
+    RetrospectButtonRendererComponent
+} from '../../shared/ag-grid-renderers/retrospect-button-renderer/retrospect-button-renderer.component';
 import { API_RESPONSE_MESSAGES, SNACKBAR_DURATION } from '../../../constants/app-constants';
 import { RetrospectTaskModalComponent } from '../retrospect-task-modal/retrospect-task-modal.component';
 
@@ -51,7 +53,7 @@ export class SprintTaskSummaryComponent implements OnInit {
                     this.gridApi.setRowData(data['Sprint']['Tasks']);
                 },
                 () => {
-                    this.snackBar.open(API_RESPONSE_MESSAGES.getSprintMemberDetails, '', {duration: SNACKBAR_DURATION});
+                    this.snackBar.open(API_RESPONSE_MESSAGES.getSprintMemberDetailsError, '', {duration: SNACKBAR_DURATION});
                 }
             );
     }

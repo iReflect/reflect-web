@@ -47,7 +47,7 @@ export const API_RESPONSE_MESSAGES = {
     sprintComputationInitiated: 'Sprint Computation Initiated Successfully!!',
     getRetrospectiveMembersError: 'Cannot get Retrospective Members List!',
     getSprintMembersError: 'Cannot get Sprint Members List!',
-    getSprintMemberDetails: 'Cannot get Sprint Members Details!',
+    getSprintMemberDetailsError: 'Cannot get Sprint Members Details!',
     allocationNumberError: 'Allocation must be an integer between 0 to 100!',
     expectationNumberError: 'Expectation must be an integer between 0 to 100!',
     taskStoryPointsNegativeError: 'Sprint story points must be a non-negative number!',

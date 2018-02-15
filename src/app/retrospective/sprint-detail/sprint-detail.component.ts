@@ -43,8 +43,9 @@ export class SprintDetailComponent implements OnInit {
                     this.sprintDetails = data;
                     this.sprintStatus = data.Status;
                 },
-                () => {
-                    this.snackBar.open(API_RESPONSE_MESSAGES.error, '', {duration: SNACKBAR_DURATION});
+                err => {
+                    this.snackBar.open(err.error, '', {duration: SNACKBAR_DURATION});
+                    this.navigateToRetrospectiveDashboard();
                 }
             );
         });
@@ -81,7 +82,7 @@ export class SprintDetailComponent implements OnInit {
                                 this.sprintStatus = this.sprintStates.ACTIVE;
                                 this.snackBar.open(API_RESPONSE_MESSAGES.sprintActivated, '', {duration: SNACKBAR_DURATION});
                             },
-                            () => this.sprintStateChangeError(API_RESPONSE_MESSAGES.error)
+                            err => this.sprintStateChangeError(err.error)
                         );
                     } else if (action === this.sprintActions.FREEZE) {
                         this.retrospectiveService.freezeSprint(this.sprintID).subscribe(
@@ -89,7 +90,7 @@ export class SprintDetailComponent implements OnInit {
                                 this.sprintStatus =  this.sprintStates.FROZEN;
                                 this.snackBar.open(API_RESPONSE_MESSAGES.sprintFrozen, '', {duration: SNACKBAR_DURATION});
                             },
-                            () => this.sprintStateChangeError(API_RESPONSE_MESSAGES.error)
+                            err => this.sprintStateChangeError(err.error)
                         );
                     } else if (action === this.sprintActions.DISCARD) {
                         this.retrospectiveService.discardSprint(this.sprintID).subscribe(
@@ -97,7 +98,7 @@ export class SprintDetailComponent implements OnInit {
                                 this.snackBar.open(API_RESPONSE_MESSAGES.sprintDiscarded, '', {duration: SNACKBAR_DURATION});
                                 this.navigateToRetrospectiveDashboard();
                             },
-                            () => this.sprintStateChangeError(API_RESPONSE_MESSAGES.error)
+                            err => this.sprintStateChangeError(err.error)
                         );
                     } else {
                         this.sprintStateChangeError('Please select a valid option!');
@@ -115,8 +116,8 @@ export class SprintDetailComponent implements OnInit {
                 this.snackBar.open(API_RESPONSE_MESSAGES.sprintComputationInitiated, '', {duration: SNACKBAR_DURATION});
                 this.sprintDetails.isSyncInProgress = true;
             },
-            () => {
-                this.snackBar.open(API_RESPONSE_MESSAGES.error, '', {duration: SNACKBAR_DURATION});
+            err => {
+                this.snackBar.open(err.error, '', {duration: SNACKBAR_DURATION});
             }
         );
     }
