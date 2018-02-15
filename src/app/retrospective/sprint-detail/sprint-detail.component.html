@@ -15,7 +15,7 @@
     <div>
       <p mat-line>{{sprintDetails.StartDate | date: dateFormat}} to {{sprintDetails.EndDate | date: dateFormat}}</p>
       <p mat-line>Last Synced At: {{sprintDetails.LastSyncedAt | date: dateFormat}}</p>
-      <p mat-line>Total Time Spent: {{sprintDetails.TotalTimeSpent}} Hours</p>
+      <p mat-line>Total Time Spent: {{sprintDetails.TotalTimeSpent/60}} Hours</p>
     </div>
     <div class="sprint-actions">
       <div *ngIf="sprintStatus !== sprintStates.FROZEN">
@@ -31,7 +31,7 @@
         <span>Frozen <mat-icon class="green-icon">done</mat-icon></span>
       </div>
       <div>
-        <button mat-button (click)="initiateComputation()" *ngIf="!sprintDetails.isSyncInProgress">Refresh <mat-icon>refresh</mat-icon></button>
+        <button mat-button (click)="refreshSprintDetails()" *ngIf="!sprintDetails.isSyncInProgress">Refresh <mat-icon>refresh</mat-icon></button>
       </div>
     </div>
   </mat-card-content>
@@ -39,10 +39,10 @@
 <div *ngIf="sprintDetails.LastSyncedAt">
   <mat-tab-group [dynamicHeight]="true">
     <mat-tab label="Sprint Members Summary">
-        <app-sprint-member-summary [retrospectiveID]="retrospectiveID" [sprintID]="sprintID"></app-sprint-member-summary>
+        <app-sprint-member-summary [sprintStatus]="sprintStatus" [retrospectiveID]="retrospectiveID" [sprintID]="sprintID"></app-sprint-member-summary>
     </mat-tab>
     <mat-tab label="Sprint Task Summary">
-        <app-sprint-task-summary [retrospectiveID]="retrospectiveID" [sprintID]="sprintID"></app-sprint-task-summary>
+        <app-sprint-task-summary [sprintStatus]="sprintStatus" [retrospectiveID]="retrospectiveID" [sprintID]="sprintID"></app-sprint-task-summary>
     </mat-tab>
   </mat-tab-group>
 </div>

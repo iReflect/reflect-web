@@ -110,8 +110,8 @@ export class SprintDetailComponent implements OnInit {
         }
     }
 
-    initiateComputation() {
-        this.retrospectiveService.initiateComputation().subscribe(
+    refreshSprintDetails() {
+        this.retrospectiveService.refreshSprintDetails().subscribe(
             () => {
                 this.snackBar.open(API_RESPONSE_MESSAGES.sprintComputationInitiated, '', {duration: SNACKBAR_DURATION});
                 this.sprintDetails.isSyncInProgress = true;

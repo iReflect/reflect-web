@@ -1,12 +1,12 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { API_RESPONSE_MESSAGES, SNACKBAR_DURATION } from '../../../constants/app-constants';
+import { API_RESPONSE_MESSAGES, SNACKBAR_DURATION, SPRINT_STATES } from '../../../constants/app-constants';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { RetrospectiveCreateComponent } from '../retrospective-create/retrospective-create.component';
 import { GridOptions } from 'ag-grid';
 import { RatingRendererComponent } from '../../shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
 import { RatingEditorComponent } from '../../shared/ag-grid-editors/rating-editor/rating-editor.component';
-import {NumericCellEditorComponent} from "../../shared/ag-grid-editors/numeric-cell-editor/numeric-cell-editor.component";
+import { NumericCellEditorComponent } from '../../shared/ag-grid-editors/numeric-cell-editor/numeric-cell-editor.component';
 
 @Component({
     selector: 'app-retrospect-task-modal',
@@ -18,6 +18,7 @@ export class RetrospectTaskModalComponent implements OnInit {
     sprintMembers: any[];
     selectedMemberID: number;
     gridOptions: GridOptions;
+    sprintStates = SPRINT_STATES;
 
     private totalTaskStoryPoints = 0;
     private params: any;
@@ -30,7 +31,7 @@ export class RetrospectTaskModalComponent implements OnInit {
                 public dialogRef: MatDialogRef<RetrospectiveCreateComponent>,
                 @Inject(MAT_DIALOG_DATA) public data: any) {
         this.getSprintMembers();
-        this.columnDefs = this.createColumnDefs();
+        this.columnDefs = this.createColumnDefs(data.sprintStatus);
         this.setGridOptions();
     }
 
@@ -67,7 +68,7 @@ export class RetrospectTaskModalComponent implements OnInit {
     }
 
     createRowData() {
-        this.retrospectiveService.getTaskMemberDetails(this.data.task.ID)
+        this.retrospectiveService.getSprintTaskMemberSummary(this.data.task.ID)
             .subscribe(
                 data => {
                     this.gridApi.setRowData(data['Members']);
@@ -78,96 +79,147 @@ export class RetrospectTaskModalComponent implements OnInit {
                     });
                 },
                 () => {
-                    this.snackBar.open(API_RESPONSE_MESSAGES.getSprintMemberDetailsError, '', {duration: SNACKBAR_DURATION});
+                    this.snackBar.open(API_RESPONSE_MESSAGES.getSprintTaskMemberSummaryError, '', {duration: SNACKBAR_DURATION});
                     this.dialogRef.close();
                 }
             );
     }
 
-    private createColumnDefs() {
-        const columnDefs = [
-            {
-                headerName: 'Name',
-                field: 'Name',
-                width: 110,
-                pinned: true
-            },
-            {
-                headerName: 'Sprint Hours',
-                field: 'Total Sprint Hours',
-                width: 150
-            },
-            {
-                headerName: 'Total Time',
-                field: 'Total Time Spent',
-                width: 140
-            },
-            {
-                headerName: 'Sprint Story Points',
-                field: 'Sprint Story Points',
-                editable: true,
-                width: 185,
-                valueParser: 'Number(newValue)',
-                cellEditor: 'numericEditor',
-                onCellValueChanged: (cellParams) => {
-                    const newStoryPoints = this.totalTaskStoryPoints + cellParams.newValue - cellParams.oldValue;
-                    if (cellParams.newValue !== cellParams.oldValue) {
-                        if (cellParams.newValue >= 0 && newStoryPoints <= this.data.task['Estimates']) {
-                            const memberDetails = cellParams.data;
-                            memberDetails['Total Story Points'] += cellParams.newValue - cellParams.oldValue;
-                            this.totalTaskStoryPoints += cellParams.newValue - cellParams.oldValue;
-                            this.updateMemberDetails(cellParams, memberDetails);
-                        } else {
+    private createColumnDefs(sprintStatus) {
+        let columnDefs;
+        if (sprintStatus === this.sprintStates.FROZEN) {
+            columnDefs = [
+                {
+                    headerName: 'Name',
+                    field: 'Name',
+                    width: 110,
+                    pinned: true
+                },
+                {
+                    headerName: 'Sprint Hours',
+                    field: 'Total Sprint Hours',
+                    width: 150
+                },
+                {
+                    headerName: 'Total Time',
+                    field: 'Total Time Spent',
+                    width: 140
+                },
+                {
+                    headerName: 'Sprint Story Points',
+                    field: 'Sprint Story Points',
+                    width: 185
+                },
+                {
+                    headerName: 'Total Story Points',
+                    field: 'Total Story Points',
+                    width: 180
+                },
+                {
+                    headerName: 'Comments',
+                    field: 'Comments',
+                    width: 500,
+                    tooltip: (params) => params.value
+                },
+                {
+                    headerName: 'Rating',
+                    field: 'Rating',
+                    width: 150,
+                    cellRenderer: 'ratingRenderer'
+                }
+            ];
+        } else {
+            columnDefs = [
+                {
+                    headerName: 'Name',
+                    field: 'Name',
+                    width: 110,
+                    pinned: true
+                },
+                {
+                    headerName: 'Sprint Hours',
+                    field: 'Total Sprint Hours',
+                    width: 150
+                },
+                {
+                    headerName: 'Total Time',
+                    field: 'Total Time Spent',
+                    width: 140
+                },
+                {
+                    headerName: 'Sprint Story Points',
+                    field: 'Sprint Story Points',
+                    editable: true,
+                    width: 185,
+                    valueParser: 'Number(newValue)',
+                    cellEditor: 'numericEditor',
+                    onCellValueChanged: (cellParams) => {
+                        const newStoryPoints = this.totalTaskStoryPoints + cellParams.newValue - cellParams.oldValue;
+                        if (cellParams.newValue !== cellParams.oldValue) {
                             if (newStoryPoints > this.data.task['Estimates']) {
-                                this.snackBar.open(API_RESPONSE_MESSAGES.taskStoryPointsEstimatesError, '', {duration: SNACKBAR_DURATION});
+                                this.snackBar.open(
+                                    API_RESPONSE_MESSAGES.taskStoryPointsEstimatesError,
+                                    '',
+                                    {duration: SNACKBAR_DURATION}
+                                );
+                                this.revertCellValue(cellParams);
                             } else if (cellParams.newValue < 0) {
-                                this.snackBar.open(API_RESPONSE_MESSAGES.taskStoryPointsNegativeError, '', {duration: SNACKBAR_DURATION});
+                                this.snackBar.open(
+                                    API_RESPONSE_MESSAGES.taskStoryPointsNegativeError,
+                                    '',
+                                    {duration: SNACKBAR_DURATION}
+                                );
+                                this.revertCellValue(cellParams);
+                            } else {
+                                const memberDetails = cellParams.data;
+                                memberDetails['Total Story Points'] += cellParams.newValue - cellParams.oldValue;
+                                this.totalTaskStoryPoints += cellParams.newValue - cellParams.oldValue;
+                                this.updateSprintTaskMember(cellParams, memberDetails);
                             }
-                            this.revertCellValue(cellParams);
+                        }
+                    }
+                },
+                {
+                    headerName: 'Total Story Points',
+                    field: 'Total Story Points',
+                    width: 180
+                },
+                {
+                    headerName: 'Comments',
+                    field: 'Comments',
+                    width: 500,
+                    filter: 'text',
+                    tooltip: (params) => params.value,
+                    cellEditor: 'agLargeTextCellEditor',
+                    editable: true,
+                    onCellValueChanged: (cellParams) => {
+                        if (cellParams.newValue !== cellParams.oldValue) {
+                            this.updateSprintTaskMember(cellParams, cellParams.data);
+                        }
+                    }
+                },
+                {
+                    headerName: 'Rating',
+                    field: 'Rating',
+                    width: 150,
+                    editable: true,
+                    cellEditor: 'ratingEditor',
+                    cellEditorParams: {
+                        values: [0, 1, 2, 3, 4],
+                    },
+                    cellRenderer: 'ratingRenderer',
+                    onCellValueChanged: (cellParams) => {
+                        if (cellParams.newValue !== cellParams.oldValue) {
+                            this.updateSprintTaskMember(cellParams, cellParams.data);
                         }
                     }
                 }
-            },
-            {
-                headerName: 'Total Story Points',
-                field: 'Total Story Points',
-                width: 180
-            },
-            {
-                headerName: 'Comments',
-                field: 'Comments',
-                width: 500,
-                filter: 'text',
-                tooltip: (params) => params.value,
-                cellEditor: 'agLargeTextCellEditor',
-                editable: true,
-                onCellValueChanged: (cellParams) => {
-                    if (cellParams.newValue !== cellParams.oldValue) {
-                        this.updateMemberDetails(cellParams, cellParams.data);
-                    }
-                }
-            },
-            {
-                headerName: 'Rating',
-                field: 'Rating',
-                width: 150,
-                editable: true,
-                cellEditor: 'ratingEditor',
-                cellEditorParams: {
-                    values: [0, 1, 2, 3, 4],
-                },
-                cellRenderer: 'ratingRenderer',
-                onCellValueChanged: (cellParams) => {
-                    if (cellParams.newValue !== cellParams.oldValue) {
-                        this.updateMemberDetails(cellParams, cellParams.data);
-                    }
-                }
-            }
-        ];
+            ];
+        }
         return columnDefs;
     }
 
-    addNewMember() {
+    addNewSprintTaskMember() {
         if (this.selectedMemberID === undefined) {
             this.snackBar.open(API_RESPONSE_MESSAGES.memberNotSelectedError, '', {duration: SNACKBAR_DURATION});
         } else if (this.memberIDs.indexOf(this.selectedMemberID) !== -1) {
@@ -186,8 +238,8 @@ export class RetrospectTaskModalComponent implements OnInit {
         }
     }
 
-    updateMemberDetails(params, memberDetails) {
-        this.retrospectiveService.updateTaskMember(memberDetails).subscribe(
+    updateSprintTaskMember(params, memberDetails) {
+        this.retrospectiveService.updateSprintTaskMember(memberDetails).subscribe(
             () => {
                 this.snackBar.open(API_RESPONSE_MESSAGES.memberUpdated, '', {duration: SNACKBAR_DURATION});
                 this.gridApi.updateRowData({update: [memberDetails]});

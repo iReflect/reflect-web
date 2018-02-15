@@ -78,7 +78,7 @@ export class RetrospectiveService {
         }
     }
 
-    initiateComputation(): Observable<any> {
+    refreshSprintDetails(): Observable<any> {
         // TODO: Make API Calls
         const odds = Math.floor(Math.random() * Math.floor(2));
         if (odds) {
@@ -88,7 +88,7 @@ export class RetrospectiveService {
         }
     }
 
-    getSprintMemberDetails(): Observable<any> {
+    getSprintMemberSummary(): Observable<any> {
         const odds = Math.floor(Math.random() * Math.floor(10));
         if (odds) {
             return Observable.of(SprintMemberDetails);
@@ -97,7 +97,7 @@ export class RetrospectiveService {
         }
     }
 
-    getTaskMemberDetails(taskID): Observable<any> {
+    getSprintTaskMemberSummary(taskID): Observable<any> {
         const odds = Math.floor(Math.random() * Math.floor(10));
         if (odds) {
             return Observable.of(TaskMemberDetails);
@@ -106,7 +106,7 @@ export class RetrospectiveService {
         }
     }
 
-    getSprintTaskDetails(): Observable<any> {
+    getSprintTaskSummary(): Observable<any> {
         const odds = Math.floor(Math.random() * Math.floor(10));
         if (odds) {
             return Observable.of(SprintTaskDetails);
@@ -115,7 +115,7 @@ export class RetrospectiveService {
         }
     }
 
-    updateMember(updatedRowData): Observable<any> {
+    updateSprintMember(updatedMemberData): Observable<any> {
         const odds = Math.floor(Math.random() * Math.floor(2));
         if (odds) {
             return Observable.of({});
@@ -124,7 +124,7 @@ export class RetrospectiveService {
         }
     }
 
-    updateTaskMember(updatedRowData): Observable<any> {
+    updateSprintTaskMember(updatedRowData): Observable<any> {
         const odds = Math.floor(Math.random() * Math.floor(20));
         if (odds) {
             return Observable.of({});
@@ -133,7 +133,7 @@ export class RetrospectiveService {
         }
     }
 
-    getNewMemberDetails(memberID, sprintID): Observable<any> {
+    addSprintMember(memberID, sprintID): Observable<any> {
         const newMember = {
             'ID': memberID,
             'Name': 'Member' + memberID,

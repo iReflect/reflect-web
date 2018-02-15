@@ -1,13 +1,13 @@
 <div>
   <div>
     <mat-select placeholder="Select a Member" [(ngModel)]="selectedMemberID">
-      <mat-option *ngFor="let member of members" [value]="member.ID">
+      <mat-option *ngFor="let member of retroMembers" [value]="member.ID">
         {{member.Name}}
       </mat-option>
     </mat-select>
   </div>
   <div>
-    <button mat-button (click)="addNewMember()">Add Member</button>
+    <button mat-button (click)="addSprintMember()">Add Member</button>
   </div>
   <div>
     <button mat-button (click)="createRowData()">Refresh Data</button>

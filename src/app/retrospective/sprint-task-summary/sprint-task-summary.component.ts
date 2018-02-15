@@ -21,6 +21,7 @@ export class SprintTaskSummaryComponent implements OnInit {
     private columnApi: ColumnApi;
     @Input() retrospectiveID;
     @Input() sprintID;
+    @Input() sprintStatus;
 
     constructor(private snackBar: MatSnackBar,
                 public dialog: MatDialog,
@@ -47,13 +48,13 @@ export class SprintTaskSummaryComponent implements OnInit {
 
 
     createRowData() {
-        this.retrospectiveService.getSprintTaskDetails()
+        this.retrospectiveService.getSprintTaskSummary()
             .subscribe(
                 data => {
                     this.gridApi.setRowData(data['Sprint']['Tasks']);
                 },
                 () => {
-                    this.snackBar.open(API_RESPONSE_MESSAGES.getSprintMemberDetailsError, '', {duration: SNACKBAR_DURATION});
+                    this.snackBar.open(API_RESPONSE_MESSAGES.getSprintTaskSummaryError, '', {duration: SNACKBAR_DURATION});
                 }
             );
     }
@@ -101,7 +102,7 @@ export class SprintTaskSummaryComponent implements OnInit {
             {
                 headerName: 'Story Type',
                 field: 'Story Type',
-                width: 183
+                width: 190
             },
             {
                 headerName: 'Retrospect',
@@ -121,7 +122,8 @@ export class SprintTaskSummaryComponent implements OnInit {
             data: {
                 task: params.data,
                 sprintID: this.sprintID,
-                retrospectiveID: this.retrospectiveID
+                retrospectiveID: this.retrospectiveID,
+                sprintStatus: this.sprintStatus
             },
             maxWidth: 950,
         });
