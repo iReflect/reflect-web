@@ -1,24 +1,28 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { API_RESPONSE_MESSAGES, SNACKBAR_DURATION, SPRINT_STATES } from '../../../constants/app-constants';
+import { Component, Inject } from '@angular/core';
+import {
+    API_RESPONSE_MESSAGES, RATING_STATES, RATING_STATES_LABEL, SNACKBAR_DURATION,
+    SPRINT_STATES
+} from '../../../constants/app-constants';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { RetrospectiveCreateComponent } from '../retrospective-create/retrospective-create.component';
 import { GridOptions } from 'ag-grid';
 import { RatingRendererComponent } from '../../shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
-import { RatingEditorComponent } from '../../shared/ag-grid-editors/rating-editor/rating-editor.component';
 import { NumericCellEditorComponent } from '../../shared/ag-grid-editors/numeric-cell-editor/numeric-cell-editor.component';
+import { SelectCellEditorComponent } from '../../shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
 
 @Component({
     selector: 'app-retrospect-task-modal',
     templateUrl: './retrospect-task-modal.component.html',
     styleUrls: ['./retrospect-task-modal.component.scss']
 })
-export class RetrospectTaskModalComponent implements OnInit {
-    memberIDs: any[] = [];
-    sprintMembers: any[];
+export class RetrospectTaskModalComponent {
+    memberIDs = [];
+    sprintMembers: any;
     selectedMemberID: number;
     gridOptions: GridOptions;
     sprintStates = SPRINT_STATES;
+    ratingStates = RATING_STATES;
 
     private totalTaskStoryPoints = 0;
     private params: any;
@@ -34,8 +38,6 @@ export class RetrospectTaskModalComponent implements OnInit {
         this.columnDefs = this.createColumnDefs(data.sprintStatus);
         this.setGridOptions();
     }
-
-    ngOnInit() { }
 
     getSprintMembers() {
         this.retrospectiveService.getSprintMembers(this.data.sprintID).subscribe(
@@ -53,7 +55,7 @@ export class RetrospectTaskModalComponent implements OnInit {
             columnDefs: this.columnDefs,
             rowHeight: 48,
             frameworkComponents: {
-                'ratingEditor': RatingEditorComponent,
+                'ratingEditor': SelectCellEditorComponent,
                 'ratingRenderer': RatingRendererComponent,
                 'numericEditor': NumericCellEditorComponent
             }
@@ -64,10 +66,10 @@ export class RetrospectTaskModalComponent implements OnInit {
         this.params = params;
         this.gridApi = params.api;
         this.columnApi = params.columnApi;
-        this.createRowData();
+        this.getSprintTaskMemberSummary();
     }
 
-    createRowData() {
+    getSprintTaskMemberSummary() {
         this.retrospectiveService.getSprintTaskMemberSummary(this.data.task.ID)
             .subscribe(
                 data => {
@@ -87,65 +89,56 @@ export class RetrospectTaskModalComponent implements OnInit {
 
     private createColumnDefs(sprintStatus) {
         let columnDefs;
+        const commonColumns = [
+            {
+                headerName: 'Name',
+                field: 'Name',
+                width: 110,
+                pinned: true
+            },
+            {
+                headerName: 'Sprint Hours',
+                field: 'Total Sprint Hours',
+                width: 150
+            },
+            {
+                headerName: 'Total Time',
+                field: 'Total Time Spent',
+                width: 140
+            }
+        ];
+        const totalStoryPointsColumn = [
+            {
+                headerName: 'Total Story Points',
+                field: 'Total Story Points',
+                width: 180
+            }
+        ];
         if (sprintStatus === this.sprintStates.FROZEN) {
             columnDefs = [
-                {
-                    headerName: 'Name',
-                    field: 'Name',
-                    width: 110,
-                    pinned: true
-                },
-                {
-                    headerName: 'Sprint Hours',
-                    field: 'Total Sprint Hours',
-                    width: 150
-                },
-                {
-                    headerName: 'Total Time',
-                    field: 'Total Time Spent',
-                    width: 140
-                },
+                ...commonColumns,
                 {
                     headerName: 'Sprint Story Points',
                     field: 'Sprint Story Points',
                     width: 185
                 },
+                ...totalStoryPointsColumn,
                 {
-                    headerName: 'Total Story Points',
-                    field: 'Total Story Points',
-                    width: 180
+                    headerName: 'Rating',
+                    field: 'Rating',
+                    width: 150,
+                    cellRenderer: 'ratingRenderer'
                 },
                 {
                     headerName: 'Comments',
                     field: 'Comments',
                     width: 500,
                     tooltip: (params) => params.value
-                },
-                {
-                    headerName: 'Rating',
-                    field: 'Rating',
-                    width: 150,
-                    cellRenderer: 'ratingRenderer'
                 }
             ];
         } else {
             columnDefs = [
-                {
-                    headerName: 'Name',
-                    field: 'Name',
-                    width: 110,
-                    pinned: true
-                },
-                {
-                    headerName: 'Sprint Hours',
-                    field: 'Total Sprint Hours',
-                    width: 150
-                },
-                {
-                    headerName: 'Total Time',
-                    field: 'Total Time Spent',
-                    width: 140
-                },
+                ...commonColumns,
                 {
                     headerName: 'Sprint Story Points',
                     field: 'Sprint Story Points',
@@ -154,7 +147,8 @@ export class RetrospectTaskModalComponent implements OnInit {
                     valueParser: 'Number(newValue)',
                     cellEditor: 'numericEditor',
                     onCellValueChanged: (cellParams) => {
-                        const newStoryPoints = this.totalTaskStoryPoints + cellParams.newValue - cellParams.oldValue;
+                        const valueChange = cellParams.newValue - cellParams.oldValue;
+                        const newStoryPoints = this.totalTaskStoryPoints + valueChange;
                         if (cellParams.newValue !== cellParams.oldValue) {
                             if (newStoryPoints > this.data.task['Estimates']) {
                                 this.snackBar.open(
@@ -172,17 +166,37 @@ export class RetrospectTaskModalComponent implements OnInit {
                                 this.revertCellValue(cellParams);
                             } else {
                                 const memberDetails = cellParams.data;
-                                memberDetails['Total Story Points'] += cellParams.newValue - cellParams.oldValue;
-                                this.totalTaskStoryPoints += cellParams.newValue - cellParams.oldValue;
-                                this.updateSprintTaskMember(cellParams, memberDetails);
+                                memberDetails['Total Story Points'] += valueChange;
+                                this.totalTaskStoryPoints += valueChange;
+                                this.updateSprintTaskMember(cellParams);
                             }
                         }
                     }
                 },
+                ...totalStoryPointsColumn,
                 {
-                    headerName: 'Total Story Points',
-                    field: 'Total Story Points',
-                    width: 180
+                    headerName: 'Rating',
+                    field: 'Rating',
+                    width: 150,
+                    editable: true,
+                    cellEditor: 'ratingEditor',
+                    cellEditorParams: {
+                        labels: RATING_STATES_LABEL,
+                        values: [
+                            this.ratingStates.UGLY,
+                            this.ratingStates.BAD,
+                            this.ratingStates.OKAY,
+                            this.ratingStates.GOOD,
+                            this.ratingStates.NOTABLE
+                        ]
+                    },
+                    cellRenderer: 'ratingRenderer',
+                    onCellValueChanged: (cellParams) => {
+                        if ((cellParams.newValue !== cellParams.oldValue) &&
+                            (cellParams.newValue >= this.ratingStates.UGLY && cellParams.newValue <= this.ratingStates.NOTABLE)) {
+                            this.updateSprintTaskMember(cellParams);
+                        }
+                    }
                 },
                 {
                     headerName: 'Comments',
@@ -194,23 +208,7 @@ export class RetrospectTaskModalComponent implements OnInit {
                     editable: true,
                     onCellValueChanged: (cellParams) => {
                         if (cellParams.newValue !== cellParams.oldValue) {
-                            this.updateSprintTaskMember(cellParams, cellParams.data);
-                        }
-                    }
-                },
-                {
-                    headerName: 'Rating',
-                    field: 'Rating',
-                    width: 150,
-                    editable: true,
-                    cellEditor: 'ratingEditor',
-                    cellEditorParams: {
-                        values: [0, 1, 2, 3, 4],
-                    },
-                    cellRenderer: 'ratingRenderer',
-                    onCellValueChanged: (cellParams) => {
-                        if (cellParams.newValue !== cellParams.oldValue) {
-                            this.updateSprintTaskMember(cellParams, cellParams.data);
+                            this.updateSprintTaskMember(cellParams);
                         }
                     }
                 }
@@ -225,7 +223,7 @@ export class RetrospectTaskModalComponent implements OnInit {
         } else if (this.memberIDs.indexOf(this.selectedMemberID) !== -1) {
             this.snackBar.open(API_RESPONSE_MESSAGES.memberAlreadyPresent, '', {duration: SNACKBAR_DURATION});
         } else {
-            this.retrospectiveService.getNewTaskMemberDetails(this.selectedMemberID, this.data.task['Task ID'])
+            this.retrospectiveService.addTaskMember(this.selectedMemberID, this.data.task['Task ID'])
                 .subscribe(
                     newMember => {
                         this.gridApi.updateRowData({ add: [newMember] });
@@ -238,11 +236,11 @@ export class RetrospectTaskModalComponent implements OnInit {
         }
     }
 
-    updateSprintTaskMember(params, memberDetails) {
-        this.retrospectiveService.updateSprintTaskMember(memberDetails).subscribe(
-            () => {
+    updateSprintTaskMember(params) {
+        this.retrospectiveService.updateSprintTaskMember(params.data).subscribe(
+            member => {
+                this.gridApi.updateRowData({update: [member]});
                 this.snackBar.open(API_RESPONSE_MESSAGES.memberUpdated, '', {duration: SNACKBAR_DURATION});
-                this.gridApi.updateRowData({update: [memberDetails]});
             },
             () => {
                 this.snackBar.open(API_RESPONSE_MESSAGES.updateSprintMemberError, '', {duration: SNACKBAR_DURATION});
@@ -251,8 +249,8 @@ export class RetrospectTaskModalComponent implements OnInit {
     }
 
     revertCellValue(params) {
-        const cellData = params.data;
-        cellData[params.colDef.headerName] = params.oldValue;
-        this.gridApi.updateRowData({update: [cellData]});
+        const rowData = params.data;
+        rowData[params.colDef.headerName] = params.oldValue;
+        this.gridApi.updateRowData({update: [rowData]});
     }
 }

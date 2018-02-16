@@ -1,36 +1,36 @@
 import { AfterViewInit, Component, ViewChild, ViewContainerRef } from '@angular/core';
-import { ICellEditorAngularComp } from 'ag-grid-angular';
 import { ICellEditorParams } from 'ag-grid';
-import { RATING_STATES_LABEL } from '../../../../constants/app-constants';
+import { ICellEditorAngularComp } from 'ag-grid-angular';
 
 @Component({
-  selector: 'app-rating-editor',
-  templateUrl: './rating-editor.component.html',
-  styleUrls: ['./rating-editor.component.scss']
+    selector: 'app-select-cell-editor',
+    templateUrl: './select-cell-editor.component.html',
+    styleUrls: ['./select-cell-editor.component.scss']
 })
-export class RatingEditorComponent implements ICellEditorAngularComp, AfterViewInit {
+export class SelectCellEditorComponent implements ICellEditorAngularComp, AfterViewInit {
     value: string;
     values: [ string ];
-    ratingStatesLabel = RATING_STATES_LABEL;
+    labels: [ string ];
 
     private params: ICellEditorParams;
     private selectedIndex: number;
-    @ViewChild('group', {read: ViewContainerRef}) public group;
+    @ViewChild('select', {read: ViewContainerRef}) private select;
 
     constructor() { }
 
     agInit(params: any): void {
         this.params = params;
         this.values = params.values;
-        this.value = this.params.value;
+        this.labels = params.labels;
+        this.value = params.value;
         this.selectedIndex = this.values.findIndex((item) => {
-            return item === this.params.value;
+            return item === params.value;
         });
     }
 
     ngAfterViewInit() {
         setTimeout(() => {
-            this.group.element.nativeElement.focus();
+            this.select.element.nativeElement.focus();
         });
         this.selectBasedOnSelectedIndex();
     }

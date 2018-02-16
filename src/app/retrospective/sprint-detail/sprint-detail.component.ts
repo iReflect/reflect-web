@@ -15,12 +15,14 @@ import * as _ from 'lodash';
     styleUrls: ['./sprint-detail.component.scss']
 })
 export class SprintDetailComponent implements OnInit {
-    sprintDetails: any;
-    retrospectiveID: number;
+    sprintDays: number;
+    sprintStatus: number;
+    selectedValue: number;
     sprintID: number;
+    retrospectiveID: number;
+    sprintDetails: any;
+
     dateFormat = 'MMMM dd, yyyy';
-    sprintStatus;
-    selectedValue;
     sprintStates = SPRINT_STATES;
     sprintStatesLabel = SPRINT_STATES_LABEL;
     sprintActions = SPRINT_ACTIONS;
@@ -34,21 +36,27 @@ export class SprintDetailComponent implements OnInit {
                 private activatedRoute: ActivatedRoute) { }
 
     ngOnInit() {
-        this.activatedRoute.params.subscribe((params: Params) => {
-            this.retrospectiveID = params['retrospectiveID'];
-            this.sprintID = params['sprintID'];
-            this.retrospectiveService.getSprintDetails(this.sprintID).subscribe(
-                // TODO: replace this data with response and access data using response.data
-                (data) => {
-                    this.sprintDetails = data;
-                    this.sprintStatus = data.Status;
-                },
-                err => {
-                    this.snackBar.open(err.error, '', {duration: SNACKBAR_DURATION});
-                    this.navigateToRetrospectiveDashboard();
-                }
-            );
-        });
+        this.getSprintDetails();
+    }
+
+    getSprintDetails() {
+        const params = this.activatedRoute.snapshot.params;
+        this.retrospectiveID = params['retrospectiveID'];
+        this.sprintID = params['sprintID'];
+        this.retrospectiveService.getSprintDetails(this.sprintID).subscribe(
+            // TODO: replace this data with response and access data using response.data
+            data => {
+                this.sprintDetails = data;
+                this.sprintStatus = data.Status;
+                // TODO: set it to working days in api
+                this.sprintDays = Math.ceil(Math.abs( Date.parse(data['EndDate']) -  Date.parse(data['StartDate'])) / (1000 * 3600 * 24));
+
+            },
+            err => {
+                this.snackBar.open(err.error, '', {duration: SNACKBAR_DURATION});
+                this.navigateToRetrospectiveDashboard();
+            }
+        );
     }
 
     navigateToRetrospectiveDashboard() {
@@ -63,7 +71,7 @@ export class SprintDetailComponent implements OnInit {
         this.selectedValue = undefined;
     }
 
-    stateChange(action) {
+    sprintStateChange(action) {
         if (_.includes(this.sprintActions, action)) {
             const dialogRef = this.dialog.open(BasicModalComponent, {
                 data: {
@@ -89,6 +97,7 @@ export class SprintDetailComponent implements OnInit {
                             () => {
                                 this.sprintStatus =  this.sprintStates.FROZEN;
                                 this.snackBar.open(API_RESPONSE_MESSAGES.sprintFrozen, '', {duration: SNACKBAR_DURATION});
+                                //
                             },
                             err => this.sprintStateChangeError(err.error)
                         );

@@ -1,5 +1,5 @@
 <mat-card>
-  <mat-card-header>{{data.task['Task ID']}}: {{data.task['Task Summary']}}</mat-card-header>
+  <mat-card-header>{{data.task['TaskID']}}: {{data.task['Task Summary']}}</mat-card-header>
   <mat-card-content>
     <div>
       <div>
@@ -17,7 +17,7 @@
     </div>
   </mat-card-content>
 </mat-card>
-<div>
+<div *ngIf="data.sprintStatus !== sprintStates.FROZEN">
   <div>
     <mat-select placeholder="Select a Member" [(ngModel)]="selectedMemberID">
       <mat-option *ngFor="let member of sprintMembers" [value]="member.ID">

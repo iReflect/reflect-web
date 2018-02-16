@@ -21,11 +21,7 @@ import { RetrospectTaskModalComponent } from './retrospect-task-modal/retrospect
     imports: [
         CommonModule,
         FormsModule,
-        AgGridModule.withComponents([
-            SprintMemberSummaryComponent,
-            SprintTaskSummaryComponent,
-            RetrospectTaskModalComponent
-        ]),
+        AgGridModule.withComponents([]),
         ReactiveFormsModule,
         CustomMaterialModule,
         SharedModule,
@@ -42,7 +38,8 @@ import { RetrospectTaskModalComponent } from './retrospect-task-modal/retrospect
     exports: [],
     providers: [],
     entryComponents: [
-        RetrospectiveCreateComponent
+        RetrospectiveCreateComponent,
+        RetrospectTaskModalComponent
     ]
 
 })

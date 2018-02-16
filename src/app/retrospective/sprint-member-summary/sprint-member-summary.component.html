@@ -1,23 +1,21 @@
 <div>
-  <div>
+  <div *ngIf="sprintStatus !== sprintStates.FROZEN">
     <mat-select placeholder="Select a Member" [(ngModel)]="selectedMemberID">
       <mat-option *ngFor="let member of retroMembers" [value]="member.ID">
         {{member.Name}}
       </mat-option>
     </mat-select>
-  </div>
-  <div>
     <button mat-button (click)="addSprintMember()">Add Member</button>
   </div>
   <div>
-    <button mat-button (click)="createRowData()">Refresh Data</button>
+    <button mat-button (click)="getSprintMemberSummary()">Refresh Data</button>
   </div>
   <div class="ag-grid-container">
       <ag-grid-angular
           class="ag-theme-material"
+          [stopEditingWhenGridLosesFocus]="true"
           [gridOptions]="gridOptions"
-          (gridReady)="onGridReady($event)"
-          [stopEditingWhenGridLosesFocus]="true">
+          (gridReady)="onGridReady($event)">
       </ag-grid-angular>
   </div>
 </div>

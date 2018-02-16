@@ -37,14 +37,14 @@ export const APP_ROUTE_URLS = {
 };
 
 export const API_RESPONSE_MESSAGES = {
-    feedBackSaved: 'Feedback saved successfully!!',
-    feedBackSubmitted: 'Feedback submitted successfully!!',
-    error: 'Some Error Occurred!!',
-    retroCreated: 'Retro Created successfully!!',
-    sprintActivated: 'Sprint activated successfully!!',
-    sprintFrozen: 'Sprint frozen successfully!!',
-    sprintDiscarded: 'Sprint discarded successfully!!',
-    sprintComputationInitiated: 'Sprint Computation Initiated Successfully!!',
+    feedBackSaved: 'Feedback saved successfully!',
+    feedBackSubmitted: 'Feedback submitted successfully!',
+    error: 'Some Error Occurred!',
+    retroCreated: 'Retro Created successfully!',
+    sprintActivated: 'Sprint activated successfully!',
+    sprintFrozen: 'Sprint frozen successfully!',
+    sprintDiscarded: 'Sprint discarded successfully!',
+    sprintComputationInitiated: 'Sprint Computation Initiated Successfully!',
     getRetrospectiveMembersError: 'Cannot get Retrospective Members List!',
     getSprintMembersError: 'Cannot get Sprint Members List!',
     getSprintMemberSummaryError: 'Cannot get Sprint Members Details!',
@@ -55,7 +55,7 @@ export const API_RESPONSE_MESSAGES = {
     taskStoryPointsNegativeError: 'Sprint story points must be a non-negative number!',
     taskStoryPointsEstimatesError: 'Sprint story points must not exceed estimates!',
     vacationNumberError: 'Vacations must be a positive integer!',
-    vacationTimeError: 'Number of vacations must be less than total sprint time!',
+    vacationTimeError: 'Number of vacations must be less than total sprint days!',
     memberNotSelectedError: 'Please select a member to add!',
     memberAlreadyPresent: 'Error: Member already present!',
     addSprintMemberError: 'Error adding new sprint member!',
@@ -108,4 +108,12 @@ export const RATING_STATES_LABEL = {
     [RATING_STATES.OKAY]: 'Okay',
     [RATING_STATES.GOOD]: 'Good',
     [RATING_STATES.NOTABLE]: 'Notable'
+};
+
+export const RATING_COLORS = {
+    [RATING_STATES_LABEL[RATING_STATES.NOTABLE]]: '#0FF000',
+    [RATING_STATES_LABEL[RATING_STATES.GOOD]]: '#00A000',
+    [RATING_STATES_LABEL[RATING_STATES.OKAY]]: '#ff9900',
+    [RATING_STATES_LABEL[RATING_STATES.BAD]]: '#ff8',
+    [RATING_STATES_LABEL[RATING_STATES.UGLY]]: '#ff3030'
 };

@@ -118,7 +118,7 @@ export class RetrospectiveService {
     updateSprintMember(updatedMemberData): Observable<any> {
         const odds = Math.floor(Math.random() * Math.floor(2));
         if (odds) {
-            return Observable.of({});
+            return Observable.of(updatedMemberData);
         } else {
             return Observable.throw({'error': 'Some Error!'});
         }
@@ -127,7 +127,7 @@ export class RetrospectiveService {
     updateSprintTaskMember(updatedRowData): Observable<any> {
         const odds = Math.floor(Math.random() * Math.floor(20));
         if (odds) {
-            return Observable.of({});
+            return Observable.of(updatedRowData);
         } else {
             return Observable.throw({'error': 'Some Error!'});
         }
@@ -154,7 +154,7 @@ export class RetrospectiveService {
         }
     }
 
-    getNewTaskMemberDetails(memberID, taskID): Observable<any> {
+    addTaskMember(memberID, taskID): Observable<any> {
         const newMember = {
             'ID': memberID,
             'Name': 'Member' + memberID,
