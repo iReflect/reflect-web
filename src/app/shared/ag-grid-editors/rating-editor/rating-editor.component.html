@@ -1,0 +1,7 @@
+<div class="container" #group tabindex="0">
+  <mat-select (change)="onSelectChange($event)" [(ngModel)]="value">
+    <mat-option *ngFor="let item of values" [value]="item">
+      {{ ratingStatesLabel[item] }}
+    </mat-option>
+  </mat-select>
+</div>

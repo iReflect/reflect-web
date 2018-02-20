@@ -97,7 +97,6 @@ export class SprintDetailComponent implements OnInit {
                             () => {
                                 this.sprintStatus =  this.sprintStates.FROZEN;
                                 this.snackBar.open(API_RESPONSE_MESSAGES.sprintFrozen, '', {duration: SNACKBAR_DURATION});
-                                //
                             },
                             err => this.sprintStateChangeError(err.error)
                         );

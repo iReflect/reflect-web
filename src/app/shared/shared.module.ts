@@ -47,7 +47,7 @@ import { RatingRendererComponent } from './ag-grid-renderers/rating-renderer/rat
         NumericCellEditorComponent,
         SelectCellEditorComponent,
         RatingRendererComponent,
-        ClickableButtonRendererComponent,
+        ClickableButtonRendererComponent
     ],
     exports: [
         ValuesPipe,
