@@ -1,0 +1,44 @@
+.card-header {
+  color: rgba(0,0,0,.54);
+  font-weight: 500;
+  height: 48px;
+  font-size: 14px;
+  padding: 0;
+}
+
+.flex-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.status-freeze {
+  text-align: center;
+  .green-icon {
+    color: green;
+  }
+}
+
+.sync-error-card {
+  margin-top: 15%;
+  margin-left: 32%;
+  width: 30%;
+  text-align: center;
+}
+
+.dashboard-back {
+  .back-icon {
+    cursor: pointer;
+  }
+  .circular-icon {
+    border-radius: 50%;
+    background-color: #6dcaf3;
+    color: #ffffff;
+    line-height: 22px;
+    font-size: 32px;
+    cursor: pointer;
+  }
+}
+
+.sprint-actions {
+  text-align: right;
+}

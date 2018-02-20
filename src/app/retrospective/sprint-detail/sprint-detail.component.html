@@ -1,0 +1,53 @@
+<mat-card>
+  <div class="flex-container">
+    <div>
+      <mat-card-title>{{sprintDetails.Title}}</mat-card-title>
+    </div>
+   <div>
+     <span class="dashboard-back" matTooltip="Retrospective dashboard" matTooltipPosition="before">
+       <span (click)="navigateToRetrospectiveDashboard()" class="circular-icon">
+         &nbsp;<mat-icon class="back-icon">arrow_back</mat-icon>&nbsp;
+       </span>
+     </span>
+   </div>
+  </div>
+  <mat-card-content class="flex-container">
+    <div>
+      <p mat-line>{{sprintDetails.StartDate | date: dateFormat}} to {{sprintDetails.EndDate | date: dateFormat}}</p>
+      <p mat-line>Last Synced At: {{sprintDetails.LastSyncedAt | date: dateFormat}}</p>
+      <p mat-line>Total Time Spent: {{sprintDetails.TotalTimeSpent}} Hours</p>
+    </div>
+    <div class="sprint-actions">
+      <div *ngIf="sprintStatus !== sprintStates.FROZEN">
+        <mat-form-field>
+          <mat-select placeholder="{{sprintStatesLabel[sprintStatus]}}" [(ngModel)]="selectedValue" (selectionChange)="stateChange($event.value)">
+            <mat-option *ngIf="sprintStatus === sprintStates.DRAFT" [value]="sprintActions.ACTIVATE">{{sprintActionsLabel[sprintActions.ACTIVATE]}}</mat-option>
+            <mat-option *ngIf="sprintStatus === sprintStates.ACTIVE" [value]="sprintActions.FREEZE">{{sprintActionsLabel[sprintActions.FREEZE]}}</mat-option>
+            <mat-option *ngIf="sprintStatus !== sprintStates.FROZEN" [value]="sprintActions.DISCARD">{{sprintActionsLabel[sprintActions.DISCARD]}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="status-freeze" *ngIf="sprintStatus === sprintStates.FROZEN">
+        <span>Frozen <mat-icon class="green-icon">done</mat-icon></span>
+      </div>
+      <div>
+        <button mat-button (click)="initiateComputation()" *ngIf="!sprintDetails.isSyncInProgress">Refresh <mat-icon>refresh</mat-icon></button>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<div>
+  <mat-tab-group *ngIf="sprintDetails.LastSyncedAt">
+    <mat-tab label="Tab 1">Content 1</mat-tab>
+    <mat-tab label="Tab 2">Content 2</mat-tab>
+  </mat-tab-group>
+  <mat-card class="sync-error-card" *ngIf="!sprintDetails.LastSyncedAt">
+    <mat-error *ngIf="!sprintDetails.isSyncInProgress">
+      Please Refresh to fetch data!
+    </mat-error>
+    <mat-error *ngIf="sprintDetails.isSyncInProgress">
+      Please Wait! Sync in Progress!
+    </mat-error>
+  </mat-card>
+</div>
