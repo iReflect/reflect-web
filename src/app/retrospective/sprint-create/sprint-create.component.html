@@ -1,0 +1,58 @@
+<div class="create-sprint"  [formGroup]="sprintFormGroup">
+  <h2 mat-dialog-title>Create a New Sprint</h2>
+  <div>
+    <mat-form-field floatLabel="always">
+      <mat-label></mat-label>
+      <input matInput formControlName="title" placeholder="Sprint Title" required>
+      <mat-error *ngIf="titleControl.invalid && (titleControl.dirty || titleControl.touched)">
+        Title is required.
+      </mat-error>
+    </mat-form-field>
+    &nbsp; &nbsp; &nbsp; &nbsp;
+    <mat-form-field floatLabel="always">
+      <mat-label></mat-label>
+      <input matInput formControlName="sprintID" placeholder="Sprint ID">
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field floatLabel="always">
+      <mat-label></mat-label>
+      <input matInput id="startDate" formControlName="startDate" [matDatepicker]="startDatePicker" placeholder="Choose Start date">
+      <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #startDatePicker></mat-datepicker>
+      <mat-error *ngIf="errors.startShouldExist">
+        Start Date is required.
+      </mat-error>
+      <mat-error *ngIf="startDateControl.invalid && (startDateControl.dirty || startDateControl.touched)">
+        It should be a valid date.
+      </mat-error>
+    </mat-form-field>
+
+    &nbsp; to &nbsp;
+
+    <mat-form-field floatLabel="always">
+      <mat-label></mat-label>
+      <input matInput id="endDate" [min]="startDateControl" formControlName="endDate" [matDatepicker]="endDatePicker" placeholder="Choose End date">
+      <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #endDatePicker></mat-datepicker>
+      <mat-error *ngIf="errors.endShouldExist">
+        End date is required.
+      </mat-error>
+      <mat-error *ngIf="errors.startGreaterThanEnd">
+        End date should be greater than the Start date.
+      </mat-error>
+      <mat-error *ngIf="endDateControl.invalid && (endDateControl.dirty || endDateControl.touched)">
+        It should be a valid date.
+      </mat-error>
+    </mat-form-field>
+  </div>
+  <mat-error *ngIf="errors.atleastOne">
+    Atleast one of Start and End dates or Sprint ID fields is required.
+  </mat-error>
+  <div>
+    <mat-dialog-actions>
+      <button mat-raised-button mat-dialog-close>Cancel</button>
+      <button mat-raised-button [disabled]="sprintFormGroup.invalid" [mat-dialog-close]="sprintFormGroup.value">Create Sprint</button>
+    </mat-dialog-actions>
+  </div>
+</div>

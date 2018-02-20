@@ -15,6 +15,9 @@ import { AgGridModule } from 'ag-grid-angular';
 import { SprintMemberSummaryComponent } from './sprint-member-summary/sprint-member-summary.component';
 import { SprintTaskSummaryComponent } from './sprint-task-summary/sprint-task-summary.component';
 import { RetrospectTaskModalComponent } from './retrospect-task-modal/retrospect-task-modal.component';
+import { RetrospectiveDashboardComponent } from './retrospective-dashboard/retrospective-dashboard.component';
+import { SprintListComponent } from './sprint-list/sprint-list.component';
+import { SprintCreateComponent } from './sprint-create/sprint-create.component';
 
 
 @NgModule({
@@ -33,15 +36,18 @@ import { RetrospectTaskModalComponent } from './retrospect-task-modal/retrospect
         RetrospectiveCreateComponent,
         SprintMemberSummaryComponent,
         SprintTaskSummaryComponent,
-        RetrospectTaskModalComponent
+        RetrospectTaskModalComponent,
+        RetrospectiveDashboardComponent,
+        SprintListComponent,
+        SprintCreateComponent,
     ],
     exports: [],
     providers: [],
     entryComponents: [
         RetrospectiveCreateComponent,
-        RetrospectTaskModalComponent
+        RetrospectTaskModalComponent,
+        SprintCreateComponent
     ]
-
 })
 export class RetrospectiveModule {
 }

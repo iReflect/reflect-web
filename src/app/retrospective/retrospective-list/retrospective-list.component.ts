@@ -32,7 +32,7 @@ export class RetrospectiveListComponent implements OnInit {
     }
 
     navigateToRetroSpectiveDetail(row) {
-        // redirect to retro detail page
+        this.router.navigateByUrl(APP_ROUTE_URLS.retroSpectiveDashboard.replace(':retroSpectiveID', row.ID));
     }
 
     showCreateRetroModal() {

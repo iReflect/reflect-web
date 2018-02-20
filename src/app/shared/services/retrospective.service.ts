@@ -1,7 +1,4 @@
 import { Injectable } from '@angular/core';
-import * as RetroSpectiveListJson from '../../../fixtures/retrospective-list-response.json';
-import * as RetroSpectiveConfigOptions from '../../../fixtures/retrospective-config-options.json';
-import * as SprintListJson from '../../../fixtures/sprint-list-response.json';
 import { RestApiHelperService } from '../utils/rest-api-helper.service';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
@@ -9,6 +6,13 @@ import { API_URLS } from '../../../constants/api-urls';
 import * as SprintMemberDetails from '../../../fixtures/sprint-member-details-response.json';
 import * as SprintTaskDetails from '../../../fixtures/sprint-task-details-response.json';
 import * as TaskMemberDetails from '../../../fixtures/task-member-summary-response.json';
+
+// Import Mocked API responses json
+import * as RetroSpectiveListJson from '../../../fixtures/retrospective-list-response.json';
+import * as RetroSpectiveConfigOptions from '../../../fixtures/retrospective-config-options.json';
+import * as RetroSpectiveGetJson from '../../../fixtures/retrospective-get-response.json';
+import * as SprintListJson from '../../../fixtures/sprint-list-response.json';
+
 
 @Injectable()
 export class RetrospectiveService {
@@ -28,6 +32,16 @@ export class RetrospectiveService {
         return Observable.of({
             SprintID: 10
         });
+    }
+
+    getRetrospectiveByID(retroSpectiveID): Observable<any> {
+        // TODO: Replace the dummy json with the Actual API once it is ready
+        return Observable.of(RetroSpectiveGetJson[retroSpectiveID]);
+    }
+
+    listSprintByRetrospectiveID(retroSpectiveID): Observable<any> {
+        // TODO: Replace the dummy json with the Actual API once it is ready
+        return Observable.of(SprintListJson);
     }
 
     getTeamList(): any {
@@ -219,6 +233,16 @@ export class RetrospectiveService {
             });
         } else {
             return Observable.throw({'error': 'Some Error!'});
+        }
+    }
+
+    createSprint(sprintDetails): Observable<any> {
+        console.log('Sprint created with values: ' + JSON.stringify(sprintDetails));
+        const odds = Math.floor(Math.random() * Math.floor(2));
+        if (odds) {
+            return Observable.of({'data': 'Success!'});
+        } else {
+            return Observable.throw({'error': 'Server Error!'});
         }
     }
 }

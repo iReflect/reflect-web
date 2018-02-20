@@ -34,6 +34,7 @@ export const APP_ROUTE_URLS = {
     teamFeedbackList: 'team/feedbacks',
     retroSpectiveList: 'retrospectives',
     sprintDetails: 'retrospectives/:retrospectiveID/sprint/:sprintID',
+    retroSpectiveDashboard: 'retrospectives/:retroSpectiveID/dashboard',
 };
 
 export const API_RESPONSE_MESSAGES = {
@@ -61,7 +62,8 @@ export const API_RESPONSE_MESSAGES = {
     addSprintMemberError: 'Error adding new sprint member!',
     updateSprintMemberError: 'Error updating sprint member details!',
     deleteSprintMemberError: 'Error deleting sprint member!',
-    memberUpdated: 'Member Updated Successfully!'
+    memberUpdated: 'Member Updated Successfully!',
+    sprintCreated: 'Sprint Created Successfully!'
 };
 
 export const QUESTION_RESPONSE_SEPARATOR = ',';

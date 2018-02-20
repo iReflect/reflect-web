@@ -10,7 +10,7 @@
     </mat-card>
     <div class="retro-table-content">
       <div class="retro-table-container mat-elevation-z5">
-        <mat-table #table [dataSource]="dataSource">
+        <mat-table #table class="custom-mat-table" [dataSource]="dataSource">
           <!-- Title Column -->
           <ng-container matColumnDef="title">
             <mat-header-cell *matHeaderCellDef>Title</mat-header-cell>
@@ -18,6 +18,10 @@
                       (click)="navigateToRetroSpectiveDetail(element)">
               <span matTooltip="Link to the Retrospective Dashboard" class="retro-dashboard-link">{{element.Title}}</span>
             </mat-cell>
+            <!--<mat-cell *matCellDef="let element">-->
+              <!--<span class="link-type-cell"-->
+                    <!--matTooltip="Link to Retrospective Dashboard">{{element.Title}}</span>-->
+            <!--</mat-cell>-->
           </ng-container>
 
           <!-- Team Column -->
