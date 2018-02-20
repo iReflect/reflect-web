@@ -7,7 +7,7 @@
       "EndDate": "2018-01-01T00:00:00.00Z",
       "LastSyncedAt": "2018-01-13T00:00:00.00Z",
       "isSyncInProgress": false,
-      "TotalTimeSpent": 12.55,
+      "TotalTimeSpent": 705,
       "Status": 0,
       "CreatedBy": {
         "ID": 2,
@@ -24,8 +24,8 @@
       "EndDate": "2018-01-01T00:00:00.00Z",
       "LastSyncedAt": "2018-01-13T00:00:00.00Z",
       "isSyncInProgress": false,
-      "TotalTimeSpent": 12.55,
-      "Status": 1,
+      "TotalTimeSpent": 1440,
+      "Status": 2,
       "CreatedBy": {
         "ID": 2,
         "Email": "ireflect@jtg.com",
@@ -41,8 +41,8 @@
       "EndDate": "2018-01-10T00:00:00.00Z",
       "LastSyncedAt": null,
       "isSyncInProgress": false,
-      "TotalTimeSpent": 30.40,
-      "Status": 2,
+      "TotalTimeSpent": 3040,
+      "Status": 1,
       "CreatedBy": {
         "ID": 2,
         "Email": "ireflect+1@jtg.com",
@@ -58,7 +58,7 @@
       "EndDate": "2018-01-10T00:00:00.00Z",
       "LastSyncedAt": null,
       "isSyncInProgress": true,
-      "TotalTimeSpent": 30.40,
+      "TotalTimeSpent": 3040,
       "Status": 2,
       "CreatedBy": {
         "ID": 2,

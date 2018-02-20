@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
@@ -6,11 +6,7 @@ import { MAT_DIALOG_DATA } from '@angular/material';
     templateUrl: './basic-modal.component.html',
     styleUrls: ['./basic-modal.component.scss']
 })
-export class BasicModalComponent implements OnInit {
+export class BasicModalComponent {
 
     constructor(@Inject(MAT_DIALOG_DATA) public data: any) { }
-
-    ngOnInit() {
-    }
-
 }

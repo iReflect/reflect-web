@@ -8,6 +8,7 @@ import 'rxjs/add/observable/of';
 import { API_URLS } from '../../../constants/api-urls';
 import * as SprintMemberDetails from '../../../fixtures/sprint-member-details-response.json';
 import * as SprintTaskDetails from '../../../fixtures/sprint-task-details-response.json';
+import * as TaskMemberDetails from '../../../fixtures/task-member-summary-response.json';
 
 @Injectable()
 export class RetrospectiveService {
@@ -77,7 +78,7 @@ export class RetrospectiveService {
         }
     }
 
-    initiateComputation(): Observable<any> {
+    refreshSprintDetails(): Observable<any> {
         // TODO: Make API Calls
         const odds = Math.floor(Math.random() * Math.floor(2));
         if (odds) {
@@ -87,7 +88,7 @@ export class RetrospectiveService {
         }
     }
 
-    getSprintMemberDetails(): Observable<any> {
+    getSprintMemberSummary(): Observable<any> {
         const odds = Math.floor(Math.random() * Math.floor(10));
         if (odds) {
             return Observable.of(SprintMemberDetails);
@@ -96,7 +97,16 @@ export class RetrospectiveService {
         }
     }
 
-    getSprintTaskDetails(): Observable<any> {
+    getSprintTaskMemberSummary(taskID): Observable<any> {
+        const odds = Math.floor(Math.random() * Math.floor(10));
+        if (odds) {
+            return Observable.of(TaskMemberDetails);
+        } else {
+            return Observable.throw({'error': 'Some Error!'});
+        }
+    }
+
+    getSprintTaskSummary(): Observable<any> {
         const odds = Math.floor(Math.random() * Math.floor(10));
         if (odds) {
             return Observable.of(SprintTaskDetails);
@@ -105,16 +115,25 @@ export class RetrospectiveService {
         }
     }
 
-    updateMember(updatedRowData): Observable<any> {
+    updateSprintMember(updatedMemberData): Observable<any> {
         const odds = Math.floor(Math.random() * Math.floor(2));
         if (odds) {
-            return Observable.of({});
+            return Observable.of(updatedMemberData);
         } else {
             return Observable.throw({'error': 'Some Error!'});
         }
     }
 
-    getNewMemberDetails(memberID, sprintID): Observable<any> {
+    updateSprintTaskMember(updatedRowData): Observable<any> {
+        const odds = Math.floor(Math.random() * Math.floor(20));
+        if (odds) {
+            return Observable.of(updatedRowData);
+        } else {
+            return Observable.throw({'error': 'Some Error!'});
+        }
+    }
+
+    addSprintMember(memberID, sprintID): Observable<any> {
         const newMember = {
             'ID': memberID,
             'Name': 'Member' + memberID,
@@ -126,6 +145,25 @@ export class RetrospectiveService {
             'Comments': 'Lala worker',
             'Expected Velocity': 10,
             'Actual Velocity': 12
+        };
+        const odds = Math.floor(Math.random() * Math.floor(2));
+        if (odds) {
+            return Observable.of(newMember);
+        } else {
+            return Observable.throw({'error': 'Some Error!'});
+        }
+    }
+
+    addTaskMember(memberID, taskID): Observable<any> {
+        const newMember = {
+            'ID': memberID,
+            'Name': 'Member' + memberID,
+            'Total Sprint Hours': 0,
+            'Total Time Spent': 0,
+            'Sprint Story Points': 0,
+            'Total Story Points': 0,
+            'Rating': 2,
+            'Comments': 'Hard worker'
         };
         const odds = Math.floor(Math.random() * Math.floor(2));
         if (odds) {
@@ -156,6 +194,26 @@ export class RetrospectiveService {
                     {
                         'ID': 11,
                         'Name': 'Member11'
+                    }
+                ]
+            });
+        } else {
+            return Observable.throw({'error': 'Some Error!'});
+        }
+    }
+
+    getSprintMembers(sprintID): Observable<any> {
+        const odds = Math.floor(Math.random() * Math.floor(20));
+        if (odds) {
+            return Observable.of({
+                members: [
+                    {
+                        'ID': 20,
+                        'Name': 'Member20'
+                    },
+                    {
+                        'ID': 21,
+                        'Name': 'Member21'
                     }
                 ]
             });

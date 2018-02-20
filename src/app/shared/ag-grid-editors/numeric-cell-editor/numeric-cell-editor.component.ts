@@ -10,7 +10,7 @@ export class NumericCellEditorComponent implements ICellEditorAngularComp, After
     value: number;
 
     private params: any;
-    @ViewChild('input', {read: ViewContainerRef}) public input;
+    @ViewChild('input', {read: ViewContainerRef}) private input;
 
     agInit(params: any): void {
         this.params = params;
