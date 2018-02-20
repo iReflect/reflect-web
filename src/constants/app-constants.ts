@@ -44,7 +44,18 @@ export const API_RESPONSE_MESSAGES = {
     sprintActivated: 'Sprint activated successfully!!',
     sprintFrozen: 'Sprint frozen successfully!!',
     sprintDiscarded: 'Sprint discarded successfully!!',
-    sprintComputationInitiated: 'Sprint Computation Initiated Successfully!!'
+    sprintComputationInitiated: 'Sprint Computation Initiated Successfully!!',
+    getRetrospectiveMembersError: 'Cannot get Retrospective Members List!',
+    getSprintMemberDetails: 'Cannot get Sprint Members Details!',
+    allocationNumberError: 'Allocation must be an integer between 0 to 100!',
+    expectationNumberError: 'Expectation must be an integer between 0 to 100!',
+    vacationNumberError: 'Vacations must be a positive integer!',
+    vacationTimeError: 'Number of vacations must be less than total sprint time!',
+    memberNotSelectedError: 'Please select a member to add!',
+    addSprintMemberError: 'Error adding new sprint member!',
+    updateSprintMemberError: 'Error updating sprint member details!',
+    deleteSprintMemberError: 'Error deleting sprint member!',
+    memberUpdated: 'Member Updated Successfully!'
 };
 
 export const QUESTION_RESPONSE_SEPARATOR = ',';
@@ -76,3 +87,19 @@ export const SPRINT_ACTIONS_LABEL = {
 };
 
 export const SNACKBAR_DURATION = 2000;
+
+export const RATING_STATES = {
+    UGLY: 0,
+    BAD: 1,
+    OKAY: 2,
+    GOOD: 3,
+    NOTABLE: 4
+};
+
+export const RATING_STATES_LABEL = {
+    [RATING_STATES.UGLY]: 'Ugly',
+    [RATING_STATES.BAD]: 'Bad',
+    [RATING_STATES.OKAY]: 'Okay',
+    [RATING_STATES.GOOD]: 'Good',
+    [RATING_STATES.NOTABLE]: 'Notable'
+};
