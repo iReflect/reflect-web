@@ -23,6 +23,7 @@ import { RatingEditorComponent } from './ag-grid-editors/rating-editor/rating-ed
 import { NumericCellEditorComponent } from './ag-grid-editors/numeric-cell-editor/numeric-cell-editor.component';
 import { RatingRendererComponent } from './ag-grid-renderers/rating-renderer/rating-renderer.component';
 import { DeleteButtonRendererComponent } from './ag-grid-renderers/delete-button-renderer/delete-button-renderer.component';
+import { RetrospectButtonRendererComponent } from './ag-grid-renderers/retrospect-button-renderer/retrospect-button-renderer.component';
 
 @NgModule({
     imports: [
@@ -36,7 +37,8 @@ import { DeleteButtonRendererComponent } from './ag-grid-renderers/delete-button
             RatingEditorComponent,
             NumericCellEditorComponent,
             RatingRendererComponent,
-            DeleteButtonRendererComponent
+            DeleteButtonRendererComponent,
+            RetrospectButtonRendererComponent,
         ])
     ],
     declarations: [
@@ -46,6 +48,7 @@ import { DeleteButtonRendererComponent } from './ag-grid-renderers/delete-button
         BasicModalComponent,
         RatingRendererComponent,
         RatingEditorComponent,
+        RetrospectButtonRendererComponent,
         DeleteButtonRendererComponent,
         NumericCellEditorComponent
     ],
