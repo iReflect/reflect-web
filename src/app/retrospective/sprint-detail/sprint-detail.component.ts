@@ -18,8 +18,8 @@ export class SprintDetailComponent implements OnInit {
     sprintDays: number;
     sprintStatus: number;
     selectedValue: number;
-    sprintID: number;
-    retrospectiveID: number;
+    sprintID: any;
+    retrospectiveID: any;
     sprintDetails: any;
 
     dateFormat = 'MMMM dd, yyyy';
@@ -43,25 +43,23 @@ export class SprintDetailComponent implements OnInit {
         const params = this.activatedRoute.snapshot.params;
         this.retrospectiveID = params['retrospectiveID'];
         this.sprintID = params['sprintID'];
-        this.retrospectiveService.getSprintDetails(this.sprintID).subscribe(
-            // TODO: replace this data with response and access data using response.data
-            data => {
-                this.sprintDetails = data;
-                this.sprintStatus = data.Status;
+        this.retrospectiveService.getSprintDetails(this.retrospectiveID, this.sprintID).subscribe(
+            response => {
+                this.sprintDetails = response.data;
+                this.sprintStatus = response.data.Status;
                 // TODO: set it to working days in api
-                this.sprintDays = Math.ceil(Math.abs( Date.parse(data['EndDate']) -  Date.parse(data['StartDate'])) / (1000 * 3600 * 24));
+                this.sprintDays = Math.ceil(Math.abs( Date.parse(response.data['EndDate']) -  Date.parse(response.data['StartDate'])) / (1000 * 3600 * 24));
 
             },
             err => {
-                this.snackBar.open(err.error, '', {duration: SNACKBAR_DURATION});
+                this.snackBar.open(err.data, '', {duration: SNACKBAR_DURATION});
                 this.navigateToRetrospectiveDashboard();
             }
         );
     }
 
     navigateToRetrospectiveDashboard() {
-        // TODO: change this route to retrospective dashboard
-        this.router.navigateByUrl(APP_ROUTE_URLS.retroSpectiveList);
+        this.router.navigateByUrl(APP_ROUTE_URLS.retrospectiveDashboard.replace(':retrospectiveID', this.retrospectiveID));
     }
 
     sprintStateChangeError(errorMessage) {
@@ -85,7 +83,7 @@ export class SprintDetailComponent implements OnInit {
             dialogRef.afterClosed().subscribe(result => {
                 if (result) {
                     if (action === this.sprintActions.ACTIVATE) {
-                        this.retrospectiveService.activateSprint(this.sprintID).subscribe(
+                        this.retrospectiveService.activateSprint(this.retrospectiveID, this.sprintID).subscribe(
                             () => {
                                 this.sprintStatus = this.sprintStates.ACTIVE;
                                 this.snackBar.open(API_RESPONSE_MESSAGES.sprintActivated, '', {duration: SNACKBAR_DURATION});
@@ -93,7 +91,7 @@ export class SprintDetailComponent implements OnInit {
                             err => this.sprintStateChangeError(err.error)
                         );
                     } else if (action === this.sprintActions.FREEZE) {
-                        this.retrospectiveService.freezeSprint(this.sprintID).subscribe(
+                        this.retrospectiveService.freezeSprint(this.retrospectiveID, this.sprintID).subscribe(
                             () => {
                                 this.sprintStatus =  this.sprintStates.FROZEN;
                                 this.snackBar.open(API_RESPONSE_MESSAGES.sprintFrozen, '', {duration: SNACKBAR_DURATION});
@@ -119,10 +117,10 @@ export class SprintDetailComponent implements OnInit {
     }
 
     refreshSprintDetails() {
-        this.retrospectiveService.refreshSprintDetails().subscribe(
+        this.retrospectiveService.refreshSprintDetails(this.retrospectiveID, this.sprintID).subscribe(
             () => {
                 this.snackBar.open(API_RESPONSE_MESSAGES.sprintComputationInitiated, '', {duration: SNACKBAR_DURATION});
-                this.sprintDetails.isSyncInProgress = true;
+                this.sprintDetails.CurrentlySyncing = true;
             },
             err => {
                 this.snackBar.open(err.error, '', {duration: SNACKBAR_DURATION});

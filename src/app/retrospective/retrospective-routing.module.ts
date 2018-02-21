@@ -13,7 +13,7 @@ import { RetrospectiveDashboardComponent } from './retrospective-dashboard/retro
 
 const routes: Routes = [
     {
-        path: APP_ROUTE_URLS.retroSpectiveList,
+        path: APP_ROUTE_URLS.retrospectiveList,
         component: RetrospectiveListComponent,
         canActivate: [LoginRequiredGuard]
     },
@@ -23,7 +23,7 @@ const routes: Routes = [
         canActivate: [LoginRequiredGuard]
     },
     {
-        path: APP_ROUTE_URLS.retroSpectiveDashboard,
+        path: APP_ROUTE_URLS.retrospectiveDashboard,
         component: RetrospectiveDashboardComponent,
         canActivate: [LoginRequiredGuard]
     }

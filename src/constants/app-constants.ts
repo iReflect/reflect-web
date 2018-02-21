@@ -32,9 +32,9 @@ export const APP_ROUTE_URLS = {
     feedbackList: 'feedbacks',
     teamFeedback: 'team/feedbacks/:id',
     teamFeedbackList: 'team/feedbacks',
-    retroSpectiveList: 'retrospectives',
+    retrospectiveList: 'retrospectives',
     sprintDetails: 'retrospectives/:retrospectiveID/sprint/:sprintID',
-    retroSpectiveDashboard: 'retrospectives/:retroSpectiveID/dashboard',
+    retrospectiveDashboard: 'retrospectives/:retrospectiveID/dashboard',
 };
 
 export const API_RESPONSE_MESSAGES = {
@@ -45,6 +45,7 @@ export const API_RESPONSE_MESSAGES = {
     sprintActivated: 'Sprint activated successfully!',
     sprintFrozen: 'Sprint frozen successfully!',
     sprintDiscarded: 'Sprint discarded successfully!',
+    invalidRetroAccessError: 'You do not have access to this retro!',
     sprintComputationInitiated: 'Sprint Computation Initiated Successfully!',
     getRetrospectiveMembersError: 'Cannot get Retrospective Members List!',
     getSprintMembersError: 'Cannot get Sprint Members List!',
@@ -63,7 +64,11 @@ export const API_RESPONSE_MESSAGES = {
     updateSprintMemberError: 'Error updating sprint member details!',
     deleteSprintMemberError: 'Error deleting sprint member!',
     memberUpdated: 'Member Updated Successfully!',
-    sprintCreated: 'Sprint Created Successfully!'
+    sprintCreated: 'Sprint Created Successfully!',
+    sprintCreateError: 'Cannot create sprint!',
+    getTeamListError: 'Error: Cannot get teams list!',
+    getTeamProviderOptionsError: 'Error: Cannot get team provider options!',
+    createRetroError: 'Error: Cannot Create Retro!'
 };
 
 export const QUESTION_RESPONSE_SEPARATOR = ',';

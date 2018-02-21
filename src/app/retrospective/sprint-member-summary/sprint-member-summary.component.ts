@@ -56,8 +56,8 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
 
     getRetroMembers() {
         this.retrospectiveService.getRetroMembers(this.retrospectiveID).subscribe(
-            data => {
-                this.retroMembers = data.members;
+            response => {
+                this.retroMembers = response.data.Members;
             },
             () => {
                 this.snackBar.open(API_RESPONSE_MESSAGES.getRetrospectiveMembersError, '', {duration: SNACKBAR_DURATION});
@@ -86,11 +86,13 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
     }
 
     getSprintMemberSummary() {
-        this.retrospectiveService.getSprintMemberSummary()
+        this.retrospectiveService.getSprintMemberSummary(this.retrospectiveID, this.sprintID)
             .subscribe(
-                data => {
-                    this.gridApi.setRowData(data['Sprint']['Members']);
-                    data['Sprint']['Members'].map(member => {
+                response => {
+                    const members = response.data.Members;
+                    members.Name = members.FirstName + ' ' + members.LastName;
+                    this.gridApi.setRowData(members);
+                    members.map(member => {
                         this.memberIDs.push(member['ID']);
                         return member;
                     });
@@ -106,22 +108,26 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
         const nameColumn = [
             {
                 headerName: 'Name',
-                field: 'Name',
+                colId: 'FirstName&LastName',
+                valueGetter: (params) => {
+                    return params.data.FirstName + ' ' + params.data.LastName;
+                },
                 width: 150,
                 pinned: true
+
             }
         ];
 
         const velocitiesColumns = [
             {
                 headerName: 'Expected Velocity',
-                field: 'Expected Velocity',
+                field: 'ExpectedVelocity',
                 width: 183,
                 filter: 'agNumberColumnFilter'
             },
             {
                 headerName: 'Actual Velocity',
-                field: 'Actual Velocity',
+                field: 'ActualVelocity',
                 width: 183,
                 filter: 'agNumberColumnFilter'
             }
@@ -132,13 +138,13 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
                 ...nameColumn,
                 {
                     headerName: 'Allocation',
-                    field: 'Allocation',
+                    field: 'AllocationPercent',
                     width: 125,
                     valueFormatter: (params) => params.value + '%'
                 },
                 {
                     headerName: 'Expectation',
-                    field: 'Expectation',
+                    field: 'ExpectationPercent',
                     width: 130,
                     valueFormatter: (params) => params.value + '%'
                 },
@@ -157,7 +163,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
                 },
                 {
                     headerName: 'Comments',
-                    field: 'Comments',
+                    field: 'Comment',
                     width: 500,
                     tooltip: (params) => params.value
                 }
@@ -167,7 +173,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
                 ...nameColumn,
                 {
                     headerName: 'Allocation',
-                    field: 'Allocation',
+                    field: 'AllocationPercent',
                     editable: true,
                     width: 125,
                     valueParser: 'Number(newValue)',
@@ -186,7 +192,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
                 },
                 {
                     headerName: 'Expectation',
-                    field: 'Expectation',
+                    field: 'ExpectationPercent',
                     editable: true,
                     width: 130,
                     valueParser: 'Number(newValue)',
@@ -253,7 +259,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
                 },
                 {
                     headerName: 'Comments',
-                    field: 'Comments',
+                    field: 'Comment',
                     width: 500,
                     filter: 'text',
                     cellEditor: 'agLargeTextCellEditor',
@@ -285,7 +291,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
         } else if (this.memberIDs.indexOf(this.selectedMemberID) !== -1) {
             this.snackBar.open(API_RESPONSE_MESSAGES.memberAlreadyPresent, '', {duration: SNACKBAR_DURATION});
         } else {
-            this.retrospectiveService.addSprintMember(this.selectedMemberID, this.sprintID)
+            this.retrospectiveService.addSprintMember(this.retrospectiveID, this.sprintID, this.selectedMemberID)
                 .subscribe(
                     newMember => {
                         this.gridApi.updateRowData({ add: [newMember] });
@@ -298,34 +304,9 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
         }
     }
 
-    deleteSprintMember(member) {
-        const dialogRef = this.dialog.open(BasicModalComponent, {
-            data: {
-                content: 'Are you sure you want to delete ' + member.Name + '?',
-                confirmBtn: 'Yes',
-                cancelBtn: 'Cancel'
-            },
-            disableClose: true
-        });
-
-        dialogRef.afterClosed().subscribe(result => {
-            if (result) {
-                this.retrospectiveService.deleteMember(member.ID)
-                    .subscribe(
-                        () => {
-                            this.gridApi.updateRowData({ remove: [member] });
-                            this.memberIDs = this.memberIDs.filter(ID => ID !== member.ID);
-                        },
-                        () => {
-                            this.snackBar.open(API_RESPONSE_MESSAGES.deleteSprintMemberError, '', {duration: SNACKBAR_DURATION});
-                        }
-                    );
-            }
-        });
-    }
-
     updateSprintMember(params) {
-        this.retrospectiveService.updateSprintMember(params.data).subscribe(
+        const memberData = params.data;
+        this.retrospectiveService.updateSprintMember(memberData).subscribe(
             member => {
                 this.gridApi.updateRowData({update: [member]});
                 this.snackBar.open(API_RESPONSE_MESSAGES.memberUpdated, '', {duration: SNACKBAR_DURATION});
@@ -340,5 +321,31 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
         const rowData = params.data;
         rowData[params.colDef.headerName] = params.oldValue;
         this.gridApi.updateRowData({update: [rowData]});
+    }
+
+    deleteSprintMember(member) {
+        const dialogRef = this.dialog.open(BasicModalComponent, {
+            data: {
+                content: 'Are you sure you want to delete ' + member.FirstName + ' ' + member.LastName + '?',
+                confirmBtn: 'Yes',
+                cancelBtn: 'Cancel'
+            },
+            disableClose: true
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.retrospectiveService.deleteSprintMember(this.retrospectiveID, this.sprintID, member.ID)
+                    .subscribe(
+                        () => {
+                            this.gridApi.updateRowData({ remove: [member] });
+                            this.memberIDs = this.memberIDs.filter(ID => ID !== member.ID);
+                        },
+                        () => {
+                            this.snackBar.open(API_RESPONSE_MESSAGES.deleteSprintMemberError, '', {duration: SNACKBAR_DURATION});
+                        }
+                    );
+            }
+        });
     }
 }

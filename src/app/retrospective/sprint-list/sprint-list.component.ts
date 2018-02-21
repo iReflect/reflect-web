@@ -2,6 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { SprintListDataSource } from './sprint-list.data-source';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { SPRINT_STATES_LABEL } from '../../../constants/app-constants';
+import { Router } from '@angular/router';
+import { APP_ROUTE_URLS, SNACKBAR_DURATION } from '../../../constants/app-constants';
 
 @Component({
   selector: 'app-sprint-list',
@@ -10,21 +12,21 @@ import { SPRINT_STATES_LABEL } from '../../../constants/app-constants';
 })
 export class SprintListComponent implements OnInit {
 
-    @Input() retroSpectiveData: any;
-    displayedSprintColumns = ['title', 'start_date', 'end_date', 'total_time_spent', 'status', 'created_by', 'last_synced_at'];
+    @Input() retrospectiveID: any;
+    displayedSprintColumns = ['title', 'start_date', 'end_date', 'status', 'created_by', 'last_synced_at'];
 
     dataSource: SprintListDataSource;
     dateFormat = 'MMMM dd, yyyy';
 
-    constructor(private service: RetrospectiveService) { }
+    constructor(private service: RetrospectiveService,
+                private router: Router) { }
 
     initializeDataSource() {
-        this.dataSource = new SprintListDataSource(this.retroSpectiveData.ID, this.service);
+        this.dataSource = new SprintListDataSource(this.retrospectiveID, this.service);
     }
 
     navigateToSprint(row) {
-        // Redirect to sprint dashboard
-        alert('Redirecting to Sprint Dashboard');
+        this.router.navigateByUrl(APP_ROUTE_URLS.sprintDetails.replace(':retrospectiveID', this.retrospectiveID).replace(':sprintID', row.ID));
     }
 
     ngOnInit() {

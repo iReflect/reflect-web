@@ -1,4 +1,4 @@
-<mat-card>
+<mat-card *ngIf="sprintDetails">
   <div class="flex-container">
     <div>
       <mat-card-title>{{sprintDetails.Title}}</mat-card-title>
@@ -31,14 +31,14 @@
         </mat-form-field>
       </ng-template>
       <div>
-        <button mat-button (click)="refreshSprintDetails()" *ngIf="!sprintDetails.isSyncInProgress">Refresh <mat-icon>refresh</mat-icon></button>
+        <button mat-button (click)="refreshSprintDetails()" *ngIf="!sprintDetails.CurrentlySyncing">Refresh <mat-icon>refresh</mat-icon></button>
       </div>
     </div>
   </mat-card-content>
 </mat-card>
-<div *ngIf="sprintDetails.LastSyncedAt; then synced; else not_synced"></div>
+<div *ngIf="sprintDetails && sprintDetails.LastSyncedAt; then synced; else not_synced"></div>
 <ng-template #synced>
-  <mat-tab-group *ngIf="sprintDetails" [dynamicHeight]="true">
+  <mat-tab-group *ngIf="sprintDetails">
     <mat-tab label="Sprint Members Summary">
         <app-sprint-member-summary [sprintDays]="sprintDays" [sprintStatus]="sprintStatus" [retrospectiveID]="retrospectiveID" [sprintID]="sprintID"></app-sprint-member-summary>
     </mat-tab>
@@ -49,7 +49,7 @@
 </ng-template>
 <ng-template #not_synced>
   <mat-card class="sync-error-card">
-    <div *ngIf="sprintDetails.isSyncInProgress; then syncing; else not_syncing"></div>
+    <div *ngIf="sprintDetails && sprintDetails.CurrentlySyncing; then syncing; else not_syncing"></div>
     <ng-template #syncing>
       <mat-error>
         Please Wait! Sync in Progress!

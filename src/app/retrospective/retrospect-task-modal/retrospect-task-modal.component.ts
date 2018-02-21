@@ -19,12 +19,13 @@ import { SelectCellEditorComponent } from '../../shared/ag-grid-editors/select-c
 export class RetrospectTaskModalComponent {
     memberIDs = [];
     sprintMembers: any;
+    taskDetails: any;
     selectedMemberID: number;
     gridOptions: GridOptions;
     sprintStates = SPRINT_STATES;
     ratingStates = RATING_STATES;
 
-    private totalTaskStoryPoints = 0;
+    private totalTaskPoints = 0;
     private params: any;
     private columnDefs: any;
     private gridApi: any;
@@ -34,13 +35,14 @@ export class RetrospectTaskModalComponent {
                 private snackBar: MatSnackBar,
                 public dialogRef: MatDialogRef<RetrospectiveCreateComponent>,
                 @Inject(MAT_DIALOG_DATA) public data: any) {
+        this.taskDetails = data.taskDetails;
         this.getSprintMembers();
         this.columnDefs = this.createColumnDefs(data.sprintStatus);
         this.setGridOptions();
     }
 
     getSprintMembers() {
-        this.retrospectiveService.getSprintMembers(this.data.sprintID).subscribe(
+        this.retrospectiveService.getSprintMembers(this.data.retrospectiveID, this.data.sprintID).subscribe(
             response => {
                 this.sprintMembers = response.members;
             },
@@ -70,13 +72,13 @@ export class RetrospectTaskModalComponent {
     }
 
     getSprintTaskMemberSummary() {
-        this.retrospectiveService.getSprintTaskMemberSummary(this.data.task.ID)
+        this.retrospectiveService.getSprintTaskMemberSummary(this.data.retrospectiveID, this.data.sprintID, this.taskDetails.ID)
             .subscribe(
-                data => {
-                    this.gridApi.setRowData(data['Members']);
-                    data['Members'].map(member => {
+                response => {
+                    this.gridApi.setRowData(response.data.Members);
+                    response.data.Members.map(member => {
                         this.memberIDs.push(member['ID']);
-                        this.totalTaskStoryPoints += member['Total Story Points'];
+                        this.totalTaskPoints += member['TotalPoints'];
                         return member;
                     });
                 },
@@ -92,25 +94,28 @@ export class RetrospectTaskModalComponent {
         const commonColumns = [
             {
                 headerName: 'Name',
-                field: 'Name',
+                colId: 'FirstName&LastName',
+                valueGetter: (params) => {
+                    return params.data.FirstName + ' ' + params.data.LastName;
+                },
                 width: 110,
                 pinned: true
             },
             {
                 headerName: 'Sprint Hours',
-                field: 'Total Sprint Hours',
+                field: 'SprintTime',
                 width: 150
             },
             {
                 headerName: 'Total Time',
-                field: 'Total Time Spent',
+                field: 'TotalTime',
                 width: 140
             }
         ];
-        const totalStoryPointsColumn = [
+        const totalPointsColumn = [
             {
                 headerName: 'Total Story Points',
-                field: 'Total Story Points',
+                field: 'TotalPoints',
                 width: 180
             }
         ];
@@ -119,10 +124,10 @@ export class RetrospectTaskModalComponent {
                 ...commonColumns,
                 {
                     headerName: 'Sprint Story Points',
-                    field: 'Sprint Story Points',
+                    field: 'SprintPoints',
                     width: 185
                 },
-                ...totalStoryPointsColumn,
+                ...totalPointsColumn,
                 {
                     headerName: 'Rating',
                     field: 'Rating',
@@ -141,16 +146,16 @@ export class RetrospectTaskModalComponent {
                 ...commonColumns,
                 {
                     headerName: 'Sprint Story Points',
-                    field: 'Sprint Story Points',
+                    field: 'SprintPoints',
                     editable: true,
                     width: 185,
                     valueParser: 'Number(newValue)',
                     cellEditor: 'numericEditor',
                     onCellValueChanged: (cellParams) => {
                         const valueChange = cellParams.newValue - cellParams.oldValue;
-                        const newStoryPoints = this.totalTaskStoryPoints + valueChange;
+                        const newStoryPoints = this.totalTaskPoints + valueChange;
                         if (cellParams.newValue !== cellParams.oldValue) {
-                            if (newStoryPoints > this.data.task['Estimates']) {
+                            if (newStoryPoints > this.taskDetails.Estimate) {
                                 this.snackBar.open(
                                     API_RESPONSE_MESSAGES.taskStoryPointsEstimatesError,
                                     '',
@@ -166,14 +171,14 @@ export class RetrospectTaskModalComponent {
                                 this.revertCellValue(cellParams);
                             } else {
                                 const memberDetails = cellParams.data;
-                                memberDetails['Total Story Points'] += valueChange;
-                                this.totalTaskStoryPoints += valueChange;
+                                memberDetails['TotalPoints'] += valueChange;
+                                this.totalTaskPoints += valueChange;
                                 this.updateSprintTaskMember(cellParams);
                             }
                         }
                     }
                 },
-                ...totalStoryPointsColumn,
+                ...totalPointsColumn,
                 {
                     headerName: 'Rating',
                     field: 'Rating',
@@ -200,7 +205,7 @@ export class RetrospectTaskModalComponent {
                 },
                 {
                     headerName: 'Comments',
-                    field: 'Comments',
+                    field: 'Comment',
                     width: 500,
                     filter: 'text',
                     tooltip: (params) => params.value,
@@ -250,7 +255,8 @@ export class RetrospectTaskModalComponent {
 
     revertCellValue(params) {
         const rowData = params.data;
-        rowData[params.colDef.headerName] = params.oldValue;
+        rowData[params.colDef.field] = params.oldValue;
         this.gridApi.updateRowData({update: [rowData]});
+        this.gridApi.refreshCells();
     }
 }

@@ -2,7 +2,7 @@
   "retrospectives": [
     {
       "ID": 1,
-      "Title": "RetroSpective 1",
+      "Title": "Retrospective 1",
       "Team": {
         "ID": 1,
         "Name": "IReflect",
@@ -20,7 +20,7 @@
     },
     {
       "ID": 2,
-      "Title": "RetroSpective 2",
+      "Title": "Retrospective 2",
       "Team": {
         "ID": 1,
         "Name": "IReflect",
