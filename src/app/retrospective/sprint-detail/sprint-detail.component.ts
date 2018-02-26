@@ -48,7 +48,9 @@ export class SprintDetailComponent implements OnInit {
                 this.sprintDetails = response.data;
                 this.sprintStatus = response.data.Status;
                 // TODO: set it to working days in api
-                this.sprintDays = Math.ceil(Math.abs( Date.parse(response.data['EndDate']) -  Date.parse(response.data['StartDate'])) / (1000 * 3600 * 24));
+                this.sprintDays = Math.ceil(
+                    Math.abs(Date.parse(response.data['EndDate']) -  Date.parse(response.data['StartDate'])) / (1000 * 3600 * 24)
+                );
 
             },
             err => {

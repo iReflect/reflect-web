@@ -43,7 +43,6 @@ export class RetrospectiveCreateComponent implements OnInit {
         this.retrospectiveService.getTeamList().subscribe(
             response => {
                 this.teamOptions = response.data.Teams;
-                console.log(this.teamOptions);
                 if (this.taskProviderOptions) {
                     this.isDataLoaded = true;
                 }
@@ -59,7 +58,6 @@ export class RetrospectiveCreateComponent implements OnInit {
         this.retrospectiveService.getTaskProvidersList().subscribe(
             response => {
                 this.taskProviderOptions = response.data.TaskProviders;
-                console.log(this.taskProviderOptions);
                 if (this.teamOptions) {
                     this.isDataLoaded = true;
                 }

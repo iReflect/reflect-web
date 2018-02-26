@@ -44,7 +44,7 @@ export class RetrospectTaskModalComponent {
     getSprintMembers() {
         this.retrospectiveService.getSprintMembers(this.data.retrospectiveID, this.data.sprintID).subscribe(
             response => {
-                this.sprintMembers = response.members;
+                this.sprintMembers = response.data.Members;
             },
             () => {
                 this.snackBar.open(API_RESPONSE_MESSAGES.getSprintMembersError, '', {duration: SNACKBAR_DURATION});
@@ -228,29 +228,32 @@ export class RetrospectTaskModalComponent {
         } else if (this.memberIDs.indexOf(this.selectedMemberID) !== -1) {
             this.snackBar.open(API_RESPONSE_MESSAGES.memberAlreadyPresent, '', {duration: SNACKBAR_DURATION});
         } else {
-            this.retrospectiveService.addTaskMember(this.selectedMemberID, this.data.task['Task ID'])
-                .subscribe(
-                    newMember => {
-                        this.gridApi.updateRowData({ add: [newMember] });
-                        this.memberIDs.push(this.selectedMemberID);
-                    },
-                    () => {
-                        this.snackBar.open(API_RESPONSE_MESSAGES.addSprintMemberError, '', {duration: SNACKBAR_DURATION});
-                    }
-                );
+            this.retrospectiveService.addTaskMember(
+                this.data.retrospectiveID, this.data.sprintID, this.taskDetails.ID, this.selectedMemberID
+            ).subscribe(
+                newMember => {
+                    this.gridApi.updateRowData({ add: [newMember] });
+                    this.memberIDs.push(this.selectedMemberID);
+                },
+                () => {
+                    this.snackBar.open(API_RESPONSE_MESSAGES.addSprintMemberError, '', {duration: SNACKBAR_DURATION});
+                }
+            );
         }
     }
 
     updateSprintTaskMember(params) {
-        this.retrospectiveService.updateSprintTaskMember(params.data).subscribe(
-            member => {
-                this.gridApi.updateRowData({update: [member]});
-                this.snackBar.open(API_RESPONSE_MESSAGES.memberUpdated, '', {duration: SNACKBAR_DURATION});
-            },
-            () => {
-                this.snackBar.open(API_RESPONSE_MESSAGES.updateSprintMemberError, '', {duration: SNACKBAR_DURATION});
-                this.revertCellValue(params);
-            });
+        this.retrospectiveService.updateSprintTaskMember(this.data.retrospectiveID, this.data.sprintID, this.taskDetails.ID, params.data)
+            .subscribe(
+                response => {
+                    this.gridApi.updateRowData({update: [response.data]});
+                    this.snackBar.open(API_RESPONSE_MESSAGES.memberUpdated, '', {duration: SNACKBAR_DURATION});
+                },
+                () => {
+                    this.snackBar.open(API_RESPONSE_MESSAGES.updateSprintMemberError, '', {duration: SNACKBAR_DURATION});
+                    this.revertCellValue(params);
+                }
+            );
     }
 
     revertCellValue(params) {

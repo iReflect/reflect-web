@@ -21,7 +21,7 @@
   <div>
     <mat-select placeholder="Select a Member" [(ngModel)]="selectedMemberID">
       <mat-option *ngFor="let member of sprintMembers" [value]="member.ID">
-        {{member.Name}}
+        {{member.FirstName + ' ' + member.LastName}}
       </mat-option>
     </mat-select>
   </div>

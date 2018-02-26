@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { SprintCreateComponent } from '../sprint-create/sprint-create.component';
-import { API_RESPONSE_MESSAGES, APP_ROUTE_URLS } from '../../../constants/app-constants';
+import { API_RESPONSE_MESSAGES, APP_ROUTE_URLS, SNACKBAR_DURATION } from '../../../constants/app-constants';
 
 @Component({
   selector: 'app-retrospective-dashboard',
@@ -17,7 +17,7 @@ export class RetrospectiveDashboardComponent implements OnInit {
     isDataLoaded = false;
 
     constructor(private activatedRoute: ActivatedRoute,
-                private service: RetrospectiveService,
+                private retrospectiveService: RetrospectiveService,
                 private snackBar: MatSnackBar,
                 private router: Router,
                 public dialog: MatDialog) {
@@ -25,13 +25,13 @@ export class RetrospectiveDashboardComponent implements OnInit {
     }
 
     getRetrospective() {
-        this.service.getRetrospectiveByID(this.retrospectiveID).subscribe(
+        this.retrospectiveService.getRetrospectiveByID(this.retrospectiveID).subscribe(
         response => {
                 this.retrospectiveData = response.data;
                 this.isDataLoaded = true;
             },
             err => {
-                this.snackBar.open(API_RESPONSE_MESSAGES.invalidRetroAccessError, '', {duration: 2000});
+                this.snackBar.open(API_RESPONSE_MESSAGES.invalidRetroAccessError, '', {duration: SNACKBAR_DURATION});
                 this.router.navigateByUrl(APP_ROUTE_URLS.retrospectiveList);
             }
         );
@@ -50,14 +50,13 @@ export class RetrospectiveDashboardComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
-                this.service.createSprint(this.retrospectiveID, result).subscribe(
+                // TODO: Work on creating sprint with id and title only
+                this.retrospectiveService.createSprint(this.retrospectiveID, result).subscribe(
                     response => {
-                        this.snackBar.open(API_RESPONSE_MESSAGES.sprintCreated, '', {duration: 2000});
-                        // TODO: Fix this: Redirect to sprint details page
-                        this.router.navigateByUrl(APP_ROUTE_URLS.sprintDetails.replace(':retrospectiveID', this.retrospectiveID).replace(':sprintID', response.data.ID));
+                        this.snackBar.open(API_RESPONSE_MESSAGES.sprintCreated, '', {duration: SNACKBAR_DURATION});
                     },
                     () => {
-                        this.snackBar.open(API_RESPONSE_MESSAGES.sprintCreateError, '', {duration: 2000});
+                        this.snackBar.open(API_RESPONSE_MESSAGES.sprintCreateError, '', {duration: SNACKBAR_DURATION});
                     }
                 );
             }

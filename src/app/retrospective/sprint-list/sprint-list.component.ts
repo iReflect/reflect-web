@@ -18,15 +18,17 @@ export class SprintListComponent implements OnInit {
     dataSource: SprintListDataSource;
     dateFormat = 'MMMM dd, yyyy';
 
-    constructor(private service: RetrospectiveService,
+    constructor(private retrospectiveService: RetrospectiveService,
                 private router: Router) { }
 
     initializeDataSource() {
-        this.dataSource = new SprintListDataSource(this.retrospectiveID, this.service);
+        this.dataSource = new SprintListDataSource(this.retrospectiveID, this.retrospectiveService);
     }
 
     navigateToSprint(row) {
-        this.router.navigateByUrl(APP_ROUTE_URLS.sprintDetails.replace(':retrospectiveID', this.retrospectiveID).replace(':sprintID', row.ID));
+        this.router.navigateByUrl(
+            APP_ROUTE_URLS.sprintDetails.replace(':retrospectiveID', this.retrospectiveID).replace(':sprintID', row.ID)
+        );
     }
 
     ngOnInit() {

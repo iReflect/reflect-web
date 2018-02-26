@@ -306,7 +306,9 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
 
     updateSprintMember(params) {
         const memberData = params.data;
-        this.retrospectiveService.updateSprintMember(memberData).subscribe(
+        console.log(memberData);
+        // smemberData[params.colDef.field] = params.newValue;
+        this.retrospectiveService.updateSprintMember(this.retrospectiveID, this.sprintID, memberData).subscribe(
             member => {
                 this.gridApi.updateRowData({update: [member]});
                 this.snackBar.open(API_RESPONSE_MESSAGES.memberUpdated, '', {duration: SNACKBAR_DURATION});
@@ -319,7 +321,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
 
     revertCellValue(params) {
         const rowData = params.data;
-        rowData[params.colDef.headerName] = params.oldValue;
+        rowData[params.colDef.field] = params.oldValue;
         this.gridApi.updateRowData({update: [rowData]});
     }
 

@@ -87,13 +87,16 @@ export class RetrospectiveService {
     }
 
     addSprintMember(retrospectiveID, sprintID, memberID): Observable<any> {
+        const sprintMember = {
+            'memberID': memberID
+        };
         return this.restangular
             .one(
                 API_URLS.sprintDetails
                     .replace(':retrospectiveID', retrospectiveID)
                     .replace(':sprintID', sprintID)
             )
-            .post('members', '{ "memberID": ' + memberID + ' }');
+            .post('members', sprintMember);
     }
 
     deleteSprintMember(retrospectiveID, sprintID, memberID) {
@@ -138,22 +141,28 @@ export class RetrospectiveService {
             .get();
     }
 
-    updateSprintMember(updatedMemberData): Observable<any> {
-        const odds = Math.floor(Math.random() * Math.floor(2));
-        if (odds) {
-            return Observable.of(updatedMemberData);
-        } else {
-            return Observable.throw({'error': 'Some Error!'});
-        }
+    updateSprintMember(retrospectiveID, sprintID, updatedMemberData): Observable<any> {
+        console.log(updatedMemberData);
+        return this.restangular
+            .one(
+                API_URLS.sprintMembers
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+                    .replace(':memberID', updatedMemberData.ID)
+            )
+            .customPUT(updatedMemberData);
     }
 
-    updateSprintTaskMember(updatedRowData): Observable<any> {
-        const odds = Math.floor(Math.random() * Math.floor(20));
-        if (odds) {
-            return Observable.of(updatedRowData);
-        } else {
-            return Observable.throw({'error': 'Some Error!'});
-        }
+    updateSprintTaskMember(retrospectiveID, sprintID, taskID, updatedMemberData): Observable<any> {
+        return this.restangular
+            .one(
+                API_URLS.sprintTaskMember
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+                    .replace(':taskID', taskID)
+                    .replace(':memberID', updatedMemberData.ID)
+            )
+            .customPUT(updatedMemberData);
     }
 
     getSprintMembers(retrospectiveID, sprintID): Observable<any> {
@@ -166,23 +175,18 @@ export class RetrospectiveService {
             .get();
     }
 
-    addTaskMember(memberID, taskID): Observable<any> {
-        const newMember = {
-            'ID': memberID,
-            'Name': 'Member' + memberID,
-            'Total Sprint Hours': 0,
-            'Total Time Spent': 0,
-            'Sprint Story Points': 0,
-            'Total Story Points': 0,
-            'Rating': 2,
-            'Comments': 'Hard worker'
+    addTaskMember(retrospectiveID, sprintID, taskID, memberID): Observable<any> {
+        const sprintTaskMember = {
+            'memberID': memberID
         };
-        const odds = Math.floor(Math.random() * Math.floor(2));
-        if (odds) {
-            return Observable.of(newMember);
-        } else {
-            return Observable.throw({'error': 'Some Error!'});
-        }
+        return this.restangular
+            .one(
+                API_URLS.sprintTaskDetails
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+                    .replace(':taskID', taskID)
+            )
+            .post('members', sprintTaskMember);
     }
 
     getTaskDetails(retrospectiveID, sprintID, taskID): Observable<any> {
@@ -197,7 +201,6 @@ export class RetrospectiveService {
     }
 
     createSprint(retrospectiveID, sprintDetails): Observable<any> {
-        console.log(retrospectiveID);
         return this.restangular
             .one(API_URLS.retroDetails.replace(':retrospectiveID', retrospectiveID))
             .post('sprints', sprintDetails);

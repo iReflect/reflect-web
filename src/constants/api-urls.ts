@@ -21,8 +21,9 @@ export const API_URLS = {
     sprintMembers: '/retrospectives/:retrospectiveID/sprints/:sprintID/members',
     sprintMember: '/retrospectives/:retrospectiveID/sprints/:sprintID/members/:memberID',
     sprintTaskSummary: '/retrospectives/:retrospectiveID/sprints/:sprintID/tasks/',
-    sprintTaskDetails: '/retrospective/:id/sprint/:sprintId/tasks/:taskID',
+    sprintTaskDetails: '/retrospectives/:retrospectiveID/sprints/:sprintID/tasks/:taskID',
     sprintTaskMemberSummary: '/retrospectives/:retrospectiveID/sprints/:sprintID/tasks/:taskID/members',
+    sprintTaskMember: '/retrospectives/:retrospectiveID/sprints/:sprintID/tasks/:taskID/members/:memberID',
     activateSprint: '/retrospectives/:retrospectiveID/sprints/:sprintID/activate',
     freezeSprint: '/retrospectives/:retrospectiveID/sprints/:sprintID/freeze',
     discardSprint: '/sprints/:sprintID'

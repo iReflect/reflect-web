@@ -1,8 +1,3 @@
-ag-grid-angular {
-  width: 99%;
-  height: 100%;
-}
-
 mat-select {
   width: 150px;
   line-height: 35px;
@@ -14,7 +9,23 @@ div {
 }
 
 .ag-grid-container {
-  margin: 1px;
-  width: 100%;
-  height: 330px;
+  margin: 1px auto;
+  height: -webkit-calc(100vh - 100px);
+  height: -moz-calc(100vh - 100px);
+  height: calc(100vh - 100px);
+  width: calc(100vw - 7rem);
+  ag-grid-angular {
+    width: 100%;
+    height: 100%;
+  }
+  .ag-body {
+    position: inherit;
+    height: 100% !important;
+  }
+  .ag-cell {
+    border: none;
+  }
+  .ag-body-container{
+    min-height: 82px;
+  }
 }
