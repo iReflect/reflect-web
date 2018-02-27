@@ -231,12 +231,12 @@ export class RetrospectTaskModalComponent {
             this.retrospectiveService.addTaskMember(
                 this.data.retrospectiveID, this.data.sprintID, this.taskDetails.ID, this.selectedMemberID
             ).subscribe(
-                newMember => {
-                    this.gridApi.updateRowData({ add: [newMember] });
+                response => {
+                    this.gridApi.updateRowData({ add: [response.data.Member] });
                     this.memberIDs.push(this.selectedMemberID);
                 },
                 () => {
-                    this.snackBar.open(API_RESPONSE_MESSAGES.addSprintMemberError, '', {duration: SNACKBAR_DURATION});
+                    this.snackBar.open(API_RESPONSE_MESSAGES.addSprintTaskMemberError, '', {duration: SNACKBAR_DURATION});
                 }
             );
         }
@@ -246,7 +246,7 @@ export class RetrospectTaskModalComponent {
         this.retrospectiveService.updateSprintTaskMember(this.data.retrospectiveID, this.data.sprintID, this.taskDetails.ID, params.data)
             .subscribe(
                 response => {
-                    this.gridApi.updateRowData({update: [response.data]});
+                    this.gridApi.updateRowData({update: [response.data.Member]});
                     this.snackBar.open(API_RESPONSE_MESSAGES.memberUpdated, '', {duration: SNACKBAR_DURATION});
                 },
                 () => {

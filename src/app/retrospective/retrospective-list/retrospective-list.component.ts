@@ -13,6 +13,7 @@ import { RetrospectiveCreateComponent } from '../retrospective-create/retrospect
   styleUrls: ['./retrospective-list.component.scss']
 })
 export class RetrospectiveListComponent implements OnInit {
+    dialogRef: any;
     dataSource: RetrospectiveListDataSource;
     displayedColumns = ['title', 'team', 'updated_at', 'latest_sprint'];
 
@@ -22,7 +23,11 @@ export class RetrospectiveListComponent implements OnInit {
                 private router: Router) { }
 
     initializeDataSource() {
-        this.dataSource = new RetrospectiveListDataSource(this.retrospectiveService);
+        this.dataSource = new RetrospectiveListDataSource(this.retrospectiveService, this.showCannotGetRetrospectivesError.bind(this));
+    }
+
+    showCannotGetRetrospectivesError() {
+        this.snackBar.open(API_RESPONSE_MESSAGES.getRetrospectivesError, '', {duration: SNACKBAR_DURATION});
     }
 
     navigateToRetrospectiveDetail(row) {
@@ -30,25 +35,27 @@ export class RetrospectiveListComponent implements OnInit {
     }
 
     showCreateRetroModal() {
-        const dialogRef = this.dialog.open(RetrospectiveCreateComponent, {
+        this.dialogRef = this.dialog.open(RetrospectiveCreateComponent, {
             width: '90%',
             height: '90%',
             maxWidth: 950,
-        });
-
-        dialogRef.afterClosed().subscribe(result => {
-            if (result) {
-                this.createRetro(result);
+            data: {
+                createRetro: this.createRetro.bind(this)
             }
         });
     }
 
     navigateToLatestSprint(row) {
-        this.retrospectiveService.getRetrospectiveLatestSprint(row.ID).subscribe(response => {
-            this.router.navigateByUrl(APP_ROUTE_URLS.sprintDetails
-                .replace(':retrospectiveID', row.ID)
-                .replace(':sprintID', response.data.ID));
-        });
+        this.retrospectiveService.getRetrospectiveLatestSprint(row.ID).subscribe(
+            response => {
+                this.router.navigateByUrl(APP_ROUTE_URLS.sprintDetails
+                    .replace(':retrospectiveID', row.ID)
+                    .replace(':sprintID', response.data.ID));
+            },
+            () => {
+                this.snackBar.open(API_RESPONSE_MESSAGES.noSprintsError, '', {duration: SNACKBAR_DURATION});
+            }
+        );
     }
 
     ngOnInit() {
@@ -82,12 +89,13 @@ export class RetrospectiveListComponent implements OnInit {
                 }
             ],
         };
+
         this.retrospectiveService.createRetro(requestBody).subscribe(
-            response => {
+            () => {
                 this.snackBar.open(API_RESPONSE_MESSAGES.retroCreated, '', {duration: SNACKBAR_DURATION});
-                this.router.navigateByUrl(APP_ROUTE_URLS.retrospectiveDashboard.replace(':retrospectiveID', response.data.ID));
+                this.dialogRef.close();
             },
-            err => {
+            () => {
                 this.snackBar.open(API_RESPONSE_MESSAGES.createRetroError, '', {duration: SNACKBAR_DURATION});
             }
         );

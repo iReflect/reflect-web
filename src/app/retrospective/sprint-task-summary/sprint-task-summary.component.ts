@@ -130,9 +130,5 @@ export class SprintTaskSummaryComponent {
             },
             maxWidth: 950,
         });
-
-        dialogRef.afterClosed().subscribe(result => {
-            // TODO: change table data after changing values in modal
-        });
     }
 }

@@ -293,8 +293,8 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
         } else {
             this.retrospectiveService.addSprintMember(this.retrospectiveID, this.sprintID, this.selectedMemberID)
                 .subscribe(
-                    newMember => {
-                        this.gridApi.updateRowData({ add: [newMember] });
+                    response => {
+                        this.gridApi.updateRowData({ add: [response.data.Member] });
                         this.memberIDs.push(this.selectedMemberID);
                     },
                     () => {
@@ -306,11 +306,10 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
 
     updateSprintMember(params) {
         const memberData = params.data;
-        console.log(memberData);
-        // smemberData[params.colDef.field] = params.newValue;
+        // memberData[params.colDef.field] = params.newValue;
         this.retrospectiveService.updateSprintMember(this.retrospectiveID, this.sprintID, memberData).subscribe(
-            member => {
-                this.gridApi.updateRowData({update: [member]});
+            response => {
+                this.gridApi.updateRowData({update: [response.data.Member]});
                 this.snackBar.open(API_RESPONSE_MESSAGES.memberUpdated, '', {duration: SNACKBAR_DURATION});
             },
             () => {

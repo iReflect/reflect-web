@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MatSnackBar } from '@angular/material';
-import { RetrospectiveService } from "../../shared/services/retrospective.service";
-import { API_RESPONSE_MESSAGES, SNACKBAR_DURATION } from "../../../constants/app-constants";
+import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
+import { RetrospectiveService } from '../../shared/services/retrospective.service';
+import { API_RESPONSE_MESSAGES, SNACKBAR_DURATION } from '../../../constants/app-constants';
 
 @Component({
     selector: 'app-retrospective-create',
@@ -29,8 +29,8 @@ export class RetrospectiveCreateComponent implements OnInit {
 
     constructor(private retrospectiveService: RetrospectiveService,
                 private snackBar: MatSnackBar,
-                public dialogRef: MatDialogRef<RetrospectiveCreateComponent>) {
-    }
+                public dialogRef: MatDialogRef<RetrospectiveCreateComponent>,
+                @Inject(MAT_DIALOG_DATA) public data: any) { }
 
     ngOnInit() {
         this.getTeamList();

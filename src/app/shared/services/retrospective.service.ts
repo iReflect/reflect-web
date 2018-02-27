@@ -38,7 +38,6 @@ export class RetrospectiveService {
     }
 
     createRetro(retroConfig: any): Observable<any> {
-        console.log(retroConfig);
         return this.restangular.all('retrospectives').post(retroConfig);
     }
 
@@ -68,8 +67,11 @@ export class RetrospectiveService {
             .post('freeze');
     }
 
-    discardSprint(sprintID): Observable<any> {
-        return this.restangular.one(API_URLS.discardSprint.replace(':sprintID', sprintID)).remove();
+    discardSprint(retrospectiveID, sprintID): Observable<any> {
+        return this.restangular.one(API_URLS.sprintDetails
+            .replace(':retrospectiveID', retrospectiveID)
+            .replace(':sprintID', sprintID))
+            .remove();
     }
 
     refreshSprintDetails(retrospectiveID, sprintID): Observable<any> {
@@ -142,10 +144,9 @@ export class RetrospectiveService {
     }
 
     updateSprintMember(retrospectiveID, sprintID, updatedMemberData): Observable<any> {
-        console.log(updatedMemberData);
         return this.restangular
             .one(
-                API_URLS.sprintMembers
+                API_URLS.sprintMember
                     .replace(':retrospectiveID', retrospectiveID)
                     .replace(':sprintID', sprintID)
                     .replace(':memberID', updatedMemberData.ID)

@@ -65,6 +65,6 @@
   </mat-grid-list>
   <mat-dialog-actions>
       <button mat-raised-button mat-dialog-close>Cancel</button>
-      <button mat-raised-button [disabled]="!retroFormGroup.valid" [mat-dialog-close]="retroFormGroup.value">Create Retro</button>
+      <button mat-raised-button [disabled]="!retroFormGroup.valid" (click)="data.createRetro(retroFormGroup.value)">Create Retro</button>
   </mat-dialog-actions>
 </div>

@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { SprintListDataSource } from './sprint-list.data-source';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
-import { SPRINT_STATES_LABEL } from '../../../constants/app-constants';
+import { API_RESPONSE_MESSAGES, SPRINT_STATES_LABEL, APP_ROUTE_URLS, SNACKBAR_DURATION } from '../../../constants/app-constants';
 import { Router } from '@angular/router';
-import { APP_ROUTE_URLS, SNACKBAR_DURATION } from '../../../constants/app-constants';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-sprint-list',
@@ -19,10 +19,19 @@ export class SprintListComponent implements OnInit {
     dateFormat = 'MMMM dd, yyyy';
 
     constructor(private retrospectiveService: RetrospectiveService,
+                private snackBar: MatSnackBar,
                 private router: Router) { }
 
+    showCannotGetSprintsError() {
+        this.snackBar.open(API_RESPONSE_MESSAGES.getSprintsError, '', {duration: SNACKBAR_DURATION});
+    }
+
     initializeDataSource() {
-        this.dataSource = new SprintListDataSource(this.retrospectiveID, this.retrospectiveService);
+        this.dataSource = new SprintListDataSource(
+            this.retrospectiveService,
+            this.retrospectiveID,
+            this.showCannotGetSprintsError.bind(this)
+        );
     }
 
     navigateToSprint(row) {
