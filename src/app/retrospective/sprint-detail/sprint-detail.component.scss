@@ -12,6 +12,7 @@
 }
 
 .status-freeze {
+  padding: 1rem;
   text-align: center;
   .green-icon {
     color: green;
@@ -41,6 +42,9 @@
 
 .sprint-actions {
   text-align: right;
+  mat-form-field {
+    width: 7.7em;
+  }
 }
 
 mat-tab-group {
