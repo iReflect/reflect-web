@@ -40,7 +40,7 @@ export class RetrospectiveDashboardComponent implements OnInit {
     }
 
     getCreatorName() {
-        return (this.retrospectiveData.CreatedBy.FirstName + ' ' + this.retrospectiveData.CreatedBy.LastName);
+        return (this.retrospectiveData.CreatedBy.FirstName + ' ' + this.retrospectiveData.CreatedBy.LastName).trim();
     }
 
     showNewSprintDialog() {

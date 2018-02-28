@@ -91,7 +91,6 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
             .subscribe(
                 response => {
                     const members = response.data.Members;
-                    members.Name = members.FirstName + ' ' + members.LastName;
                     this.gridApi.setRowData(members);
                     members.map(member => {
                         this.memberIDs.push(member.ID);
@@ -111,7 +110,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
                 headerName: 'Name',
                 colId: 'Name',
                 valueGetter: (params) => {
-                    return params.data.FirstName + ' ' + params.data.LastName;
+                    return (params.data.FirstName + ' ' + params.data.LastName).trim();
                 },
                 width: 150,
                 pinned: true
@@ -307,10 +306,9 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
 
     updateSprintMember(params) {
         const memberData = params.data;
-        // memberData[params.colDef.field] = params.newValue;
         this.retrospectiveService.updateSprintMember(this.retrospectiveID, this.sprintID, memberData).subscribe(
             response => {
-                this.gridApi.updateRowData({update: [response.data]});
+                params.node.setData(response.data);
                 this.snackBar.open(API_RESPONSE_MESSAGES.memberUpdated, '', {duration: SNACKBAR_DURATION});
             },
             () => {
@@ -328,7 +326,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
     deleteSprintMember(member) {
         const dialogRef = this.dialog.open(BasicModalComponent, {
             data: {
-                content: 'Are you sure you want to delete ' + member.FirstName + ' ' + member.LastName + '?',
+                content: 'Are you sure you want to delete ' + (member.FirstName + ' ' + member.LastName).trim() + '?',
                 confirmBtn: 'Yes',
                 cancelBtn: 'Cancel'
             },

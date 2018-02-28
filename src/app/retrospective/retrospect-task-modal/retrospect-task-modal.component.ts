@@ -97,7 +97,7 @@ export class RetrospectTaskModalComponent {
                 headerName: 'Name',
                 colId: 'Name',
                 valueGetter: (params) => {
-                    return params.data.FirstName + ' ' + params.data.LastName;
+                    return (params.data.FirstName + ' ' + params.data.LastName).trim();
                 },
                 width: 110,
                 pinned: true
@@ -171,7 +171,6 @@ export class RetrospectTaskModalComponent {
                                 );
                                 this.revertCellValue(cellParams);
                             } else {
-                                const memberDetails = cellParams.data;
                                 this.updateSprintTaskMember(cellParams);
                             }
                         }
@@ -245,13 +244,7 @@ export class RetrospectTaskModalComponent {
         this.retrospectiveService.updateSprintTaskMember(this.data.retrospectiveID, this.data.sprintID, this.taskDetails.ID, params.data)
             .subscribe(
                 response => {
-                    const updatedMember = response.data;
-                    if (params.colDef.field === 'SprintPoints') {
-                        const valueChange = params.newValue - params.oldValue;
-                        this.totalTaskPoints += valueChange;
-                        updatedMember.TotalPoints += valueChange;
-                    }
-                    this.gridApi.updateRowData({update: [updatedMember]});
+                    params.node.setData(response.data);
                     this.snackBar.open(API_RESPONSE_MESSAGES.memberUpdated, '', {duration: SNACKBAR_DURATION});
                 },
                 () => {

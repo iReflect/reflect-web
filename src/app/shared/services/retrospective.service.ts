@@ -13,37 +13,64 @@ export class RetrospectiveService {
     }
 
     getRetrospectives(): Observable<any> {
-        return this.restangular.one(API_URLS.retrospectives).get();
+        return this.restangular
+            .one(API_URLS.retrospectives)
+            .get();
     }
 
     getRetrospectiveLatestSprint(retrospectiveID): Observable<any> {
-        return this.restangular.one(API_URLS.latestSprint.replace(':retrospectiveID', retrospectiveID)).get();
+        return this.restangular
+            .one(
+                API_URLS.latestSprint
+                    .replace(':retrospectiveID', retrospectiveID)
+            )
+            .get();
     }
 
     getRetrospectiveByID(retrospectiveID): Observable<any> {
-        return this.restangular.one(API_URLS.retroDetails.replace(':retrospectiveID', retrospectiveID)).get();
+        return this.restangular
+            .one(
+                API_URLS.retroDetails
+                    .replace(':retrospectiveID', retrospectiveID)
+            )
+            .get();
 
     }
 
     listSprintsByRetrospectiveID(retrospectiveID): Observable<any> {
-        return this.restangular.one(API_URLS.sprintList.replace(':retrospectiveID', retrospectiveID)).get();
+        return this.restangular
+            .one(
+                API_URLS.sprintList
+                    .replace(':retrospectiveID', retrospectiveID)
+            )
+            .get();
     }
 
     getTeamList(): any {
-        return this.restangular.one(API_URLS.teamsList).get();
+        return this.restangular
+            .one(API_URLS.teamsList)
+            .get();
     }
 
     getTaskProvidersList(): any {
-        return this.restangular.one(API_URLS.taskProviderConfig).get();
+        return this.restangular
+            .one(API_URLS.taskProviderConfig)
+            .get();
     }
 
     createRetro(retroConfig: any): Observable<any> {
-        return this.restangular.all('retrospectives').post(retroConfig);
+        return this.restangular
+            .all('retrospectives')
+            .post(retroConfig);
     }
 
     getSprintDetails(retrospectiveID, sprintID): Observable<any> {
         return this.restangular
-            .one(API_URLS.sprintDetails.replace(':retrospectiveID', retrospectiveID).replace(':sprintID', sprintID))
+            .one(
+                API_URLS.sprintDetails
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+            )
             .get();
     }
 
@@ -68,9 +95,12 @@ export class RetrospectiveService {
     }
 
     discardSprint(retrospectiveID, sprintID): Observable<any> {
-        return this.restangular.one(API_URLS.sprintDetails
-            .replace(':retrospectiveID', retrospectiveID)
-            .replace(':sprintID', sprintID))
+        return this.restangular
+            .one(
+                API_URLS.sprintDetails
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+            )
             .remove();
     }
 
@@ -85,7 +115,12 @@ export class RetrospectiveService {
     }
 
     getRetroMembers(retrospectiveID): Observable<any> {
-        return this.restangular.one(API_URLS.teamMembers.replace(':id', retrospectiveID)).get();
+        return this.restangular
+            .one(
+                API_URLS.teamMembers
+                    .replace(':retrospectiveID', retrospectiveID)
+            )
+            .get();
     }
 
     addSprintMember(retrospectiveID, sprintID, memberID): Observable<any> {
@@ -203,7 +238,10 @@ export class RetrospectiveService {
 
     createSprint(retrospectiveID, sprintDetails): Observable<any> {
         return this.restangular
-            .one(API_URLS.retroDetails.replace(':retrospectiveID', retrospectiveID))
+            .one(
+                API_URLS.retroDetails
+                    .replace(':retrospectiveID', retrospectiveID)
+            )
             .post('sprints', sprintDetails);
     }
 }

@@ -2,7 +2,7 @@
   <div *ngIf="sprintStatus !== sprintStates.FROZEN">
     <mat-select placeholder="Select a Member" [(ngModel)]="selectedMemberID">
       <mat-option *ngFor="let member of retroMembers" [value]="member.ID">
-        {{member.FirstName + ' ' + member.LastName}}
+        {{(member.FirstName + ' ' + member.LastName).trim()}}
       </mat-option>
     </mat-select>
     <button mat-button (click)="addSprintMember()">Add Member</button>

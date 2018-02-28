@@ -1,4 +1,4 @@
-<div class="create-retro" [formGroup]="retroFormGroup">
+<div class="create-retro" [formGroup]="retroFormGroup" *ngIf="isTeamOptionsLoaded && isProviderOptionsLoaded">
   <h2 mat-dialog-title>Create a New Retro</h2>
   <mat-grid-list cols="2" rowHeight="250px">
     <mat-grid-tile>
@@ -20,7 +20,7 @@
         </mat-card-content>
       </mat-card>
     </mat-grid-tile>
-    <mat-grid-tile *ngIf="isTeamOptionsLoaded">
+    <mat-grid-tile>
       <mat-card>
         <mat-card-header>
           <mat-card-title><b>Team</b></mat-card-title>
@@ -41,7 +41,7 @@
         </mat-card-content>
       </mat-card>
     </mat-grid-tile>
-    <mat-grid-tile [colspan]="2"[rowspan]="2" class="task-provider" *ngIf="isProviderOptionsLoaded">
+    <mat-grid-tile [colspan]="2"[rowspan]="2" class="task-provider">
       <mat-card>
         <mat-card-header>
           <mat-card-title><b>Task Provider</b></mat-card-title>

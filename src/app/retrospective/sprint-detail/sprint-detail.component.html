@@ -18,7 +18,7 @@
         <p mat-line>Last Synced At: {{sprintDetails.LastSyncedAt | date: dateFormat}}</p>
       </div>
       <div class="sprint-actions">
-        <div *ngIf="sprintStatus === sprintStates.FROZEN; then frozen; else not_frozen"></div>
+        <div *ngIf="sprintStatus === sprintStates.FROZEN; then frozen else not_frozen"></div>
         <ng-template #frozen>
           <span class="status-freeze">Frozen <mat-icon class="green-icon">done</mat-icon></span>
         </ng-template>
@@ -37,9 +37,9 @@
       </div>
     </mat-card-content>
   </mat-card>
-  <div *ngIf="sprintDetails.LastSyncedAt; then synced; else not_synced"></div>
+  <div *ngIf="sprintDetails.LastSyncedAt && !sprintDetails.CurrentlySyncing; then synced else not_synced"></div>
   <ng-template #synced>
-    <mat-tab-group *ngIf="sprintDetails">
+    <mat-tab-group>
       <mat-tab label="Sprint Members Summary">
         <app-sprint-member-summary [sprintDays]="sprintDays" [sprintStatus]="sprintStatus" [retrospectiveID]="retrospectiveID" [sprintID]="sprintID"></app-sprint-member-summary>
       </mat-tab>
@@ -50,7 +50,7 @@
   </ng-template>
   <ng-template #not_synced>
     <mat-card class="sync-error-card">
-      <div *ngIf="sprintDetails.CurrentlySyncing; then syncing; else not_syncing"></div>
+      <div *ngIf="sprintDetails.CurrentlySyncing; then syncing else not_syncing"></div>
       <ng-template #syncing>
         <mat-error>
           Please Wait! Sync in Progress!

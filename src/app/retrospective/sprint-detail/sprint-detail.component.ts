@@ -48,7 +48,7 @@ export class SprintDetailComponent implements OnInit {
             response => {
                 this.sprintDetails = response.data;
                 this.sprintStatus = response.data.Status;
-                this.sprintDays = this.workday_count(moment(response.data['StartDate']), moment(response.data['EndDate']));
+                this.sprintDays = this.workdayCount(moment(response.data.StartDate), moment(response.data.EndDate));
             },
             () => {
                 this.snackBar.open(API_RESPONSE_MESSAGES.getSprintDetailsError, '', {duration: SNACKBAR_DURATION});
@@ -57,7 +57,7 @@ export class SprintDetailComponent implements OnInit {
         );
     }
 
-    workday_count(start, end) {
+    workdayCount(start, end) {
         const first = start.clone().endOf('week');
         const last = end.clone().startOf('week');
         const days = last.diff(first, 'days') * 5 / 7;
@@ -136,7 +136,7 @@ export class SprintDetailComponent implements OnInit {
                 this.snackBar.open(API_RESPONSE_MESSAGES.sprintComputationInitiated, '', {duration: SNACKBAR_DURATION});
                 this.sprintDetails.CurrentlySyncing = true;
             },
-            err => {
+            () => {
                 this.snackBar.open(API_RESPONSE_MESSAGES.refreshSprintError, '', {duration: SNACKBAR_DURATION});
             }
         );

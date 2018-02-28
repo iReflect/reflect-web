@@ -95,24 +95,23 @@ export class RetrospectiveCreateComponent implements OnInit {
 
     createRetro(formValue) {
         this.disableButton = true;
-        const taskProvider = formValue.taskProvider[0];
         const requestBody = {
             'title': formValue.title,
             'team': formValue.team,
             'hoursPerStoryPoint': formValue.hoursPerStoryPoint,
             'projectName': formValue.projectName,
-            'taskProvider': [
-                {
-                    'type': taskProvider.selectedTaskProvider,
+            'taskProvider': formValue.taskProvider.map(provider => {
+                return {
+                    'type': provider.selectedTaskProvider,
                     'data': {
-                        ...taskProvider.taskProviderConfig,
+                        ...provider.taskProviderConfig,
                         'credentials': {
-                            ...taskProvider.Credentials.data,
-                            'type': taskProvider.Credentials.type
+                            ...provider.Credentials.data,
+                            'type': provider.Credentials.type
                         }
                     }
-                }
-            ],
+                };
+            })
         };
 
         this.retrospectiveService.createRetro(requestBody).subscribe(

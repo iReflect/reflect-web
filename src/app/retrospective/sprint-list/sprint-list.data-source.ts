@@ -8,7 +8,7 @@ export class SprintListDataSource extends DataSource<any> {
 
     constructor(private retrospectiveService: RetrospectiveService,
                 private retrospectiveID: any,
-                private showError: any) {
+                private errorCallback: any) {
         super();
     }
 
@@ -18,7 +18,7 @@ export class SprintListDataSource extends DataSource<any> {
                 this.dataChange.next(response.data.Sprints);
             },
             () => {
-                this.showError();
+                this.errorCallback();
             }
         );
         return this.dataChange.asObservable();
