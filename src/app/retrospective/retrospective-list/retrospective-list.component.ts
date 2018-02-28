@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { RetrospectiveListDataSource } from './retrospective-list.data-source';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { Router } from '@angular/router';
@@ -13,14 +13,14 @@ import { RetrospectiveCreateComponent } from '../retrospective-create/retrospect
   styleUrls: ['./retrospective-list.component.scss']
 })
 export class RetrospectiveListComponent implements OnInit {
-    dialogRef: any;
     dataSource: RetrospectiveListDataSource;
     displayedColumns = ['title', 'team', 'updated_at', 'latest_sprint'];
 
     constructor(private retrospectiveService: RetrospectiveService,
                 private snackBar: MatSnackBar,
                 public dialog: MatDialog,
-                private router: Router) { }
+                private router: Router,
+                private changeDetectorRefs: ChangeDetectorRef) { }
 
     initializeDataSource() {
         this.dataSource = new RetrospectiveListDataSource(this.retrospectiveService, this.showCannotGetRetrospectivesError.bind(this));
@@ -35,12 +35,16 @@ export class RetrospectiveListComponent implements OnInit {
     }
 
     showCreateRetroModal() {
-        this.dialogRef = this.dialog.open(RetrospectiveCreateComponent, {
+        const dialogRef = this.dialog.open(RetrospectiveCreateComponent, {
             width: '90%',
             height: '90%',
-            maxWidth: 950,
-            data: {
-                createRetro: this.createRetro.bind(this)
+            maxWidth: 950
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.initializeDataSource();
+                this.changeDetectorRefs.detectChanges();
             }
         });
     }
@@ -67,37 +71,5 @@ export class RetrospectiveListComponent implements OnInit {
             return '';
         }
         return new Date(value).toDateString();
-    }
-
-    createRetro(formValue) {
-        const taskProvider = formValue.taskProvider[0];
-        const requestBody = {
-            'title': formValue.title,
-            'team': formValue.team,
-            'hoursPerStoryPoint': formValue.hoursPerStoryPoint,
-            'projectName': formValue.projectName,
-            'taskProvider': [
-                {
-                    'type': taskProvider.selectedTaskProvider,
-                    'data': {
-                        ...taskProvider.taskProviderConfig,
-                        'credentials': {
-                            ...taskProvider.Credentials.data,
-                            'type': taskProvider.Credentials.type
-                        }
-                    }
-                }
-            ],
-        };
-
-        this.retrospectiveService.createRetro(requestBody).subscribe(
-            () => {
-                this.snackBar.open(API_RESPONSE_MESSAGES.retroCreated, '', {duration: SNACKBAR_DURATION});
-                this.dialogRef.close();
-            },
-            () => {
-                this.snackBar.open(API_RESPONSE_MESSAGES.createRetroError, '', {duration: SNACKBAR_DURATION});
-            }
-        );
     }
 }

@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { SprintCreateComponent } from '../sprint-create/sprint-create.component';
 import { API_RESPONSE_MESSAGES, APP_ROUTE_URLS, SNACKBAR_DURATION } from '../../../constants/app-constants';
+import { SprintListComponent } from '../sprint-list/sprint-list.component';
 
 @Component({
   selector: 'app-retrospective-dashboard',
@@ -11,11 +12,11 @@ import { API_RESPONSE_MESSAGES, APP_ROUTE_URLS, SNACKBAR_DURATION } from '../../
   styleUrls: ['./retrospective-dashboard.component.scss']
 })
 export class RetrospectiveDashboardComponent implements OnInit {
-    dialogRef: any;
     retrospectiveID: any;
     retrospectiveData: any = {};
     dateFormat = 'MMMM dd, yyyy';
     isDataLoaded = false;
+    @ViewChild('sprintList') private sprintList: SprintListComponent;
 
     constructor(private activatedRoute: ActivatedRoute,
                 private retrospectiveService: RetrospectiveService,
@@ -43,27 +44,20 @@ export class RetrospectiveDashboardComponent implements OnInit {
     }
 
     showNewSprintDialog() {
-        this.dialogRef = this.dialog.open(SprintCreateComponent, {
+        const dialogRef = this.dialog.open(SprintCreateComponent, {
             width: '70%',
             height: '70%',
             maxWidth: 950,
             data: {
-                createSprint: this.createSprint.bind(this)
+                retrospectiveID: this.retrospectiveID
             }
         });
-    }
 
-    createSprint(sprintDetails) {
-        // TODO: Work on creating sprint with id and title only
-        this.retrospectiveService.createSprint(this.retrospectiveID, sprintDetails).subscribe(
-            () => {
-                this.snackBar.open(API_RESPONSE_MESSAGES.sprintCreated, '', {duration: SNACKBAR_DURATION});
-                this.dialogRef.close();
-            },
-            () => {
-                this.snackBar.open(API_RESPONSE_MESSAGES.sprintCreateError, '', {duration: SNACKBAR_DURATION});
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.sprintList.refresh();
             }
-        );
+        });
     }
 
     ngOnInit() {

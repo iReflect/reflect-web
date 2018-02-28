@@ -56,6 +56,7 @@ export class RetrospectTaskModalComponent {
         this.gridOptions = <GridOptions>{
             columnDefs: this.columnDefs,
             rowHeight: 48,
+            singleClickEdit: true,
             frameworkComponents: {
                 'ratingEditor': SelectCellEditorComponent,
                 'ratingRenderer': RatingRendererComponent,
@@ -77,8 +78,8 @@ export class RetrospectTaskModalComponent {
                 response => {
                     this.gridApi.setRowData(response.data.Members);
                     response.data.Members.map(member => {
-                        this.memberIDs.push(member['ID']);
-                        this.totalTaskPoints += member['TotalPoints'];
+                        this.memberIDs.push(member.ID);
+                        this.totalTaskPoints += member.TotalPoints;
                         return member;
                     });
                 },
@@ -94,7 +95,7 @@ export class RetrospectTaskModalComponent {
         const commonColumns = [
             {
                 headerName: 'Name',
-                colId: 'FirstName&LastName',
+                colId: 'Name',
                 valueGetter: (params) => {
                     return params.data.FirstName + ' ' + params.data.LastName;
                 },
@@ -171,8 +172,6 @@ export class RetrospectTaskModalComponent {
                                 this.revertCellValue(cellParams);
                             } else {
                                 const memberDetails = cellParams.data;
-                                memberDetails['TotalPoints'] += valueChange;
-                                this.totalTaskPoints += valueChange;
                                 this.updateSprintTaskMember(cellParams);
                             }
                         }
@@ -232,7 +231,7 @@ export class RetrospectTaskModalComponent {
                 this.data.retrospectiveID, this.data.sprintID, this.taskDetails.ID, this.selectedMemberID
             ).subscribe(
                 response => {
-                    this.gridApi.updateRowData({ add: [response.data.Member] });
+                    this.gridApi.updateRowData({ add: [response.data] });
                     this.memberIDs.push(this.selectedMemberID);
                 },
                 () => {
@@ -246,7 +245,13 @@ export class RetrospectTaskModalComponent {
         this.retrospectiveService.updateSprintTaskMember(this.data.retrospectiveID, this.data.sprintID, this.taskDetails.ID, params.data)
             .subscribe(
                 response => {
-                    this.gridApi.updateRowData({update: [response.data.Member]});
+                    const updatedMember = response.data;
+                    if (params.colDef.field === 'SprintPoints') {
+                        const valueChange = params.newValue - params.oldValue;
+                        this.totalTaskPoints += valueChange;
+                        updatedMember.TotalPoints += valueChange;
+                    }
+                    this.gridApi.updateRowData({update: [updatedMember]});
                     this.snackBar.open(API_RESPONSE_MESSAGES.memberUpdated, '', {duration: SNACKBAR_DURATION});
                 },
                 () => {

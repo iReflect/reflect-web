@@ -7,16 +7,14 @@
         <span>Team: <b>{{ retrospectiveData.Team.Name }}</b></span>&nbsp;|&nbsp;
         <span>Created At: <b>{{ retrospectiveData.CreatedAt | date:dateFormat}}</b></span>&nbsp;|&nbsp;
         <span>Created By: <b>{{ getCreatorName() }}</b></span>&nbsp;|&nbsp;
-        <span>Hours Per Story Point: <b>{{ retrospectiveData.HoursPerSprint }}</b></span>
+        <span>Hours Per Story Point: <b>{{ retrospectiveData.HrsPerStoryPoint }}</b></span>
       </div>
       <div class="action-buttons">
-        <button mat-raised-button
-                class="add-sprint"
-                (click)="showNewSprintDialog()">
+        <button mat-raised-button class="add-sprint" (click)="showNewSprintDialog()">
           Add a New Sprint
         </button>
       </div>
     </mat-card>
   </div>
-  <app-sprint-list [retrospectiveID]="retrospectiveID"></app-sprint-list>
+  <app-sprint-list #sprintList [retrospectiveID]="retrospectiveID"></app-sprint-list>
 </ng-container>

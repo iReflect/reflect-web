@@ -12,7 +12,9 @@ import { API_RESPONSE_MESSAGES, SNACKBAR_DURATION } from '../../../constants/app
 export class RetrospectiveCreateComponent implements OnInit {
 
     retroFormGroup: FormGroup;
-    isDataLoaded = false;
+    isTeamOptionsLoaded = false;
+    isProviderOptionsLoaded = false;
+    disableButton = false;
 
     // These are the possible options for the teams and task providers
     teamOptions: any = [];
@@ -43,9 +45,7 @@ export class RetrospectiveCreateComponent implements OnInit {
         this.retrospectiveService.getTeamList().subscribe(
             response => {
                 this.teamOptions = response.data.Teams;
-                if (this.taskProviderOptions) {
-                    this.isDataLoaded = true;
-                }
+                this.isTeamOptionsLoaded = true;
             },
             () => {
                 this.snackBar.open(API_RESPONSE_MESSAGES.getTeamListError, '', {duration: SNACKBAR_DURATION});
@@ -58,9 +58,7 @@ export class RetrospectiveCreateComponent implements OnInit {
         this.retrospectiveService.getTaskProvidersList().subscribe(
             response => {
                 this.taskProviderOptions = response.data.TaskProviders;
-                if (this.teamOptions) {
-                    this.isDataLoaded = true;
-                }
+                this.isProviderOptionsLoaded = true;
             },
             () => {
                 this.snackBar.open(API_RESPONSE_MESSAGES.getTeamProviderOptionsError, '', {duration: SNACKBAR_DURATION});
@@ -93,5 +91,40 @@ export class RetrospectiveCreateComponent implements OnInit {
         }
         (<FormArray>this.retroFormGroup.controls[this.taskProviderKey]).push(new FormGroup({}));
         this.taskProvidersList[++this.taskProvidersIndex] = true;
+    }
+
+    createRetro(formValue) {
+        this.disableButton = true;
+        const taskProvider = formValue.taskProvider[0];
+        const requestBody = {
+            'title': formValue.title,
+            'team': formValue.team,
+            'hoursPerStoryPoint': formValue.hoursPerStoryPoint,
+            'projectName': formValue.projectName,
+            'taskProvider': [
+                {
+                    'type': taskProvider.selectedTaskProvider,
+                    'data': {
+                        ...taskProvider.taskProviderConfig,
+                        'credentials': {
+                            ...taskProvider.Credentials.data,
+                            'type': taskProvider.Credentials.type
+                        }
+                    }
+                }
+            ],
+        };
+
+        this.retrospectiveService.createRetro(requestBody).subscribe(
+            () => {
+                this.snackBar.open(API_RESPONSE_MESSAGES.retroCreated, '', {duration: SNACKBAR_DURATION});
+                this.dialogRef.close(true);
+                this.disableButton = false;
+            },
+            () => {
+                this.snackBar.open(API_RESPONSE_MESSAGES.createRetroError, '', {duration: SNACKBAR_DURATION});
+                this.disableButton = false;
+            }
+        );
     }
 }

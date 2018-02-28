@@ -69,6 +69,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
         this.gridOptions = <GridOptions>{
             columnDefs: this.columnDefs,
             rowHeight: 48,
+            singleClickEdit: true,
             frameworkComponents: {
                 'ratingEditor': SelectCellEditorComponent,
                 'ratingRenderer': RatingRendererComponent,
@@ -93,7 +94,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
                     members.Name = members.FirstName + ' ' + members.LastName;
                     this.gridApi.setRowData(members);
                     members.map(member => {
-                        this.memberIDs.push(member['ID']);
+                        this.memberIDs.push(member.ID);
                         return member;
                     });
                 },
@@ -108,7 +109,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
         const nameColumn = [
             {
                 headerName: 'Name',
-                colId: 'FirstName&LastName',
+                colId: 'Name',
                 valueGetter: (params) => {
                     return params.data.FirstName + ' ' + params.data.LastName;
                 },
@@ -165,7 +166,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
                     headerName: 'Comments',
                     field: 'Comment',
                     width: 500,
-                    tooltip: (params) => params.value
+                    tooltipField: 'Comment'
                 }
             ];
         } else {
@@ -263,7 +264,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
                     width: 500,
                     filter: 'text',
                     cellEditor: 'agLargeTextCellEditor',
-                    tooltip: (params) => params.value,
+                    tooltipField: 'Comment',
                     editable: true,
                     onCellValueChanged: (cellParams) => {
                         if (cellParams.newValue !== cellParams.oldValue) {
@@ -294,7 +295,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
             this.retrospectiveService.addSprintMember(this.retrospectiveID, this.sprintID, this.selectedMemberID)
                 .subscribe(
                     response => {
-                        this.gridApi.updateRowData({ add: [response.data.Member] });
+                        this.gridApi.updateRowData({ add: [response.data] });
                         this.memberIDs.push(this.selectedMemberID);
                     },
                     () => {
@@ -309,7 +310,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
         // memberData[params.colDef.field] = params.newValue;
         this.retrospectiveService.updateSprintMember(this.retrospectiveID, this.sprintID, memberData).subscribe(
             response => {
-                this.gridApi.updateRowData({update: [response.data.Member]});
+                this.gridApi.updateRowData({update: [response.data]});
                 this.snackBar.open(API_RESPONSE_MESSAGES.memberUpdated, '', {duration: SNACKBAR_DURATION});
             },
             () => {
