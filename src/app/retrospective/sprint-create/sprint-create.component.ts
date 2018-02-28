@@ -12,7 +12,7 @@ import { RetrospectiveService } from '../../shared/services/retrospective.servic
 export class SprintCreateComponent implements OnInit {
     disableButton = false;
     sprintFormGroup: FormGroup;
-    errors = { };
+    errors: any = {};
 
     constructor(private retrospectiveService: RetrospectiveService,
                 private snackBar: MatSnackBar,
@@ -45,7 +45,7 @@ export class SprintCreateComponent implements OnInit {
     }
 
     validateForm(sprintFormGroup: FormGroup) {
-        this.errors = { };
+        this.errors = {};
         const sprintFormValue = sprintFormGroup.value;
         if (sprintFormValue.startDate && !sprintFormValue.endDate) {
             this.errors.endDateShouldExist = true;

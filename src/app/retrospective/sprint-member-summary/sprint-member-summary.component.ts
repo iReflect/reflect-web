@@ -275,7 +275,9 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
                     headerName: 'Delete Row',
                     cellRenderer: 'deleteButtonRenderer',
                     cellRendererParams: {
-                        label: 'delete',
+                        label: 'Delete',
+                        useIcon: true,
+                        icon: 'delete',
                         onClick: this.deleteSprintMember.bind(this)
                     },
                     width: 180

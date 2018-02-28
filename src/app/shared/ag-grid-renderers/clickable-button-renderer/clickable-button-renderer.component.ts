@@ -8,11 +8,17 @@ import { ICellRendererAngularComp } from 'ag-grid-angular';
 })
 export class ClickableButtonRendererComponent implements ICellRendererAngularComp {
     label: string;
+    isIcon = false;
+    icon: string;
     private params: any;
 
     agInit(params: any): void {
         this.params = params;
         this.label = params.label;
+        if (params.useIcon) {
+            this.isIcon = true;
+            this.icon = params.icon
+        }
     }
 
     refresh(): boolean {

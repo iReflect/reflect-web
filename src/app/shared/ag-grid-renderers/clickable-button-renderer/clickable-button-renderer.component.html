@@ -1,5 +1,6 @@
 <span>
-  <button mat-button (click)="onButtonClicked()" class="btn btn-info">
+  <mat-icon *ngIf="isIcon">{{icon}}</mat-icon>
+  <button *ngIf="!isIcon" mat-button (click)="onButtonClicked()" class="btn btn-info">
     {{label}}
   </button>
 </span>
