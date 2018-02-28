@@ -47,12 +47,11 @@ export class SprintTaskSummaryComponent {
         this.getSprintTaskSummary();
     }
 
-
     getSprintTaskSummary() {
-        this.retrospectiveService.getSprintTaskSummary()
+        this.retrospectiveService.getSprintTaskSummary(this.retrospectiveID, this.sprintID)
             .subscribe(
-                data => {
-                    this.gridApi.setRowData(data['Sprint']['Tasks']);
+                response => {
+                    this.gridApi.setRowData(response.data.Tasks);
                 },
                 () => {
                     this.snackBar.open(API_RESPONSE_MESSAGES.getSprintTaskSummaryError, '', {duration: SNACKBAR_DURATION});
@@ -70,7 +69,7 @@ export class SprintTaskSummaryComponent {
             },
             {
                 headerName: 'Task Summary',
-                field: 'Task Summary',
+                field: 'Summary',
                 width: 300,
                 tooltip: (params) => params.value,
                 pinned: true
@@ -82,7 +81,7 @@ export class SprintTaskSummaryComponent {
             },
             {
                 headerName: 'Estimates',
-                field: 'Estimates',
+                field: 'Estimate',
                 width: 235
             },
             {
@@ -92,17 +91,19 @@ export class SprintTaskSummaryComponent {
             },
             {
                 headerName: 'Sprint Hours',
-                field: 'Sprint Hours',
+                field: 'SprintTime',
+                valueFormatter: (params) => +(params.value / 60).toFixed(2),
                 width: 130
             },
             {
                 headerName: 'Total Time Spent',
-                field: 'Total Hours',
+                field: 'TotalTime',
+                valueFormatter: (params) => +(params.value / 60).toFixed(2),
                 width: 150
             },
             {
                 headerName: 'Story Type',
-                field: 'Story Type',
+                field: 'Type',
                 width: 190
             },
             {
@@ -118,20 +119,16 @@ export class SprintTaskSummaryComponent {
         return columnDefs;
     }
 
-    retrospectSprint(sprintData) {
+    retrospectSprint(sprintTaskSummaryData) {
         const dialogRef = this.dialog.open(RetrospectTaskModalComponent, {
             width: '90%',
             data: {
-                task: sprintData,
+                taskDetails: sprintTaskSummaryData,
                 sprintID: this.sprintID,
                 retrospectiveID: this.retrospectiveID,
                 sprintStatus: this.sprintStatus
             },
             maxWidth: 950,
-        });
-
-        dialogRef.afterClosed().subscribe(result => {
-            // TODO: change table data after changing values in modal
         });
     }
 }

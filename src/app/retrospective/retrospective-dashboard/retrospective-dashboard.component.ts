@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { SprintCreateComponent } from '../sprint-create/sprint-create.component';
-import { API_RESPONSE_MESSAGES } from '../../../constants/app-constants';
+import { API_RESPONSE_MESSAGES, APP_ROUTE_URLS, SNACKBAR_DURATION } from '../../../constants/app-constants';
+import { SprintListComponent } from '../sprint-list/sprint-list.component';
 
 @Component({
   selector: 'app-retrospective-dashboard',
@@ -11,25 +12,35 @@ import { API_RESPONSE_MESSAGES } from '../../../constants/app-constants';
   styleUrls: ['./retrospective-dashboard.component.scss']
 })
 export class RetrospectiveDashboardComponent implements OnInit {
-
-    retroSpectiveData: any = {};
+    retrospectiveID: any;
+    retrospectiveData: any = {};
     dateFormat = 'MMMM dd, yyyy';
     isDataLoaded = false;
+    @ViewChild('sprintList') private sprintList: SprintListComponent;
 
     constructor(private activatedRoute: ActivatedRoute,
-                private service: RetrospectiveService,
+                private retrospectiveService: RetrospectiveService,
                 private snackBar: MatSnackBar,
-                public dialog: MatDialog) { }
+                private router: Router,
+                public dialog: MatDialog) {
+        this.retrospectiveID = this.activatedRoute.snapshot.params['retrospectiveID'];
+    }
 
-    getRetroSpective() {
-        this.service.getRetrospectiveByID(this.activatedRoute.snapshot.params['retroSpectiveID']).subscribe((data) => {
-            this.retroSpectiveData = data['RetroSpective'];
-            this.isDataLoaded = true;
-        });
+    getRetrospective() {
+        this.retrospectiveService.getRetrospectiveByID(this.retrospectiveID).subscribe(
+        response => {
+                this.retrospectiveData = response.data;
+                this.isDataLoaded = true;
+            },
+            () => {
+                this.snackBar.open(API_RESPONSE_MESSAGES.invalidRetroAccessError, '', {duration: SNACKBAR_DURATION});
+                this.router.navigateByUrl(APP_ROUTE_URLS.retrospectiveList);
+            }
+        );
     }
 
     getCreatorName() {
-        return (this.retroSpectiveData.CreatedBy.FirstName + ' ' + this.retroSpectiveData.CreatedBy.LastName);
+        return (this.retrospectiveData.CreatedBy.FirstName + ' ' + this.retrospectiveData.CreatedBy.LastName).trim();
     }
 
     showNewSprintDialog() {
@@ -37,25 +48,19 @@ export class RetrospectiveDashboardComponent implements OnInit {
             width: '70%',
             height: '70%',
             maxWidth: 950,
+            data: {
+                retrospectiveID: this.retrospectiveID
+            }
         });
 
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
-                this.service.createSprint(result).subscribe(
-                    () => {
-                        this.snackBar.open(API_RESPONSE_MESSAGES.sprintCreated, '', {duration: 2000});
-                        // TODO: Redirect to sprint details page
-                    },
-                    () => {
-                        this.snackBar.open(API_RESPONSE_MESSAGES.error, '', {duration: 2000});
-                    }
-                );
+                this.sprintList.refresh();
             }
         });
     }
 
     ngOnInit() {
-        this.getRetroSpective();
+        this.getRetrospective();
     }
-
 }

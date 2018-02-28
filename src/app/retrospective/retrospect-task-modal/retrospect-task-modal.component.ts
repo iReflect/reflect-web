@@ -19,12 +19,13 @@ import { SelectCellEditorComponent } from '../../shared/ag-grid-editors/select-c
 export class RetrospectTaskModalComponent {
     memberIDs = [];
     sprintMembers: any;
+    taskDetails: any;
     selectedMemberID: number;
     gridOptions: GridOptions;
     sprintStates = SPRINT_STATES;
     ratingStates = RATING_STATES;
 
-    private totalTaskStoryPoints = 0;
+    private totalTaskPoints = 0;
     private params: any;
     private columnDefs: any;
     private gridApi: any;
@@ -34,15 +35,16 @@ export class RetrospectTaskModalComponent {
                 private snackBar: MatSnackBar,
                 public dialogRef: MatDialogRef<RetrospectiveCreateComponent>,
                 @Inject(MAT_DIALOG_DATA) public data: any) {
+        this.taskDetails = data.taskDetails;
         this.getSprintMembers();
         this.columnDefs = this.createColumnDefs(data.sprintStatus);
         this.setGridOptions();
     }
 
     getSprintMembers() {
-        this.retrospectiveService.getSprintMembers(this.data.sprintID).subscribe(
+        this.retrospectiveService.getSprintMembers(this.data.retrospectiveID, this.data.sprintID).subscribe(
             response => {
-                this.sprintMembers = response.members;
+                this.sprintMembers = response.data.Members;
             },
             () => {
                 this.snackBar.open(API_RESPONSE_MESSAGES.getSprintMembersError, '', {duration: SNACKBAR_DURATION});
@@ -54,6 +56,7 @@ export class RetrospectTaskModalComponent {
         this.gridOptions = <GridOptions>{
             columnDefs: this.columnDefs,
             rowHeight: 48,
+            singleClickEdit: true,
             frameworkComponents: {
                 'ratingEditor': SelectCellEditorComponent,
                 'ratingRenderer': RatingRendererComponent,
@@ -70,13 +73,13 @@ export class RetrospectTaskModalComponent {
     }
 
     getSprintTaskMemberSummary() {
-        this.retrospectiveService.getSprintTaskMemberSummary(this.data.task.ID)
+        this.retrospectiveService.getSprintTaskMemberSummary(this.data.retrospectiveID, this.data.sprintID, this.taskDetails.ID)
             .subscribe(
-                data => {
-                    this.gridApi.setRowData(data['Members']);
-                    data['Members'].map(member => {
-                        this.memberIDs.push(member['ID']);
-                        this.totalTaskStoryPoints += member['Total Story Points'];
+                response => {
+                    this.gridApi.setRowData(response.data.Members);
+                    response.data.Members.map(member => {
+                        this.memberIDs.push(member.ID);
+                        this.totalTaskPoints += member.TotalPoints;
                         return member;
                     });
                 },
@@ -92,25 +95,28 @@ export class RetrospectTaskModalComponent {
         const commonColumns = [
             {
                 headerName: 'Name',
-                field: 'Name',
+                colId: 'Name',
+                valueGetter: (params) => {
+                    return (params.data.FirstName + ' ' + params.data.LastName).trim();
+                },
                 width: 110,
                 pinned: true
             },
             {
                 headerName: 'Sprint Hours',
-                field: 'Total Sprint Hours',
+                field: 'SprintTime',
                 width: 150
             },
             {
                 headerName: 'Total Time',
-                field: 'Total Time Spent',
+                field: 'TotalTime',
                 width: 140
             }
         ];
-        const totalStoryPointsColumn = [
+        const totalPointsColumn = [
             {
                 headerName: 'Total Story Points',
-                field: 'Total Story Points',
+                field: 'TotalPoints',
                 width: 180
             }
         ];
@@ -119,10 +125,10 @@ export class RetrospectTaskModalComponent {
                 ...commonColumns,
                 {
                     headerName: 'Sprint Story Points',
-                    field: 'Sprint Story Points',
+                    field: 'SprintPoints',
                     width: 185
                 },
-                ...totalStoryPointsColumn,
+                ...totalPointsColumn,
                 {
                     headerName: 'Rating',
                     field: 'Rating',
@@ -141,16 +147,16 @@ export class RetrospectTaskModalComponent {
                 ...commonColumns,
                 {
                     headerName: 'Sprint Story Points',
-                    field: 'Sprint Story Points',
+                    field: 'SprintPoints',
                     editable: true,
                     width: 185,
                     valueParser: 'Number(newValue)',
                     cellEditor: 'numericEditor',
                     onCellValueChanged: (cellParams) => {
                         const valueChange = cellParams.newValue - cellParams.oldValue;
-                        const newStoryPoints = this.totalTaskStoryPoints + valueChange;
+                        const newStoryPoints = this.totalTaskPoints + valueChange;
                         if (cellParams.newValue !== cellParams.oldValue) {
-                            if (newStoryPoints > this.data.task['Estimates']) {
+                            if (newStoryPoints > this.taskDetails.Estimate) {
                                 this.snackBar.open(
                                     API_RESPONSE_MESSAGES.taskStoryPointsEstimatesError,
                                     '',
@@ -165,15 +171,12 @@ export class RetrospectTaskModalComponent {
                                 );
                                 this.revertCellValue(cellParams);
                             } else {
-                                const memberDetails = cellParams.data;
-                                memberDetails['Total Story Points'] += valueChange;
-                                this.totalTaskStoryPoints += valueChange;
                                 this.updateSprintTaskMember(cellParams);
                             }
                         }
                     }
                 },
-                ...totalStoryPointsColumn,
+                ...totalPointsColumn,
                 {
                     headerName: 'Rating',
                     field: 'Rating',
@@ -200,7 +203,7 @@ export class RetrospectTaskModalComponent {
                 },
                 {
                     headerName: 'Comments',
-                    field: 'Comments',
+                    field: 'Comment',
                     width: 500,
                     filter: 'text',
                     tooltip: (params) => params.value,
@@ -223,34 +226,38 @@ export class RetrospectTaskModalComponent {
         } else if (this.memberIDs.indexOf(this.selectedMemberID) !== -1) {
             this.snackBar.open(API_RESPONSE_MESSAGES.memberAlreadyPresent, '', {duration: SNACKBAR_DURATION});
         } else {
-            this.retrospectiveService.addTaskMember(this.selectedMemberID, this.data.task['Task ID'])
-                .subscribe(
-                    newMember => {
-                        this.gridApi.updateRowData({ add: [newMember] });
-                        this.memberIDs.push(this.selectedMemberID);
-                    },
-                    () => {
-                        this.snackBar.open(API_RESPONSE_MESSAGES.addSprintMemberError, '', {duration: SNACKBAR_DURATION});
-                    }
-                );
+            this.retrospectiveService.addTaskMember(
+                this.data.retrospectiveID, this.data.sprintID, this.taskDetails.ID, this.selectedMemberID
+            ).subscribe(
+                response => {
+                    this.gridApi.updateRowData({ add: [response.data] });
+                    this.memberIDs.push(this.selectedMemberID);
+                },
+                () => {
+                    this.snackBar.open(API_RESPONSE_MESSAGES.addSprintTaskMemberError, '', {duration: SNACKBAR_DURATION});
+                }
+            );
         }
     }
 
     updateSprintTaskMember(params) {
-        this.retrospectiveService.updateSprintTaskMember(params.data).subscribe(
-            member => {
-                this.gridApi.updateRowData({update: [member]});
-                this.snackBar.open(API_RESPONSE_MESSAGES.memberUpdated, '', {duration: SNACKBAR_DURATION});
-            },
-            () => {
-                this.snackBar.open(API_RESPONSE_MESSAGES.updateSprintMemberError, '', {duration: SNACKBAR_DURATION});
-                this.revertCellValue(params);
-            });
+        this.retrospectiveService.updateSprintTaskMember(this.data.retrospectiveID, this.data.sprintID, this.taskDetails.ID, params.data)
+            .subscribe(
+                response => {
+                    params.node.setData(response.data);
+                    this.snackBar.open(API_RESPONSE_MESSAGES.memberUpdated, '', {duration: SNACKBAR_DURATION});
+                },
+                () => {
+                    this.snackBar.open(API_RESPONSE_MESSAGES.updateSprintMemberError, '', {duration: SNACKBAR_DURATION});
+                    this.revertCellValue(params);
+                }
+            );
     }
 
     revertCellValue(params) {
         const rowData = params.data;
-        rowData[params.colDef.headerName] = params.oldValue;
+        rowData[params.colDef.field] = params.oldValue;
         this.gridApi.updateRowData({update: [rowData]});
+        this.gridApi.refreshCells();
     }
 }

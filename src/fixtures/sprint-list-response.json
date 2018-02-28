@@ -6,7 +6,7 @@
       "StartDate": "2017-12-23T00:00:00.00Z",
       "EndDate": "2018-01-01T00:00:00.00Z",
       "LastSyncedAt": "2018-01-13T00:00:00.00Z",
-      "isSyncInProgress": false,
+      "CurrentlySyncing": false,
       "TotalTimeSpent": 705,
       "Status": 0,
       "CreatedBy": {
@@ -23,7 +23,7 @@
       "StartDate": "2017-12-23T00:00:00.00Z",
       "EndDate": "2018-01-01T00:00:00.00Z",
       "LastSyncedAt": "2018-01-13T00:00:00.00Z",
-      "isSyncInProgress": false,
+      "CurrentlySyncing": false,
       "TotalTimeSpent": 1440,
       "Status": 2,
       "CreatedBy": {
@@ -40,7 +40,7 @@
       "StartDate": "2018-01-02T00:00:00.00Z",
       "EndDate": "2018-01-10T00:00:00.00Z",
       "LastSyncedAt": null,
-      "isSyncInProgress": false,
+      "CurrentlySyncing": false,
       "TotalTimeSpent": 3040,
       "Status": 1,
       "CreatedBy": {
@@ -57,7 +57,7 @@
       "StartDate": "2018-01-02T00:00:00.00Z",
       "EndDate": "2018-01-10T00:00:00.00Z",
       "LastSyncedAt": null,
-      "isSyncInProgress": true,
+      "CurrentlySyncing": true,
       "TotalTimeSpent": 3040,
       "Status": 2,
       "CreatedBy": {

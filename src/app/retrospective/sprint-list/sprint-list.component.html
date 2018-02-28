@@ -30,12 +30,6 @@
           <mat-cell *matCellDef="let element"> {{element.EndDate | date: dateFormat}}</mat-cell>
         </ng-container>
 
-        <!-- End Date Column -->
-        <ng-container matColumnDef="total_time_spent">
-          <mat-header-cell *matHeaderCellDef>Total Time Spent (In Hours)</mat-header-cell>
-          <mat-cell *matCellDef="let element"> {{element.TotalTimeSpent}}</mat-cell>
-        </ng-container>
-
         <!-- Last Synced At Column -->
         <ng-container matColumnDef="last_synced_at">
           <mat-header-cell *matHeaderCellDef>Last Synced At</mat-header-cell>

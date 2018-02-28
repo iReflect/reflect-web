@@ -1,4 +1,4 @@
-<div class="create-retro" *ngIf="isDataLoaded" [formGroup]="retroFormGroup">
+<div class="create-retro" [formGroup]="retroFormGroup" *ngIf="isTeamOptionsLoaded && isProviderOptionsLoaded">
   <h2 mat-dialog-title>Create a New Retro</h2>
   <mat-grid-list cols="2" rowHeight="250px">
     <mat-grid-tile>
@@ -8,14 +8,12 @@
         </mat-card-header>
         <mat-card-content>
           <div>
-            <mat-form-field floatLabel="always">
-              <mat-label></mat-label>
+            <mat-form-field>
               <input matInput formControlName="title" placeholder="Retrospective Title">
             </mat-form-field>
           </div>
           <div>
-            <mat-form-field floatLabel="always">
-              <mat-label></mat-label>
+            <mat-form-field>
               <input matInput type="number" formControlName="hoursPerStoryPoint" placeholder="Specify hours per story point">
             </mat-form-field>
           </div>
@@ -29,16 +27,14 @@
         </mat-card-header>
         <mat-card-content>
           <div>
-            <mat-form-field floatLabel="always">
-              <mat-label></mat-label>
+            <mat-form-field>
               <mat-select formControlName="team" placeholder="Select a Team">
                 <mat-option *ngFor="let team of teamOptions" [value]="team.ID">{{team.Name}}</mat-option>
               </mat-select>
             </mat-form-field>
           </div>
           <div>
-            <mat-form-field floatLabel="always">
-              <mat-label></mat-label>
+            <mat-form-field>
               <input matInput formControlName="projectName" placeholder="Specify Project Name">
             </mat-form-field>
           </div>
@@ -65,6 +61,6 @@
   </mat-grid-list>
   <mat-dialog-actions>
       <button mat-raised-button mat-dialog-close>Cancel</button>
-      <button mat-raised-button [disabled]="!retroFormGroup.valid" [mat-dialog-close]="retroFormGroup.value">Create Retro</button>
+      <button mat-raised-button [disabled]="retroFormGroup.invalid || disableButton" (click)="createRetro(retroFormGroup.value)">Create Retro</button>
   </mat-dialog-actions>
 </div>

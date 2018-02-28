@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import {
@@ -8,6 +8,7 @@ import {
 } from '../../../constants/app-constants';
 import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.component';
 import * as _ from 'lodash';
+import * as moment from 'moment';
 
 @Component({
     selector: 'app-sprint-detail',
@@ -18,8 +19,8 @@ export class SprintDetailComponent implements OnInit {
     sprintDays: number;
     sprintStatus: number;
     selectedValue: number;
-    sprintID: number;
-    retrospectiveID: number;
+    sprintID: any;
+    retrospectiveID: any;
     sprintDetails: any;
 
     dateFormat = 'MMMM dd, yyyy';
@@ -43,25 +44,36 @@ export class SprintDetailComponent implements OnInit {
         const params = this.activatedRoute.snapshot.params;
         this.retrospectiveID = params['retrospectiveID'];
         this.sprintID = params['sprintID'];
-        this.retrospectiveService.getSprintDetails(this.sprintID).subscribe(
-            // TODO: replace this data with response and access data using response.data
-            data => {
-                this.sprintDetails = data;
-                this.sprintStatus = data.Status;
-                // TODO: set it to working days in api
-                this.sprintDays = Math.ceil(Math.abs( Date.parse(data['EndDate']) -  Date.parse(data['StartDate'])) / (1000 * 3600 * 24));
-
+        this.retrospectiveService.getSprintDetails(this.retrospectiveID, this.sprintID).subscribe(
+            response => {
+                this.sprintDetails = response.data;
+                this.sprintStatus = response.data.Status;
+                this.sprintDays = this.workdayCount(moment(response.data.StartDate), moment(response.data.EndDate));
             },
-            err => {
-                this.snackBar.open(err.error, '', {duration: SNACKBAR_DURATION});
+            () => {
+                this.snackBar.open(API_RESPONSE_MESSAGES.getSprintDetailsError, '', {duration: SNACKBAR_DURATION});
                 this.navigateToRetrospectiveDashboard();
             }
         );
     }
 
+    workdayCount(start, end) {
+        const first = start.clone().endOf('week');
+        const last = end.clone().startOf('week');
+        const days = last.diff(first, 'days') * 5 / 7;
+        let wfirst = first.day() - start.day();
+        if (start.day() === 0) {
+            --wfirst;
+        }
+        let wlast = end.day() - last.day();
+        if (end.day() === 6) {
+            --wlast;
+        }
+        return wfirst + days + wlast;
+    }
+
     navigateToRetrospectiveDashboard() {
-        // TODO: change this route to retrospective dashboard
-        this.router.navigateByUrl(APP_ROUTE_URLS.retroSpectiveList);
+        this.router.navigateByUrl(APP_ROUTE_URLS.retrospectiveDashboard.replace(':retrospectiveID', this.retrospectiveID));
     }
 
     sprintStateChangeError(errorMessage) {
@@ -85,31 +97,31 @@ export class SprintDetailComponent implements OnInit {
             dialogRef.afterClosed().subscribe(result => {
                 if (result) {
                     if (action === this.sprintActions.ACTIVATE) {
-                        this.retrospectiveService.activateSprint(this.sprintID).subscribe(
+                        this.retrospectiveService.activateSprint(this.retrospectiveID, this.sprintID).subscribe(
                             () => {
                                 this.sprintStatus = this.sprintStates.ACTIVE;
                                 this.snackBar.open(API_RESPONSE_MESSAGES.sprintActivated, '', {duration: SNACKBAR_DURATION});
                             },
-                            err => this.sprintStateChangeError(err.error)
+                            () => this.sprintStateChangeError(API_RESPONSE_MESSAGES.sprintActivateError)
                         );
                     } else if (action === this.sprintActions.FREEZE) {
-                        this.retrospectiveService.freezeSprint(this.sprintID).subscribe(
+                        this.retrospectiveService.freezeSprint(this.retrospectiveID, this.sprintID).subscribe(
                             () => {
                                 this.sprintStatus =  this.sprintStates.FROZEN;
                                 this.snackBar.open(API_RESPONSE_MESSAGES.sprintFrozen, '', {duration: SNACKBAR_DURATION});
                             },
-                            err => this.sprintStateChangeError(err.error)
+                            () => this.sprintStateChangeError(API_RESPONSE_MESSAGES.sprintFreezeError)
                         );
                     } else if (action === this.sprintActions.DISCARD) {
-                        this.retrospectiveService.discardSprint(this.sprintID).subscribe(
+                        this.retrospectiveService.discardSprint(this.retrospectiveID, this.sprintID).subscribe(
                             () => {
                                 this.snackBar.open(API_RESPONSE_MESSAGES.sprintDiscarded, '', {duration: SNACKBAR_DURATION});
                                 this.navigateToRetrospectiveDashboard();
                             },
-                            err => this.sprintStateChangeError(err.error)
+                            () => this.sprintStateChangeError(API_RESPONSE_MESSAGES.sprintDiscardError)
                         );
                     } else {
-                        this.sprintStateChangeError('Please select a valid option!');
+                        this.sprintStateChangeError(API_RESPONSE_MESSAGES.invalidOption);
                     }
                 } else {
                     this.sprintStateChangeError('');
@@ -119,13 +131,13 @@ export class SprintDetailComponent implements OnInit {
     }
 
     refreshSprintDetails() {
-        this.retrospectiveService.refreshSprintDetails().subscribe(
+        this.retrospectiveService.refreshSprintDetails(this.retrospectiveID, this.sprintID).subscribe(
             () => {
                 this.snackBar.open(API_RESPONSE_MESSAGES.sprintComputationInitiated, '', {duration: SNACKBAR_DURATION});
-                this.sprintDetails.isSyncInProgress = true;
+                this.sprintDetails.CurrentlySyncing = true;
             },
-            err => {
-                this.snackBar.open(err.error, '', {duration: SNACKBAR_DURATION});
+            () => {
+                this.snackBar.open(API_RESPONSE_MESSAGES.refreshSprintError, '', {duration: SNACKBAR_DURATION});
             }
         );
     }

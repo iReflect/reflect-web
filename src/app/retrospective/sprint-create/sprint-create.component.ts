@@ -1,6 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
+import { API_RESPONSE_MESSAGES, SNACKBAR_DURATION } from '../../../constants/app-constants';
+import { RetrospectiveService } from '../../shared/services/retrospective.service';
 
 @Component({
   selector: 'app-sprint-create',
@@ -8,11 +10,14 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
   styleUrls: ['./sprint-create.component.scss'],
 })
 export class SprintCreateComponent implements OnInit {
-
+    disableButton = false;
     sprintFormGroup: FormGroup;
-    errors: any = { };
+    errors = { };
 
-    constructor(@Inject(MAT_DIALOG_DATA) public data: any) { }
+    constructor(private retrospectiveService: RetrospectiveService,
+                private snackBar: MatSnackBar,
+                public dialogRef: MatDialogRef<SprintCreateComponent>,
+                @Inject(MAT_DIALOG_DATA) public data: any) { }
 
     ngOnInit() {
         this.createSprintFormGroup();
@@ -40,13 +45,13 @@ export class SprintCreateComponent implements OnInit {
     }
 
     validateForm(sprintFormGroup: FormGroup) {
-        this.errors = {};
+        this.errors = { };
         const sprintFormValue = sprintFormGroup.value;
         if (sprintFormValue.startDate && !sprintFormValue.endDate) {
-            this.errors.endShouldExist = true;
+            this.errors.endDateShouldExist = true;
         }
         if (!sprintFormValue.startDate && sprintFormValue.endDate) {
-            this.errors.startShouldExist = true;
+            this.errors.startDateShouldExist = true;
         }
         if (sprintFormValue.startDate && sprintFormValue.endDate && sprintFormValue.startDate > sprintFormValue.endDate) {
             this.errors.startGreaterThanEnd = true;
@@ -60,4 +65,24 @@ export class SprintCreateComponent implements OnInit {
         return this.errors;
     }
 
+    createSprint(sprintDetails) {
+        this.disableButton = true;
+        if (!sprintDetails.startDate) {
+            sprintDetails.startDate = null;
+        }
+        if (!sprintDetails.endDate) {
+            sprintDetails.endDate = null;
+        }
+        this.retrospectiveService.createSprint(this.data.retrospectiveID, sprintDetails).subscribe(
+            () => {
+                this.snackBar.open(API_RESPONSE_MESSAGES.sprintCreated, '', {duration: SNACKBAR_DURATION});
+                this.dialogRef.close(true);
+                this.disableButton = false;
+            },
+            () => {
+                this.snackBar.open(API_RESPONSE_MESSAGES.sprintCreateError, '', {duration: SNACKBAR_DURATION});
+                this.disableButton = false;
+            }
+        );
+    }
 }

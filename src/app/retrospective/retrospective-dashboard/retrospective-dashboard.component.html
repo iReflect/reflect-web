@@ -1,22 +1,20 @@
 <ng-container>
   <div *ngIf="isDataLoaded">
     <mat-card class="retro-details">
-      <div>
-        <span><b>{{ retroSpectiveData.Title }}</b></span>&nbsp;|&nbsp;
-        <span>Project:<b> {{ retroSpectiveData.ProjectName }}</b></span>&nbsp;|&nbsp;
-        <span>Team: <b>{{ retroSpectiveData.Team.Name }}</b></span>&nbsp;|&nbsp;
-        <span>Created At: <b>{{ retroSpectiveData.CreatedAt | date:dateFormat}}</b></span>&nbsp;|&nbsp;
+      <div *ngIf="retrospectiveData">
+        <span><b>{{ retrospectiveData.Title }}</b></span>&nbsp;|&nbsp;
+        <span>Project:<b> {{ retrospectiveData.ProjectName }}</b></span>&nbsp;|&nbsp;
+        <span>Team: <b>{{ retrospectiveData.Team.Name }}</b></span>&nbsp;|&nbsp;
+        <span>Created At: <b>{{ retrospectiveData.CreatedAt | date:dateFormat}}</b></span>&nbsp;|&nbsp;
         <span>Created By: <b>{{ getCreatorName() }}</b></span>&nbsp;|&nbsp;
-        <span>Hours Per Story Point: <b>{{ retroSpectiveData.HoursPerSprint }}</b></span>
+        <span>Hours Per Story Point: <b>{{ retrospectiveData.HrsPerStoryPoint }}</b></span>
       </div>
       <div class="action-buttons">
-        <button mat-raised-button
-                class="add-sprint"
-                (click)="showNewSprintDialog()">
+        <button mat-raised-button class="add-sprint" (click)="showNewSprintDialog()">
           Add a New Sprint
         </button>
       </div>
     </mat-card>
   </div>
-  <app-sprint-list [retroSpectiveData]="retroSpectiveData"></app-sprint-list>
+  <app-sprint-list #sprintList [retrospectiveID]="retrospectiveID"></app-sprint-list>
 </ng-container>

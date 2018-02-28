@@ -1,9 +1,9 @@
 {
   "1": {
-    "RetroSpective": {
+    "Retrospective": {
       "ID": 1,
       "ProjectName": "iReflect",
-      "Title": "RetroSpective 1",
+      "Title": "Retrospective 1",
       "HoursPerSprint": 4,
       "Team": {
         "ID": 1,
@@ -38,9 +38,9 @@
     }
   },
   "2": {
-    "RetroSpective": {
+    "Retrospective": {
       "ID": 1,
-      "Title": "RetroSpective 2",
+      "Title": "Retrospective 2",
       "ProjectName": "iReflect",
       "HoursPerSprint": 4,
       "Team": {

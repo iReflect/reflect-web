@@ -6,14 +6,20 @@ import { RetrospectiveService } from '../../shared/services/retrospective.servic
 export class RetrospectiveListDataSource extends DataSource<any> {
     private dataChange: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
 
-
-    constructor(private service: RetrospectiveService) {
+    constructor(private retrospectiveService: RetrospectiveService,
+                private errorCallback: any) {
         super();
     }
 
-    connect(): Observable<any[]> {
-        let restroSpectiveListData = this.service.getRetrospectives();
-        this.dataChange.next(restroSpectiveListData['retrospectives']);
+    connect(): Observable<any> {
+        this.retrospectiveService.getRetrospectives().subscribe(
+            response => {
+                this.dataChange.next(response.data.Retrospectives);
+            },
+            () => {
+                this.errorCallback();
+            }
+        );
         return this.dataChange.asObservable();
     }
 

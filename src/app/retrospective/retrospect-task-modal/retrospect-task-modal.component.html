@@ -1,18 +1,18 @@
 <mat-card>
-  <mat-card-header>{{data.task['TaskID']}}: {{data.task['Task Summary']}}</mat-card-header>
+  <mat-card-header>{{taskDetails.TaskID}}: {{taskDetails.Summary}}</mat-card-header>
   <mat-card-content>
     <div>
       <div>
-        <span>Assignee:</span> {{data.task['Assignee']}}
+        <span>Assignee:</span> {{taskDetails.Assignee}}
       </div>
       <div>
-        <span>Estimates:</span> {{data.task['Estimates']}}
+        <span>Estimates:</span> {{taskDetails.Estimate}}
       </div>
       <div>
-        <span>Status:</span> {{data.task['Status']}}
+        <span>Status:</span> {{taskDetails.Status}}
       </div>
       <div>
-        <span>Story Type:</span> {{data.task['Story Type']}}
+        <span>Story Type:</span> {{taskDetails.Type}}
       </div>
     </div>
   </mat-card-content>
@@ -21,7 +21,7 @@
   <div>
     <mat-select placeholder="Select a Member" [(ngModel)]="selectedMemberID">
       <mat-option *ngFor="let member of sprintMembers" [value]="member.ID">
-        {{member.Name}}
+        {{(member.FirstName + ' ' + member.LastName).trim()}}
       </mat-option>
     </mat-select>
   </div>

@@ -1,6 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
+import { RetrospectiveService } from '../../shared/services/retrospective.service';
+import { API_RESPONSE_MESSAGES, SNACKBAR_DURATION } from '../../../constants/app-constants';
 
 @Component({
     selector: 'app-retrospective-create',
@@ -10,7 +12,9 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 export class RetrospectiveCreateComponent implements OnInit {
 
     retroFormGroup: FormGroup;
-    isDataLoaded = false;
+    isTeamOptionsLoaded = false;
+    isProviderOptionsLoaded = false;
+    disableButton = false;
 
     // These are the possible options for the teams and task providers
     teamOptions: any = [];
@@ -25,11 +29,42 @@ export class RetrospectiveCreateComponent implements OnInit {
     // Keys used for form controls and provider lookups
     taskProviderKey = 'taskProvider';
 
-    constructor(public dialogRef: MatDialogRef<RetrospectiveCreateComponent>,
-                @Inject(MAT_DIALOG_DATA) public data: any) {
-        this.isDataLoaded = data.isDataLoaded;
-        this.teamOptions = data.teamOptions;
-        this.taskProviderOptions = data.taskProviderOptions;
+    constructor(private retrospectiveService: RetrospectiveService,
+                private snackBar: MatSnackBar,
+                public dialogRef: MatDialogRef<RetrospectiveCreateComponent>,
+                @Inject(MAT_DIALOG_DATA) public data: any) { }
+
+    ngOnInit() {
+        this.getTeamList();
+        this.getTaskProviders();
+        this.createRetroFormGroup();
+        this.addTaskProvider();
+    }
+
+    getTeamList() {
+        this.retrospectiveService.getTeamList().subscribe(
+            response => {
+                this.teamOptions = response.data.Teams;
+                this.isTeamOptionsLoaded = true;
+            },
+            () => {
+                this.snackBar.open(API_RESPONSE_MESSAGES.getTeamListError, '', {duration: SNACKBAR_DURATION});
+                this.dialogRef.close();
+            }
+        );
+    }
+
+    getTaskProviders() {
+        this.retrospectiveService.getTaskProvidersList().subscribe(
+            response => {
+                this.taskProviderOptions = response.data.TaskProviders;
+                this.isProviderOptionsLoaded = true;
+            },
+            () => {
+                this.snackBar.open(API_RESPONSE_MESSAGES.getTeamProviderOptionsError, '', {duration: SNACKBAR_DURATION});
+                this.dialogRef.close();
+            }
+        );
     }
 
     taskProviderInitialized(index) {
@@ -58,9 +93,37 @@ export class RetrospectiveCreateComponent implements OnInit {
         this.taskProvidersList[++this.taskProvidersIndex] = true;
     }
 
-    ngOnInit() {
-        this.createRetroFormGroup();
-        this.addTaskProvider();
-    }
+    createRetro(formValue) {
+        this.disableButton = true;
+        const requestBody = {
+            'title': formValue.title,
+            'team': formValue.team,
+            'hoursPerStoryPoint': formValue.hoursPerStoryPoint,
+            'projectName': formValue.projectName,
+            'taskProvider': formValue.taskProvider.map(provider => {
+                return {
+                    'type': provider.selectedTaskProvider,
+                    'data': {
+                        ...provider.taskProviderConfig,
+                        'credentials': {
+                            ...provider.Credentials.data,
+                            'type': provider.Credentials.type
+                        }
+                    }
+                };
+            })
+        };
 
+        this.retrospectiveService.createRetro(requestBody).subscribe(
+            () => {
+                this.snackBar.open(API_RESPONSE_MESSAGES.retroCreated, '', {duration: SNACKBAR_DURATION});
+                this.dialogRef.close(true);
+                this.disableButton = false;
+            },
+            () => {
+                this.snackBar.open(API_RESPONSE_MESSAGES.createRetroError, '', {duration: SNACKBAR_DURATION});
+                this.disableButton = false;
+            }
+        );
+    }
 }
