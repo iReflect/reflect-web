@@ -17,13 +17,13 @@ export class RatingRendererComponent implements AgRendererComponent {
     agInit(params: any): void {
         this.params = params;
         this.value = RATING_STATES_LABEL[this.params.value];
-        this.styles.backgroundColor = this.ratingColors[this.value];
+        this.styles.color = this.ratingColors[this.value];
     }
 
     refresh(params: any): boolean {
         this.params = params;
         this.value = RATING_STATES_LABEL[this.params.value];
-        this.styles.backgroundColor = this.ratingColors[this.value];
+        this.styles.color = this.ratingColors[this.value];
         return true;
     }
 }

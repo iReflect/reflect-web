@@ -5,11 +5,11 @@
         <mat-card-title>{{sprintDetails.Title}}</mat-card-title>
       </div>
       <div>
-     <span class="dashboard-back" matTooltip="Retrospective dashboard" matTooltipPosition="before">
+     <a mat-icon-button class="dashboard-back" matTooltip="Retrospective dashboard" matTooltipPosition="before">
        <span (click)="navigateToRetrospectiveDashboard()" class="circular-icon">
          &nbsp;<mat-icon class="back-icon">arrow_back</mat-icon>&nbsp;
        </span>
-     </span>
+     </a>
       </div>
     </div>
     <mat-card-content class="flex-container">
@@ -32,7 +32,7 @@
           </mat-form-field>
         </ng-template>
         <div>
-          <button mat-raised-button (click)="refreshSprintDetails()" *ngIf="!sprintDetails.CurrentlySyncing">Refresh <mat-icon>refresh</mat-icon></button>
+          <button mat-button (click)="refreshSprintDetails()" *ngIf="!sprintDetails.CurrentlySyncing">Re-Sync Data <mat-icon>refresh</mat-icon></button>
         </div>
       </div>
     </mat-card-content>

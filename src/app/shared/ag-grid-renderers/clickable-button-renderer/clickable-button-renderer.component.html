@@ -1,6 +1,9 @@
-<span>
-  <mat-icon *ngIf="isIcon">{{icon}}</mat-icon>
-  <button *ngIf="!isIcon" mat-button (click)="onButtonClicked()" class="btn btn-info">
+<div *ngIf="isIcon; then mat_icon else button"></div>
+<ng-template #mat_icon>
+  <mat-icon (click)="onButtonClicked()">{{icon}}</mat-icon>
+</ng-template>
+<ng-template #button>
+  <button mat-button (click)="onButtonClicked()">
     {{label}}
   </button>
-</span>
+</ng-template>

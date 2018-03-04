@@ -105,11 +105,13 @@ export class RetrospectTaskModalComponent {
             {
                 headerName: 'Sprint Hours',
                 field: 'SprintTime',
+                valueFormatter: (params) => +(params.value / 60).toFixed(2),
                 width: 150
             },
             {
                 headerName: 'Total Time',
                 field: 'TotalTime',
+                valueFormatter: (params) => +(params.value / 60).toFixed(2),
                 width: 140
             }
         ];
@@ -152,6 +154,10 @@ export class RetrospectTaskModalComponent {
                     width: 185,
                     valueParser: 'Number(newValue)',
                     cellEditor: 'numericEditor',
+                    cellEditorParams: {
+                        minValue: 0,
+                        maxValue: this.taskDetails.Estimate - this.totalTaskPoints
+                    },
                     onCellValueChanged: (cellParams) => {
                         const valueChange = cellParams.newValue - cellParams.oldValue;
                         const newStoryPoints = this.totalTaskPoints + valueChange;

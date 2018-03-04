@@ -17,7 +17,7 @@ export class ClickableButtonRendererComponent implements ICellRendererAngularCom
         this.label = params.label;
         if (params.useIcon) {
             this.isIcon = true;
-            this.icon = params.icon
+            this.icon = params.icon;
         }
     }
 
