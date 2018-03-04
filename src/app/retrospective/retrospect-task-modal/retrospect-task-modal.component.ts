@@ -11,6 +11,8 @@ import { RatingRendererComponent } from '../../shared/ag-grid-renderers/rating-r
 import { NumericCellEditorComponent } from '../../shared/ag-grid-editors/numeric-cell-editor/numeric-cell-editor.component';
 import { SelectCellEditorComponent } from '../../shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
 import * as _ from 'lodash';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/interval';
 
 @Component({
     selector: 'app-retrospect-task-modal',
@@ -26,7 +28,7 @@ export class RetrospectTaskModalComponent {
     sprintStates = SPRINT_STATES;
     ratingStates = RATING_STATES;
 
-    private totalTaskPoints = 0;
+    private totalTaskPoints;
     private params: any;
     private columnDefs: any;
     private gridApi: any;
@@ -70,18 +72,23 @@ export class RetrospectTaskModalComponent {
         this.params = params;
         this.gridApi = params.api;
         this.columnApi = params.columnApi;
-        this.getSprintTaskMemberSummary();
+        this.getSprintTaskMemberSummary(false);
+        Observable.interval(5000)
+            .subscribe(() => {
+                this.getSprintTaskMemberSummary(true);
+            });
     }
 
-    getSprintTaskMemberSummary() {
+    getSprintTaskMemberSummary(isRefresh) {
         this.retrospectiveService.getSprintTaskMemberSummary(this.data.retrospectiveID, this.data.sprintID, this.taskDetails.ID)
             .subscribe(
                 response => {
                     this.gridApi.setRowData(response.data.Members);
-                    response.data.Members.map(member => {
+                    this.totalTaskPoints = 0;
+                    this.memberIDs = [];
+                    response.data.Members.forEach(member => {
                         this.memberIDs.push(member.ID);
                         this.totalTaskPoints += member.TotalPoints;
-                        return member;
                     });
                     this.columnApi.getColumn('SprintPoints').getColDef().cellEditorParams = {
                         minValue: 0,
@@ -89,8 +96,12 @@ export class RetrospectTaskModalComponent {
                     };
                 },
                 () => {
-                    this.snackBar.open(API_RESPONSE_MESSAGES.getSprintTaskMemberSummaryError, '', {duration: SNACKBAR_DURATION});
-                    this.dialogRef.close();
+                    if (isRefresh) {
+                        this.snackBar.open(API_RESPONSE_MESSAGES.autoRefreshFailure, '', {duration: SNACKBAR_DURATION});
+                    } else {
+                        this.snackBar.open(API_RESPONSE_MESSAGES.getSprintTaskMemberSummaryError, '', {duration: SNACKBAR_DURATION});
+                        this.dialogRef.close();
+                    }
                 }
             );
     }

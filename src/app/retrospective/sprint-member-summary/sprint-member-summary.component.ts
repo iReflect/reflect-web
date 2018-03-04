@@ -13,6 +13,8 @@ import { SelectCellEditorComponent } from '../../shared/ag-grid-editors/select-c
 import {
     ClickableButtonRendererComponent
 } from '../../shared/ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/interval';
 
 @Component({
     selector: 'app-sprint-member-summary',
@@ -83,22 +85,30 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
         this.params = params;
         this.gridApi = params.api;
         this.columnApi = params.columnApi;
-        this.getSprintMemberSummary();
+        this.getSprintMemberSummary(false);
+        Observable.interval(5000)
+            .subscribe(() => {
+                this.getSprintMemberSummary(true);
+            });
     }
 
-    getSprintMemberSummary() {
+    getSprintMemberSummary(isRefresh) {
         this.retrospectiveService.getSprintMemberSummary(this.retrospectiveID, this.sprintID)
             .subscribe(
                 response => {
                     const members = response.data.Members;
                     this.gridApi.setRowData(members);
-                    members.map(member => {
+                    this.memberIDs = [];
+                    members.forEach(member => {
                         this.memberIDs.push(member.ID);
-                        return member;
                     });
                 },
                 () => {
-                    this.snackBar.open(API_RESPONSE_MESSAGES.getSprintMemberSummaryError, '', {duration: SNACKBAR_DURATION});
+                    if (isRefresh) {
+                        this.snackBar.open(API_RESPONSE_MESSAGES.autoRefreshFailure, '', {duration: SNACKBAR_DURATION});
+                    } else {
+                        this.snackBar.open(API_RESPONSE_MESSAGES.getSprintMemberSummaryError, '', {duration: SNACKBAR_DURATION});
+                    }
                 }
             );
     }
