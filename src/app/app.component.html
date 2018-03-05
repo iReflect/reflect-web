@@ -1,8 +1,10 @@
 <ng-container>
-  <app-header></app-header>
   <div class="app-root" [ngClass]="{'logged-in': userLoggedIn}">
     <div *ngIf="userLoggedIn; then loggedIn else notLoggedIn"></div>
-    <ng-template #loggedIn><app-sidenav></app-sidenav></ng-template>
+    <ng-template #loggedIn>
+      <app-header></app-header>
+      <app-sidenav></app-sidenav>
+    </ng-template>
     <ng-template #notLoggedIn><router-outlet></router-outlet></ng-template>
   </div>
 </ng-container>
