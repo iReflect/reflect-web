@@ -30,7 +30,6 @@ export class SprintDetailComponent implements OnInit {
     sprintActions = SPRINT_ACTIONS;
     sprintActionsLabel = SPRINT_ACTIONS_LABEL;
 
-
     constructor(private retrospectiveService: RetrospectiveService,
                 private snackBar: MatSnackBar,
                 private router: Router,
