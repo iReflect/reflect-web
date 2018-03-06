@@ -7,6 +7,8 @@ import { RetrospectTaskModalComponent } from '../retrospect-task-modal/retrospec
 import {
     ClickableButtonRendererComponent
 } from '../../shared/ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/interval';
 
 @Component({
     selector: 'app-sprint-task-summary',
@@ -44,17 +46,25 @@ export class SprintTaskSummaryComponent {
         this.params = params;
         this.gridApi = params.api;
         this.columnApi = params.columnApi;
-        this.getSprintTaskSummary();
+        this.getSprintTaskSummary(false);
+        Observable.interval(5000)
+            .subscribe(() => {
+                this.getSprintTaskSummary(true);
+            });
     }
 
-    getSprintTaskSummary() {
+    getSprintTaskSummary(isRefresh) {
         this.retrospectiveService.getSprintTaskSummary(this.retrospectiveID, this.sprintID)
             .subscribe(
                 response => {
                     this.gridApi.setRowData(response.data.Tasks);
                 },
                 () => {
-                    this.snackBar.open(API_RESPONSE_MESSAGES.getSprintTaskSummaryError, '', {duration: SNACKBAR_DURATION});
+                    if (isRefresh) {
+                        this.snackBar.open(API_RESPONSE_MESSAGES.autoRefreshFailure, '', {duration: SNACKBAR_DURATION});
+                    } else {
+                        this.snackBar.open(API_RESPONSE_MESSAGES.getSprintTaskSummaryError, '', {duration: SNACKBAR_DURATION});
+                    }
                 }
             );
     }
@@ -128,7 +138,6 @@ export class SprintTaskSummaryComponent {
                 retrospectiveID: this.retrospectiveID,
                 sprintStatus: this.sprintStatus
             },
-            maxWidth: 950,
         });
     }
 }

@@ -78,7 +78,8 @@ export const API_RESPONSE_MESSAGES = {
     sprintActivateError: 'Cannot Activate Sprint',
     sprintFreezeError: 'Cannot Freeze Sprint',
     sprintDiscardError: 'Cannot Discard Sprint',
-    refreshSprintError: 'Cannot initiate sprint computation'
+    refreshSprintError: 'Cannot initiate sprint computation',
+    autoRefreshFailure: 'Failed to refresh data!'
 };
 
 export const QUESTION_RESPONSE_SEPARATOR = ',';
