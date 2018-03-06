@@ -20,7 +20,7 @@
       <div class="sprint-actions">
         <div *ngIf="sprintStatus === sprintStates.FROZEN; then frozen else not_frozen"></div>
         <ng-template #frozen>
-          <span class="status-freeze">Frozen <mat-icon class="green-icon">done</mat-icon></span>
+          <span class="status-freeze">Frozen <mat-icon color="green">done</mat-icon></span>
         </ng-template>
         <ng-template #not_frozen>
           <mat-form-field>
@@ -32,7 +32,7 @@
           </mat-form-field>
         </ng-template>
         <div>
-          <button mat-button (click)="refreshSprintDetails()" *ngIf="!sprintDetails.CurrentlySyncing">Re-Sync Data <mat-icon>refresh</mat-icon></button>
+          <button mat-button (click)="refreshSprintDetails()" *ngIf="!sprintDetails.CurrentlySyncing">Re-Sync Sprint <mat-icon>refresh</mat-icon></button>
         </div>
       </div>
     </mat-card-content>

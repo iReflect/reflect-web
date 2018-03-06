@@ -1,6 +1,8 @@
-div {
-  float: left;
-  margin: 10px;
+.sprint-member-actions {
+  div {
+    margin: 10px;
+    float: left;
+  }
   mat-select {
     width: 150px;
     line-height: 35px;
@@ -12,6 +14,7 @@ div {
 }
 
 .ag-grid-container {
+  float: left;
   margin: 1px auto;
   height: -webkit-calc(100vh - 100px);
   height: -moz-calc(100vh - 100px);

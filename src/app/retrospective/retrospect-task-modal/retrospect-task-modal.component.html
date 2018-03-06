@@ -2,22 +2,22 @@
   <mat-card-header>{{taskDetails.TaskID}}: {{taskDetails.Summary}}</mat-card-header>
   <mat-card-content>
     <div>
-      <div>
+      <div *ngIf="taskDetails.Assignee">
         <span>Assignee:</span> {{taskDetails.Assignee}}
       </div>
-      <div>
+      <div *ngIf="taskDetails.Estimate">
         <span>Estimates:</span> {{taskDetails.Estimate}}
       </div>
-      <div>
+      <div *ngIf="taskDetails.Status">
         <span>Status:</span> {{taskDetails.Status}}
       </div>
-      <div>
+      <div *ngIf="taskDetails.Type">
         <span>Story Type:</span> {{taskDetails.Type}}
       </div>
     </div>
   </mat-card-content>
 </mat-card>
-<div *ngIf="data.sprintStatus !== sprintStates.FROZEN">
+<div class="add-member" *ngIf="data.sprintStatus !== sprintStates.FROZEN">
   <div>
     <mat-select placeholder="Select a Member" [(ngModel)]="selectedMemberID">
       <mat-option *ngFor="let member of sprintMembers" [value]="member.ID">

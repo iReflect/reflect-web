@@ -51,12 +51,12 @@ export const API_RESPONSE_MESSAGES = {
     sprintCreated: 'Sprint Created Successfully!',
     invalidOption: 'Please select a valid option!',
     memberNotSelectedError: 'Please select a member to add!',
-    allocationNumberError: 'Allocation must be an integer between 0 to 100!',
-    expectationNumberError: 'Expectation must be an integer between 0 to 100!',
+    allocationNegativeError: 'Allocation must be a non-negative number!',
+    expectationNegativeError: 'Expectation must be a non-negative number!',
     taskStoryPointsNegativeError: 'Sprint story points must be a non-negative number!',
     taskStoryPointsEstimatesError: 'Sprint story points must not exceed estimates!',
     vacationNumberError: 'Vacations must be a positive integer!',
-    vacationTimeError: 'Number of vacations must be less than total sprint days!',
+    vacationTimeError: 'Number of vacations must be not exceed total sprint days!',
     getRetrospectiveMembersError: 'Cannot get Retrospective Members List!',
     getSprintMembersError: 'Cannot get Sprint Members List!',
     getSprintMemberSummaryError: 'Cannot get Sprint Members Details!',
@@ -128,9 +128,9 @@ export const RATING_STATES_LABEL = {
 };
 
 export const RATING_COLORS = {
-    [RATING_STATES_LABEL[RATING_STATES.NOTABLE]]: '#10FF00',
+    [RATING_STATES_LABEL[RATING_STATES.NOTABLE]]: '#32EB32',
     [RATING_STATES_LABEL[RATING_STATES.GOOD]]: '#60A549',
-    [RATING_STATES_LABEL[RATING_STATES.OKAY]]: '#A7A211',
+    [RATING_STATES_LABEL[RATING_STATES.OKAY]]: '#F5E93A',
     [RATING_STATES_LABEL[RATING_STATES.BAD]]: '#FF9900',
     [RATING_STATES_LABEL[RATING_STATES.UGLY]]: '#FF3030'
 };

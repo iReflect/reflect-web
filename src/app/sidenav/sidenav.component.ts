@@ -12,12 +12,12 @@ export class SideNavComponent {
 
     constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
         iconRegistry.addSvgIcon(
-            'feedback_icon',
-            sanitizer.bypassSecurityTrustResourceUrl('assets/img/feedback_icon.svg')
+            'feedback-icon',
+            sanitizer.bypassSecurityTrustResourceUrl('assets/img/icons/feedback-icon.svg')
         );
         iconRegistry.addSvgIcon(
-            'team_feedback_icon',
-            sanitizer.bypassSecurityTrustResourceUrl('assets/img/team_feedback_icon.svg')
+            'team-feedback-icon',
+            sanitizer.bypassSecurityTrustResourceUrl('assets/img/icons/team-feedback-icon.svg')
         );
     }
 }
