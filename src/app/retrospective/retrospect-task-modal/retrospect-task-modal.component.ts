@@ -10,6 +10,7 @@ import { GridOptions } from 'ag-grid';
 import { RatingRendererComponent } from '../../shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
 import { NumericCellEditorComponent } from '../../shared/ag-grid-editors/numeric-cell-editor/numeric-cell-editor.component';
 import { SelectCellEditorComponent } from '../../shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
+import * as _ from 'lodash';
 
 @Component({
     selector: 'app-retrospect-task-modal',
@@ -82,6 +83,10 @@ export class RetrospectTaskModalComponent {
                         this.totalTaskPoints += member.TotalPoints;
                         return member;
                     });
+                    this.columnApi.getColumn('SprintPoints').getColDef().cellEditorParams = {
+                        minValue: 0,
+                        maxValue: this.taskDetails.Estimate - this.totalTaskPoints
+                    };
                 },
                 () => {
                     this.snackBar.open(API_RESPONSE_MESSAGES.getSprintTaskMemberSummaryError, '', {duration: SNACKBAR_DURATION});
@@ -105,11 +110,13 @@ export class RetrospectTaskModalComponent {
             {
                 headerName: 'Sprint Hours',
                 field: 'SprintTime',
+                valueFormatter: (params) => (params.value / 60).toFixed(2),
                 width: 150
             },
             {
                 headerName: 'Total Time',
                 field: 'TotalTime',
+                valueFormatter: (params) => (params.value / 60).toFixed(2),
                 width: 140
             }
         ];
@@ -171,7 +178,13 @@ export class RetrospectTaskModalComponent {
                                 );
                                 this.revertCellValue(cellParams);
                             } else {
-                                this.updateSprintTaskMember(cellParams);
+                                this.updateSprintTaskMember(cellParams, (response) => {
+                                    this.totalTaskPoints += response.data.TotalPoints - cellParams.data.TotalPoints;
+                                    this.columnApi.getColumn('SprintPoints').getColDef().cellEditorParams = {
+                                        minValue: 0,
+                                        maxValue: this.taskDetails.Estimate - this.totalTaskPoints
+                                    };
+                                });
                             }
                         }
                     }
@@ -240,10 +253,13 @@ export class RetrospectTaskModalComponent {
         }
     }
 
-    updateSprintTaskMember(params) {
+    updateSprintTaskMember(params, onSuccessCallback?) {
         this.retrospectiveService.updateSprintTaskMember(this.data.retrospectiveID, this.data.sprintID, this.taskDetails.ID, params.data)
             .subscribe(
                 response => {
+                    if (onSuccessCallback && _.isFunction(onSuccessCallback)) {
+                        onSuccessCallback(response);
+                    }
                     params.node.setData(response.data);
                     this.snackBar.open(API_RESPONSE_MESSAGES.memberUpdated, '', {duration: SNACKBAR_DURATION});
                 },

@@ -11,19 +11,20 @@ import { ICellRendererParams } from 'ag-grid';
 export class RatingRendererComponent implements AgRendererComponent {
     private params: ICellRendererParams;
     value: any;
-    styles: any = {};
     ratingColors = RATING_COLORS;
+
+    getColor() {
+        return this.ratingColors[this.value]
+    }
 
     agInit(params: any): void {
         this.params = params;
         this.value = RATING_STATES_LABEL[this.params.value];
-        this.styles.backgroundColor = this.ratingColors[this.value];
     }
 
     refresh(params: any): boolean {
         this.params = params;
         this.value = RATING_STATES_LABEL[this.params.value];
-        this.styles.backgroundColor = this.ratingColors[this.value];
         return true;
     }
 }

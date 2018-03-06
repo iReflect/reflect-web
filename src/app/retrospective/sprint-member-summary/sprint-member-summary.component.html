@@ -1,14 +1,16 @@
 <div>
-  <div *ngIf="sprintStatus !== sprintStates.FROZEN">
-    <mat-select placeholder="Select a Member" [(ngModel)]="selectedMemberID">
-      <mat-option *ngFor="let member of retroMembers" [value]="member.ID">
-        {{(member.FirstName + ' ' + member.LastName).trim()}}
-      </mat-option>
-    </mat-select>
-    <button mat-button (click)="addSprintMember()">Add Member</button>
-  </div>
-  <div>
-    <button mat-button (click)="getSprintMemberSummary()">Refresh Data <mat-icon>refresh</mat-icon></button>
+  <div class="sprint-member-actions">
+    <div *ngIf="sprintStatus !== sprintStates.FROZEN">
+      <mat-select placeholder="Select a Member" [(ngModel)]="selectedMemberID">
+        <mat-option *ngFor="let member of retroMembers" [value]="member.ID">
+          {{(member.FirstName + ' ' + member.LastName).trim()}}
+        </mat-option>
+      </mat-select>
+      <button mat-button (click)="addSprintMember()">Add Member</button>
+    </div>
+    <div>
+      <button mat-button (click)="getSprintMemberSummary()">Refresh <mat-icon>refresh</mat-icon></button>
+    </div>
   </div>
   <div class="ag-grid-container">
       <ag-grid-angular

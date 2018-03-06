@@ -8,13 +8,12 @@ import { ICellEditorAngularComp } from 'ag-grid-angular';
 })
 export class NumericCellEditorComponent implements ICellEditorAngularComp, AfterViewInit {
     value: number;
-
-    private params: any;
+    params: any;
     @ViewChild('input', {read: ViewContainerRef}) private input;
 
     agInit(params: any): void {
         this.params = params;
-        this.value = this.params.value;
+        this.value = params.value;
     }
 
     getValue(): any {

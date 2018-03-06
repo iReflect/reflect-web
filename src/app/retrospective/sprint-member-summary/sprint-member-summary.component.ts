@@ -178,13 +178,16 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
                     width: 125,
                     valueParser: 'Number(newValue)',
                     cellEditor: 'numericEditor',
+                    cellEditorParams: {
+                        minValue: 0
+                    },
                     valueFormatter: (params) => params.value + '%',
                     onCellValueChanged: (cellParams) => {
                         if (cellParams.newValue !== cellParams.oldValue) {
-                            if (cellParams.newValue >= 0 && cellParams.newValue <= 100) {
+                            if (cellParams.newValue >= 0) {
                                 this.updateSprintMember(cellParams);
                             } else {
-                                this.snackBar.open(API_RESPONSE_MESSAGES.allocationNumberError, '', {duration: SNACKBAR_DURATION});
+                                this.snackBar.open(API_RESPONSE_MESSAGES.allocationNegativeError, '', {duration: SNACKBAR_DURATION});
                                 this.revertCellValue(cellParams);
                             }
                         }
@@ -197,13 +200,16 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
                     width: 130,
                     valueParser: 'Number(newValue)',
                     cellEditor: 'numericEditor',
+                    cellEditorParams: {
+                        minValue: 0
+                    },
                     valueFormatter: (params) => params.value + '%',
                     onCellValueChanged: (cellParams) => {
                         if (cellParams.newValue !== cellParams.oldValue) {
-                            if (cellParams.newValue >= 0 && cellParams.newValue <= 100) {
+                            if (cellParams.newValue >= 0) {
                                 this.updateSprintMember(cellParams);
                             } else {
-                                this.snackBar.open(API_RESPONSE_MESSAGES.expectationNumberError, '', {duration: SNACKBAR_DURATION});
+                                this.snackBar.open(API_RESPONSE_MESSAGES.expectationNegativeError, '', {duration: SNACKBAR_DURATION});
                                 this.revertCellValue(cellParams);
                             }
                         }
@@ -217,13 +223,17 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
                     valueParser: 'Number(newValue)',
                     filter: 'agNumberColumnFilter',
                     cellEditor: 'numericEditor',
+                    cellEditorParams: {
+                        minValue: 0,
+                        maxValue: this.sprintDays
+                    },
                     valueFormatter: (params) => params.value + (params.value === 1 ? ' day' : ' days'),
                     onCellValueChanged: (cellParams) => {
                         if (cellParams.newValue !== cellParams.oldValue) {
                             if (cellParams.newValue < 0) {
                                 this.snackBar.open(API_RESPONSE_MESSAGES.vacationNumberError, '', {duration: SNACKBAR_DURATION});
                                 this.revertCellValue(cellParams);
-                            } else if (cellParams.newValue >= this.sprintDays) {
+                            } else if (cellParams.newValue > this.sprintDays) {
                                 this.snackBar.open(API_RESPONSE_MESSAGES.vacationTimeError, '', {duration: SNACKBAR_DURATION});
                                 this.revertCellValue(cellParams);
                             } else {
@@ -272,15 +282,14 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
                     }
                 },
                 {
-                    headerName: 'Delete Row',
+                    headerName: 'Delete',
                     cellRenderer: 'deleteButtonRenderer',
                     cellRendererParams: {
-                        label: 'Delete',
                         useIcon: true,
                         icon: 'delete',
                         onClick: this.deleteSprintMember.bind(this)
                     },
-                    width: 180
+                    width: 80
                 }
             ];
         }

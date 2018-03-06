@@ -11,14 +11,6 @@
   justify-content: space-between;
 }
 
-.status-freeze {
-  padding: 1rem;
-  text-align: center;
-  .green-icon {
-    color: green;
-  }
-}
-
 .sync-error-card {
   margin-top: 15%;
   margin-left: 32%;
@@ -34,7 +26,6 @@
     border-radius: 50%;
     background-color: #6dcaf3;
     color: #ffffff;
-    line-height: 22px;
     font-size: 32px;
     cursor: pointer;
   }
@@ -42,8 +33,19 @@
 
 .sprint-actions {
   text-align: right;
+  .status-freeze {
+    padding: 1rem;
+    text-align: center;
+  }
   mat-form-field {
-    width: 7.7em;
+    width: 15em;
+  }
+  button {
+    width: 100%;
+    font-size: 1rem;
+    font-weight: 500;
+    background-color: #f4f5f7;
+    color: #42516e;
   }
 }
 

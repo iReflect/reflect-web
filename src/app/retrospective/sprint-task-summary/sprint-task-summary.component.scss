@@ -1,6 +1,9 @@
-div {
-  float: left;
+.sprint-task-refresh {
   margin: 10px;
+  button {
+    background-color: #f4f5f7;
+    color: #42516e;
+  }
 }
 
 .ag-grid-container {
@@ -12,15 +15,5 @@ div {
   ag-grid-angular {
     width: 100%;
     height: 100%;
-  }
-  .ag-body {
-    position: inherit;
-    height: 100% !important;
-  }
-  .ag-cell {
-    border: none;
-  }
-  .ag-body-container{
-    min-height: 82px;
   }
 }

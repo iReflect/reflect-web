@@ -64,7 +64,7 @@ export class SprintTaskSummaryComponent {
             {
                 headerName: 'Task ID',
                 field: 'TaskID',
-                width: 114,
+                width: 106,
                 pinned: true
             },
             {
@@ -92,13 +92,13 @@ export class SprintTaskSummaryComponent {
             {
                 headerName: 'Sprint Hours',
                 field: 'SprintTime',
-                valueFormatter: (params) => +(params.value / 60).toFixed(2),
+                valueFormatter: (params) => (params.value / 60).toFixed(2),
                 width: 130
             },
             {
                 headerName: 'Total Time Spent',
                 field: 'TotalTime',
-                valueFormatter: (params) => +(params.value / 60).toFixed(2),
+                valueFormatter: (params) => (params.value / 60).toFixed(2),
                 width: 150
             },
             {
