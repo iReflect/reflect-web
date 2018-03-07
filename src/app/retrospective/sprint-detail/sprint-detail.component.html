@@ -39,12 +39,12 @@
   </mat-card>
   <div *ngIf="sprintDetails.LastSyncedAt && !sprintDetails.CurrentlySyncing; then synced else not_synced"></div>
   <ng-template #synced>
-    <mat-tab-group>
+    <mat-tab-group [(selectedIndex)]="selectedTabIndex">
       <mat-tab label="Sprint Members Summary">
-        <app-sprint-member-summary [sprintDays]="sprintDays" [sprintStatus]="sprintStatus" [retrospectiveID]="retrospectiveID" [sprintID]="sprintID"></app-sprint-member-summary>
+        <app-sprint-member-summary [isTabActive]="selectedTabIndex === 0" [sprintDays]="sprintDays" [sprintStatus]="sprintStatus" [retrospectiveID]="retrospectiveID" [sprintID]="sprintID"></app-sprint-member-summary>
       </mat-tab>
       <mat-tab label="Sprint Task Summary">
-        <app-sprint-task-summary [sprintStatus]="sprintStatus" [retrospectiveID]="retrospectiveID" [sprintID]="sprintID"></app-sprint-task-summary>
+        <app-sprint-task-summary [isTabActive]="selectedTabIndex === 1" [sprintStatus]="sprintStatus" [retrospectiveID]="retrospectiveID" [sprintID]="sprintID"></app-sprint-task-summary>
       </mat-tab>
     </mat-tab-group>
   </ng-template>

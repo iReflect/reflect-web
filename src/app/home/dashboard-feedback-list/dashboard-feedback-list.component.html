@@ -26,6 +26,18 @@
         <mat-cell *matCellDef="let element"> {{getUserRole(element.ForUserProfile)}}</mat-cell>
       </ng-container>
 
+      <!-- Start Date Column -->
+      <ng-container matColumnDef="startDate">
+        <mat-header-cell *matHeaderCellDef> Start Date</mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.DurationStart | date: dateFormat}}</mat-cell>
+      </ng-container>
+
+      <!-- End Date Column -->
+      <ng-container matColumnDef="endDate">
+        <mat-header-cell *matHeaderCellDef> End Date</mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.DurationEnd | date: dateFormat}}</mat-cell>
+      </ng-container>
+
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
       <mat-row *matRowDef="let row; columns: displayedColumns;"
                (click)="navigateToFeedBack(row)"></mat-row>

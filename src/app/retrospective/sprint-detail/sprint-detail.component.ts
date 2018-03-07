@@ -22,6 +22,7 @@ export class SprintDetailComponent implements OnInit {
     sprintID: any;
     retrospectiveID: any;
     sprintDetails: any;
+    selectedTabIndex = 0;
 
     dateFormat = 'MMMM dd, yyyy';
     sprintStates = SPRINT_STATES;

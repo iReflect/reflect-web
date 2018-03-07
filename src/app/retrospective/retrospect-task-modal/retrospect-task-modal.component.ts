@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, HostListener, Inject, OnDestroy } from '@angular/core';
 import {
     API_RESPONSE_MESSAGES, RATING_STATES, RATING_STATES_LABEL, SNACKBAR_DURATION,
     SPRINT_STATES
@@ -12,6 +12,8 @@ import { NumericCellEditorComponent } from '../../shared/ag-grid-editors/numeric
 import { SelectCellEditorComponent } from '../../shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
 import * as _ from 'lodash';
 import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/observable/interval';
 
 @Component({
@@ -19,14 +21,16 @@ import 'rxjs/add/observable/interval';
     templateUrl: './retrospect-task-modal.component.html',
     styleUrls: ['./retrospect-task-modal.component.scss']
 })
-export class RetrospectTaskModalComponent {
+export class RetrospectTaskModalComponent implements OnDestroy {
     memberIDs = [];
     sprintMembers: any;
     taskDetails: any;
     selectedMemberID: number;
     gridOptions: GridOptions;
+    enableRefresh = true;
     sprintStates = SPRINT_STATES;
     ratingStates = RATING_STATES;
+    destroy$: Subject<boolean> = new Subject<boolean>();
 
     private totalTaskPoints;
     private params: any;
@@ -34,14 +38,37 @@ export class RetrospectTaskModalComponent {
     private gridApi: any;
     private columnApi: any;
 
+    @HostListener('window:resize') onResize() {
+        if (this.gridApi) {
+            setTimeout(() => {
+                this.gridApi.sizeColumnsToFit();
+            });
+        }
+    }
+
     constructor(private retrospectiveService: RetrospectiveService,
                 private snackBar: MatSnackBar,
                 public dialogRef: MatDialogRef<RetrospectiveCreateComponent>,
                 @Inject(MAT_DIALOG_DATA) public data: any) {
+        this.enableRefresh = true;
         this.taskDetails = data.taskDetails;
         this.getSprintMembers();
         this.columnDefs = this.createColumnDefs(data.sprintStatus);
         this.setGridOptions();
+    }
+
+    ngOnDestroy() {
+        this.enableRefresh = false;
+        this.destroy$.next(true);
+        this.destroy$.unsubscribe();
+    }
+
+    onCellEditingStarted() {
+        this.enableRefresh = false;
+    }
+
+    onCellEditingStopped() {
+        this.enableRefresh = true;
     }
 
     getSprintMembers() {
@@ -74,8 +101,11 @@ export class RetrospectTaskModalComponent {
         this.columnApi = params.columnApi;
         this.getSprintTaskMemberSummary(false);
         Observable.interval(5000)
+            .takeUntil(this.destroy$)
             .subscribe(() => {
-                this.getSprintTaskMemberSummary(true);
+                if (this.enableRefresh) {
+                    this.getSprintTaskMemberSummary(true);
+                }
             });
     }
 
@@ -94,6 +124,9 @@ export class RetrospectTaskModalComponent {
                         minValue: 0,
                         maxValue: this.taskDetails.Estimate - this.totalTaskPoints
                     };
+                    if (!isRefresh) {
+                        this.gridApi.sizeColumnsToFit();
+                    }
                 },
                 () => {
                     if (isRefresh) {
@@ -106,6 +139,21 @@ export class RetrospectTaskModalComponent {
             );
     }
 
+    private commentsValueFormatter(cellParams) {
+        const comment = cellParams.value.trim();
+        const newLineIndex = comment.indexOf('\n');
+        if (newLineIndex !== -1) {
+            return comment.substr(0, newLineIndex) + '...';
+        }
+        return comment;
+    }
+
+    private supressKeyboardEvent(event) {
+        if (event.editing) {
+            return true;
+        }
+    }
+
     private createColumnDefs(sprintStatus) {
         let columnDefs;
         const commonColumns = [
@@ -115,27 +163,27 @@ export class RetrospectTaskModalComponent {
                 valueGetter: (params) => {
                     return (params.data.FirstName + ' ' + params.data.LastName).trim();
                 },
-                width: 110,
+                minWidth: 160,
                 pinned: true
             },
             {
                 headerName: 'Sprint Hours',
                 field: 'SprintTime',
                 valueFormatter: (params) => (params.value / 60).toFixed(2),
-                width: 150
+                minWidth: 150
             },
             {
                 headerName: 'Total Time',
                 field: 'TotalTime',
                 valueFormatter: (params) => (params.value / 60).toFixed(2),
-                width: 140
+                minWidth: 140
             }
         ];
         const totalPointsColumn = [
             {
                 headerName: 'Total Story Points',
                 field: 'TotalPoints',
-                width: 180
+                minWidth: 180
             }
         ];
         if (sprintStatus === this.sprintStates.FROZEN) {
@@ -144,20 +192,21 @@ export class RetrospectTaskModalComponent {
                 {
                     headerName: 'Sprint Story Points',
                     field: 'SprintPoints',
-                    width: 185
+                    minWidth: 185
                 },
                 ...totalPointsColumn,
                 {
                     headerName: 'Rating',
                     field: 'Rating',
-                    width: 150,
+                    minWidth: 150,
                     cellRenderer: 'ratingRenderer'
                 },
                 {
                     headerName: 'Comments',
-                    field: 'Comments',
-                    width: 500,
-                    tooltip: (params) => params.value
+                    field: 'Comment',
+                    minWidth: 300,
+                    tooltipField: 'Comment',
+                    valueFormatter: (cellParams) => this.commentsValueFormatter(cellParams)
                 }
             ];
         } else {
@@ -167,7 +216,7 @@ export class RetrospectTaskModalComponent {
                     headerName: 'Sprint Story Points',
                     field: 'SprintPoints',
                     editable: true,
-                    width: 185,
+                    minWidth: 185,
                     valueParser: 'Number(newValue)',
                     cellEditor: 'numericEditor',
                     onCellValueChanged: (cellParams) => {
@@ -198,13 +247,14 @@ export class RetrospectTaskModalComponent {
                                 });
                             }
                         }
-                    }
+                    },
+                    suppressKeyboardEvent: (event) => this.supressKeyboardEvent(event)
                 },
                 ...totalPointsColumn,
                 {
                     headerName: 'Rating',
                     field: 'Rating',
-                    width: 150,
+                    minWidth: 150,
                     editable: true,
                     cellEditor: 'ratingEditor',
                     cellEditorParams: {
@@ -228,16 +278,17 @@ export class RetrospectTaskModalComponent {
                 {
                     headerName: 'Comments',
                     field: 'Comment',
-                    width: 500,
+                    minWidth: 300,
                     filter: 'text',
-                    tooltip: (params) => params.value,
+                    tooltipField: 'Comment',
                     cellEditor: 'agLargeTextCellEditor',
                     editable: true,
                     onCellValueChanged: (cellParams) => {
                         if (cellParams.newValue !== cellParams.oldValue) {
                             this.updateSprintTaskMember(cellParams);
                         }
-                    }
+                    },
+                    valueFormatter: (cellParams) => this.commentsValueFormatter(cellParams)
                 }
             ];
         }
