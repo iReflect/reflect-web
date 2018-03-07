@@ -18,7 +18,7 @@ export class AuthService {
     }
 
     auth(queryParams: any): Observable<any> {
-        return this.restangular.one(API_URLS.auth).get(queryParams);
+        return this.restangular.one(API_URLS.auth).post(undefined, undefined, queryParams);
     }
 
     logout() {

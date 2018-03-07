@@ -6,8 +6,14 @@ import { APP_ROUTE_URLS } from '../../constants/app-constants';
 import { AnonymousRequiredGuard } from '../core/route-guards/anonymous-required.service';
 // Import Components
 import { LoginComponent } from './login/login.component';
+import { AuthComponent } from './auth/auth.component';
 
 const routes: Routes = [
+    {
+        path: APP_ROUTE_URLS.auth,
+        component: AuthComponent,
+        canActivate: [AnonymousRequiredGuard]
+    },
     {
         path: APP_ROUTE_URLS.login,
         component: LoginComponent,

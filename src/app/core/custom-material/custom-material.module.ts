@@ -3,7 +3,7 @@ import {
     MatButtonModule, MatCardModule, MatExpansionModule, MatFormFieldModule, MatGridListModule, MatIconModule,
     MatInputModule,
     MatListModule, MatMenuModule, MatSelectModule, MatSidenavModule, MatTableModule, MatTabsModule, MatToolbarModule,
-    MatTooltipModule, MatRadioModule, MatSnackBarModule, MatDialogModule, MatDatepickerModule
+    MatTooltipModule, MatRadioModule, MatSnackBarModule, MatDialogModule, MatDatepickerModule, MatProgressSpinnerModule
 } from '@angular/material';
 
 @NgModule({
@@ -27,6 +27,7 @@ import {
         MatSnackBarModule,
         MatDialogModule,
         MatDatepickerModule,
+        MatProgressSpinnerModule
     ],
     exports: [
         MatButtonModule,
@@ -47,7 +48,8 @@ import {
         MatRadioModule,
         MatSnackBarModule,
         MatDialogModule,
-        MatDatepickerModule
+        MatDatepickerModule,
+        MatProgressSpinnerModule
     ],
 })
 export class CustomMaterialModule {

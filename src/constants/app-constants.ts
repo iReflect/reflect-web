@@ -24,10 +24,23 @@ export const COMMENT_TOOLTIP_MAP = {
     hideComment: 'Hide Comment',
 };
 
+export const LOGIN_ERROR_TYPES = {
+    notFound: "notFound",
+    unauthorized: "unauthorized",
+    internalError: "internalError"
+};
+
+export const LOGIN_ERROR_MESSAGES = {
+    notFound: "User doesn't exist! Try with another user or contact admin.",
+    unauthorized: "Invalid Session! Login again.",
+    internalError: "Some error occurred! Try again."
+};
+
 export const APP_ROUTE_URLS = {
     forwardSlash: '/',
     root: '',
     login: 'login',
+    auth: 'auth',
     feedback: 'feedbacks/:id',
     feedbackList: 'feedbacks',
     teamFeedback: 'team/feedbacks/:id',
