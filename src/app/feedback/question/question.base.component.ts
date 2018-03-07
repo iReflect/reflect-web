@@ -5,8 +5,8 @@ export class BaseQuestionComponent implements ControlValueAccessor {
     selected: any;
     @Input() question;
     @Input() disabled = false;
-    private onTouchedCallback: () => void = () => {};
-    private onChangeCallback: (_: any) => void = () => {};
+    protected onTouchedCallback: () => void = () => {};
+    protected onChangeCallback: (_: any) => void = () => {};
 
     get value(): any {
         return this.selected;

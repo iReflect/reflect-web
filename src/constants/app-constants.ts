@@ -25,15 +25,15 @@ export const COMMENT_TOOLTIP_MAP = {
 };
 
 export const LOGIN_ERROR_TYPES = {
-    notFound: "notFound",
-    unauthorized: "unauthorized",
-    internalError: "internalError"
+    notFound: 'notFound',
+    unauthorized: 'unauthorized',
+    internalError: 'internalError'
 };
 
 export const LOGIN_ERROR_MESSAGES = {
-    notFound: "User doesn't exist! Try with another user or contact admin.",
-    unauthorized: "Invalid Session! Login again.",
-    internalError: "Some error occurred! Try again."
+    notFound: `User doesn't exist! Try with another user or contact admin.`,
+    unauthorized: 'Invalid Session! Login again.',
+    internalError: 'Some error occurred! Try again.'
 };
 
 export const APP_ROUTE_URLS = {

@@ -32,4 +32,9 @@ export class MultiChoiceQuestionComponent extends BaseQuestionComponent {
             this.selected = value;
         }
     }
+
+    onOpenedChange() {
+        this.onTouchedCallback();
+    }
+
 }

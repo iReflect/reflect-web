@@ -42,7 +42,7 @@ export class FeedbackDetailComponent implements OnInit {
                 this.feedbackId = params['id'];
                 this.service.getFeedBack(this.feedbackId).subscribe(
                     response => {
-                        let data = response.data;
+                        const data = response.data;
                         this.feedbackData = data;
                         this.submittedAt = data['SubmittedAt'];
                         this.isDataLoaded = true;

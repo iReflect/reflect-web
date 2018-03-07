@@ -48,6 +48,6 @@ export class TeamFeedbackService {
     }
 
     submitData(feedbackId, data): Observable<any> {
-        throw "Not Implemented Error"
+        throw new Error('Not Implemented Error');
     }
 }

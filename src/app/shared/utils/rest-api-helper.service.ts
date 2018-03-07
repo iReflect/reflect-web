@@ -48,6 +48,6 @@ export class RestApiHelperService {
                 }
             );
         }
-        return this.authRestangular
+        return this.authRestangular;
     }
 }

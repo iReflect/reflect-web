@@ -40,7 +40,7 @@ export class AuthComponent implements AfterViewInit {
                 this.router.navigateByUrl(APP_ROUTE_URLS.root);
             },
             error => {
-                if (error.status == 404) {
+                if (error.status === 404) {
                     this.error(LOGIN_ERROR_TYPES.notFound);
                 } else {
                     this.error(LOGIN_ERROR_TYPES.internalError);

@@ -18,4 +18,8 @@ export class GradeQuestionComponent extends BaseQuestionComponent {
     constructor() {
         super();
     }
+
+    onOpenedChange() {
+        this.onTouchedCallback();
+    }
 }

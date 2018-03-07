@@ -14,7 +14,7 @@ export class RatingRendererComponent implements AgRendererComponent {
     ratingColors = RATING_COLORS;
 
     getColor() {
-        return this.ratingColors[this.value]
+        return this.ratingColors[this.value];
     }
 
     agInit(params: any): void {
