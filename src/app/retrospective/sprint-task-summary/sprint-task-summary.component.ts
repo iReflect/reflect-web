@@ -59,7 +59,7 @@ export class SprintTaskSummaryComponent implements OnChanges, OnDestroy {
     ngOnDestroy() {
         this.enableRefresh = false;
         this.destroy$.next(true);
-        this.destroy$.unsubscribe()
+        this.destroy$.unsubscribe();
     }
 
     setGridOptions() {
