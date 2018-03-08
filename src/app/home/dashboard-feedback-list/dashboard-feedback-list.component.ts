@@ -29,10 +29,11 @@ export class DashboardFeedbackListComponent implements OnInit {
     feedbackCount: number;
 
     isListLoaded = false;
-    displayedColumns = ['title', 'user', 'userRole'];
+    displayedColumns = ['title', 'user', 'userRole', 'startDate', 'endDate'];
 
     // TODO: using feedback's data source for now, either create a separate data source or move it to shared.
     dataSource: FeedBackListDataSource;
+    dateFormat = 'MMMM dd, yyyy';
 
     constructor(private router: Router) {
     }

@@ -83,6 +83,7 @@ export const API_RESPONSE_MESSAGES = {
     deleteSprintMemberError: 'Cannot delete sprint member!',
     sprintCreateError: 'Cannot create sprint!',
     getTeamListError: 'Cannot get teams list!',
+    noTeamsError: 'You are not a part of any team!',
     getTeamProviderOptionsError: 'Cannot get team provider options!',
     createRetroError: 'Cannot Create Retro!',
     getRetrospectivesError: 'Cannot get Retrospectives',

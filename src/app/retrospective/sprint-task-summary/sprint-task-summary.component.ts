@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, HostListener, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { MatDialog, MatSnackBar } from '@angular/material';
@@ -8,6 +8,8 @@ import {
     ClickableButtonRendererComponent
 } from '../../shared/ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
 import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/observable/interval';
 
 @Component({
@@ -15,26 +17,57 @@ import 'rxjs/add/observable/interval';
     templateUrl: './sprint-task-summary.component.html',
     styleUrls: ['./sprint-task-summary.component.scss']
 })
-export class SprintTaskSummaryComponent {
+export class SprintTaskSummaryComponent implements OnChanges, OnDestroy {
     gridOptions: GridOptions;
+    enableRefresh = true;
+    destroy$: Subject<boolean> = new Subject<boolean>();
+
     private params: any;
     private columnDefs: any;
     private gridApi: GridApi;
     private columnApi: ColumnApi;
+
     @Input() retrospectiveID;
     @Input() sprintID;
     @Input() sprintStatus;
+    @Input() isTabActive: boolean;
+
+    @HostListener('window:resize') onResize() {
+        if (this.gridApi) {
+            setTimeout(() => {
+                this.gridApi.sizeColumnsToFit();
+            });
+        }
+    }
 
     constructor(private snackBar: MatSnackBar,
                 public dialog: MatDialog,
                 private retrospectiveService: RetrospectiveService) {
+        this.enableRefresh = true;
         this.columnDefs = this.createColumnDefs();
         this.setGridOptions();
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        if (this.gridApi && changes.isTabActive && changes.isTabActive.currentValue) {
+            setTimeout(() => {
+                this.gridApi.sizeColumnsToFit();
+            });
+        }
+    }
+
+    ngOnDestroy() {
+        this.enableRefresh = false;
+        this.destroy$.next(true);
+        this.destroy$.unsubscribe()
     }
 
     setGridOptions() {
         this.gridOptions = <GridOptions>{
             columnDefs: this.columnDefs,
+            defaultColDef: {
+                width: 100,
+            },
             rowHeight: 48,
             frameworkComponents: {
                 'retrospectButtonRenderer': ClickableButtonRendererComponent
@@ -48,8 +81,11 @@ export class SprintTaskSummaryComponent {
         this.columnApi = params.columnApi;
         this.getSprintTaskSummary(false);
         Observable.interval(5000)
+            .takeUntil(this.destroy$)
             .subscribe(() => {
-                this.getSprintTaskSummary(true);
+                if (this.isTabActive && this.enableRefresh) {
+                    this.getSprintTaskSummary(true);
+                }
             });
     }
 
@@ -58,6 +94,11 @@ export class SprintTaskSummaryComponent {
             .subscribe(
                 response => {
                     this.gridApi.setRowData(response.data.Tasks);
+                    if (!isRefresh && this.isTabActive) {
+                        setTimeout(() => {
+                            this.gridApi.sizeColumnsToFit();
+                        });
+                    }
                 },
                 () => {
                     if (isRefresh) {
@@ -74,47 +115,47 @@ export class SprintTaskSummaryComponent {
             {
                 headerName: 'Task ID',
                 field: 'TaskID',
-                width: 106,
+                minWidth: 110,
                 pinned: true
             },
             {
                 headerName: 'Task Summary',
                 field: 'Summary',
-                width: 300,
-                tooltip: (params) => params.value,
+                minWidth: 300,
+                tooltipField: 'Summary',
                 pinned: true
             },
             {
                 headerName: 'Assignee',
                 field: 'Assignee',
-                width: 235
+                minWidth: 160
             },
             {
                 headerName: 'Estimates',
                 field: 'Estimate',
-                width: 235
+                minWidth: 120
             },
             {
                 headerName: 'Status',
                 field: 'Status',
-                width: 230
+                minWidth: 140
             },
             {
                 headerName: 'Sprint Hours',
                 field: 'SprintTime',
-                valueFormatter: (params) => (params.value / 60).toFixed(2),
-                width: 130
+                valueFormatter: (cellParams) => (cellParams.value / 60).toFixed(2),
+                minWidth: 140
             },
             {
                 headerName: 'Total Time Spent',
                 field: 'TotalTime',
-                valueFormatter: (params) => (params.value / 60).toFixed(2),
-                width: 150
+                valueFormatter: (cellParams) => (cellParams.value / 60).toFixed(2),
+                minWidth: 160
             },
             {
                 headerName: 'Story Type',
                 field: 'Type',
-                width: 190
+                minWidth: 130
             },
             {
                 headerName: 'Retrospect',
@@ -123,7 +164,7 @@ export class SprintTaskSummaryComponent {
                     label: 'Retrospect',
                     onClick: this.retrospectSprint.bind(this)
                 },
-                width: 180
+                minWidth: 130
             }
         ];
         return columnDefs;

@@ -19,5 +19,9 @@ export class SideNavComponent {
             'team-feedback-icon',
             sanitizer.bypassSecurityTrustResourceUrl('assets/img/icons/team-feedback-icon.svg')
         );
+        iconRegistry.addSvgIcon(
+            'retrospective-icon',
+            sanitizer.bypassSecurityTrustResourceUrl('assets/img/icons/retrospective-icon.svg')
+        );
     }
 }

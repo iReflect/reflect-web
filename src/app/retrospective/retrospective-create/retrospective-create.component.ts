@@ -3,6 +3,7 @@ import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { API_RESPONSE_MESSAGES, SNACKBAR_DURATION } from '../../../constants/app-constants';
+import * as _ from 'lodash';
 
 @Component({
     selector: 'app-retrospective-create',
@@ -44,8 +45,13 @@ export class RetrospectiveCreateComponent implements OnInit {
     getTeamList() {
         this.retrospectiveService.getTeamList().subscribe(
             response => {
-                this.teamOptions = response.data.Teams;
-                this.isTeamOptionsLoaded = true;
+                if (_.isEmpty(response.data.Teams)) {
+                    this.snackBar.open(API_RESPONSE_MESSAGES.noTeamsError, '', {duration: SNACKBAR_DURATION});
+                    this.dialogRef.close();
+                } else {
+                    this.teamOptions = response.data.Teams;
+                    this.isTeamOptionsLoaded = true;
+                }
             },
             () => {
                 this.snackBar.open(API_RESPONSE_MESSAGES.getTeamListError, '', {duration: SNACKBAR_DURATION});

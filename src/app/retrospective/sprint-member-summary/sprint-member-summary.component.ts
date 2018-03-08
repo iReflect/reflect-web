@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
@@ -14,6 +14,8 @@ import {
     ClickableButtonRendererComponent
 } from '../../shared/ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
 import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/observable/interval';
 
 @Component({
@@ -21,13 +23,15 @@ import 'rxjs/add/observable/interval';
     templateUrl: './sprint-member-summary.component.html',
     styleUrls: ['./sprint-member-summary.component.scss']
 })
-export class SprintMemberSummaryComponent implements OnInit, OnChanges {
+export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestroy {
     retroMembers = [];
     memberIDs = [];
     selectedMemberID: any;
+    enableRefresh = true;
     gridOptions: GridOptions;
     sprintStates = SPRINT_STATES;
     ratingStates = RATING_STATES;
+    destroy$: Subject<boolean> = new Subject<boolean>();
 
     private columnDefs: any;
     private params: any;
@@ -38,6 +42,15 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
     @Input() sprintID;
     @Input() sprintStatus;
     @Input() sprintDays: any;
+    @Input() isTabActive: boolean;
+
+    @HostListener('window:resize') onResize() {
+        if (this.gridApi && this.isTabActive) {
+            setTimeout(() => {
+                this.gridApi.sizeColumnsToFit();
+            });
+        }
+    }
 
     constructor(private retrospectiveService: RetrospectiveService,
                 private snackBar: MatSnackBar,
@@ -50,10 +63,21 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (this.columnApi && this.gridApi && changes.sprintStatus.currentValue === this.sprintStates.FROZEN) {
+        if (this.gridApi && changes.sprintStatus && changes.sprintStatus.currentValue === this.sprintStates.FROZEN) {
             this.columnDefs = this.createColumnDefs(changes.sprintStatus.currentValue);
             this.gridApi.setColumnDefs(this.columnDefs);
         }
+        if (this.gridApi && changes.isTabActive && changes.isTabActive.currentValue) {
+            setTimeout(() => {
+                this.gridApi.sizeColumnsToFit();
+            });
+        }
+    }
+
+    ngOnDestroy() {
+        this.enableRefresh = false;
+        this.destroy$.next(true);
+        this.destroy$.unsubscribe();
     }
 
     getRetroMembers() {
@@ -70,6 +94,9 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
     setGridOptions() {
         this.gridOptions = <GridOptions>{
             columnDefs: this.columnDefs,
+            defaultColDef: {
+                width: 100,
+            },
             rowHeight: 48,
             singleClickEdit: true,
             frameworkComponents: {
@@ -87,9 +114,20 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
         this.columnApi = params.columnApi;
         this.getSprintMemberSummary(false);
         Observable.interval(5000)
+            .takeUntil(this.destroy$)
             .subscribe(() => {
-                this.getSprintMemberSummary(true);
+                if (this.enableRefresh && this.isTabActive) {
+                    this.getSprintMemberSummary(true);
+                }
             });
+    }
+
+    onCellEditingStarted() {
+        this.enableRefresh = false;
+    }
+
+    onCellEditingStopped() {
+        this.enableRefresh = true;
     }
 
     getSprintMemberSummary(isRefresh) {
@@ -102,6 +140,9 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
                     members.forEach(member => {
                         this.memberIDs.push(member.ID);
                     });
+                    if (!isRefresh && this.isTabActive) {
+                        this.gridApi.sizeColumnsToFit();
+                    }
                 },
                 () => {
                     if (isRefresh) {
@@ -113,16 +154,31 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
             );
     }
 
+    private commentsValueFormatter(cellParams) {
+        const comment = cellParams.value.trim();
+        const newLineIndex = comment.indexOf('\n');
+        if (newLineIndex !== -1) {
+            return comment.substr(0, newLineIndex) + '...';
+        }
+        return comment;
+    }
+
+    private supressKeyboardEvent(event) {
+        if (event.editing) {
+            return true;
+        }
+    }
+
     private createColumnDefs(sprintStatus) {
         let columnDefs;
         const nameColumn = [
             {
                 headerName: 'Name',
                 colId: 'Name',
-                valueGetter: (params) => {
-                    return (params.data.FirstName + ' ' + params.data.LastName).trim();
+                valueGetter: (cellParams) => {
+                    return (cellParams.data.FirstName + ' ' + cellParams.data.LastName).trim();
                 },
-                width: 150,
+                minWidth: 160,
                 pinned: true
 
             }
@@ -132,13 +188,13 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
             {
                 headerName: 'Expected Velocity',
                 field: 'ExpectedVelocity',
-                width: 183,
+                minWidth: 165,
                 filter: 'agNumberColumnFilter'
             },
             {
                 headerName: 'Actual Velocity',
                 field: 'ActualVelocity',
-                width: 183,
+                minWidth: 165,
                 filter: 'agNumberColumnFilter'
             }
         ];
@@ -149,33 +205,34 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
                 {
                     headerName: 'Allocation',
                     field: 'AllocationPercent',
-                    width: 125,
-                    valueFormatter: (params) => params.value + '%'
+                    minWidth: 125,
+                    valueFormatter: (cellParams) => cellParams.value + '%'
                 },
                 {
                     headerName: 'Expectation',
                     field: 'ExpectationPercent',
-                    width: 130,
-                    valueFormatter: (params) => params.value + '%'
+                    minWidth: 130,
+                    valueFormatter: (cellParams) => cellParams.value + '%'
                 },
                 {
                     headerName: 'Vacations',
                     field: 'Vacations',
-                    width: 125,
-                    valueFormatter: (params) => params.value + (params.value === 1 ? ' day' : ' days')
+                    minWidth: 125,
+                    valueFormatter: (cellParams) => cellParams.value + (cellParams.value === 1 ? ' day' : ' days')
                 },
                 ...velocitiesColumns,
                 {
                     headerName: 'Rating',
                     field: 'Rating',
-                    width: 150,
+                    minWidth: 150,
                     cellRenderer: 'ratingRenderer'
                 },
                 {
                     headerName: 'Comments',
                     field: 'Comment',
-                    width: 500,
-                    tooltipField: 'Comment'
+                    minWidth: 300,
+                    tooltipField: 'Comment',
+                    valueFormatter: (cellParams) => this.commentsValueFormatter(cellParams)
                 }
             ];
         } else {
@@ -185,13 +242,13 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
                     headerName: 'Allocation',
                     field: 'AllocationPercent',
                     editable: true,
-                    width: 125,
+                    minWidth: 125,
                     valueParser: 'Number(newValue)',
                     cellEditor: 'numericEditor',
                     cellEditorParams: {
                         minValue: 0
                     },
-                    valueFormatter: (params) => params.value + '%',
+                    valueFormatter: (cellParams) => cellParams.value + '%',
                     onCellValueChanged: (cellParams) => {
                         if (cellParams.newValue !== cellParams.oldValue) {
                             if (cellParams.newValue >= 0) {
@@ -201,19 +258,20 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
                                 this.revertCellValue(cellParams);
                             }
                         }
-                    }
+                    },
+                    suppressKeyboardEvent: (event) => this.supressKeyboardEvent(event)
                 },
                 {
                     headerName: 'Expectation',
                     field: 'ExpectationPercent',
                     editable: true,
-                    width: 130,
+                    minWidth: 130,
                     valueParser: 'Number(newValue)',
                     cellEditor: 'numericEditor',
                     cellEditorParams: {
                         minValue: 0
                     },
-                    valueFormatter: (params) => params.value + '%',
+                    valueFormatter: (cellParams) => cellParams.value + '%',
                     onCellValueChanged: (cellParams) => {
                         if (cellParams.newValue !== cellParams.oldValue) {
                             if (cellParams.newValue >= 0) {
@@ -223,13 +281,14 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
                                 this.revertCellValue(cellParams);
                             }
                         }
-                    }
+                    },
+                    suppressKeyboardEvent: (event) => this.supressKeyboardEvent(event)
                 },
                 {
                     headerName: 'Vacations',
                     field: 'Vacations',
                     editable: true,
-                    width: 125,
+                    minWidth: 125,
                     valueParser: 'Number(newValue)',
                     filter: 'agNumberColumnFilter',
                     cellEditor: 'numericEditor',
@@ -237,7 +296,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
                         minValue: 0,
                         maxValue: this.sprintDays
                     },
-                    valueFormatter: (params) => params.value + (params.value === 1 ? ' day' : ' days'),
+                    valueFormatter: (cellParams) => cellParams.value + (cellParams.value === 1 ? ' day' : ' days'),
                     onCellValueChanged: (cellParams) => {
                         if (cellParams.newValue !== cellParams.oldValue) {
                             if (cellParams.newValue < 0) {
@@ -250,13 +309,14 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
                                 this.updateSprintMember(cellParams);
                             }
                         }
-                    }
+                    },
+                    suppressKeyboardEvent: (event) => this.supressKeyboardEvent(event)
                 },
                 ...velocitiesColumns,
                 {
                     headerName: 'Rating',
                     field: 'Rating',
-                    width: 150,
+                    minWidth: 150,
                     editable: true,
                     cellEditor: 'ratingEditor',
                     cellEditorParams: {
@@ -280,7 +340,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
                 {
                     headerName: 'Comments',
                     field: 'Comment',
-                    width: 500,
+                    minWidth: 300,
                     filter: 'text',
                     cellEditor: 'agLargeTextCellEditor',
                     tooltipField: 'Comment',
@@ -289,17 +349,17 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges {
                         if (cellParams.newValue !== cellParams.oldValue) {
                             this.updateSprintMember(cellParams);
                         }
-                    }
+                    },
+                    valueFormatter: (cellParams) => this.commentsValueFormatter(cellParams)
                 },
                 {
-                    headerName: 'Delete',
                     cellRenderer: 'deleteButtonRenderer',
                     cellRendererParams: {
                         useIcon: true,
                         icon: 'delete',
                         onClick: this.deleteSprintMember.bind(this)
                     },
-                    width: 80
+                    minWidth: 100
                 }
             ];
         }
