@@ -18,6 +18,7 @@ import { RetrospectTaskModalComponent } from './retrospect-task-modal/retrospect
 import { RetrospectiveDashboardComponent } from './retrospective-dashboard/retrospective-dashboard.component';
 import { SprintListComponent } from './sprint-list/sprint-list.component';
 import { SprintCreateComponent } from './sprint-create/sprint-create.component';
+import { SprintHighlightsComponent } from './sprint-highlights/sprint-highlights.component';
 
 
 @NgModule({
@@ -40,6 +41,7 @@ import { SprintCreateComponent } from './sprint-create/sprint-create.component';
         RetrospectiveDashboardComponent,
         SprintListComponent,
         SprintCreateComponent,
+        SprintHighlightsComponent,
     ],
     exports: [],
     providers: [],

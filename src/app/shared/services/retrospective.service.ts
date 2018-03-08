@@ -114,6 +114,16 @@ export class RetrospectiveService {
             .post();
     }
 
+    updateSprintDetails(retrospectiveID, sprintID, sprintData): Observable<any> {
+        return this.restangular
+            .one(
+                API_URLS.sprintDetails
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+            )
+            .customPUT(sprintData);
+    }
+
     getRetroMembers(retrospectiveID): Observable<any> {
         return this.restangular
             .one(

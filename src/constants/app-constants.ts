@@ -62,6 +62,7 @@ export const API_RESPONSE_MESSAGES = {
     sprintComputationInitiated: 'Sprint Computation Initiated Successfully!',
     memberUpdated: 'Member Updated Successfully!',
     sprintCreated: 'Sprint Created Successfully!',
+    sprintUpdated: 'Sprint Updated Successfully!',
     invalidOption: 'Please select a valid option!',
     memberNotSelectedError: 'Please select a member to add!',
     allocationNegativeError: 'Allocation must be a non-negative number!',
@@ -79,6 +80,7 @@ export const API_RESPONSE_MESSAGES = {
     memberAlreadyPresent: 'Member already present!',
     addSprintMemberError: 'Cannot add new sprint member!',
     addSprintTaskMemberError: 'Cannot add new sprint task member!',
+    updateSprintError: 'Cannot update sprint details!',
     updateSprintMemberError: 'Cannot update sprint member details!',
     deleteSprintMemberError: 'Cannot delete sprint member!',
     sprintCreateError: 'Cannot create sprint!',
@@ -93,7 +95,9 @@ export const API_RESPONSE_MESSAGES = {
     sprintFreezeError: 'Cannot Freeze Sprint',
     sprintDiscardError: 'Cannot Discard Sprint',
     refreshSprintError: 'Cannot initiate sprint computation',
-    autoRefreshFailure: 'Failed to refresh data!'
+    autoRefreshFailure: 'Failed to refresh data!',
+    sprintHighlightsUpdateError: `Couldn't update sprint highlights`,
+    sprintHighlightsUpdateSuccess: `Successfully updated sprint highlights`,
 };
 
 export const QUESTION_RESPONSE_SEPARATOR = ',';
@@ -148,4 +152,10 @@ export const RATING_COLORS = {
     [RATING_STATES_LABEL[RATING_STATES.OKAY]]: '#F5E93A',
     [RATING_STATES_LABEL[RATING_STATES.BAD]]: '#FF9900',
     [RATING_STATES_LABEL[RATING_STATES.UGLY]]: '#FF3030'
+};
+
+export const SPRINT_HIGHLIGHT_TYPES = {
+    GOOD: 0,
+    OKAY: 1,
+    BAD: 2
 };
