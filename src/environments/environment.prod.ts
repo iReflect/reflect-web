@@ -1,5 +1,5 @@
 export const environment = {
     production: true,
-    apiHostUrl: '',
-    baseApiUrl: 'api/v1/'
+    apiHostUrl: 'https://ireflect-api.jtg.tools',
+    baseApiUrl: '/api/v1/'
 };
