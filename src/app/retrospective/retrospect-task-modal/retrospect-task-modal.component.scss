@@ -1,21 +1,32 @@
-span {
-  font-weight: 600;
+.retrospect-task-refresh {
+  margin: 10px;
+  button {
+    background-color: #f4f5f7;
+    color: #42516e;
+  }
 }
 
-ag-grid-angular {
-  width: 100%;
-  height: 100%;
+:host ::ng-deep .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar {
+  background-color: #3293D2;
 }
 
-mat-select {
-  width: 150px;
-  line-height: 35px;
+:host ::ng-deep .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
+  background-color: #0078B8;
+}
+
+:host ::ng-deep div .ag-theme-material .ag-cell-inline-editing {
+  box-shadow: initial;
+  height: inherit;
 }
 
 .add-member {
+  mat-select {
+    width: 150px;
+    line-height: 35px;
+  }
   div {
     float: left;
-    margin: 4px;
+    margin: 10px;
   }
   button {
     background-color: #f4f5f7;
@@ -28,16 +39,24 @@ mat-select {
   margin: 1px;
   width: 100%;
   height: 330px;
+  ag-grid-angular {
+    width: 100%;
+    height: 100%;
+  }
 }
 
-mat-card-header, h2.mat-dialog-title {
-  display: block;
-  font-weight: bolder;
-  font-size: larger;
-}
-
-mat-card-content {
-  display: flex;
+mat-card {
+  mat-card-header {
+    display: block;
+    font-weight: bolder;
+    font-size: larger;
+  }
+  mat-card-content {
+    display: flex;
+    span {
+      font-weight: 600;
+    }
+  }
 }
 
 .dialog-actions {

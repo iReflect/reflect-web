@@ -2,13 +2,18 @@
   max-width: 30%;
   margin: 4em auto;
   text-align: center;
-
+  mat-toolbar {
+    background-color: #3293BE;
+    color: #FFF;
+  }
   mat-form-field {
     display: block;
   }
-
   mat-card-content {
     padding: 16px;
+    button {
+      background-color: #3293BE;
+      color: #FFF;
+    }
   }
-
 }

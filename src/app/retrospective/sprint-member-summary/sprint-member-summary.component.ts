@@ -28,10 +28,13 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     memberIDs = [];
     selectedMemberID: any;
     enableRefresh = true;
+    autoRefreshPreviousState = true;
     gridOptions: GridOptions;
     sprintStates = SPRINT_STATES;
     ratingStates = RATING_STATES;
     destroy$: Subject<boolean> = new Subject<boolean>();
+    overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the members are loading!</span>';
+    overlayNoRowsTemplate = '<span>No Members for this sprint!</span>';
 
     private columnDefs: any;
     private params: any;
@@ -70,6 +73,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         if (this.gridApi && changes.isTabActive && changes.isTabActive.currentValue) {
             setTimeout(() => {
                 this.gridApi.sizeColumnsToFit();
+                this.getSprintMemberSummary(true);
             });
         }
     }
@@ -78,6 +82,14 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         this.enableRefresh = false;
         this.destroy$.next(true);
         this.destroy$.unsubscribe();
+    }
+
+    toggleAutoRefresh() {
+        this.enableRefresh = !this.enableRefresh;
+        this.autoRefreshPreviousState = this.enableRefresh;
+        if (this.enableRefresh) {
+            this.getSprintMemberSummary(true);
+        }
     }
 
     getRetroMembers() {
@@ -123,11 +135,12 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     }
 
     onCellEditingStarted() {
+        this.autoRefreshPreviousState = this.enableRefresh;
         this.enableRefresh = false;
     }
 
     onCellEditingStopped() {
-        this.enableRefresh = true;
+        this.enableRefresh = this.autoRefreshPreviousState;
     }
 
     getSprintMemberSummary(isRefresh) {
@@ -352,6 +365,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                             this.updateSprintMember(cellParams);
                         }
                     },
+                    suppressKeyboardEvent: (event) => this.supressKeyboardEvent(event)
                 },
                 {
                     cellRenderer: 'deleteButtonRenderer',

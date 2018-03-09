@@ -50,6 +50,9 @@ export class SprintDetailComponent implements OnInit {
                 this.sprintDetails = response.data;
                 this.sprintStatus = response.data.Status;
                 this.sprintDays = this.workdayCount(moment(response.data.StartDate), moment(response.data.EndDate));
+                if (this.sprintDetails.CurrentlySyncing) {
+                    setTimeout(() => this.getSprintDetails(), 5000);
+                }
             },
             () => {
                 this.snackBar.open(API_RESPONSE_MESSAGES.getSprintDetailsError, '', {duration: SNACKBAR_DURATION});

@@ -6,7 +6,7 @@ import {
 import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { RetrospectiveCreateComponent } from '../retrospective-create/retrospective-create.component';
-import { GridOptions } from 'ag-grid';
+import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
 import { RatingRendererComponent } from '../../shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
 import { NumericCellEditorComponent } from '../../shared/ag-grid-editors/numeric-cell-editor/numeric-cell-editor.component';
 import { SelectCellEditorComponent } from '../../shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
@@ -28,15 +28,18 @@ export class RetrospectTaskModalComponent implements OnDestroy {
     selectedMemberID: number;
     gridOptions: GridOptions;
     enableRefresh = true;
+    autoRefreshPreviousState = true;
     sprintStates = SPRINT_STATES;
     ratingStates = RATING_STATES;
     destroy$: Subject<boolean> = new Subject<boolean>();
+    overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the members are loading!</span>';
+    overlayNoRowsTemplate = '<span>No Members for this Task!</span>';
 
     private totalTaskPoints;
     private params: any;
     private columnDefs: any;
-    private gridApi: any;
-    private columnApi: any;
+    private gridApi: GridApi;
+    private columnApi: ColumnApi;
 
     @HostListener('window:resize') onResize() {
         if (this.gridApi) {
@@ -63,12 +66,21 @@ export class RetrospectTaskModalComponent implements OnDestroy {
         this.destroy$.unsubscribe();
     }
 
+    toggleAutoRefresh() {
+        this.enableRefresh = !this.enableRefresh;
+        this.autoRefreshPreviousState = this.enableRefresh;
+        if (this.enableRefresh) {
+            this.getSprintTaskMemberSummary(true);
+        }
+    }
+
     onCellEditingStarted() {
+        this.autoRefreshPreviousState = this.enableRefresh;
         this.enableRefresh = false;
     }
 
     onCellEditingStopped() {
-        this.enableRefresh = true;
+        this.enableRefresh = this.autoRefreshPreviousState;
     }
 
     getSprintMembers() {
@@ -140,15 +152,6 @@ export class RetrospectTaskModalComponent implements OnDestroy {
             );
     }
 
-    private commentsValueFormatter(cellParams) {
-        const comment = cellParams.value.trim();
-        const newLineIndex = comment.indexOf('\n');
-        if (newLineIndex !== -1) {
-            return comment.substr(0, newLineIndex) + '...';
-        }
-        return comment;
-    }
-
     private supressKeyboardEvent(event) {
         if (event.editing) {
             return true;
@@ -218,7 +221,6 @@ export class RetrospectTaskModalComponent implements OnDestroy {
                     field: 'Comment',
                     minWidth: 300,
                     tooltipField: 'Comment',
-                    valueFormatter: (cellParams) => this.commentsValueFormatter(cellParams)
                 }
             ];
         } else {
@@ -326,7 +328,7 @@ export class RetrospectTaskModalComponent implements OnDestroy {
                             this.updateSprintTaskMember(cellParams);
                         }
                     },
-                    valueFormatter: (cellParams) => this.commentsValueFormatter(cellParams)
+                    suppressKeyboardEvent: (event) => this.supressKeyboardEvent(event)
                 }
             ];
         }

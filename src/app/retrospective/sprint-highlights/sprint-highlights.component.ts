@@ -67,12 +67,13 @@ export class SprintHighlightsComponent implements OnInit {
             response => {
                 this.data = response.data;
                 this.snackBar.open(API_RESPONSE_MESSAGES.sprintHighlightsUpdateSuccess, '', {duration: SNACKBAR_DURATION});
+                this.resetForm();
             },
             error => {
                 this.snackBar.open(API_RESPONSE_MESSAGES.sprintHighlightsUpdateError, '', {duration: SNACKBAR_DURATION});
+                this.resetForm();
             }
         );
-        this.resetForm();
     }
 
     resetForm() {
