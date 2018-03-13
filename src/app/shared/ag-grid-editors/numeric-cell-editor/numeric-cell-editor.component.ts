@@ -8,12 +8,20 @@ import { ICellEditorAngularComp } from 'ag-grid-angular';
 })
 export class NumericCellEditorComponent implements ICellEditorAngularComp, AfterViewInit {
     value: number;
+    minValue: number;
+    maxValue: number;
     params: any;
     @ViewChild('input', {read: ViewContainerRef}) private input;
 
     agInit(params: any): void {
         this.params = params;
         this.value = params.value;
+        this.minValue = params.minValue;
+        if (params.addCellValueToMax) {
+            this.maxValue = params.baseMaxValue + params.value;
+        } else {
+            this.maxValue = params.maxValue;
+        }
     }
 
     getValue(): any {
