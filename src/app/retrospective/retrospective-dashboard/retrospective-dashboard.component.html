@@ -2,16 +2,15 @@
   <div *ngIf="isDataLoaded">
     <mat-card class="retro-details">
       <div *ngIf="retrospectiveData">
-        <span><b>{{ retrospectiveData.Title }}</b></span>&nbsp;|&nbsp;
-        <span>Project:<b> {{ retrospectiveData.ProjectName }}</b></span>&nbsp;|&nbsp;
         <span>Team: <b>{{ retrospectiveData.Team.Name }}</b></span>&nbsp;|&nbsp;
+        <span>Project:<b> {{ retrospectiveData.ProjectName }}</b></span>&nbsp;|&nbsp;
         <span>Created At: <b>{{ retrospectiveData.CreatedAt | date:dateFormat}}</b></span>&nbsp;|&nbsp;
         <span>Created By: <b>{{ getCreatorName() }}</b></span>&nbsp;|&nbsp;
         <span>Expected Story Point Per Week Per Person: <b>{{ retrospectiveData.StoryPointPerWeek}}</b></span>
       </div>
       <div class="action-buttons">
         <button mat-raised-button class="add-sprint" (click)="showNewSprintDialog()">
-          Add a New Sprint
+          Create
         </button>
       </div>
     </mat-card>
