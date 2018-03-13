@@ -58,6 +58,8 @@ export class RetrospectiveListComponent implements OnInit {
             },
             () => {
                 this.snackBar.open(API_RESPONSE_MESSAGES.noSprintsError, '', {duration: SNACKBAR_DURATION});
+                this.router.navigateByUrl(APP_ROUTE_URLS.retrospectiveDashboard
+                    .replace(':retrospectiveID', row.ID));
             }
         );
     }
