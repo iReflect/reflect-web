@@ -86,7 +86,7 @@ export class RetrospectiveCreateComponent implements OnInit {
         this.retroFormGroup = new FormGroup({
             'title': new FormControl('', Validators.required),
             'team': new FormControl('', Validators.required),
-            'hoursPerStoryPoint': new FormControl('', Validators.required),
+            'storyPointPerWeek': new FormControl('', Validators.required),
             'projectName': new FormControl('', Validators.required),
         });
     }
@@ -104,7 +104,7 @@ export class RetrospectiveCreateComponent implements OnInit {
         const requestBody = {
             'title': formValue.title,
             'team': formValue.team,
-            'hoursPerStoryPoint': formValue.hoursPerStoryPoint,
+            'storyPointPerWeek': formValue.storyPointPerSprint,
             'projectName': formValue.projectName,
             'taskProvider': formValue.taskProvider.map(provider => {
                 return {
