@@ -10,7 +10,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 const routes: Routes = [
     {
         path: APP_ROUTE_URLS.root,
-        component: DashboardComponent,
+        redirectTo: APP_ROUTE_URLS.retrospectiveList,
+        pathMatch: 'full',
         canActivate: [LoginRequiredGuard]
     },
 ];
