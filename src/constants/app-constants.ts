@@ -171,3 +171,17 @@ export const MEMBER_TASK_ROLES_LABEL = {
     [MEMBER_TASK_ROLES.REVIEWER]: 'Reviewer',
     [MEMBER_TASK_ROLES.VALIDATOR]: 'Validator'
 };
+
+export const SPRINT_SYNC_STATES = {
+    NOT_SYNCED: 0,
+    SYNCING: 1,
+    SYNCED: 2,
+    SYNC_FAILED: 3
+};
+
+export const SPRINT_SYNC_STATES_LABEL = {
+    [SPRINT_SYNC_STATES.NOT_SYNCED]: 'Not Synced',
+    [SPRINT_SYNC_STATES.SYNCING]: 'Syncing',
+    [SPRINT_SYNC_STATES.SYNCED]: 'Synced',
+    [SPRINT_SYNC_STATES.SYNC_FAILED]: 'Sync Failed'
+};

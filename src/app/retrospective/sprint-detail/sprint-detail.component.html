@@ -32,7 +32,7 @@
           </mat-form-field>
         </ng-template>
         <div>
-          <button mat-button (click)="refreshSprintDetails()" *ngIf="!sprintDetails.CurrentlySyncing">Re-Sync Sprint <mat-icon>refresh</mat-icon></button>
+          <button mat-button (click)="refreshSprintDetails()" *ngIf="sprintDetails.SyncStatus && sprintDetails.SyncStatus !== syncStates.SYNCING">Re-Sync Sprint <mat-icon>refresh</mat-icon></button>
         </div>
       </div>
     </mat-card-content>
