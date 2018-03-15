@@ -7,7 +7,7 @@
         <span>Team: <b>{{ retrospectiveData.Team.Name }}</b></span>&nbsp;|&nbsp;
         <span>Created At: <b>{{ retrospectiveData.CreatedAt | date:dateFormat}}</b></span>&nbsp;|&nbsp;
         <span>Created By: <b>{{ getCreatorName() }}</b></span>&nbsp;|&nbsp;
-        <span>Hours Per Story Point: <b>{{ retrospectiveData.HrsPerStoryPoint }}</b></span>
+        <span>Expected Story Point Per Week Per Person: <b>{{ retrospectiveData.StoryPointPerWeek}}</b></span>
       </div>
       <div class="action-buttons">
         <button mat-raised-button class="add-sprint" (click)="showNewSprintDialog()">
