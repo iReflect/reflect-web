@@ -84,7 +84,6 @@ export class RetrospectiveCreateComponent implements OnInit {
 
     createRetroFormGroup() {
         this.retroFormGroup = new FormGroup({
-            'title': new FormControl('', Validators.required),
             'team': new FormControl('', Validators.required),
             'storyPointPerWeek': new FormControl('', Validators.required),
             'projectName': new FormControl('', Validators.required),
@@ -101,8 +100,9 @@ export class RetrospectiveCreateComponent implements OnInit {
 
     createRetro(formValue) {
         this.disableButton = true;
+        const selectedTeam = this.teamOptions.filter(team => team.ID === formValue.team)[0];
         const requestBody = {
-            'title': formValue.title,
+            'title': selectedTeam && selectedTeam.Name || '',
             'team': formValue.team,
             'storyPointPerWeek': formValue.storyPointPerSprint,
             'projectName': formValue.projectName,

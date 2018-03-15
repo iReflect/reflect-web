@@ -14,7 +14,7 @@ import { RetrospectiveCreateComponent } from '../retrospective-create/retrospect
 })
 export class RetrospectiveListComponent implements OnInit {
     dataSource: RetrospectiveListDataSource;
-    displayedColumns = ['title', 'team', 'updated_at', 'latest_sprint'];
+    displayedColumns = ['team', 'updated_at', 'latest_sprint'];
 
     constructor(private retrospectiveService: RetrospectiveService,
                 private snackBar: MatSnackBar,

@@ -1,20 +1,15 @@
 <div class="create-retro" [formGroup]="retroFormGroup" *ngIf="isTeamOptionsLoaded && isProviderOptionsLoaded">
-  <h2 mat-dialog-title>Create a New Retro</h2>
+  <h2 mat-dialog-title>Create Team Retrospective</h2>
   <mat-grid-list cols="2" rowHeight="250px">
     <mat-grid-tile>
       <mat-card>
         <mat-card-header>
-          <mat-card-title><b>Retrospective Details</b></mat-card-title>
+          <mat-card-title><b>Team Retrospective Details</b></mat-card-title>
         </mat-card-header>
         <mat-card-content>
           <div>
             <mat-form-field>
-              <input matInput formControlName="title" placeholder="Retrospective Title">
-            </mat-form-field>
-          </div>
-          <div>
-            <mat-form-field>
-              <input matInput type="number" formControlName="storyPointPerWeek"
+              <input matInput type="number" min="0" formControlName="storyPointPerWeek"
                      placeholder="Expected Story Point Per Week Per Person">
             </mat-form-field>
           </div>
@@ -36,7 +31,8 @@
           </div>
           <div>
             <mat-form-field>
-              <input matInput formControlName="projectName" placeholder="Specify Project Name">
+              <input matInput formControlName="projectName" placeholder="Specify Project Name (Comma Separated)">
+              <mat-hint class="project-name-hint">Used by time provider</mat-hint>
             </mat-form-field>
           </div>
         </mat-card-content>
