@@ -121,8 +121,9 @@ export class RetrospectTaskModalComponent implements OnDestroy {
                         this.totalTaskPoints += member.TotalPoints;
                     });
                     this.columnApi.getColumn('SprintPoints').getColDef().cellEditorParams = {
+                        addCellValueToMax: true,
                         minValue: 0,
-                        maxValue: this.taskDetails.Estimate - this.totalTaskPoints
+                        baseMaxValue: this.taskDetails.Estimate - this.totalTaskPoints
                     };
                     if (!isRefresh) {
                         this.gridApi.sizeColumnsToFit();
@@ -241,8 +242,9 @@ export class RetrospectTaskModalComponent implements OnDestroy {
                                 this.updateSprintTaskMember(cellParams, (response) => {
                                     this.totalTaskPoints += response.data.TotalPoints - cellParams.data.TotalPoints;
                                     this.columnApi.getColumn('SprintPoints').getColDef().cellEditorParams = {
+                                        addCellValueToMax: true,
                                         minValue: 0,
-                                        maxValue: this.taskDetails.Estimate - this.totalTaskPoints
+                                        baseMaxValue: this.taskDetails.Estimate - this.totalTaskPoints
                                     };
                                 });
                             }
