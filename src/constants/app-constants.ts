@@ -90,7 +90,7 @@ export const API_RESPONSE_MESSAGES = {
     createRetroError: 'Cannot Create Retro!',
     getRetrospectivesError: 'Cannot get Retrospectives',
     getSprintsError: 'Cannot get Sprints',
-    noSprintsError: 'Retro has no active or completed sprints',
+    noSprintsError: 'Retro has no active or frozen sprints',
     sprintActivateError: 'Cannot Activate Sprint',
     sprintFreezeError: 'Cannot Freeze Sprint',
     sprintDiscardError: 'Cannot Discard Sprint',
