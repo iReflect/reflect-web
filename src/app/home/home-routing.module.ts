@@ -10,8 +10,11 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 const routes: Routes = [
     {
         path: APP_ROUTE_URLS.root,
+        // TODO: Enable Feedbacks
+        // component: DashboardComponent,
         redirectTo: APP_ROUTE_URLS.retrospectiveList,
         pathMatch: 'full',
+        // ---------------------------------
         canActivate: [LoginRequiredGuard]
     },
 ];

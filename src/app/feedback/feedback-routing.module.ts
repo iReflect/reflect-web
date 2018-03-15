@@ -11,6 +11,7 @@ import { TeamFeedbackListComponent } from './team-feedback-list/team-feedback-li
 import { TeamFeedbackDetailComponent } from './team-feedback-detail/team-feedback-detail.component';
 
 const routes: Routes = [
+    // TODO: Enable Feedbacks
     // {
     //     path: APP_ROUTE_URLS.feedback,
     //     component: MyFeedbackDetailComponent,
