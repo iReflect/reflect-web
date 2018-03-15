@@ -134,7 +134,7 @@ export class RetrospectTaskModalComponent implements OnDestroy {
                         this.snackBar.open(API_RESPONSE_MESSAGES.autoRefreshFailure, '', {duration: SNACKBAR_DURATION});
                     } else {
                         this.snackBar.open(API_RESPONSE_MESSAGES.getSprintTaskMemberSummaryError, '', {duration: SNACKBAR_DURATION});
-                        this.dialogRef.close();
+                        this.closeDialog();
                     }
                 }
             );
@@ -375,5 +375,9 @@ export class RetrospectTaskModalComponent implements OnDestroy {
         rowData[params.colDef.field] = params.oldValue;
         this.gridApi.updateRowData({update: [rowData]});
         this.gridApi.refreshCells();
+    }
+
+    closeDialog(result = false) {
+        this.dialogRef.close(result);
     }
 }

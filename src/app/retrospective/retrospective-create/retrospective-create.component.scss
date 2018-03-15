@@ -16,6 +16,14 @@ mat-grid-list {
   mat-form-field {
     width: 100%;
   }
+  .close-icon {
+    float: right;
+    margin-top: -6%;
+    cursor: pointer;
+    mat-icon {
+      font-size: xx-large;
+    }
+  }
 }
 
 button .mat-raised-button {
@@ -26,4 +34,8 @@ button .mat-raised-button {
 
 .project-name-hint {
   font-size: small;
+}
+
+.dialog-actions {
+  float: right;
 }
