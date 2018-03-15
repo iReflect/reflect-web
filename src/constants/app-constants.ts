@@ -159,3 +159,15 @@ export const SPRINT_HIGHLIGHT_TYPES = {
     OKAY: 1,
     BAD: 2
 };
+
+export const MEMBER_TASK_ROLES = {
+    IMPLEMENTOR: 0,
+    REVIEWER: 1,
+    VALIDATOR: 2
+};
+
+export const MEMBER_TASK_ROLES_LABEL = {
+    [MEMBER_TASK_ROLES.IMPLEMENTOR]: 'Implementor',
+    [MEMBER_TASK_ROLES.REVIEWER]: 'Reviewer',
+    [MEMBER_TASK_ROLES.VALIDATOR]: 'Validator'
+};
