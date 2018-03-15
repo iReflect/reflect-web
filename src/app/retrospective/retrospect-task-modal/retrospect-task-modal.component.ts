@@ -1,7 +1,7 @@
 import { Component, HostListener, Inject, OnDestroy } from '@angular/core';
 import {
-    API_RESPONSE_MESSAGES, RATING_STATES, RATING_STATES_LABEL, SNACKBAR_DURATION,
-    SPRINT_STATES
+    API_RESPONSE_MESSAGES, MEMBER_TASK_ROLES, MEMBER_TASK_ROLES_LABEL, RATING_STATES, RATING_STATES_LABEL,
+    SNACKBAR_DURATION, SPRINT_STATES
 } from '../../../constants/app-constants';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
@@ -88,7 +88,7 @@ export class RetrospectTaskModalComponent implements OnDestroy {
             rowHeight: 48,
             singleClickEdit: true,
             frameworkComponents: {
-                'ratingEditor': SelectCellEditorComponent,
+                'selectEditor': SelectCellEditorComponent,
                 'ratingRenderer': RatingRendererComponent,
                 'numericEditor': NumericCellEditorComponent
             }
@@ -157,7 +157,7 @@ export class RetrospectTaskModalComponent implements OnDestroy {
 
     private createColumnDefs(sprintStatus) {
         let columnDefs;
-        const commonColumns = [
+        const nameColumn = [
             {
                 headerName: 'Name',
                 colId: 'Name',
@@ -166,7 +166,9 @@ export class RetrospectTaskModalComponent implements OnDestroy {
                 },
                 minWidth: 160,
                 pinned: true
-            },
+            }
+        ];
+        const timeColumns = [
             {
                 headerName: 'Sprint Hours',
                 field: 'SprintTime',
@@ -189,7 +191,16 @@ export class RetrospectTaskModalComponent implements OnDestroy {
         ];
         if (sprintStatus === this.sprintStates.FROZEN) {
             columnDefs = [
-                ...commonColumns,
+                ...nameColumn,
+                {
+                    headerName: 'Role',
+                    field: 'Role',
+                    minWidth: 150,
+                    valueFormatter: (cellParams) => {
+                        return MEMBER_TASK_ROLES_LABEL[cellParams.value];
+                    }
+                },
+                ...timeColumns,
                 {
                     headerName: 'Sprint Story Points',
                     field: 'SprintPoints',
@@ -212,7 +223,32 @@ export class RetrospectTaskModalComponent implements OnDestroy {
             ];
         } else {
             columnDefs = [
-                ...commonColumns,
+                ...nameColumn,
+                {
+                    headerName: 'Role',
+                    field: 'Role',
+                    minWidth: 150,
+                    valueFormatter: (cellParams) => {
+                        return MEMBER_TASK_ROLES_LABEL[cellParams.value];
+                    },
+                    editable: true,
+                    cellEditor: 'selectEditor',
+                    cellEditorParams: {
+                        labels: MEMBER_TASK_ROLES_LABEL,
+                        values: [
+                            MEMBER_TASK_ROLES.IMPLEMENTOR,
+                            MEMBER_TASK_ROLES.REVIEWER,
+                            MEMBER_TASK_ROLES.VALIDATOR
+                        ]
+                    },
+                    onCellValueChanged: (cellParams) => {
+                        if ((cellParams.newValue !== cellParams.oldValue) &&
+                            (cellParams.newValue >= MEMBER_TASK_ROLES.IMPLEMENTOR && cellParams.newValue <= MEMBER_TASK_ROLES.VALIDATOR)) {
+                            this.updateSprintTaskMember(cellParams);
+                        }
+                    }
+                },
+                ...timeColumns,
                 {
                     headerName: 'Sprint Story Points',
                     field: 'SprintPoints',
@@ -258,7 +294,7 @@ export class RetrospectTaskModalComponent implements OnDestroy {
                     field: 'Rating',
                     minWidth: 150,
                     editable: true,
-                    cellEditor: 'ratingEditor',
+                    cellEditor: 'selectEditor',
                     cellEditorParams: {
                         labels: RATING_STATES_LABEL,
                         values: [
