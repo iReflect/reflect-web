@@ -12,7 +12,7 @@ export const API_URLS = {
     teamsList: '/teams',
     teamMembers: '/retrospectives/:retrospectiveID/team-members',
     retroDetails: '/retrospectives/:retrospectiveID',
-    sprintList: 'retrospectives/:retrospectiveID/sprints',
+    sprintList: '/retrospectives/:retrospectiveID/sprints',
     latestSprint: '/retrospectives/:retrospectiveID/latest-sprint',
     sprintDetails: '/retrospectives/:retrospectiveID/sprints/:sprintID',
     refreshSprintDetails: '/retrospectives/:retrospectiveID/sprints/:sprintID/process',

@@ -31,11 +31,19 @@
       <button mat-button (click)="addNewSprintTaskMember()">Add Member</button>
     </div>
   </div>
+  <div class="retrospect-task-refresh">
+    <button mat-button (click)="getSprintTaskMemberSummary(true)">Refresh Data <mat-icon>refresh</mat-icon></button>
+    <mat-slide-toggle labelPosition="before" (change)="toggleAutoRefresh()" [checked]="enableRefresh">
+      Autorefresh
+    </mat-slide-toggle>
+  </div>
   <div class="ag-grid-container">
     <ag-grid-angular
       class="ag-theme-material"
       [gridOptions]="gridOptions"
       [stopEditingWhenGridLosesFocus]="true"
+      [overlayLoadingTemplate]="overlayLoadingTemplate"
+      [overlayNoRowsTemplate]="overlayNoRowsTemplate"
       (gridReady)="onGridReady($event)"
       (cellEditingStarted)="onCellEditingStarted()"
       (cellEditingStopped)="onCellEditingStopped()">

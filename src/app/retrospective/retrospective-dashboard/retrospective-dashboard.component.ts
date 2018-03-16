@@ -46,7 +46,6 @@ export class RetrospectiveDashboardComponent implements OnInit {
     showNewSprintDialog() {
         const dialogRef = this.dialog.open(SprintCreateComponent, {
             width: '70%',
-            height: '70%',
             maxWidth: 950,
             data: {
                 retrospectiveID: this.retrospectiveID

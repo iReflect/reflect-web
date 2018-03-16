@@ -23,6 +23,10 @@ export class SprintCreateComponent implements OnInit {
         this.createSprintFormGroup();
     }
 
+    clearValue(control) {
+        control.setValue(undefined);
+    }
+
     createSprintFormGroup() {
         this.sprintFormGroup = new FormGroup({
             'title': new FormControl('', Validators.required),

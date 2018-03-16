@@ -2,10 +2,16 @@
   max-width: 30%;
   margin: 4em auto;
   text-align: center;
-
+  mat-toolbar {
+    background-color: #3293BE;
+    color: #FFF;
+  }
   mat-card-content {
     padding: 16px;
     margin-left: 30%;
   }
+}
 
+:host ::ng-deep circle {
+  stroke: #3293BE;
 }

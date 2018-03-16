@@ -9,12 +9,17 @@
   </div>
   <div>
     <button mat-button (click)="getSprintMemberSummary(true)">Refresh <mat-icon>refresh</mat-icon></button>
+    <mat-slide-toggle labelPosition="before" (change)="toggleAutoRefresh()" [checked]="enableRefresh">
+      Autorefresh
+    </mat-slide-toggle>
   </div>
   <div class="ag-grid-container">
       <ag-grid-angular
           class="ag-theme-material"
-          [stopEditingWhenGridLosesFocus]="true"
           [gridOptions]="gridOptions"
+          [stopEditingWhenGridLosesFocus]="true"
+          [overlayLoadingTemplate]="overlayLoadingTemplate"
+          [overlayNoRowsTemplate]="overlayNoRowsTemplate"
           (gridReady)="onGridReady($event)"
           (cellEditingStarted)="onCellEditingStarted()"
           (cellEditingStopped)="onCellEditingStopped()">

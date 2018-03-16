@@ -1,7 +1,7 @@
 <ng-container>
   <div class="login-page">
     <mat-card class="login-card">
-      <mat-toolbar color="primary">
+      <mat-toolbar>
         <span>{{ title }}</span>
       </mat-toolbar>
       <mat-card-content>
@@ -9,7 +9,7 @@
           <mat-error *ngIf="showError">{{errorMessage}}</mat-error>
         </p>
         <a href="{{ loginUrl }}">
-          <button mat-raised-button color="primary" class="btn btn-lg btn-primary pull-xs-right">
+          <button mat-raised-button>
             {{ button_text }}
           </button>
         </a>

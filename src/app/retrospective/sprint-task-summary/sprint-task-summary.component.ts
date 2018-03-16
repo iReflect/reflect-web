@@ -20,7 +20,10 @@ import 'rxjs/add/observable/interval';
 export class SprintTaskSummaryComponent implements OnChanges, OnDestroy {
     gridOptions: GridOptions;
     enableRefresh = true;
+    autoRefreshPreviousState = true;
     destroy$: Subject<boolean> = new Subject<boolean>();
+    overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the tasks are loading!</span>';
+    overlayNoRowsTemplate = '<span>No Tasks in this sprint!</span>';
 
     private params: any;
     private columnDefs: any;
@@ -52,6 +55,7 @@ export class SprintTaskSummaryComponent implements OnChanges, OnDestroy {
         if (this.gridApi && changes.isTabActive && changes.isTabActive.currentValue) {
             setTimeout(() => {
                 this.gridApi.sizeColumnsToFit();
+                this.getSprintTaskSummary(true);
             });
         }
     }
@@ -60,6 +64,14 @@ export class SprintTaskSummaryComponent implements OnChanges, OnDestroy {
         this.enableRefresh = false;
         this.destroy$.next(true);
         this.destroy$.unsubscribe();
+    }
+
+    toggleAutoRefresh() {
+        this.enableRefresh = !this.enableRefresh;
+        this.autoRefreshPreviousState = this.enableRefresh;
+        if (this.enableRefresh) {
+            this.getSprintTaskSummary(true);
+        }
     }
 
     setGridOptions() {
@@ -195,6 +207,8 @@ export class SprintTaskSummaryComponent implements OnChanges, OnDestroy {
     }
 
     retrospectSprint(sprintTaskSummaryData) {
+        this.autoRefreshPreviousState = this.enableRefresh;
+        this.enableRefresh = false;
         const dialogRef = this.dialog.open(RetrospectTaskModalComponent, {
             width: '90%',
             data: {
@@ -203,6 +217,10 @@ export class SprintTaskSummaryComponent implements OnChanges, OnDestroy {
                 retrospectiveID: this.retrospectiveID,
                 sprintStatus: this.sprintStatus
             },
+        });
+        dialogRef.afterClosed().subscribe(() => {
+            this.getSprintTaskSummary(true);
+            this.enableRefresh = this.autoRefreshPreviousState;
         });
     }
 }

@@ -16,16 +16,22 @@
   margin-left: 32%;
   width: 30%;
   text-align: center;
+  mat-error {
+    span {
+      color: #57A8CB;
+    }
+  }
+}
+
+:host ::ng-deep .mat-tab-body-content {
+  backface-visibility: visible;
 }
 
 .dashboard-back {
-  .back-icon {
-    cursor: pointer;
-  }
   .circular-icon {
     border-radius: 50%;
-    background-color: #6dcaf3;
-    color: #ffffff;
+    background-color: #3293D2;
+    color: #FFF;
     font-size: 32px;
     cursor: pointer;
   }

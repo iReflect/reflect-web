@@ -7,7 +7,7 @@
       <div>
      <a mat-icon-button class="dashboard-back" matTooltip="Retrospective dashboard" matTooltipPosition="before">
        <span (click)="navigateToRetrospectiveDashboard()" class="circular-icon">
-         &nbsp;<mat-icon class="back-icon">arrow_back</mat-icon>&nbsp;
+         &nbsp;<mat-icon>arrow_back</mat-icon>&nbsp;
        </span>
      </a>
       </div>
@@ -38,21 +38,20 @@
     </mat-card-content>
   </mat-card>
   <mat-tab-group [(selectedIndex)]="selectedTabIndex">
-    <mat-tab label="Sprint Members Summary">
-      <div *ngIf="sprintDetails.LastSyncedAt && !sprintDetails.CurrentlySyncing; else not_synced">
-        <app-sprint-member-summary [isTabActive]="selectedTabIndex === 0" [sprintDays]="sprintDays" [sprintStatus]="sprintStatus" [retrospectiveID]="retrospectiveID" [sprintID]="sprintID"></app-sprint-member-summary>
-      </div>
+    <mat-tab label="Sprint HighLights">
+      <app-sprint-highlights [retrospectiveID]="retrospectiveID" [sprintDetails]="sprintDetails"></app-sprint-highlights>
     </mat-tab>
     <mat-tab label="Sprint Task Summary">
       <div *ngIf="sprintDetails.LastSyncedAt && !sprintDetails.CurrentlySyncing; else not_synced">
         <app-sprint-task-summary [isTabActive]="selectedTabIndex === 1" [sprintStatus]="sprintStatus" [retrospectiveID]="retrospectiveID" [sprintID]="sprintID"></app-sprint-task-summary>
       </div>
     </mat-tab>
-    <mat-tab label="Sprint HighLights">
-      <app-sprint-highlights [retrospectiveID]="retrospectiveID" [sprintDetails]="sprintDetails"></app-sprint-highlights>
+    <mat-tab label="Sprint Members Summary">
+      <div *ngIf="sprintDetails.LastSyncedAt && !sprintDetails.CurrentlySyncing; else not_synced">
+        <app-sprint-member-summary [isTabActive]="selectedTabIndex === 2" [sprintDays]="sprintDays" [sprintStatus]="sprintStatus" [retrospectiveID]="retrospectiveID" [sprintID]="sprintID"></app-sprint-member-summary>
+      </div>
     </mat-tab>
   </mat-tab-group>
-
   <ng-template #not_synced>
     <mat-card class="sync-error-card">
       <div *ngIf="sprintDetails.CurrentlySyncing; then syncing else not_syncing"></div>
@@ -63,10 +62,9 @@
       </ng-template>
       <ng-template #not_syncing>
         <mat-error>
-          Please Refresh to fetch data!
+          Please <span (click)="refreshSprintDetails()">Refresh</span> to fetch data!
         </mat-error>
       </ng-template>
     </mat-card>
   </ng-template>
-
 </div>
