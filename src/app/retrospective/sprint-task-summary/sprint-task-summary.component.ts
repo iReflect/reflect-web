@@ -71,7 +71,9 @@ export class SprintTaskSummaryComponent implements OnChanges, OnDestroy {
             rowHeight: 48,
             frameworkComponents: {
                 'retrospectButtonRenderer': ClickableButtonRendererComponent
-            }
+            },
+            enableFilter: true,
+            enableSorting: true,
         };
     }
 
@@ -116,46 +118,66 @@ export class SprintTaskSummaryComponent implements OnChanges, OnDestroy {
                 headerName: 'Task ID',
                 field: 'TaskID',
                 minWidth: 110,
-                pinned: true
+                pinned: true,
+                suppressSorting: true,
+                suppressFilter: true,
             },
             {
                 headerName: 'Task Summary',
                 field: 'Summary',
                 minWidth: 300,
                 tooltipField: 'Summary',
-                pinned: true
+                pinned: true,
+                suppressSorting: true,
+                suppressFilter: true,
             },
             {
                 headerName: 'Assignee',
                 field: 'Assignee',
-                minWidth: 160
+                minWidth: 160,
+                suppressSorting: true,
+                suppressFilter: true,
             },
             {
                 headerName: 'Estimates',
                 field: 'Estimate',
-                minWidth: 120
+                minWidth: 120,
+                suppressSorting: true,
+                suppressFilter: true,
             },
             {
                 headerName: 'Status',
                 field: 'Status',
-                minWidth: 140
+                minWidth: 140,
+                suppressSorting: true,
+                suppressFilter: true,
             },
             {
                 headerName: 'Sprint Hours',
                 field: 'SprintTime',
                 valueFormatter: (cellParams) => (cellParams.value / 60).toFixed(2),
-                minWidth: 140
+                minWidth: 140,
+                suppressSorting: true,
+                suppressFilter: true,
             },
             {
                 headerName: 'Total Time Spent',
                 field: 'TotalTime',
                 valueFormatter: (cellParams) => (cellParams.value / 60).toFixed(2),
-                minWidth: 160
+                minWidth: 160,
+                suppressSorting: true,
+                suppressFilter: true,
             },
             {
                 headerName: 'Story Type',
                 field: 'Type',
-                minWidth: 130
+                minWidth: 150,
+                filter: 'agTextColumnFilter',
+                filterParams: {
+                    debounceMs: 500,
+                    // To preserve the currently applied filters
+                    newRowsAction: 'keep'
+                }
             },
             {
                 headerName: 'Retrospect',
@@ -164,7 +186,9 @@ export class SprintTaskSummaryComponent implements OnChanges, OnDestroy {
                     label: 'Retrospect',
                     onClick: this.retrospectSprint.bind(this)
                 },
-                minWidth: 130
+                minWidth: 130,
+                suppressSorting: true,
+                suppressFilter: true,
             }
         ];
         return columnDefs;
