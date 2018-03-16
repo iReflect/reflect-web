@@ -4,7 +4,7 @@ import { MatDialog, MatSnackBar } from '@angular/material';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import {
     API_RESPONSE_MESSAGES, APP_ROUTE_URLS, SNACKBAR_DURATION, SPRINT_ACTIONS, SPRINT_ACTIONS_LABEL, SPRINT_STATES,
-    SPRINT_STATES_LABEL
+    SPRINT_STATES_LABEL, SPRINT_SYNC_STATES
 } from '../../../constants/app-constants';
 import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.component';
 import * as _ from 'lodash';
@@ -29,6 +29,7 @@ export class SprintDetailComponent implements OnInit {
     sprintStatesLabel = SPRINT_STATES_LABEL;
     sprintActions = SPRINT_ACTIONS;
     sprintActionsLabel = SPRINT_ACTIONS_LABEL;
+    syncStates = SPRINT_SYNC_STATES;
 
     constructor(private retrospectiveService: RetrospectiveService,
                 private snackBar: MatSnackBar,
