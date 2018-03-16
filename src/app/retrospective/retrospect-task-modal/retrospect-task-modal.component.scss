@@ -30,7 +30,7 @@ mat-select {
   height: 330px;
 }
 
-mat-card-header {
+mat-card-header, h2.mat-dialog-title {
   display: block;
   font-weight: bolder;
   font-size: larger;
@@ -38,4 +38,19 @@ mat-card-header {
 
 mat-card-content {
   display: flex;
+}
+
+.dialog-actions {
+  float: right;
+}
+
+.retrospect-task {
+  span.close-icon {
+    float: right;
+    margin-top: -4%;
+    cursor: pointer;
+    mat-icon {
+      font-size: xx-large;
+    }
+  }
 }

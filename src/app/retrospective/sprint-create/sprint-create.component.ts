@@ -76,7 +76,7 @@ export class SprintCreateComponent implements OnInit {
         this.retrospectiveService.createSprint(this.data.retrospectiveID, sprintDetails).subscribe(
             () => {
                 this.snackBar.open(API_RESPONSE_MESSAGES.sprintCreated, '', {duration: SNACKBAR_DURATION});
-                this.dialogRef.close(true);
+                this.closeDialog(true);
                 this.disableButton = false;
             },
             () => {
@@ -84,5 +84,9 @@ export class SprintCreateComponent implements OnInit {
                 this.disableButton = false;
             }
         );
+    }
+
+    closeDialog(result = false) {
+        this.dialogRef.close(result);
     }
 }

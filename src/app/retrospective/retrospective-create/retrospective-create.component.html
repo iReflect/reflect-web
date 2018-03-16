@@ -1,5 +1,6 @@
 <div class="create-retro" [formGroup]="retroFormGroup" *ngIf="isTeamOptionsLoaded && isProviderOptionsLoaded">
   <h2 mat-dialog-title>Create Team Retrospective</h2>
+  <span class="close-icon" (click)="closeDialog()"><mat-icon>clear</mat-icon></span>
   <mat-grid-list cols="2" rowHeight="250px">
     <mat-grid-tile>
       <mat-card>
@@ -56,8 +57,8 @@
       </mat-card>
     </mat-grid-tile>
   </mat-grid-list>
-  <mat-dialog-actions>
-      <button mat-raised-button mat-dialog-close>Cancel</button>
-      <button mat-raised-button [disabled]="retroFormGroup.invalid || disableButton" (click)="createRetro(retroFormGroup.value)">Create Retro</button>
+  <mat-dialog-actions class="dialog-actions">
+    <button mat-raised-button [disabled]="retroFormGroup.invalid || disableButton" (click)="createRetro(retroFormGroup.value)">Create</button>
+    <button mat-raised-button mat-dialog-close>Cancel</button>
   </mat-dialog-actions>
 </div>

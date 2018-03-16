@@ -47,7 +47,7 @@ export class RetrospectiveCreateComponent implements OnInit {
             response => {
                 if (_.isEmpty(response.data.Teams)) {
                     this.snackBar.open(API_RESPONSE_MESSAGES.noTeamsError, '', {duration: SNACKBAR_DURATION});
-                    this.dialogRef.close();
+                    this.closeDialog();
                 } else {
                     this.teamOptions = response.data.Teams;
                     this.isTeamOptionsLoaded = true;
@@ -55,7 +55,7 @@ export class RetrospectiveCreateComponent implements OnInit {
             },
             () => {
                 this.snackBar.open(API_RESPONSE_MESSAGES.getTeamListError, '', {duration: SNACKBAR_DURATION});
-                this.dialogRef.close();
+                this.closeDialog();
             }
         );
     }
@@ -68,7 +68,7 @@ export class RetrospectiveCreateComponent implements OnInit {
             },
             () => {
                 this.snackBar.open(API_RESPONSE_MESSAGES.getTeamProviderOptionsError, '', {duration: SNACKBAR_DURATION});
-                this.dialogRef.close();
+                this.closeDialog();
             }
         );
     }
@@ -123,7 +123,7 @@ export class RetrospectiveCreateComponent implements OnInit {
         this.retrospectiveService.createRetro(requestBody).subscribe(
             () => {
                 this.snackBar.open(API_RESPONSE_MESSAGES.retroCreated, '', {duration: SNACKBAR_DURATION});
-                this.dialogRef.close(true);
+                this.closeDialog(true);
                 this.disableButton = false;
             },
             () => {
@@ -131,5 +131,9 @@ export class RetrospectiveCreateComponent implements OnInit {
                 this.disableButton = false;
             }
         );
+    }
+
+    closeDialog(result = false) {
+        this.dialogRef.close(result);
     }
 }

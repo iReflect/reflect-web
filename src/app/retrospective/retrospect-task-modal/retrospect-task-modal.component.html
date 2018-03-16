@@ -1,41 +1,44 @@
-<mat-card>
-  <mat-card-header>{{taskDetails.TaskID}}: {{taskDetails.Summary}}</mat-card-header>
-  <mat-card-content>
+<div class="retrospect-task">
+  <h2 mat-dialog-title>{{taskDetails.TaskID}}: {{taskDetails.Summary}}</h2>
+  <span class="close-icon" (click)="closeDialog()"><mat-icon>clear</mat-icon></span>
+  <mat-card>
+    <mat-card-content>
+      <div>
+        <div *ngIf="taskDetails.Assignee">
+          <span>Assignee:</span> {{taskDetails.Assignee}}
+        </div>
+        <div *ngIf="taskDetails.Estimate">
+          <span>Estimates:</span> {{taskDetails.Estimate}}
+        </div>
+        <div *ngIf="taskDetails.Status">
+          <span>Status:</span> {{taskDetails.Status}}
+        </div>
+        <div *ngIf="taskDetails.Type">
+          <span>Story Type:</span> {{taskDetails.Type}}
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  <div class="add-member" *ngIf="data.sprintStatus !== sprintStates.FROZEN">
     <div>
-      <div *ngIf="taskDetails.Assignee">
-        <span>Assignee:</span> {{taskDetails.Assignee}}
-      </div>
-      <div *ngIf="taskDetails.Estimate">
-        <span>Estimates:</span> {{taskDetails.Estimate}}
-      </div>
-      <div *ngIf="taskDetails.Status">
-        <span>Status:</span> {{taskDetails.Status}}
-      </div>
-      <div *ngIf="taskDetails.Type">
-        <span>Story Type:</span> {{taskDetails.Type}}
-      </div>
+      <mat-select placeholder="Select a Member" [(ngModel)]="selectedMemberID">
+        <mat-option *ngFor="let member of sprintMembers" [value]="member.ID">
+          {{(member.FirstName + ' ' + member.LastName).trim()}}
+        </mat-option>
+      </mat-select>
     </div>
-  </mat-card-content>
-</mat-card>
-<div class="add-member" *ngIf="data.sprintStatus !== sprintStates.FROZEN">
-  <div>
-    <mat-select placeholder="Select a Member" [(ngModel)]="selectedMemberID">
-      <mat-option *ngFor="let member of sprintMembers" [value]="member.ID">
-        {{(member.FirstName + ' ' + member.LastName).trim()}}
-      </mat-option>
-    </mat-select>
+    <div>
+      <button mat-button (click)="addNewSprintTaskMember()">Add Member</button>
+    </div>
   </div>
-  <div>
-    <button mat-button (click)="addNewSprintTaskMember()">Add Member</button>
+  <div class="ag-grid-container">
+    <ag-grid-angular
+      class="ag-theme-material"
+      [gridOptions]="gridOptions"
+      [stopEditingWhenGridLosesFocus]="true"
+      (gridReady)="onGridReady($event)"
+      (cellEditingStarted)="onCellEditingStarted()"
+      (cellEditingStopped)="onCellEditingStopped()">
+    </ag-grid-angular>
   </div>
-</div>
-<div class="ag-grid-container">
-  <ag-grid-angular
-    class="ag-theme-material"
-    [gridOptions]="gridOptions"
-    [stopEditingWhenGridLosesFocus]="true"
-    (gridReady)="onGridReady($event)"
-    (cellEditingStarted)="onCellEditingStarted()"
-    (cellEditingStopped)="onCellEditingStopped()">
-  </ag-grid-angular>
 </div>
