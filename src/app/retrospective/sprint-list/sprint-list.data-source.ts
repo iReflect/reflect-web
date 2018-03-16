@@ -17,8 +17,8 @@ export class SprintListDataSource extends DataSource<any> {
             response => {
                 this.dataChange.next(response.data.Sprints);
             },
-            () => {
-                this.errorCallback();
+            err => {
+                this.errorCallback(err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1));
             }
         );
         return this.dataChange.asObservable();

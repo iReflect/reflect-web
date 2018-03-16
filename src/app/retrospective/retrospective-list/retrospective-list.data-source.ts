@@ -16,8 +16,8 @@ export class RetrospectiveListDataSource extends DataSource<any> {
             response => {
                 this.dataChange.next(response.data.Retrospectives);
             },
-            () => {
-                this.errorCallback();
+            err => {
+                this.errorCallback(err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1));
             }
         );
         return this.dataChange.asObservable();

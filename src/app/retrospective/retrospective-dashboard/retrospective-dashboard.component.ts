@@ -28,12 +28,14 @@ export class RetrospectiveDashboardComponent implements OnInit {
 
     getRetrospective() {
         this.retrospectiveService.getRetrospectiveByID(this.retrospectiveID).subscribe(
-        response => {
+            response => {
                 this.retrospectiveData = response.data;
                 this.isDataLoaded = true;
             },
-            () => {
-                this.snackBar.open(API_RESPONSE_MESSAGES.invalidRetroAccessError, '', {duration: SNACKBAR_DURATION});
+            err => {
+                this.snackBar.open(
+                    err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.invalidRetroAccessError,
+                    '', {duration: SNACKBAR_DURATION});
                 this.router.navigateByUrl(APP_ROUTE_URLS.retrospectiveList);
             }
         );

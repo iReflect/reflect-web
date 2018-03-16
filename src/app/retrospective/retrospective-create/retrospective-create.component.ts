@@ -46,16 +46,20 @@ export class RetrospectiveCreateComponent implements OnInit {
         this.retrospectiveService.getTeamList().subscribe(
             response => {
                 if (_.isEmpty(response.data.Teams)) {
-                    this.snackBar.open(API_RESPONSE_MESSAGES.noTeamsError, '', {duration: SNACKBAR_DURATION});
-                    this.closeDialog();
+                    this.snackBar.open(
+                        API_RESPONSE_MESSAGES.noTeamsError,
+                        '', {duration: SNACKBAR_DURATION});
+                    this.dialogRef.close();
                 } else {
                     this.teamOptions = response.data.Teams;
                     this.isTeamOptionsLoaded = true;
                 }
             },
-            () => {
-                this.snackBar.open(API_RESPONSE_MESSAGES.getTeamListError, '', {duration: SNACKBAR_DURATION});
-                this.closeDialog();
+            err => {
+                this.snackBar.open(
+                    err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.getTeamListError,
+                    '', {duration: SNACKBAR_DURATION});
+                this.dialogRef.close();
             }
         );
     }
@@ -66,9 +70,11 @@ export class RetrospectiveCreateComponent implements OnInit {
                 this.taskProviderOptions = response.data.TaskProviders;
                 this.isProviderOptionsLoaded = true;
             },
-            () => {
-                this.snackBar.open(API_RESPONSE_MESSAGES.getTeamProviderOptionsError, '', {duration: SNACKBAR_DURATION});
-                this.closeDialog();
+            err => {
+                this.snackBar.open(
+                    err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.getTeamProviderOptionsError,
+                    '', {duration: SNACKBAR_DURATION});
+                this.dialogRef.close();
             }
         );
     }
@@ -122,12 +128,16 @@ export class RetrospectiveCreateComponent implements OnInit {
 
         this.retrospectiveService.createRetro(requestBody).subscribe(
             () => {
-                this.snackBar.open(API_RESPONSE_MESSAGES.retroCreated, '', {duration: SNACKBAR_DURATION});
-                this.closeDialog(true);
+                this.snackBar.open(
+                    API_RESPONSE_MESSAGES.retroCreated,
+                    '', {duration: SNACKBAR_DURATION});
+                this.dialogRef.close(true);
                 this.disableButton = false;
             },
-            () => {
-                this.snackBar.open(API_RESPONSE_MESSAGES.createRetroError, '', {duration: SNACKBAR_DURATION});
+            err => {
+                this.snackBar.open(
+                    err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.createRetroError,
+                    '', {duration: SNACKBAR_DURATION});
                 this.disableButton = false;
             }
         );
