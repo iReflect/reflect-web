@@ -97,7 +97,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             defaultColDef: {
                 width: 100,
             },
-            rowHeight: 48,
+            rowHeight: 60,
             singleClickEdit: true,
             frameworkComponents: {
                 'ratingEditor': SelectCellEditorComponent,
@@ -154,15 +154,6 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             );
     }
 
-    private commentsValueFormatter(cellParams) {
-        const comment = cellParams.value.trim();
-        const newLineIndex = comment.indexOf('\n');
-        if (newLineIndex !== -1) {
-            return comment.substr(0, newLineIndex) + '...';
-        }
-        return comment;
-    }
-
     private supressKeyboardEvent(event) {
         if (event.editing) {
             return true;
@@ -186,16 +177,26 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
 
         const velocitiesColumns = [
             {
-                headerName: 'Expected Velocity',
-                field: 'ExpectedVelocity',
-                minWidth: 165,
+                headerName: 'Expected SP',
+                field: 'ExpectedStoryPoint',
+                minWidth: 150,
                 filter: 'agNumberColumnFilter'
             },
             {
-                headerName: 'Actual Velocity',
-                field: 'ActualVelocity',
-                minWidth: 165,
+                headerName: 'Actual SP',
+                field: 'ActualStoryPoint',
+                minWidth: 130,
                 filter: 'agNumberColumnFilter'
+            }
+        ];
+
+        const totalSprintTimeColumn = [
+            {
+                headerName: 'Total Sprint Time',
+                field: 'TotalTimeSpentInMin',
+                minWidth: 180,
+                filter: 'agNumberColumnFilter',
+                valueFormatter: (cellParams) => cellParams.value && (cellParams.value / 60).toFixed(2),
             }
         ];
 
@@ -221,6 +222,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                     valueFormatter: (cellParams) => cellParams.value + (cellParams.value === 1 ? ' day' : ' days')
                 },
                 ...velocitiesColumns,
+                ...totalSprintTimeColumn,
                 {
                     headerName: 'Rating',
                     field: 'Rating',
@@ -232,7 +234,6 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                     field: 'Comment',
                     minWidth: 300,
                     tooltipField: 'Comment',
-                    valueFormatter: (cellParams) => this.commentsValueFormatter(cellParams)
                 }
             ];
         } else {
@@ -313,6 +314,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                     suppressKeyboardEvent: (event) => this.supressKeyboardEvent(event)
                 },
                 ...velocitiesColumns,
+                ...totalSprintTimeColumn,
                 {
                     headerName: 'Rating',
                     field: 'Rating',
@@ -350,7 +352,6 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                             this.updateSprintMember(cellParams);
                         }
                     },
-                    valueFormatter: (cellParams) => this.commentsValueFormatter(cellParams)
                 },
                 {
                     cellRenderer: 'deleteButtonRenderer',
@@ -359,7 +360,8 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                         icon: 'delete',
                         onClick: this.deleteSprintMember.bind(this)
                     },
-                    minWidth: 100
+                    minWidth: 100,
+                    cellClass: 'delete-column'
                 }
             ];
         }
