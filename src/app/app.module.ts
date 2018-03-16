@@ -32,7 +32,9 @@ export function RestangularConfigFactory(RestangularProvider) {
 const routes: Routes = [
     { // Route to redirect to Home page if no url matches
         path: '**',
-        redirectTo: APP_ROUTE_URLS.root
+        // TODO: Enable Feedbacks
+        // redirectTo: APP_ROUTE_URLS.root,
+        redirectTo: APP_ROUTE_URLS.retrospectiveList,
     }
 ];
 

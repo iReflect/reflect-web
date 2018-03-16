@@ -11,30 +11,31 @@ import { TeamFeedbackListComponent } from './team-feedback-list/team-feedback-li
 import { TeamFeedbackDetailComponent } from './team-feedback-detail/team-feedback-detail.component';
 
 const routes: Routes = [
-    {
-        path: APP_ROUTE_URLS.feedback,
-        component: MyFeedbackDetailComponent,
-        pathMatch: 'prefix',
-        canActivate: [LoginRequiredGuard]
-    },
-    {
-        path: APP_ROUTE_URLS.feedbackList,
-        component: MyFeedbackListComponent,
-        pathMatch: 'prefix',
-        canActivate: [LoginRequiredGuard]
-    },
-    {
-        path: APP_ROUTE_URLS.teamFeedback,
-        component: TeamFeedbackDetailComponent,
-        pathMatch: 'prefix',
-        canActivate: [LoginRequiredGuard]
-    },
-    {
-        path: APP_ROUTE_URLS.teamFeedbackList,
-        component: TeamFeedbackListComponent,
-        pathMatch: 'prefix',
-        canActivate: [LoginRequiredGuard]
-    }
+    // TODO: Enable Feedbacks
+    // {
+    //     path: APP_ROUTE_URLS.feedback,
+    //     component: MyFeedbackDetailComponent,
+    //     pathMatch: 'prefix',
+    //     canActivate: [LoginRequiredGuard]
+    // },
+    // {
+    //     path: APP_ROUTE_URLS.feedbackList,
+    //     component: MyFeedbackListComponent,
+    //     pathMatch: 'prefix',
+    //     canActivate: [LoginRequiredGuard]
+    // },
+    // {
+    //     path: APP_ROUTE_URLS.teamFeedback,
+    //     component: TeamFeedbackDetailComponent,
+    //     pathMatch: 'prefix',
+    //     canActivate: [LoginRequiredGuard]
+    // },
+    // {
+    //     path: APP_ROUTE_URLS.teamFeedbackList,
+    //     component: TeamFeedbackListComponent,
+    //     pathMatch: 'prefix',
+    //     canActivate: [LoginRequiredGuard]
+    // }
 ];
 
 @NgModule({
