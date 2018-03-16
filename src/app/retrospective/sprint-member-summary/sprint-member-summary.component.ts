@@ -337,9 +337,9 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                     cellEditorParams: {
                         labels: RATING_STATES_LABEL,
                         values: [
-                            this.ratingStates.UGLY,
-                            this.ratingStates.BAD,
-                            this.ratingStates.OKAY,
+                            this.ratingStates.RED,
+                            this.ratingStates.IMPROVE,
+                            this.ratingStates.DECENT,
                             this.ratingStates.GOOD,
                             this.ratingStates.NOTABLE
                         ]
@@ -347,7 +347,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                     cellRenderer: 'ratingRenderer',
                     onCellValueChanged: (cellParams) => {
                         if ((cellParams.newValue !== cellParams.oldValue) &&
-                            (cellParams.newValue >= this.ratingStates.UGLY && cellParams.newValue <= this.ratingStates.NOTABLE)) {
+                            (cellParams.newValue >= this.ratingStates.RED && cellParams.newValue <= this.ratingStates.NOTABLE)) {
                             this.updateSprintMember(cellParams);
                         }
                     }
