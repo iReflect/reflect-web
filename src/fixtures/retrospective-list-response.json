@@ -1,0 +1,41 @@
+{
+  "retrospectives": [
+    {
+      "ID": 1,
+      "Title": "Retrospective 1",
+      "Team": {
+        "ID": 1,
+        "Name": "IReflect",
+        "Description": "IReflect",
+        "Active": true
+      },
+      "UpdatedAt": "2018-01-08T00:00:00.00Z",
+      "CreatedBy": {
+        "ID": 2,
+        "Email": "ireflect@jtg.com",
+        "FirstName": "IReflect",
+        "LastName": "Internal",
+        "Active": true
+      }
+    },
+    {
+      "ID": 2,
+      "Title": "Retrospective 2",
+      "Team": {
+        "ID": 1,
+        "Name": "IReflect",
+        "Description": "IReflect",
+        "Active": true
+      },
+      "UpdatedAt": "2018-01-01T00:00:00.00Z",
+      "CreatedBy": {
+        "ID": 2,
+        "Email": "ireflect+1@jtg.com",
+        "FirstName": "IReflect",
+        "LastName": "Internal",
+        "Active": true
+      }
+    }
+  ],
+  "TotalCount": 2
+}

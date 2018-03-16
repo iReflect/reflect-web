@@ -1,0 +1,72 @@
+{
+  "Sprints": [
+    {
+      "ID": 1,
+      "Title": "Sprint 1",
+      "StartDate": "2017-12-23T00:00:00.00Z",
+      "EndDate": "2018-01-01T00:00:00.00Z",
+      "LastSyncedAt": "2018-01-13T00:00:00.00Z",
+      "CurrentlySyncing": false,
+      "TotalTimeSpent": 705,
+      "Status": 0,
+      "CreatedBy": {
+        "ID": 2,
+        "Email": "ireflect@jtg.com",
+        "FirstName": "IReflect",
+        "LastName": "Internal",
+        "Active": true
+      }
+    },
+    {
+      "ID": 2,
+      "Title": "Sprint 2",
+      "StartDate": "2017-12-23T00:00:00.00Z",
+      "EndDate": "2018-01-01T00:00:00.00Z",
+      "LastSyncedAt": "2018-01-13T00:00:00.00Z",
+      "CurrentlySyncing": false,
+      "TotalTimeSpent": 1440,
+      "Status": 2,
+      "CreatedBy": {
+        "ID": 2,
+        "Email": "ireflect@jtg.com",
+        "FirstName": "IReflect",
+        "LastName": "Internal",
+        "Active": true
+      }
+    },
+    {
+      "ID": 3,
+      "Title": "Sprint 3",
+      "StartDate": "2018-01-02T00:00:00.00Z",
+      "EndDate": "2018-01-10T00:00:00.00Z",
+      "LastSyncedAt": null,
+      "CurrentlySyncing": false,
+      "TotalTimeSpent": 3040,
+      "Status": 1,
+      "CreatedBy": {
+        "ID": 2,
+        "Email": "ireflect+1@jtg.com",
+        "FirstName": "IReflect",
+        "LastName": "Internal",
+        "Active": true
+      }
+    },
+    {
+      "ID": 4,
+      "Title": "Sprint 4",
+      "StartDate": "2018-01-02T00:00:00.00Z",
+      "EndDate": "2018-01-10T00:00:00.00Z",
+      "LastSyncedAt": null,
+      "CurrentlySyncing": true,
+      "TotalTimeSpent": 3040,
+      "Status": 2,
+      "CreatedBy": {
+        "ID": 2,
+        "Email": "ireflect+1@jtg.com",
+        "FirstName": "IReflect",
+        "LastName": "Internal",
+        "Active": true
+      }
+    }
+  ]
+}

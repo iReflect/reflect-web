@@ -1,0 +1,60 @@
+.card-header {
+  color: rgba(0,0,0,.54);
+  font-weight: 500;
+  height: 48px;
+  font-size: 14px;
+  padding: 0;
+}
+
+.flex-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.sync-error-card {
+  margin-top: 15%;
+  margin-left: 32%;
+  width: 30%;
+  text-align: center;
+}
+
+.dashboard-back {
+  .back-icon {
+    cursor: pointer;
+  }
+  .circular-icon {
+    border-radius: 50%;
+    background-color: #6dcaf3;
+    color: #ffffff;
+    font-size: 32px;
+    cursor: pointer;
+  }
+}
+
+.sprint-actions {
+  text-align: right;
+  .status-freeze {
+    padding: 1rem;
+    text-align: center;
+  }
+  mat-form-field {
+    width: 15em;
+  }
+  button {
+    width: 100%;
+    font-size: 1rem;
+    font-weight: 500;
+    background-color: #f4f5f7;
+    color: #42516e;
+  }
+}
+
+mat-tab-group {
+  border: 1px solid #E8E8E8;
+  mat-tab {
+    height: 100%;
+  }
+  .mat-tab-body-content {
+    height: 100%;
+  }
+}

@@ -16,8 +16,10 @@ export class DashboardComponent implements OnInit {
     submittedFeedbackFilters: any = {'status': FEEDBACK_STATES.SUBMITTED, 'perPage': 5};
 
     feedbackStates = FEEDBACK_STATES;
+    service: FeedbackService;
 
-    constructor(private service: FeedbackService, private router: Router) {
+    constructor(service: FeedbackService) {
+        this.service = service;
     }
 
     ngOnInit() {

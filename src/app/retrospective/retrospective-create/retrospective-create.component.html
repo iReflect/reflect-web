@@ -1,0 +1,64 @@
+<div class="create-retro" [formGroup]="retroFormGroup" *ngIf="isTeamOptionsLoaded && isProviderOptionsLoaded">
+  <h2 mat-dialog-title>Create Team Retrospective</h2>
+  <span class="close-icon" (click)="closeDialog()"><mat-icon>clear</mat-icon></span>
+  <mat-grid-list cols="2" rowHeight="250px">
+    <mat-grid-tile>
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title><b>Team Retrospective Details</b></mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div>
+            <mat-form-field>
+              <input matInput type="number" min="0" formControlName="storyPointPerWeek"
+                     placeholder="Expected Story Point Per Week Per Person">
+            </mat-form-field>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title><b>Team</b></mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div>
+            <mat-form-field>
+              <mat-select formControlName="team" placeholder="Select a Team">
+                <mat-option *ngFor="let team of teamOptions" [value]="team.ID">{{team.Name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div>
+            <mat-form-field>
+              <input matInput formControlName="projectName" placeholder="Specify Project Name (Comma Separated)">
+              <mat-hint class="project-name-hint">Used by time provider</mat-hint>
+            </mat-form-field>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+    <mat-grid-tile [colspan]="2"[rowspan]="2" class="task-provider">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title><b>Task Provider</b></mat-card-title>
+        </mat-card-header>
+        <mat-card-content [formArrayName]="taskProviderKey">
+          <div *ngFor="let _ of taskProvidersList; let providerIndex = index;">
+            <div [formGroupName]="providerIndex">
+              <app-task-provider
+                [taskProviderOptions]="taskProviderOptions"
+                (initializedTaskProvider)="taskProviderInitialized(providerIndex)($event)">
+              </app-task-provider>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+  </mat-grid-list>
+  <mat-dialog-actions class="dialog-actions">
+    <button mat-raised-button [disabled]="retroFormGroup.invalid || disableButton" (click)="createRetro(retroFormGroup.value)">Create</button>
+    <button mat-raised-button mat-dialog-close>Cancel</button>
+  </mat-dialog-actions>
+</div>

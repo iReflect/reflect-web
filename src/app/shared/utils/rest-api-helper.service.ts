@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Restangular } from 'ngx-restangular';
-import { APP_ROUTE_URLS } from '../../../constants/app-constants';
+import { APP_ROUTE_URLS, LOGIN_ERROR_TYPES } from '../../../constants/app-constants';
 import { environment } from '../../../environments/environment';
 import { UserStoreService } from '../stores/user.store.service';
 
@@ -11,14 +11,16 @@ export class RestApiHelperService {
     private dataRestangular: Restangular;
     private authRestangular: Restangular;
 
-    constructor(private restangular: Restangular,
-                userStoreService: UserStoreService,
-                router: Router) {
+    constructor(
+        private restangular: Restangular,
+        userStoreService: UserStoreService,
+        router: Router
+    ) {
         this.restangular = restangular.withConfig(function (RestangularProvider) {
             RestangularProvider.addErrorInterceptor((response) => {
                 if (response.status === 401) {
                     userStoreService.clearUserData();
-                    router.navigateByUrl(APP_ROUTE_URLS.login);
+                    router.navigateByUrl(`${APP_ROUTE_URLS.login}?error=${LOGIN_ERROR_TYPES.unauthorized}`);
                     return false;
                 }
                 return true;
@@ -46,6 +48,6 @@ export class RestApiHelperService {
                 }
             );
         }
-        return this.authRestangular
+        return this.authRestangular;
     }
 }

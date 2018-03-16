@@ -12,7 +12,7 @@ export class LoggerService {
     handleError = (error: any) => {
         console.error(error.toString());
         return Observable.throw(error.json());
-    };
+    }
 
     constructor(private router: Router) {
     }

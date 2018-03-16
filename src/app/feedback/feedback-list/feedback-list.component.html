@@ -15,7 +15,7 @@
     </mat-toolbar>
     <div class="feedback-event-tab-content">
       <div class="feedback-event-table-container mat-elevation-z5">
-        <mat-table #table [dataSource]="dataSource">
+        <mat-table #table class="custom-mat-table" [dataSource]="dataSource">
           <!-- Title Column -->
           <ng-container matColumnDef="title">
             <mat-header-cell *matHeaderCellDef>Title</mat-header-cell>

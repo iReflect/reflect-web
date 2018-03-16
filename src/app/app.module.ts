@@ -17,6 +17,7 @@ import { HomeModule } from './home/home.module';
 
 import { SharedModule } from './shared/shared.module';
 import { SideNavComponent } from './sidenav/sidenav.component';
+import { RetrospectiveModule } from './retrospective/retrospective.module';
 
 export function RestangularConfigFactory(RestangularProvider) {
     RestangularProvider.setDefaultHeaders({
@@ -31,7 +32,9 @@ export function RestangularConfigFactory(RestangularProvider) {
 const routes: Routes = [
     { // Route to redirect to Home page if no url matches
         path: '**',
-        redirectTo: APP_ROUTE_URLS.root
+        // TODO: Enable Feedbacks
+        // redirectTo: APP_ROUTE_URLS.root,
+        redirectTo: APP_ROUTE_URLS.retrospectiveList,
     }
 ];
 
@@ -56,7 +59,8 @@ const routes: Routes = [
         SharedModule,
         HomeModule,
         AccountModule,
-        FeedbackModule
+        FeedbackModule,
+        RetrospectiveModule,
     ],
     exports: [
         CommonModule,

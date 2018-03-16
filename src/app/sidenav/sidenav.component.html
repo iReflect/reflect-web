@@ -1,22 +1,29 @@
 <mat-sidenav-container class="sidenav-container">
   <mat-sidenav #sidenav class="side-nav" mode="side" opened="true" fixedInViewport="true" [fixedTopGap]="60">
     <mat-nav-list (mouseover)="hide = false" (mouseleave)="hide = true">
-      <a routerLink=".">
+      <!-- TODO: Enable Feedbacks -->
+      <!--<a routerLink=".">-->
+        <!--<mat-list-item>-->
+          <!--<mat-icon mat-list-icon>home</mat-icon>-->
+          <!--<span [hidden]="hide">Dashboard</span>-->
+        <!--</mat-list-item>-->
+      <!--</a>-->
+      <!--<a routerLink="./feedbacks/">-->
+        <!--<mat-list-item>-->
+          <!--<mat-icon mat-list-icon svgIcon="feedback-icon"></mat-icon>-->
+          <!--<span [hidden]="hide">Feedbacks</span>-->
+        <!--</mat-list-item>-->
+      <!--</a>-->
+      <!--<a routerLink="./team/feedbacks">-->
+        <!--<mat-list-item>-->
+          <!--<mat-icon mat-list-icon svgIcon="team-feedback-icon"></mat-icon>-->
+          <!--<span [hidden]="hide">Team Feedbacks</span>-->
+        <!--</mat-list-item>-->
+      <!--</a>-->
+      <a routerLink="./retrospectives">
         <mat-list-item>
-          <mat-icon mat-list-icon>home</mat-icon>
-          <span [hidden]="hide">Dashboard</span>
-        </mat-list-item>
-      </a>
-      <a routerLink="./feedbacks/">
-        <mat-list-item>
-          <mat-icon mat-list-icon>home</mat-icon>
-          <span [hidden]="hide">Feedbacks</span>
-        </mat-list-item>
-      </a>
-      <a routerLink="./team/feedbacks">
-        <mat-list-item>
-          <mat-icon mat-list-icon>home</mat-icon>
-          <span [hidden]="hide">Team Feedbacks</span>
+          <mat-icon mat-list-icon svgIcon="retrospective-icon"></mat-icon>
+          <span [hidden]="hide">Retrospectives</span>
         </mat-list-item>
       </a>
     </mat-nav-list>

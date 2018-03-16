@@ -7,7 +7,7 @@
     </mat-toolbar-row>
   </mat-toolbar>
   <div class="feedback-list-container" *ngIf="isListLoaded">
-    <mat-table #table [dataSource]="dataSource">
+    <mat-table #table class="custom-mat-table" [dataSource]="dataSource">
       <!-- Title Column -->
       <ng-container matColumnDef="title">
         <mat-header-cell *matHeaderCellDef> Title</mat-header-cell>
@@ -24,6 +24,18 @@
       <ng-container matColumnDef="userRole">
         <mat-header-cell *matHeaderCellDef> User Role</mat-header-cell>
         <mat-cell *matCellDef="let element"> {{getUserRole(element.ForUserProfile)}}</mat-cell>
+      </ng-container>
+
+      <!-- Start Date Column -->
+      <ng-container matColumnDef="startDate">
+        <mat-header-cell *matHeaderCellDef> Start Date</mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.DurationStart | date: dateFormat}}</mat-cell>
+      </ng-container>
+
+      <!-- End Date Column -->
+      <ng-container matColumnDef="endDate">
+        <mat-header-cell *matHeaderCellDef> End Date</mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.DurationEnd | date: dateFormat}}</mat-cell>
       </ng-container>
 
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

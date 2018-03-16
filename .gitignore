@@ -13,9 +13,11 @@
 .project
 .classpath
 .c9/
+.history
 *.launch
 .settings/
 *.sublime-workspace
+reflect-web.iml
 
 # IDE - VSCode
 .vscode/*

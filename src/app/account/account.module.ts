@@ -6,6 +6,7 @@ import { SharedModule } from '../shared/shared.module';
 
 import { AccountRoutingModule } from './account-routing.module';
 import { LoginComponent } from './login/login.component';
+import { AuthComponent } from './auth/auth.component';
 
 @NgModule({
     imports: [
@@ -16,7 +17,8 @@ import { LoginComponent } from './login/login.component';
         CustomMaterialModule
     ],
     declarations: [
-        LoginComponent
+        AuthComponent,
+        LoginComponent,
     ],
     exports: [],
     providers: []

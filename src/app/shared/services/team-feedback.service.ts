@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { API_URLS } from '../../../constants/api-urls';
-import { RestApiHelperService } from "../utils/rest-api-helper.service";
+import { RestApiHelperService } from '../utils/rest-api-helper.service';
 
 
 @Injectable()
@@ -48,6 +48,6 @@ export class TeamFeedbackService {
     }
 
     submitData(feedbackId, data): Observable<any> {
-        throw "Not Implemented Error"
+        throw new Error('Not Implemented Error');
     }
 }
