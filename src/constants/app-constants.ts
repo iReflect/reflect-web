@@ -187,27 +187,47 @@ export const SPRINT_SYNC_STATES_LABEL = {
 };
 
 export const RETRO_FEEDBACK_TYPES = {
-    GOAL: 0,
+    NOTE: 0,
     HIGHLIGHT: 1,
-    NOTE: 2,
+    GOAL: 2,
 };
 
-export const RETRO_FEEDBACK_SECTIONS = {
-    MAIN_GOALS: 0,
-    ACCOMPLISHMENTS: 1,
-    ADDITIONAL_THINGS_DONE: 2,
-    OTHER_HIGHLIGHTS: 3,
-    KEY_TAKEAWAYS: 4,
-    THINGS_WELL_DONE: 5,
-    THINGS_TO_BE_IMPROVED_ON: 6,
+export const RETRO_FEEDBACK_GOAL_TYPES = {
+    ADDED: 'goals-added',
+    COMPLETED: 'goals-accomplished',
+    PENDING: 'goals-pending',
 };
 
-export const RETRO_FEEDBACK_SECTION_TYPE_MAP = {
-    [RETRO_FEEDBACK_SECTIONS.MAIN_GOALS]: RETRO_FEEDBACK_TYPES.GOAL,
-    [RETRO_FEEDBACK_SECTIONS.ACCOMPLISHMENTS]: RETRO_FEEDBACK_TYPES.GOAL,
-    [RETRO_FEEDBACK_SECTIONS.ADDITIONAL_THINGS_DONE]: RETRO_FEEDBACK_TYPES.HIGHLIGHT,
-    [RETRO_FEEDBACK_SECTIONS.OTHER_HIGHLIGHTS]: RETRO_FEEDBACK_TYPES.HIGHLIGHT,
-    [RETRO_FEEDBACK_SECTIONS.KEY_TAKEAWAYS]: RETRO_FEEDBACK_TYPES.NOTE,
-    [RETRO_FEEDBACK_SECTIONS.THINGS_WELL_DONE]: RETRO_FEEDBACK_TYPES.NOTE,
-    [RETRO_FEEDBACK_SECTIONS.THINGS_TO_BE_IMPROVED_ON]: RETRO_FEEDBACK_TYPES.GOAL,
+export const RETRO_FEEDBACK_SCOPE_TYPES = {
+    Team: 0,
+    Individual: 1,
 };
+
+export const RETRO_FEEDBACK_SCOPE_LABELS = {
+    [RETRO_FEEDBACK_SCOPE_TYPES.Team]: 'Team',
+    [RETRO_FEEDBACK_SCOPE_TYPES.Individual]: 'Individual',
+};
+
+export const RETRO_FEEDBACK_GOAL_KEY = 'goal';
+
+export const SPRINT_NOTES_SECTIONS_LIST = [
+    {
+        KEY: 'key-takeaways',
+        LABEL: 'Key Takeaways',
+    },
+    {
+        KEY: 'things-well-done',
+        LABEL: 'Things Well Done',
+    },
+];
+
+export const HIGHLIGHTS_LIST = [
+    {
+        KEY: 'additional-things-done',
+        LABEL: 'Additional things Done'
+    },
+    {
+        KEY: 'other-highlights',
+        LABEL: 'Other Highlights'
+    }
+];

@@ -254,4 +254,70 @@ export class RetrospectiveService {
             )
             .post('sprints', sprintDetails);
     }
+
+    getSprintHighlights(retrospectiveID, sprintID): Observable<any> {
+        return this.restangular
+            .one(
+                API_URLS.sprintHighlights
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+            )
+            .get();
+    }
+
+    addSprintHighlight(retrospectiveID, sprintID, highlightSubType): Observable<any> {
+        const highlightData = {
+            subType: highlightSubType
+        };
+        return this.restangular
+            .one(
+                API_URLS.sprintHighlights
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+            )
+            .post('', highlightData);
+    }
+
+    updateSprintHighlight(retrospectiveID, sprintID, highlightData): Observable<any> {
+        return this.restangular
+            .one(
+                API_URLS.sprintHighlight
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+                    .replace(':highlightID', highlightData.ID)
+            )
+            .customPUT(highlightData);
+    }
+
+    getSprintGoals(retrospectiveID, sprintID, goalType): Observable<any> {
+        return this.restangular
+            .one(
+                API_URLS.sprintGoals
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+            )
+            .customGET('', {goalType: goalType});
+    }
+
+    resolveSprintGoal(retrospectiveID, sprintID, goalID) {
+        return this.restangular
+            .one(
+                API_URLS.resolveSprintGoal
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+                    .replace(':goalID', goalID)
+            )
+            .post();
+    }
+
+    unresolveSprintGoal(retrospectiveID, sprintID, goalID) {
+        return this.restangular
+            .one(
+                API_URLS.resolveSprintGoal
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+                    .replace(':goalID', goalID)
+            )
+            .remove();
+    }
 }
