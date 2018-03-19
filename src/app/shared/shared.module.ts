@@ -23,6 +23,7 @@ import { NumericCellEditorComponent } from './ag-grid-editors/numeric-cell-edito
 import { SelectCellEditorComponent } from './ag-grid-editors/select-cell-editor/select-cell-editor.component';
 import { ClickableButtonRendererComponent } from './ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
 import { RatingRendererComponent } from './ag-grid-renderers/rating-renderer/rating-renderer.component';
+import { DatePickerEditorComponent } from './ag-grid-editors/date-picker-editor/date-picker-editor.component';
 
 @NgModule({
     imports: [
@@ -36,7 +37,8 @@ import { RatingRendererComponent } from './ag-grid-renderers/rating-renderer/rat
             NumericCellEditorComponent,
             SelectCellEditorComponent,
             RatingRendererComponent,
-            ClickableButtonRendererComponent
+            ClickableButtonRendererComponent,
+            DatePickerEditorComponent
         ])
     ],
     declarations: [
@@ -47,7 +49,8 @@ import { RatingRendererComponent } from './ag-grid-renderers/rating-renderer/rat
         NumericCellEditorComponent,
         SelectCellEditorComponent,
         RatingRendererComponent,
-        ClickableButtonRendererComponent
+        ClickableButtonRendererComponent,
+        DatePickerEditorComponent
     ],
     exports: [
         ValuesPipe,

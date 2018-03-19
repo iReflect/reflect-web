@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import {CommonModule, DatePipe} from '@angular/common';
 import { NgModule } from '@angular/core';
 
 // Import Modules
@@ -19,6 +19,7 @@ import { RetrospectiveDashboardComponent } from './retrospective-dashboard/retro
 import { SprintListComponent } from './sprint-list/sprint-list.component';
 import { SprintCreateComponent } from './sprint-create/sprint-create.component';
 import { RetrospectiveFeedbackComponent } from './retrospective-feedback/retrospective-feedback.component';
+import { SprintNotesComponent } from './sprint-notes/sprint-notes.component';
 
 
 @NgModule({
@@ -42,9 +43,12 @@ import { RetrospectiveFeedbackComponent } from './retrospective-feedback/retrosp
         SprintListComponent,
         SprintCreateComponent,
         RetrospectiveFeedbackComponent,
+        SprintNotesComponent,
     ],
     exports: [],
-    providers: [],
+    providers: [
+        DatePipe
+    ],
     entryComponents: [
         RetrospectiveCreateComponent,
         RetrospectTaskModalComponent,

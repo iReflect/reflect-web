@@ -3,6 +3,7 @@ import { API_URLS } from '../../../constants/api-urls';
 import { RestApiHelperService } from '../utils/rest-api-helper.service';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
+import {RETRO_FEEDBACK_TYPES} from "../../../constants/app-constants";
 
 @Injectable()
 export class RetrospectiveService {
@@ -254,4 +255,73 @@ export class RetrospectiveService {
             )
             .post('sprints', sprintDetails);
     }
+
+    getSprintNotes(retrospectiveID, sprintID): Observable<any> {
+        return this.restangular
+            .one(
+                API_URLS.sprintNotes
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+            )
+            .get();
+    }
+
+    addNewRetroNote(retrospectiveID, sprintID, noteSubType): Observable<any> {
+        const noteData = {
+            subType: noteSubType
+        };
+        return this.restangular
+            .one(
+                API_URLS.sprintNotes
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+            )
+            .post('', noteData);
+    }
+
+    updateRetroNote(retrospectiveID, sprintID, noteData): Observable<any> {
+        return this.restangular
+            .one(
+                API_URLS.sprintNoteDetail
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+                    .replace(':noteID', noteData.ID)
+            )
+            .customPUT(noteData);
+    }
+
+    getSprintGoals(retrospectiveID, sprintID, goalType): Observable<any> {
+        return this.restangular
+            .one(
+                API_URLS.sprintGoals
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+            )
+            .customGET('', {goalType: goalType});
+    }
+
+    addNewRetroGoal(retrospectiveID, sprintID): Observable<any> {
+        const data = {
+            subType: 'goal'
+        };
+        return this.restangular
+            .one(
+                API_URLS.sprintGoals
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+            )
+            .post('', data);
+    }
+
+    updateRetroGoal(retrospectiveID, sprintID, goalData): Observable<any> {
+        return this.restangular
+            .one(
+                API_URLS.sprintNoteDetail
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+                    .replace(':noteID', goalData.ID)
+            )
+            .customPUT(goalData);
+    }
+
 }

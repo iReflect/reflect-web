@@ -236,12 +236,12 @@ export class RetrospectTaskModalComponent implements OnDestroy {
                     editable: true,
                     cellEditor: 'selectEditor',
                     cellEditorParams: {
-                        labels: MEMBER_TASK_ROLES_LABEL,
-                        values: [
-                            MEMBER_TASK_ROLES.IMPLEMENTOR,
-                            MEMBER_TASK_ROLES.REVIEWER,
-                            MEMBER_TASK_ROLES.VALIDATOR
-                        ]
+                        selectOptions: _.map(MEMBER_TASK_ROLES_LABEL, (value, key) => {
+                            return {
+                                id: _.parseInt(key),
+                                value: value
+                            };
+                        }),
                     },
                     onCellValueChanged: (cellParams) => {
                         if ((cellParams.newValue !== cellParams.oldValue) &&
@@ -298,14 +298,12 @@ export class RetrospectTaskModalComponent implements OnDestroy {
                     editable: true,
                     cellEditor: 'selectEditor',
                     cellEditorParams: {
-                        labels: RATING_STATES_LABEL,
-                        values: [
-                            this.ratingStates.RED,
-                            this.ratingStates.IMPROVE,
-                            this.ratingStates.DECENT,
-                            this.ratingStates.GOOD,
-                            this.ratingStates.NOTABLE
-                        ]
+                        selectOptions: _.map(RATING_STATES_LABEL, (value, key) => {
+                            return {
+                                id: _.parseInt(key),
+                                value: value
+                            };
+                        }),
                     },
                     cellRenderer: 'ratingRenderer',
                     onCellValueChanged: (cellParams) => {

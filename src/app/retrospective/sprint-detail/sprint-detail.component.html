@@ -77,7 +77,10 @@
     </mat-tab>
     <mat-tab label="Notes">
       <div *ngIf="sprintDetails.LastSyncedAt && !sprintDetails.CurrentlySyncing; else not_synced">
-        <app-retrospective-feedback></app-retrospective-feedback>
+        <app-sprint-notes [isTabActive]="selectedTabIndex === 3"
+                          [sprintStatus]="sprintStatus"
+                          [retrospectiveID]="retrospectiveID"
+                          [sprintID]="sprintID"></app-sprint-notes>
       </div>
     </mat-tab>
   </mat-tab-group>

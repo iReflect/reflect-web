@@ -13,6 +13,7 @@ import { SelectCellEditorComponent } from '../../shared/ag-grid-editors/select-c
 import {
     ClickableButtonRendererComponent
 } from '../../shared/ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
+import * as _ from 'lodash';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
@@ -335,14 +336,12 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                     editable: true,
                     cellEditor: 'ratingEditor',
                     cellEditorParams: {
-                        labels: RATING_STATES_LABEL,
-                        values: [
-                            this.ratingStates.RED,
-                            this.ratingStates.IMPROVE,
-                            this.ratingStates.DECENT,
-                            this.ratingStates.GOOD,
-                            this.ratingStates.NOTABLE
-                        ]
+                        selectOptions: _.map(RATING_STATES_LABEL, (value, key) => {
+                            return {
+                                id: _.parseInt(key),
+                                value: value
+                            };
+                        }),
                     },
                     cellRenderer: 'ratingRenderer',
                     onCellValueChanged: (cellParams) => {
