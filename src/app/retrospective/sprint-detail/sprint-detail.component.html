@@ -57,13 +57,17 @@
   <mat-tab-group [(selectedIndex)]="selectedTabIndex">
     <mat-tab label="Highlights">
       <div *ngIf="sprintDetails.LastSyncedAt && !sprintDetails.CurrentlySyncing; else not_synced">
-        <app-retrospective-feedback></app-retrospective-feedback>
+        <app-highlights [isTabActive]="selectedTabIndex === 0"
+                        [sprintStatus]="sprintStatus"
+                        [retrospectiveID]="retrospectiveID"
+                        [sprintID]="sprintID"></app-highlights>
       </div>
     </mat-tab>
     <mat-tab label="Sprint Task Summary">
       <div *ngIf="sprintDetails.LastSyncedAt && !sprintDetails.CurrentlySyncing; else not_synced">
         <app-sprint-task-summary [isTabActive]="selectedTabIndex === 1"
-                                 [sprintStatus]="sprintStatus" [retrospectiveID]="retrospectiveID"
+                                 [sprintStatus]="sprintStatus"
+                                 [retrospectiveID]="retrospectiveID"
                                  [sprintID]="sprintID"></app-sprint-task-summary>
       </div>
     </mat-tab>

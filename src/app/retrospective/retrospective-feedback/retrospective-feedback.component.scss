@@ -10,3 +10,14 @@
     height: 100%;
   }
 }
+
+.add-more {
+  display: flex;
+  width: 7%;
+  &:hover {
+    background-color: lightgrey;
+  }
+  span {
+    margin-top: 3px;
+  }
+}
