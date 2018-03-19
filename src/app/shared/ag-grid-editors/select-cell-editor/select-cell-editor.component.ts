@@ -9,34 +9,23 @@ import { ICellEditorAngularComp } from 'ag-grid-angular';
 })
 export class SelectCellEditorComponent implements ICellEditorAngularComp, AfterViewInit {
     value: string;
-    values: [ string ];
-    labels: [ string ];
+    selectOptions: any = [];
 
     private params: ICellEditorParams;
-    private selectedIndex: number;
     @ViewChild('select', {read: ViewContainerRef}) private select;
 
     constructor() { }
 
     agInit(params: any): void {
         this.params = params;
-        this.values = params.values;
-        this.labels = params.labels;
+        this.selectOptions = params.selectOptions;
         this.value = params.value;
-        this.selectedIndex = this.values.findIndex((item) => {
-            return item === params.value;
-        });
     }
 
     ngAfterViewInit() {
         setTimeout(() => {
             this.select.element.nativeElement.focus();
         });
-        this.selectBasedOnSelectedIndex();
-    }
-
-    private selectBasedOnSelectedIndex() {
-        this.value = this.values[this.selectedIndex];
     }
 
     isPopup(): boolean {

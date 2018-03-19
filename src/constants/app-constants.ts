@@ -96,8 +96,27 @@ export const API_RESPONSE_MESSAGES = {
     sprintDiscardError: 'Cannot Discard Sprint',
     refreshSprintError: 'Cannot initiate sprint computation',
     autoRefreshFailure: 'Failed to refresh data!',
-    sprintHighlightsUpdateError: `Couldn't update sprint highlights`,
-    sprintHighlightsUpdateSuccess: `Successfully updated sprint highlights`,
+
+    goalResolvedSuccessfully: 'Goal resolved successfully',
+    goalResolveFailed: `Failed to resolve the goal`,
+
+    goalUnResolvedSuccessfully: 'Goal un-resolved successfully',
+    goalUnResolveFailed: `Failed to un-resolve the goal`,
+
+    sprintHighlightsUpdateError: `Couldn't update sprint highlight`,
+    sprintHighlightsUpdateSuccess: 'Successfully updated sprint highlight',
+    sprintHighlightsAddError: `Couldn't add a sprint highlight`,
+    sprintHighlightsAddSuccess: 'Successfully added a sprint highlight',
+
+    sprintNotesUpdateError: `Couldn't update sprint note`,
+    sprintNotesUpdateSuccess: 'Successfully updated sprint note',
+    sprintNotesAddError: `Couldn't add a sprint note`,
+    sprintNotesAddSuccess: 'Successfully added a sprint note',
+
+    sprintGoalsUpdateError: `Couldn't update sprint goal`,
+    sprintGoalsUpdateSuccess: 'Successfully updated sprint goal',
+    sprintGoalsAddError: `Couldn't add a sprint goal`,
+    sprintGoalsAddSuccess: 'Successfully added a sprint goal',
 };
 
 export const QUESTION_RESPONSE_SEPARATOR = ',';

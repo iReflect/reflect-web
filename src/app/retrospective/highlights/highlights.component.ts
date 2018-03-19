@@ -1,9 +1,14 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { MatSnackBar } from '@angular/material';
+
 import {
-    RETRO_FEEDBACK_TYPES, SNACKBAR_DURATION, API_RESPONSE_MESSAGES, HIGHLIGHTS_LIST, RETRO_FEEDBACK_GOAL_TYPES
+    RETRO_FEEDBACK_TYPES,
+    SNACKBAR_DURATION,
+    API_RESPONSE_MESSAGES,
+    HIGHLIGHTS_LIST,
+    RETRO_FEEDBACK_GOAL_TYPES
 } from '../../../constants/app-constants';
+import { RetrospectiveService } from '../../shared/services/retrospective.service';
 
 @Component({
     selector: 'app-highlights',
