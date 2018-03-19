@@ -12,7 +12,7 @@ import {MatSnackBar} from '@angular/material';
 import {DatePipe} from '@angular/common';
 import * as _ from 'lodash';
 import {SelectCellEditorComponent} from '../../shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
-import {DatePickerEditorComponent} from "../../shared/ag-grid-editors/date-picker-editor/date-picker-editor.component";
+import {DatePickerEditorComponent} from '../../shared/ag-grid-editors/date-picker-editor/date-picker-editor.component';
 
 @Component({
   selector: 'app-retrospective-feedback',
@@ -128,7 +128,12 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                     minWidth: 160,
                     editable: editable,
                     cellEditor: 'datePicker',
-                    valueFormatter: (cellParams) => this.getDateFromString(cellParams.value || '')
+                    valueFormatter: (cellParams) => this.getDateFromString(cellParams.value || ''),
+                    onCellValueChanged: (cellParams) => {
+                        if (!cellParams.newValue || cellParams.newValue !== cellParams.oldValue) {
+                            this.updateRetroFeedback(cellParams);
+                        }
+                    }
                 },
                 {
                     headerName: 'Resolved At',

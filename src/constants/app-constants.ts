@@ -98,6 +98,7 @@ export const API_RESPONSE_MESSAGES = {
     autoRefreshFailure: 'Failed to refresh data!',
     sprintHighlightsUpdateError: `Couldn't update sprint highlights`,
     sprintHighlightsUpdateSuccess: `Successfully updated sprint highlights`,
+    dateNullError: 'Cannot set date as null'
 };
 
 export const QUESTION_RESPONSE_SEPARATOR = ',';

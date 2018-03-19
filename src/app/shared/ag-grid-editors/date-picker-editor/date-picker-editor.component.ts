@@ -1,7 +1,8 @@
 import { AfterViewInit, Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { ICellEditorParams } from 'ag-grid';
 import { ICellEditorAngularComp } from 'ag-grid-angular';
-import { MatDatepicker } from '@angular/material';
+import { MatDatepicker, MatSnackBar } from '@angular/material';
+import { API_RESPONSE_MESSAGES, SNACKBAR_DURATION } from '../../../../constants/app-constants';
 
 @Component({
     selector: 'app-date-picker-editor',
@@ -10,17 +11,16 @@ import { MatDatepicker } from '@angular/material';
 })
 export class DatePickerEditorComponent implements ICellEditorAngularComp, AfterViewInit {
     params: ICellEditorParams;
-    private value: string;
+    value: Date;
     @ViewChild('picker', {read: MatDatepicker}) picker: MatDatepicker<Date>;
 
-    constructor() { }
+    constructor(private snackBar: MatSnackBar) { }
 
     ngAfterViewInit() {
-        this.picker.open();
     }
 
     isPopup(): boolean {
-        return false;
+        return true;
     }
 
     isCancelBeforeStart(): boolean {
@@ -28,22 +28,23 @@ export class DatePickerEditorComponent implements ICellEditorAngularComp, AfterV
     }
 
     isCancelAfterEnd(): boolean {
+        if (this.value == null) {
+            this.snackBar.open(API_RESPONSE_MESSAGES.dateNullError, '', {duration: SNACKBAR_DURATION});
+            return true;
+        }
         return false;
     }
 
     agInit(params: any): void {
         this.params = params;
         this.value = params.value;
+        console.log(params.value);
     }
 
-    getValue(): string {
+    getValue() {
         return this.value;
     }
 
     onSelectChange(e): void {
-        setTimeout(function() {
-            this.params.stopEditing();
-        }.bind(this));
     }
-
 }
