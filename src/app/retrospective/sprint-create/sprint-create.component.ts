@@ -79,12 +79,16 @@ export class SprintCreateComponent implements OnInit {
         }
         this.retrospectiveService.createSprint(this.data.retrospectiveID, sprintDetails).subscribe(
             () => {
-                this.snackBar.open(API_RESPONSE_MESSAGES.sprintCreated, '', {duration: SNACKBAR_DURATION});
-                this.closeDialog(true);
+                this.snackBar.open(
+                    API_RESPONSE_MESSAGES.sprintCreated,
+                    '', {duration: SNACKBAR_DURATION});
+                this.dialogRef.close(true);
                 this.disableButton = false;
             },
-            () => {
-                this.snackBar.open(API_RESPONSE_MESSAGES.sprintCreateError, '', {duration: SNACKBAR_DURATION});
+            err => {
+                this.snackBar.open(
+                    err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.sprintCreateError,
+                    '', {duration: SNACKBAR_DURATION});
                 this.disableButton = false;
             }
         );

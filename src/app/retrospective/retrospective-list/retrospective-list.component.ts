@@ -26,8 +26,10 @@ export class RetrospectiveListComponent implements OnInit {
         this.dataSource = new RetrospectiveListDataSource(this.retrospectiveService, this.showCannotGetRetrospectivesError.bind(this));
     }
 
-    showCannotGetRetrospectivesError() {
-        this.snackBar.open(API_RESPONSE_MESSAGES.getRetrospectivesError, '', {duration: SNACKBAR_DURATION});
+    showCannotGetRetrospectivesError(message) {
+        this.snackBar.open(
+            message || API_RESPONSE_MESSAGES.getRetrospectivesError,
+            '', {duration: SNACKBAR_DURATION});
     }
 
     navigateToRetrospectiveDetail(row) {
@@ -56,8 +58,10 @@ export class RetrospectiveListComponent implements OnInit {
                     .replace(':retrospectiveID', row.ID)
                     .replace(':sprintID', response.data.ID));
             },
-            () => {
-                this.snackBar.open(API_RESPONSE_MESSAGES.noSprintsError, '', {duration: SNACKBAR_DURATION});
+            err => {
+                this.snackBar.open(
+                    err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.noSprintsError,
+                    '', {duration: SNACKBAR_DURATION});
                 this.router.navigateByUrl(APP_ROUTE_URLS.retrospectiveDashboard
                     .replace(':retrospectiveID', row.ID));
             }

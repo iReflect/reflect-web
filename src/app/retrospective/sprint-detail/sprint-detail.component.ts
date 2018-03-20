@@ -63,8 +63,10 @@ export class SprintDetailComponent implements OnInit {
                     setTimeout(() => this.getSprintDetails(), 5000);
                 }
             },
-            () => {
-                this.snackBar.open(API_RESPONSE_MESSAGES.getSprintDetailsError, '', {duration: SNACKBAR_DURATION});
+            err => {
+                this.snackBar.open(
+                    err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.getSprintDetailsError,
+                    '', {duration: SNACKBAR_DURATION});
                 this.navigateToRetrospectiveDashboard();
             }
         );
@@ -98,25 +100,37 @@ export class SprintDetailComponent implements OnInit {
                         this.retrospectiveService.activateSprint(this.retrospectiveID, this.sprintID).subscribe(
                             () => {
                                 this.sprintStatus = this.sprintStates.ACTIVE;
-                                this.snackBar.open(API_RESPONSE_MESSAGES.sprintActivated, '', {duration: SNACKBAR_DURATION});
+                                this.snackBar.open(
+                                    API_RESPONSE_MESSAGES.sprintActivated,
+                                    '', {duration: SNACKBAR_DURATION});
                             },
-                            () => this.sprintStateChangeError(API_RESPONSE_MESSAGES.sprintActivateError)
+                            err => this.sprintStateChangeError(
+                                err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.sprintActivateError
+                            )
                         );
                     } else if (action === this.sprintActions.FREEZE) {
                         this.retrospectiveService.freezeSprint(this.retrospectiveID, this.sprintID).subscribe(
                             () => {
                                 this.sprintStatus = this.sprintStates.FROZEN;
-                                this.snackBar.open(API_RESPONSE_MESSAGES.sprintFrozen, '', {duration: SNACKBAR_DURATION});
+                                this.snackBar.open(
+                                    API_RESPONSE_MESSAGES.sprintFrozen,
+                                    '', {duration: SNACKBAR_DURATION});
                             },
-                            () => this.sprintStateChangeError(API_RESPONSE_MESSAGES.sprintFreezeError)
+                            err => this.sprintStateChangeError(
+                                err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.sprintFreezeError
+                            )
                         );
                     } else if (action === this.sprintActions.DISCARD) {
                         this.retrospectiveService.discardSprint(this.retrospectiveID, this.sprintID).subscribe(
                             () => {
-                                this.snackBar.open(API_RESPONSE_MESSAGES.sprintDiscarded, '', {duration: SNACKBAR_DURATION});
+                                this.snackBar.open(
+                                    API_RESPONSE_MESSAGES.sprintDiscarded,
+                                    '', {duration: SNACKBAR_DURATION});
                                 this.navigateToRetrospectiveDashboard();
                             },
-                            () => this.sprintStateChangeError(API_RESPONSE_MESSAGES.sprintDiscardError)
+                            err => this.sprintStateChangeError(
+                                err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.sprintDiscardError
+                            )
                         );
                     } else {
                         this.sprintStateChangeError(API_RESPONSE_MESSAGES.invalidOption);
@@ -131,11 +145,15 @@ export class SprintDetailComponent implements OnInit {
     refreshSprintDetails() {
         this.retrospectiveService.refreshSprintDetails(this.retrospectiveID, this.sprintID).subscribe(
             () => {
-                this.snackBar.open(API_RESPONSE_MESSAGES.sprintComputationInitiated, '', {duration: SNACKBAR_DURATION});
                 this.sprintDetails.SyncStatus = SPRINT_SYNC_STATES.SYNCING;
+                this.snackBar.open(
+                    API_RESPONSE_MESSAGES.sprintComputationInitiated,
+                    '', {duration: SNACKBAR_DURATION});
             },
-            () => {
-                this.snackBar.open(API_RESPONSE_MESSAGES.refreshSprintError, '', {duration: SNACKBAR_DURATION});
+            err => {
+                this.snackBar.open(
+                    err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.refreshSprintError,
+                    '', {duration: SNACKBAR_DURATION});
             }
         );
     }
@@ -158,6 +176,4 @@ export class SprintDetailComponent implements OnInit {
         }
         return wfirst + days + wlast;
     }
-
-
 }

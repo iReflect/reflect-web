@@ -22,8 +22,8 @@ export class SprintListComponent implements OnInit {
                 private router: Router,
                 private changeDetectorRefs: ChangeDetectorRef) { }
 
-    showCannotGetSprintsError() {
-        this.snackBar.open(API_RESPONSE_MESSAGES.getSprintsError, '', {duration: SNACKBAR_DURATION});
+    showCannotGetSprintsError(message) {
+        this.snackBar.open(message || API_RESPONSE_MESSAGES.getSprintsError, '', {duration: SNACKBAR_DURATION});
     }
 
     refresh() {

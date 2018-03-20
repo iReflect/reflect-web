@@ -109,8 +109,10 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             response => {
                 this.retroMembers = response.data.Members;
             },
-            () => {
-                this.snackBar.open(API_RESPONSE_MESSAGES.getRetrospectiveMembersError, '', {duration: SNACKBAR_DURATION});
+            err => {
+                this.snackBar.open(
+                    err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.getRetrospectiveMembersError,
+                    '', {duration: SNACKBAR_DURATION});
             }
         );
     }
@@ -168,11 +170,15 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                         this.gridApi.sizeColumnsToFit();
                     }
                 },
-                () => {
+                err => {
                     if (isRefresh) {
-                        this.snackBar.open(API_RESPONSE_MESSAGES.autoRefreshFailure, '', {duration: SNACKBAR_DURATION});
+                        this.snackBar.open(
+                            err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.autoRefreshFailure,
+                            '', {duration: SNACKBAR_DURATION});
                     } else {
-                        this.snackBar.open(API_RESPONSE_MESSAGES.getSprintMemberSummaryError, '', {duration: SNACKBAR_DURATION});
+                        this.snackBar.open(
+                            err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.getSprintMemberSummaryError,
+                            '', {duration: SNACKBAR_DURATION});
                     }
                 }
             );
@@ -180,18 +186,24 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
 
     addSprintMember() {
         if (this.selectedMemberID === undefined) {
-            this.snackBar.open(API_RESPONSE_MESSAGES.memberNotSelectedError, '', {duration: SNACKBAR_DURATION});
+            this.snackBar.open(
+                API_RESPONSE_MESSAGES.memberNotSelectedError,
+                '', {duration: SNACKBAR_DURATION});
         } else if (this.memberIDs.indexOf(this.selectedMemberID) !== -1) {
-            this.snackBar.open(API_RESPONSE_MESSAGES.memberAlreadyPresent, '', {duration: SNACKBAR_DURATION});
+            this.snackBar.open(
+                API_RESPONSE_MESSAGES.memberAlreadyPresent,
+                '', {duration: SNACKBAR_DURATION});
         } else {
             this.retrospectiveService.addSprintMember(this.retrospectiveID, this.sprintID, this.selectedMemberID)
                 .subscribe(
                     response => {
-                        this.gridApi.updateRowData({add: [response.data]});
+                        this.gridApi.updateRowData({ add: [response.data] });
                         this.memberIDs.push(this.selectedMemberID);
                     },
-                    () => {
-                        this.snackBar.open(API_RESPONSE_MESSAGES.addSprintMemberError, '', {duration: SNACKBAR_DURATION});
+                    err => {
+                        this.snackBar.open(
+                            err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.addSprintMemberError,
+                            '', {duration: SNACKBAR_DURATION});
                     }
                 );
         }
@@ -202,10 +214,14 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         this.retrospectiveService.updateSprintMember(this.retrospectiveID, this.sprintID, memberData).subscribe(
             response => {
                 params.node.setData(response.data);
-                this.snackBar.open(API_RESPONSE_MESSAGES.memberUpdated, '', {duration: SNACKBAR_DURATION});
+                this.snackBar.open(
+                    API_RESPONSE_MESSAGES.memberUpdated,
+                    '', {duration: SNACKBAR_DURATION});
             },
-            () => {
-                this.snackBar.open(API_RESPONSE_MESSAGES.updateSprintMemberError, '', {duration: SNACKBAR_DURATION});
+            err => {
+                this.snackBar.open(
+                    err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.updateSprintMemberError,
+                    '', {duration: SNACKBAR_DURATION});
                 this.revertCellValue(params);
             });
     }
@@ -231,11 +247,13 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                 this.retrospectiveService.deleteSprintMember(this.retrospectiveID, this.sprintID, member.ID)
                     .subscribe(
                         () => {
-                            this.gridApi.updateRowData({remove: [member]});
+                            this.gridApi.updateRowData({ remove: [member] });
                             this.memberIDs = this.memberIDs.filter(ID => ID !== member.ID);
                         },
-                        () => {
-                            this.snackBar.open(API_RESPONSE_MESSAGES.deleteSprintMemberError, '', {duration: SNACKBAR_DURATION});
+                        err => {
+                            this.snackBar.open(
+                                err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.deleteSprintMemberError,
+                                '', {duration: SNACKBAR_DURATION});
                         }
                     );
             }
@@ -343,7 +361,9 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                             if (cellParams.newValue >= 0) {
                                 this.updateSprintMember(cellParams);
                             } else {
-                                this.snackBar.open(API_RESPONSE_MESSAGES.allocationNegativeError, '', {duration: SNACKBAR_DURATION});
+                                this.snackBar.open(
+                                    API_RESPONSE_MESSAGES.allocationNegativeError,
+                                    '', {duration: SNACKBAR_DURATION});
                                 this.revertCellValue(cellParams);
                             }
                         }
@@ -366,7 +386,9 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                             if (cellParams.newValue >= 0) {
                                 this.updateSprintMember(cellParams);
                             } else {
-                                this.snackBar.open(API_RESPONSE_MESSAGES.expectationNegativeError, '', {duration: SNACKBAR_DURATION});
+                                this.snackBar.open(
+                                    API_RESPONSE_MESSAGES.expectationNegativeError,
+                                    '', {duration: SNACKBAR_DURATION});
                                 this.revertCellValue(cellParams);
                             }
                         }
@@ -389,10 +411,14 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                     onCellValueChanged: (cellParams) => {
                         if (cellParams.newValue !== cellParams.oldValue) {
                             if (cellParams.newValue < 0) {
-                                this.snackBar.open(API_RESPONSE_MESSAGES.vacationNumberError, '', {duration: SNACKBAR_DURATION});
+                                this.snackBar.open(
+                                    API_RESPONSE_MESSAGES.vacationNumberError,
+                                    '', {duration: SNACKBAR_DURATION});
                                 this.revertCellValue(cellParams);
                             } else if (cellParams.newValue > this.sprintDays) {
-                                this.snackBar.open(API_RESPONSE_MESSAGES.vacationTimeError, '', {duration: SNACKBAR_DURATION});
+                                this.snackBar.open(
+                                    API_RESPONSE_MESSAGES.vacationTimeError,
+                                    '', {duration: SNACKBAR_DURATION});
                                 this.revertCellValue(cellParams);
                             } else {
                                 this.updateSprintMember(cellParams);
