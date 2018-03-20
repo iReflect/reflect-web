@@ -1,39 +1,52 @@
-import { Component, HostListener, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
-import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
-import { RetrospectiveService } from '../../shared/services/retrospective.service';
-import { MatDialog, MatSnackBar } from '@angular/material';
-import { API_RESPONSE_MESSAGES, SNACKBAR_DURATION } from '../../../constants/app-constants';
-import { RetrospectTaskModalComponent } from '../retrospect-task-modal/retrospect-task-modal.component';
 import {
-    ClickableButtonRendererComponent
-} from '../../shared/ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
+    Component,
+    HostListener,
+    Input,
+    OnChanges,
+    OnDestroy,
+    OnInit,
+    SimpleChanges
+} from '@angular/core';
+import { MatDialog, MatSnackBar } from '@angular/material';
+import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
+import 'rxjs/add/observable/interval';
+import 'rxjs/add/operator/takeUntil';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/takeUntil';
-import 'rxjs/add/observable/interval';
+import { API_RESPONSE_MESSAGES, SNACKBAR_DURATION } from '../../../constants/app-constants';
+import { ClickableButtonRendererComponent } from '../../shared/ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
+import { RetrospectiveService } from '../../shared/services/retrospective.service';
+import { RetrospectTaskModalComponent } from '../retrospect-task-modal/retrospect-task-modal.component';
 
 @Component({
     selector: 'app-sprint-task-summary',
     templateUrl: './sprint-task-summary.component.html',
     styleUrls: ['./sprint-task-summary.component.scss']
 })
-export class SprintTaskSummaryComponent implements OnChanges, OnDestroy {
+export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy {
     gridOptions: GridOptions;
-    enableRefresh = true;
-    autoRefreshPreviousState = true;
+    autoRefreshCurrentState: boolean;
     destroy$: Subject<boolean> = new Subject<boolean>();
     overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the tasks are loading!</span>';
     overlayNoRowsTemplate = '<span>No Tasks in this sprint!</span>';
-
+    @Input() retrospectiveID;
+    @Input() sprintID;
+    @Input() sprintStatus;
+    @Input() isTabActive: boolean;
+    @Input() enableRefresh: boolean;
     private params: any;
     private columnDefs: any;
     private gridApi: GridApi;
     private columnApi: ColumnApi;
 
-    @Input() retrospectiveID;
-    @Input() sprintID;
-    @Input() sprintStatus;
-    @Input() isTabActive: boolean;
+    constructor(
+        private snackBar: MatSnackBar,
+        public dialog: MatDialog,
+        private retrospectiveService: RetrospectiveService
+    ) {
+        this.columnDefs = this.createColumnDefs();
+        this.setGridOptions();
+    }
 
     @HostListener('window:resize') onResize() {
         if (this.gridApi) {
@@ -43,35 +56,33 @@ export class SprintTaskSummaryComponent implements OnChanges, OnDestroy {
         }
     }
 
-    constructor(private snackBar: MatSnackBar,
-                public dialog: MatDialog,
-                private retrospectiveService: RetrospectiveService) {
-        this.enableRefresh = true;
-        this.columnDefs = this.createColumnDefs();
-        this.setGridOptions();
+    ngOnInit(): void {
+        this.autoRefreshCurrentState = this.enableRefresh;
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (this.gridApi && changes.isTabActive && changes.isTabActive.currentValue) {
+        if(changes.isTabActive) {
+            this.isTabActive = changes.isTabActive.currentValue
+        }
+        if (this.gridApi && this.isTabActive) {
             setTimeout(() => {
                 this.gridApi.sizeColumnsToFit();
                 this.getSprintTaskSummary(true);
             });
         }
+        if (changes.enableRefresh) {
+            this.enableRefresh = changes.enableRefresh.currentValue;
+            this.autoRefreshCurrentState = changes.enableRefresh.currentValue;
+            if (this.autoRefreshCurrentState && this.isTabActive) {
+                this.getSprintTaskSummary(true);
+            }
+        }
     }
 
     ngOnDestroy() {
-        this.enableRefresh = false;
+        this.autoRefreshCurrentState = false;
         this.destroy$.next(true);
         this.destroy$.unsubscribe();
-    }
-
-    toggleAutoRefresh() {
-        this.enableRefresh = !this.enableRefresh;
-        this.autoRefreshPreviousState = this.enableRefresh;
-        if (this.enableRefresh) {
-            this.getSprintTaskSummary(true);
-        }
     }
 
     setGridOptions() {
@@ -97,7 +108,7 @@ export class SprintTaskSummaryComponent implements OnChanges, OnDestroy {
         Observable.interval(5000)
             .takeUntil(this.destroy$)
             .subscribe(() => {
-                if (this.isTabActive && this.enableRefresh) {
+                if (this.isTabActive && this.autoRefreshCurrentState) {
                     this.getSprintTaskSummary(true);
                 }
             });
@@ -124,8 +135,26 @@ export class SprintTaskSummaryComponent implements OnChanges, OnDestroy {
             );
     }
 
+    retrospectSprint(sprintTaskSummaryData) {
+        this.autoRefreshCurrentState = false;
+        const dialogRef = this.dialog.open(RetrospectTaskModalComponent, {
+            width: '90%',
+            data: {
+                taskDetails: sprintTaskSummaryData,
+                sprintID: this.sprintID,
+                retrospectiveID: this.retrospectiveID,
+                sprintStatus: this.sprintStatus,
+                enableRefresh: this.enableRefresh
+            },
+        });
+        dialogRef.afterClosed().subscribe(() => {
+            this.getSprintTaskSummary(true);
+            this.autoRefreshCurrentState = this.enableRefresh;
+        });
+    }
+
     private createColumnDefs() {
-        const columnDefs = [
+        return [
             {
                 headerName: 'Task ID',
                 field: 'TaskID',
@@ -203,24 +232,5 @@ export class SprintTaskSummaryComponent implements OnChanges, OnDestroy {
                 suppressFilter: true,
             }
         ];
-        return columnDefs;
-    }
-
-    retrospectSprint(sprintTaskSummaryData) {
-        this.autoRefreshPreviousState = this.enableRefresh;
-        this.enableRefresh = false;
-        const dialogRef = this.dialog.open(RetrospectTaskModalComponent, {
-            width: '90%',
-            data: {
-                taskDetails: sprintTaskSummaryData,
-                sprintID: this.sprintID,
-                retrospectiveID: this.retrospectiveID,
-                sprintStatus: this.sprintStatus
-            },
-        });
-        dialogRef.afterClosed().subscribe(() => {
-            this.getSprintTaskSummary(true);
-            this.enableRefresh = this.autoRefreshPreviousState;
-        });
     }
 }
