@@ -1,0 +1,36 @@
+<div *ngFor="let highlight of highlightsList">
+  <label>{{highlight.LABEL}}</label>
+  <app-retrospective-feedback
+    [feedbackType]="retroFeedbackTypes.HIGHLIGHT"
+    [feedbackSubType]="highlight.KEY"
+    [sprintStatus]="sprintStatus"
+    [retrospectiveID]="retrospectiveID"
+    [sprintID]="sprintID"
+    [isTabActive]="isTabActive"
+    [teamMembers]="teamMembers"
+    [data]="sprintHighlights"></app-retrospective-feedback>
+</div>
+<div>
+  <label>Accomplished goals</label>
+  <app-retrospective-feedback
+    [feedbackType]="retroFeedbackTypes.GOAL"
+    [feedbackSubType]="goalTypes.COMPLETED"
+    [data]="accomplishedGoals"
+    [teamMembers]="teamMembers"
+    [isTabActive]="isTabActive"
+    [sprintStatus]="sprintStatus"
+    [retrospectiveID]="retrospectiveID"
+    [sprintID]="sprintID"></app-retrospective-feedback>
+</div>
+<div>
+  <label>Pending goals</label>
+  <app-retrospective-feedback
+    [feedbackType]="retroFeedbackTypes.GOAL"
+    [feedbackSubType]="goalTypes.PENDING"
+    [data]="pendingGoals"
+    [teamMembers]="teamMembers"
+    [isTabActive]="isTabActive"
+    [sprintStatus]="sprintStatus"
+    [retrospectiveID]="retrospectiveID"
+    [sprintID]="sprintID"></app-retrospective-feedback>
+</div>

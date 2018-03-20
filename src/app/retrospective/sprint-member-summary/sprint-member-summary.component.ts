@@ -1,18 +1,12 @@
-import {
-    Component,
-    HostListener,
-    Input,
-    OnChanges,
-    OnDestroy,
-    OnInit,
-    SimpleChanges
-} from '@angular/core';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { Component, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
-import 'rxjs/add/observable/interval';
-import 'rxjs/add/operator/takeUntil';
+import { MatDialog, MatSnackBar } from '@angular/material';
+import * as _ from 'lodash';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/operator/takeUntil';
+import 'rxjs/add/observable/interval';
+
 import {
     API_RESPONSE_MESSAGES,
     RATING_STATES,
@@ -22,7 +16,9 @@ import {
 } from '../../../constants/app-constants';
 import { NumericCellEditorComponent } from '../../shared/ag-grid-editors/numeric-cell-editor/numeric-cell-editor.component';
 import { SelectCellEditorComponent } from '../../shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
-import { ClickableButtonRendererComponent } from '../../shared/ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
+import {
+    ClickableButtonRendererComponent
+} from '../../shared/ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
 import { RatingRendererComponent } from '../../shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
 import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.component';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
@@ -43,6 +39,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     destroy$: Subject<boolean> = new Subject<boolean>();
     overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the members are loading!</span>';
     overlayNoRowsTemplate = '<span>No Members for this sprint!</span>';
+
     @Input() retrospectiveID;
     @Input() sprintID;
     @Input() sprintStatus;
@@ -439,14 +436,12 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                     editable: true,
                     cellEditor: 'ratingEditor',
                     cellEditorParams: {
-                        labels: RATING_STATES_LABEL,
-                        values: [
-                            this.ratingStates.RED,
-                            this.ratingStates.IMPROVE,
-                            this.ratingStates.DECENT,
-                            this.ratingStates.GOOD,
-                            this.ratingStates.NOTABLE
-                        ]
+                        selectOptions: _.map(RATING_STATES_LABEL, (value, key) => {
+                            return {
+                                id: _.parseInt(key),
+                                value: value
+                            };
+                        }),
                     },
                     cellRenderer: 'ratingRenderer',
                     onCellValueChanged: (cellParams) => {

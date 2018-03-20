@@ -96,8 +96,28 @@ export const API_RESPONSE_MESSAGES = {
     sprintDiscardError: 'Cannot Discard Sprint',
     refreshSprintError: 'Cannot initiate sprint computation',
     autoRefreshFailure: 'Failed to refresh data!',
-    sprintHighlightsUpdateError: `Couldn't update sprint highlights`,
-    sprintHighlightsUpdateSuccess: `Successfully updated sprint highlights`,
+
+    goalResolvedSuccessfully: 'Goal resolved successfully',
+    goalResolveFailed: `Failed to resolve the goal`,
+
+    goalUnResolvedSuccessfully: 'Goal un-resolved successfully',
+    goalUnResolveFailed: `Failed to un-resolve the goal`,
+
+    sprintHighlightsUpdateError: `Couldn't update sprint highlight`,
+    sprintHighlightsUpdateSuccess: 'Successfully updated sprint highlight',
+    sprintHighlightsAddError: `Couldn't add a sprint highlight`,
+    sprintHighlightsAddSuccess: 'Successfully added a sprint highlight',
+
+    sprintNotesUpdateError: `Couldn't update sprint note`,
+    sprintNotesUpdateSuccess: 'Successfully updated sprint note',
+    sprintNotesAddError: `Couldn't add a sprint note`,
+    sprintNotesAddSuccess: 'Successfully added a sprint note',
+
+    sprintGoalsUpdateError: `Couldn't update sprint goal`,
+    sprintGoalsUpdateSuccess: 'Successfully updated sprint goal',
+    sprintGoalsAddError: `Couldn't add a sprint goal`,
+    sprintGoalsAddSuccess: 'Successfully added a sprint goal',
+    dateNullError: 'Cannot set date as null'
 };
 
 export const QUESTION_RESPONSE_SEPARATOR = ',';
@@ -185,3 +205,49 @@ export const SPRINT_SYNC_STATES_LABEL = {
     [SPRINT_SYNC_STATES.SYNCED]: 'Synced',
     [SPRINT_SYNC_STATES.SYNC_FAILED]: 'Sync Failed'
 };
+
+export const RETRO_FEEDBACK_TYPES = {
+    NOTE: 0,
+    HIGHLIGHT: 1,
+    GOAL: 2,
+};
+
+export const RETRO_FEEDBACK_GOAL_TYPES = {
+    ADDED: 'goals-added',
+    COMPLETED: 'goals-accomplished',
+    PENDING: 'goals-pending',
+};
+
+export const RETRO_FEEDBACK_SCOPE_TYPES = {
+    Team: 0,
+    Individual: 1,
+};
+
+export const RETRO_FEEDBACK_SCOPE_LABELS = {
+    [RETRO_FEEDBACK_SCOPE_TYPES.Team]: 'Team',
+    [RETRO_FEEDBACK_SCOPE_TYPES.Individual]: 'Individual',
+};
+
+export const RETRO_FEEDBACK_GOAL_KEY = 'goal';
+
+export const SPRINT_NOTES_SECTIONS_LIST = [
+    {
+        KEY: 'key-takeaways',
+        LABEL: 'Key Takeaways',
+    },
+    {
+        KEY: 'things-well-done',
+        LABEL: 'Things Well Done',
+    },
+];
+
+export const HIGHLIGHTS_LIST = [
+    {
+        KEY: 'additional-things-done',
+        LABEL: 'Additional things Done'
+    },
+    {
+        KEY: 'other-highlights',
+        LABEL: 'Other Highlights'
+    }
+];

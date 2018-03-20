@@ -254,4 +254,128 @@ export class RetrospectiveService {
             )
             .post('sprints', sprintDetails);
     }
+
+    getSprintHighlights(retrospectiveID, sprintID): Observable<any> {
+        return this.restangular
+            .one(
+                API_URLS.sprintHighlights
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+            )
+            .get();
+    }
+
+    addSprintHighlight(retrospectiveID, sprintID, highlightSubType): Observable<any> {
+        const highlightData = {
+            subType: highlightSubType
+        };
+        return this.restangular
+            .one(
+                API_URLS.sprintHighlights
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+            )
+            .post('', highlightData);
+    }
+
+    updateSprintHighlight(retrospectiveID, sprintID, highlightData): Observable<any> {
+        return this.restangular
+            .one(
+                API_URLS.sprintHighlight
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+                    .replace(':highlightID', highlightData.ID)
+            )
+            .customPUT(highlightData);
+    }
+
+    getSprintGoals(retrospectiveID, sprintID, goalType): Observable<any> {
+        return this.restangular
+            .one(
+                API_URLS.sprintGoals
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+            )
+            .customGET('', {goalType: goalType});
+    }
+
+    resolveSprintGoal(retrospectiveID, sprintID, goalID) {
+        return this.restangular
+            .one(
+                API_URLS.resolveSprintGoal
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+                    .replace(':goalID', goalID)
+            )
+            .post();
+    }
+
+    unresolveSprintGoal(retrospectiveID, sprintID, goalID) {
+        return this.restangular
+            .one(
+                API_URLS.resolveSprintGoal
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+                    .replace(':goalID', goalID)
+            )
+            .remove();
+    }
+
+    addNewRetroGoal(retrospectiveID, sprintID): Observable<any> {
+        const data = {
+            subType: 'goal'
+        };
+        return this.restangular
+            .one(
+                API_URLS.sprintGoals
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+            )
+            .post('', data);
+    }
+
+    updateRetroGoal(retrospectiveID, sprintID, goalData): Observable<any> {
+        return this.restangular
+            .one(
+                API_URLS.sprintGoal
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+                    .replace(':goalID', goalData.ID)
+            )
+            .customPUT(goalData);
+    }
+
+    getSprintNotes(retrospectiveID, sprintID): Observable<any> {
+        return this.restangular
+            .one(
+                API_URLS.sprintNotes
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+            )
+            .get();
+    }
+
+    addNewRetroNote(retrospectiveID, sprintID, noteSubType): Observable<any> {
+        const noteData = {
+            subType: noteSubType
+        };
+        return this.restangular
+            .one(
+                API_URLS.sprintNotes
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+            )
+            .post('', noteData);
+    }
+
+    updateRetroNote(retrospectiveID, sprintID, noteData): Observable<any> {
+        return this.restangular
+            .one(
+                API_URLS.sprintNote
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+                    .replace(':noteID', noteData.ID)
+            )
+            .customPUT(noteData);
+    }
 }

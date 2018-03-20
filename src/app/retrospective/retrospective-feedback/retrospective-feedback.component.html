@@ -1,0 +1,13 @@
+<div>
+  <span (click)="addMoreRow()" class="add-more" *ngIf="feedbackSubType !== goalTypes.COMPLETED && feedbackSubType !== goalTypes.PENDING">
+    <mat-icon>add</mat-icon>
+    <span>Add New</span>
+  </span>
+  <div class="ag-grid-container">
+    <ag-grid-angular
+      class="ag-theme-material"
+      [gridOptions]="gridOptions"
+      [stopEditingWhenGridLosesFocus]="true"
+      (gridReady)="onGridReady($event)"></ag-grid-angular>
+  </div>
+</div>

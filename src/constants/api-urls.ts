@@ -16,6 +16,11 @@ export const API_URLS = {
     latestSprint: '/retrospectives/:retrospectiveID/latest-sprint',
     sprintDetails: '/retrospectives/:retrospectiveID/sprints/:sprintID',
     refreshSprintDetails: '/retrospectives/:retrospectiveID/sprints/:sprintID/process',
+    sprintHighlights: '/retrospectives/:retrospectiveID/sprints/:sprintID/highlights',
+    sprintHighlight: '/retrospectives/:retrospectiveID/sprints/:sprintID/highlights/:highlightID',
+    sprintGoals: '/retrospectives/:retrospectiveID/sprints/:sprintID/goals',
+    sprintGoal: '/retrospectives/:retrospectiveID/sprints/:sprintID/goals/:goalID',
+    resolveSprintGoal: '/retrospectives/:retrospectiveID/sprints/:sprintID/goals/:goalID/resolve',
     sprintMemberSummary: '/retrospectives/:retrospectiveID/sprints/:sprintID/member-summary',
     sprintMembers: '/retrospectives/:retrospectiveID/sprints/:sprintID/members',
     sprintMember: '/retrospectives/:retrospectiveID/sprints/:sprintID/members/:memberID',
@@ -25,5 +30,7 @@ export const API_URLS = {
     sprintTaskMember: '/retrospectives/:retrospectiveID/sprints/:sprintID/tasks/:taskID/members/:memberID',
     activateSprint: '/retrospectives/:retrospectiveID/sprints/:sprintID/activate',
     freezeSprint: '/retrospectives/:retrospectiveID/sprints/:sprintID/freeze',
-    discardSprint: '/sprints/:sprintID'
+    discardSprint: '/sprints/:sprintID',
+    sprintNotes: '/retrospectives/:retrospectiveID/sprints/:sprintID/notes',
+    sprintNote: '/retrospectives/:retrospectiveID/sprints/:sprintID/notes/:noteID',
 };

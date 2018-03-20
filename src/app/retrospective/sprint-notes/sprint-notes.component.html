@@ -1,0 +1,24 @@
+<div class="notes-section">
+  <div *ngFor="let noteSection of notesSectionsList">
+    <span><b>{{ noteSection.LABEL }}</b></span>
+    <app-retrospective-feedback
+      [feedbackType]="retroFeedbackTypes.NOTE"
+      [feedbackSubType]="noteSection.KEY"
+      [sprintStatus]="sprintStatus"
+      [retrospectiveID]="retrospectiveID"
+      [sprintID]="sprintID"
+      [teamMembers]="teamMembers"
+      [data]="sprintNotes"></app-retrospective-feedback>
+  </div>
+  <div>
+    <span><b>Things to be improved</b></span>
+    <app-retrospective-feedback
+      [feedbackType]="retroFeedbackTypes.GOAL"
+      [data]="sprintGoals"
+      [teamMembers]="teamMembers"
+      [sprintStatus]="sprintStatus"
+      [retrospectiveID]="retrospectiveID"
+      [sprintID]="sprintID"
+      [feedbackSubType]="goalTypes.ADDED"></app-retrospective-feedback>
+  </div>
+</div>
