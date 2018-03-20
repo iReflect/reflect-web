@@ -46,7 +46,7 @@
         </ng-template>
         <div>
           <button mat-button (click)="refreshSprintDetails()"
-                  *ngIf="sprintDetails.SyncStatus && sprintDetails.SyncStatus !== syncStates.SYNCING">
+                  *ngIf="sprintDetails && sprintDetails.SyncStatus !== syncStates.SYNCING">
             Re-Sync Sprint
             <mat-icon>refresh</mat-icon>
           </button>
@@ -56,7 +56,7 @@
   </mat-card>
   <mat-tab-group [(selectedIndex)]="selectedTabIndex">
     <mat-tab label="Highlights">
-      <div *ngIf="sprintDetails.LastSyncedAt && !sprintDetails.CurrentlySyncing; else not_synced">
+      <div *ngIf="sprintStatus !== sprintStates.DRAFT">
         <app-highlights [isTabActive]="selectedTabIndex === 0"
                         [sprintStatus]="sprintStatus"
                         [retrospectiveID]="retrospectiveID"
@@ -64,7 +64,8 @@
       </div>
     </mat-tab>
     <mat-tab label="Sprint Task Summary">
-      <div *ngIf="sprintDetails.LastSyncedAt && !sprintDetails.CurrentlySyncing; else not_synced">
+      <div
+        *ngIf="sprintDetails.LastSyncedAt && sprintDetails.SyncStatus !== syncStates.SYNCING; else not_synced">
         <app-sprint-task-summary [isTabActive]="selectedTabIndex === 1"
                                  [sprintStatus]="sprintStatus"
                                  [retrospectiveID]="retrospectiveID"
@@ -72,7 +73,8 @@
       </div>
     </mat-tab>
     <mat-tab label="Sprint Members Summary">
-      <div *ngIf="sprintDetails.LastSyncedAt && !sprintDetails.CurrentlySyncing; else not_synced">
+      <div
+        *ngIf="sprintDetails.LastSyncedAt && sprintDetails.SyncStatus !== syncStates.SYNCING; else not_synced">
         <app-sprint-member-summary [isTabActive]="selectedTabIndex === 2"
                                    [sprintDays]="sprintDays" [sprintStatus]="sprintStatus"
                                    [retrospectiveID]="retrospectiveID"
@@ -80,7 +82,7 @@
       </div>
     </mat-tab>
     <mat-tab label="Notes">
-      <div *ngIf="sprintDetails.LastSyncedAt && !sprintDetails.CurrentlySyncing; else not_synced">
+      <div *ngIf="sprintStatus !== sprintStates.DRAFT">
         <app-sprint-notes [isTabActive]="selectedTabIndex === 3"
                           [sprintStatus]="sprintStatus"
                           [retrospectiveID]="retrospectiveID"
@@ -90,7 +92,8 @@
   </mat-tab-group>
   <ng-template #not_synced>
     <mat-card class="sync-error-card">
-      <div *ngIf="sprintDetails.CurrentlySyncing; then syncing else not_syncing"></div>
+      <div
+        *ngIf="sprintDetails.SyncStatus === syncStates.SYNCING; then syncing else not_syncing"></div>
       <ng-template #syncing>
         <mat-error>
           Please Wait! Sync in Progress!
@@ -98,7 +101,7 @@
       </ng-template>
       <ng-template #not_syncing>
         <mat-error>
-          Please <span (click)="refreshSprintDetails()">Refresh</span> to fetch data!
+          Please Refresh to fetch data!
         </mat-error>
       </ng-template>
     </mat-card>

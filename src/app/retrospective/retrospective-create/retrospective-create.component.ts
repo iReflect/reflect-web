@@ -104,7 +104,7 @@ export class RetrospectiveCreateComponent implements OnInit {
         const requestBody = {
             'title': selectedTeam && selectedTeam.Name || '',
             'team': formValue.team,
-            'storyPointPerWeek': formValue.storyPointPerSprint,
+            'storyPointPerWeek': formValue.storyPointPerWeek,
             'projectName': formValue.projectName,
             'taskProvider': formValue.taskProvider.map(provider => {
                 return {

@@ -50,7 +50,7 @@ export class SprintDetailComponent implements OnInit {
                 this.sprintDetails = response.data;
                 this.sprintStatus = response.data.Status;
                 this.sprintDays = this.workdayCount(moment(response.data.StartDate), moment(response.data.EndDate));
-                if (this.sprintDetails.CurrentlySyncing) {
+                if (this.sprintDetails.SyncStatus == SPRINT_SYNC_STATES.SYNCING) {
                     setTimeout(() => this.getSprintDetails(), 5000);
                 }
             },
@@ -133,12 +133,11 @@ export class SprintDetailComponent implements OnInit {
             });
         }
     }
-
     refreshSprintDetails() {
         this.retrospectiveService.refreshSprintDetails(this.retrospectiveID, this.sprintID).subscribe(
             () => {
                 this.snackBar.open(API_RESPONSE_MESSAGES.sprintComputationInitiated, '', {duration: SNACKBAR_DURATION});
-                this.sprintDetails.CurrentlySyncing = true;
+                this.sprintDetails.SyncStatus = SPRINT_SYNC_STATES.SYNCING;
             },
             () => {
                 this.snackBar.open(API_RESPONSE_MESSAGES.refreshSprintError, '', {duration: SNACKBAR_DURATION});
