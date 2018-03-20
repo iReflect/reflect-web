@@ -80,7 +80,7 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     resumeRefresh() {
-        this.autoRefreshCurrentState = true;
+        this.autoRefreshCurrentState = this.enableRefresh;
     }
 
     getPendingGoals() {
