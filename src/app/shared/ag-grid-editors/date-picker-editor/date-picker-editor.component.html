@@ -1,5 +1,8 @@
-<div class="date-container" tabindex="0">
-  <input matInput (click)="picker.open()" [matDatepicker]="picker" placeholder="Expected At">
+<mat-form-field>
+  <input matInput (click)="picker.open()" [(ngModel)]="value" [matDatepicker]="picker" placeholder="Expected At">
   <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
   <mat-datepicker #picker (selectedChanged)="onSelectChange(e)"></mat-datepicker>
-</div>
+  <mat-error>
+    Expected Date is required.
+  </mat-error>
+</mat-form-field>

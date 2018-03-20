@@ -135,7 +135,12 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                     minWidth: 160,
                     editable: editable,
                     cellEditor: 'datePicker',
-                    valueFormatter: (cellParams) => this.getDateFromString(cellParams.value || '')
+                    valueFormatter: (cellParams) => this.getDateFromString(cellParams.value || ''),
+                    onCellValueChanged: (cellParams) => {
+                        if (!cellParams.newValue || cellParams.newValue !== cellParams.oldValue) {
+                            this.updateRetroFeedback(cellParams);
+                        }
+                    }
                 },
             ];
 
@@ -223,7 +228,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
             frameworkComponents: {
                 'selectEditor': SelectCellEditorComponent,
                 'clickableButtonRenderer': ClickableButtonRendererComponent,
-                'datePicker': DatePickerEditorComponent
+                'datePicker': DatePickerEditorComponent,
             }
         };
     }
@@ -307,7 +312,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                 this.retrospectiveService.addSprintHighlight(this.retrospectiveID, this.sprintID, this.feedbackSubType)
                     .subscribe(
                         response => {
-                            this.gridApi.updateRowData({ add: [response.data] });
+                            this.gridApi.updateRowData({ add: [response.data], addIndex: 0 });
                             this.snackBar.open(API_RESPONSE_MESSAGES.sprintHighlightsAddSuccess, '', {duration: SNACKBAR_DURATION});
                         },
                         () => {
@@ -318,7 +323,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                 this.retrospectiveService.addNewRetroNote(this.retrospectiveID, this.sprintID, this.feedbackSubType)
                     .subscribe(
                         response => {
-                            this.gridApi.updateRowData({ add: [response.data] });
+                            this.gridApi.updateRowData({ add: [response.data], addIndex: 0 });
                             this.snackBar.open(API_RESPONSE_MESSAGES.sprintNotesAddSuccess, '', {duration: SNACKBAR_DURATION});
                         },
                         () => {
@@ -329,7 +334,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                 this.retrospectiveService.addNewRetroGoal(this.retrospectiveID, this.sprintID)
                     .subscribe(
                         response => {
-                            this.gridApi.updateRowData({ add: [response.data] });
+                            this.gridApi.updateRowData({ add: [response.data], addIndex: 0 });
                             this.snackBar.open(API_RESPONSE_MESSAGES.sprintGoalsAddSuccess, '', {duration: SNACKBAR_DURATION});
                         },
                         () => {

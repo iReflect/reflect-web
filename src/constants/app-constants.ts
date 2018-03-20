@@ -117,6 +117,7 @@ export const API_RESPONSE_MESSAGES = {
     sprintGoalsUpdateSuccess: 'Successfully updated sprint goal',
     sprintGoalsAddError: `Couldn't add a sprint goal`,
     sprintGoalsAddSuccess: 'Successfully added a sprint goal',
+    dateNullError: 'Cannot set date as null'
 };
 
 export const QUESTION_RESPONSE_SEPARATOR = ',';
