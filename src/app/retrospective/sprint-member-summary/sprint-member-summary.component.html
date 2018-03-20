@@ -8,21 +8,20 @@
     <button mat-button (click)="addSprintMember()">Add Member</button>
   </div>
   <div>
-    <button mat-button (click)="getSprintMemberSummary(true)">Refresh <mat-icon>refresh</mat-icon></button>
-    <mat-slide-toggle labelPosition="before" (change)="toggleAutoRefresh()" [checked]="enableRefresh">
-      Autorefresh
-    </mat-slide-toggle>
+    <button mat-button (click)="getSprintMemberSummary(true)">Refresh
+      <mat-icon>refresh</mat-icon>
+    </button>
   </div>
   <div class="ag-grid-container">
-      <ag-grid-angular
-          class="ag-theme-material"
-          [gridOptions]="gridOptions"
-          [stopEditingWhenGridLosesFocus]="true"
-          [overlayLoadingTemplate]="overlayLoadingTemplate"
-          [overlayNoRowsTemplate]="overlayNoRowsTemplate"
-          (gridReady)="onGridReady($event)"
-          (cellEditingStarted)="onCellEditingStarted()"
-          (cellEditingStopped)="onCellEditingStopped()">
-      </ag-grid-angular>
+    <ag-grid-angular
+      class="ag-theme-material"
+      [gridOptions]="gridOptions"
+      [stopEditingWhenGridLosesFocus]="true"
+      [overlayLoadingTemplate]="overlayLoadingTemplate"
+      [overlayNoRowsTemplate]="overlayNoRowsTemplate"
+      (gridReady)="onGridReady($event)"
+      (cellEditingStarted)="onCellEditingStarted()"
+      (cellEditingStopped)="onCellEditingStopped()">
+    </ag-grid-angular>
   </div>
 </div>

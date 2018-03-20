@@ -1,22 +1,31 @@
-import { Component, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
+import {
+    Component,
+    HostListener,
+    Input,
+    OnChanges,
+    OnDestroy,
+    OnInit,
+    SimpleChanges
+} from '@angular/core';
 import { MatDialog, MatSnackBar } from '@angular/material';
-import { RetrospectiveService } from '../../shared/services/retrospective.service';
-import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.component';
-import {
-    API_RESPONSE_MESSAGES, RATING_STATES, RATING_STATES_LABEL, SNACKBAR_DURATION,
-    SPRINT_STATES
-} from '../../../constants/app-constants';
-import { RatingRendererComponent } from '../../shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
-import { NumericCellEditorComponent } from '../../shared/ag-grid-editors/numeric-cell-editor/numeric-cell-editor.component';
-import { SelectCellEditorComponent } from '../../shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
-import {
-    ClickableButtonRendererComponent
-} from '../../shared/ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
+import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
+import 'rxjs/add/observable/interval';
+import 'rxjs/add/operator/takeUntil';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/takeUntil';
-import 'rxjs/add/observable/interval';
+import {
+    API_RESPONSE_MESSAGES,
+    RATING_STATES,
+    RATING_STATES_LABEL,
+    SNACKBAR_DURATION,
+    SPRINT_STATES
+} from '../../../constants/app-constants';
+import { NumericCellEditorComponent } from '../../shared/ag-grid-editors/numeric-cell-editor/numeric-cell-editor.component';
+import { SelectCellEditorComponent } from '../../shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
+import { ClickableButtonRendererComponent } from '../../shared/ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
+import { RatingRendererComponent } from '../../shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
+import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.component';
+import { RetrospectiveService } from '../../shared/services/retrospective.service';
 
 @Component({
     selector: 'app-sprint-member-summary',
@@ -27,25 +36,30 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     retroMembers = [];
     memberIDs = [];
     selectedMemberID: any;
-    enableRefresh = true;
-    autoRefreshPreviousState = true;
+    autoRefreshCurrentState: boolean;
     gridOptions: GridOptions;
     sprintStates = SPRINT_STATES;
     ratingStates = RATING_STATES;
     destroy$: Subject<boolean> = new Subject<boolean>();
     overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the members are loading!</span>';
     overlayNoRowsTemplate = '<span>No Members for this sprint!</span>';
-
-    private columnDefs: any;
-    private params: any;
-    private gridApi: GridApi;
-    private columnApi: ColumnApi;
-
     @Input() retrospectiveID;
     @Input() sprintID;
     @Input() sprintStatus;
     @Input() sprintDays: any;
     @Input() isTabActive: boolean;
+    @Input() enableRefresh: boolean;
+    private columnDefs: any;
+    private params: any;
+    private gridApi: GridApi;
+    private columnApi: ColumnApi;
+
+    constructor(
+        private retrospectiveService: RetrospectiveService,
+        private snackBar: MatSnackBar,
+        public dialog: MatDialog
+    ) {
+    }
 
     @HostListener('window:resize') onResize() {
         if (this.gridApi && this.isTabActive) {
@@ -55,41 +69,42 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         }
     }
 
-    constructor(private retrospectiveService: RetrospectiveService,
-                private snackBar: MatSnackBar,
-                public dialog: MatDialog) { }
-
     ngOnInit() {
+        this.autoRefreshCurrentState = this.enableRefresh;
         this.getRetroMembers();
         this.columnDefs = this.createColumnDefs(this.sprintStatus);
         this.setGridOptions();
     }
 
     ngOnChanges(changes: SimpleChanges): void {
+        if (changes.isTabActive) {
+            this.isTabActive = changes.isTabActive.currentValue
+        }
+
         if (this.gridApi && changes.sprintStatus && changes.sprintStatus.currentValue === this.sprintStates.FROZEN) {
             this.columnDefs = this.createColumnDefs(changes.sprintStatus.currentValue);
             this.gridApi.setColumnDefs(this.columnDefs);
         }
-        if (this.gridApi && changes.isTabActive && changes.isTabActive.currentValue) {
+        if (this.gridApi && this.isTabActive) {
             setTimeout(() => {
                 this.gridApi.sizeColumnsToFit();
                 this.getSprintMemberSummary(true);
             });
         }
+        if (changes.enableRefresh) {
+            this.enableRefresh = changes.enableRefresh.currentValue;
+            this.autoRefreshCurrentState = changes.enableRefresh.currentValue;
+            if (this.autoRefreshCurrentState && this.isTabActive) {
+                this.getSprintMemberSummary(true);
+            }
+        }
+
     }
 
     ngOnDestroy() {
-        this.enableRefresh = false;
+        this.autoRefreshCurrentState = false;
         this.destroy$.next(true);
         this.destroy$.unsubscribe();
-    }
-
-    toggleAutoRefresh() {
-        this.enableRefresh = !this.enableRefresh;
-        this.autoRefreshPreviousState = this.enableRefresh;
-        if (this.enableRefresh) {
-            this.getSprintMemberSummary(true);
-        }
     }
 
     getRetroMembers() {
@@ -128,19 +143,18 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         Observable.interval(5000)
             .takeUntil(this.destroy$)
             .subscribe(() => {
-                if (this.enableRefresh && this.isTabActive) {
+                if (this.autoRefreshCurrentState && this.isTabActive) {
                     this.getSprintMemberSummary(true);
                 }
             });
     }
 
     onCellEditingStarted() {
-        this.autoRefreshPreviousState = this.enableRefresh;
-        this.enableRefresh = false;
+        this.autoRefreshCurrentState = false;
     }
 
     onCellEditingStopped() {
-        this.enableRefresh = this.autoRefreshPreviousState;
+        this.autoRefreshCurrentState = this.enableRefresh;
     }
 
     getSprintMemberSummary(isRefresh) {
@@ -167,7 +181,71 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             );
     }
 
-    private supressKeyboardEvent(event) {
+    addSprintMember() {
+        if (this.selectedMemberID === undefined) {
+            this.snackBar.open(API_RESPONSE_MESSAGES.memberNotSelectedError, '', {duration: SNACKBAR_DURATION});
+        } else if (this.memberIDs.indexOf(this.selectedMemberID) !== -1) {
+            this.snackBar.open(API_RESPONSE_MESSAGES.memberAlreadyPresent, '', {duration: SNACKBAR_DURATION});
+        } else {
+            this.retrospectiveService.addSprintMember(this.retrospectiveID, this.sprintID, this.selectedMemberID)
+                .subscribe(
+                    response => {
+                        this.gridApi.updateRowData({add: [response.data]});
+                        this.memberIDs.push(this.selectedMemberID);
+                    },
+                    () => {
+                        this.snackBar.open(API_RESPONSE_MESSAGES.addSprintMemberError, '', {duration: SNACKBAR_DURATION});
+                    }
+                );
+        }
+    }
+
+    updateSprintMember(params) {
+        const memberData = params.data;
+        this.retrospectiveService.updateSprintMember(this.retrospectiveID, this.sprintID, memberData).subscribe(
+            response => {
+                params.node.setData(response.data);
+                this.snackBar.open(API_RESPONSE_MESSAGES.memberUpdated, '', {duration: SNACKBAR_DURATION});
+            },
+            () => {
+                this.snackBar.open(API_RESPONSE_MESSAGES.updateSprintMemberError, '', {duration: SNACKBAR_DURATION});
+                this.revertCellValue(params);
+            });
+    }
+
+    revertCellValue(params) {
+        const rowData = params.data;
+        rowData[params.colDef.field] = params.oldValue;
+        this.gridApi.updateRowData({update: [rowData]});
+    }
+
+    deleteSprintMember(member) {
+        const dialogRef = this.dialog.open(BasicModalComponent, {
+            data: {
+                content: 'Are you sure you want to delete ' + (member.FirstName + ' ' + member.LastName).trim() + '?',
+                confirmBtn: 'Yes',
+                cancelBtn: 'Cancel'
+            },
+            disableClose: true
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.retrospectiveService.deleteSprintMember(this.retrospectiveID, this.sprintID, member.ID)
+                    .subscribe(
+                        () => {
+                            this.gridApi.updateRowData({remove: [member]});
+                            this.memberIDs = this.memberIDs.filter(ID => ID !== member.ID);
+                        },
+                        () => {
+                            this.snackBar.open(API_RESPONSE_MESSAGES.deleteSprintMemberError, '', {duration: SNACKBAR_DURATION});
+                        }
+                    );
+            }
+        });
+    }
+
+    private static suppressKeyboardEvent(event) {
         if (event.editing) {
             return true;
         }
@@ -273,7 +351,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                             }
                         }
                     },
-                    suppressKeyboardEvent: (event) => this.supressKeyboardEvent(event)
+                    suppressKeyboardEvent: (event) => SprintMemberSummaryComponent.suppressKeyboardEvent(event)
                 },
                 {
                     headerName: 'Expectation',
@@ -296,7 +374,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                             }
                         }
                     },
-                    suppressKeyboardEvent: (event) => this.supressKeyboardEvent(event)
+                    suppressKeyboardEvent: (event) => SprintMemberSummaryComponent.suppressKeyboardEvent(event)
                 },
                 {
                     headerName: 'Vacations',
@@ -324,7 +402,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                             }
                         }
                     },
-                    suppressKeyboardEvent: (event) => this.supressKeyboardEvent(event)
+                    suppressKeyboardEvent: (event) => SprintMemberSummaryComponent.suppressKeyboardEvent(event)
                 },
                 ...velocitiesColumns,
                 ...totalSprintTimeColumn,
@@ -365,7 +443,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                             this.updateSprintMember(cellParams);
                         }
                     },
-                    suppressKeyboardEvent: (event) => this.supressKeyboardEvent(event)
+                    suppressKeyboardEvent: (event) => SprintMemberSummaryComponent.suppressKeyboardEvent(event)
                 },
                 {
                     cellRenderer: 'deleteButtonRenderer',
@@ -380,69 +458,5 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             ];
         }
         return columnDefs;
-    }
-
-    addSprintMember() {
-        if (this.selectedMemberID === undefined) {
-            this.snackBar.open(API_RESPONSE_MESSAGES.memberNotSelectedError, '', {duration: SNACKBAR_DURATION});
-        } else if (this.memberIDs.indexOf(this.selectedMemberID) !== -1) {
-            this.snackBar.open(API_RESPONSE_MESSAGES.memberAlreadyPresent, '', {duration: SNACKBAR_DURATION});
-        } else {
-            this.retrospectiveService.addSprintMember(this.retrospectiveID, this.sprintID, this.selectedMemberID)
-                .subscribe(
-                    response => {
-                        this.gridApi.updateRowData({ add: [response.data] });
-                        this.memberIDs.push(this.selectedMemberID);
-                    },
-                    () => {
-                        this.snackBar.open(API_RESPONSE_MESSAGES.addSprintMemberError, '', {duration: SNACKBAR_DURATION});
-                    }
-                );
-        }
-    }
-
-    updateSprintMember(params) {
-        const memberData = params.data;
-        this.retrospectiveService.updateSprintMember(this.retrospectiveID, this.sprintID, memberData).subscribe(
-            response => {
-                params.node.setData(response.data);
-                this.snackBar.open(API_RESPONSE_MESSAGES.memberUpdated, '', {duration: SNACKBAR_DURATION});
-            },
-            () => {
-                this.snackBar.open(API_RESPONSE_MESSAGES.updateSprintMemberError, '', {duration: SNACKBAR_DURATION});
-                this.revertCellValue(params);
-            });
-    }
-
-    revertCellValue(params) {
-        const rowData = params.data;
-        rowData[params.colDef.field] = params.oldValue;
-        this.gridApi.updateRowData({update: [rowData]});
-    }
-
-    deleteSprintMember(member) {
-        const dialogRef = this.dialog.open(BasicModalComponent, {
-            data: {
-                content: 'Are you sure you want to delete ' + (member.FirstName + ' ' + member.LastName).trim() + '?',
-                confirmBtn: 'Yes',
-                cancelBtn: 'Cancel'
-            },
-            disableClose: true
-        });
-
-        dialogRef.afterClosed().subscribe(result => {
-            if (result) {
-                this.retrospectiveService.deleteSprintMember(this.retrospectiveID, this.sprintID, member.ID)
-                    .subscribe(
-                        () => {
-                            this.gridApi.updateRowData({ remove: [member] });
-                            this.memberIDs = this.memberIDs.filter(ID => ID !== member.ID);
-                        },
-                        () => {
-                            this.snackBar.open(API_RESPONSE_MESSAGES.deleteSprintMemberError, '', {duration: SNACKBAR_DURATION});
-                        }
-                    );
-            }
-        });
     }
 }

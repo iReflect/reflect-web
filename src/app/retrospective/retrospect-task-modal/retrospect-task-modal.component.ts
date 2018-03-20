@@ -1,20 +1,25 @@
 import { Component, HostListener, Inject, OnDestroy } from '@angular/core';
-import {
-    API_RESPONSE_MESSAGES, MEMBER_TASK_ROLES, MEMBER_TASK_ROLES_LABEL, RATING_STATES, RATING_STATES_LABEL,
-    SNACKBAR_DURATION, SPRINT_STATES
-} from '../../../constants/app-constants';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
-import { RetrospectiveService } from '../../shared/services/retrospective.service';
-import { RetrospectiveCreateComponent } from '../retrospective-create/retrospective-create.component';
 import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
-import { RatingRendererComponent } from '../../shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
-import { NumericCellEditorComponent } from '../../shared/ag-grid-editors/numeric-cell-editor/numeric-cell-editor.component';
-import { SelectCellEditorComponent } from '../../shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
 import * as _ from 'lodash';
+import 'rxjs/add/observable/interval';
+import 'rxjs/add/operator/takeUntil';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/takeUntil';
-import 'rxjs/add/observable/interval';
+import {
+    API_RESPONSE_MESSAGES,
+    MEMBER_TASK_ROLES,
+    MEMBER_TASK_ROLES_LABEL,
+    RATING_STATES,
+    RATING_STATES_LABEL,
+    SNACKBAR_DURATION,
+    SPRINT_STATES
+} from '../../../constants/app-constants';
+import { NumericCellEditorComponent } from '../../shared/ag-grid-editors/numeric-cell-editor/numeric-cell-editor.component';
+import { SelectCellEditorComponent } from '../../shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
+import { RatingRendererComponent } from '../../shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
+import { RetrospectiveService } from '../../shared/services/retrospective.service';
+import { RetrospectiveCreateComponent } from '../retrospective-create/retrospective-create.component';
 
 @Component({
     selector: 'app-retrospect-task-modal',
@@ -27,19 +32,34 @@ export class RetrospectTaskModalComponent implements OnDestroy {
     taskDetails: any;
     selectedMemberID: number;
     gridOptions: GridOptions;
-    enableRefresh = true;
-    autoRefreshPreviousState = true;
+    enableRefresh: boolean;
+    autoRefreshCurrentState: boolean;
     sprintStates = SPRINT_STATES;
     ratingStates = RATING_STATES;
     destroy$: Subject<boolean> = new Subject<boolean>();
     overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the members are loading!</span>';
     overlayNoRowsTemplate = '<span>No Members for this Task!</span>';
 
+
     private totalTaskPoints;
     private params: any;
     private columnDefs: any;
     private gridApi: GridApi;
     private columnApi: ColumnApi;
+
+    constructor(
+        private retrospectiveService: RetrospectiveService,
+        private snackBar: MatSnackBar,
+        public dialogRef: MatDialogRef<RetrospectiveCreateComponent>,
+        @Inject(MAT_DIALOG_DATA) public data: any
+    ) {
+        this.enableRefresh = data.enableRefresh;
+        this.autoRefreshCurrentState = data.enableRefresh;
+        this.taskDetails = data.taskDetails;
+        this.getSprintMembers();
+        this.columnDefs = this.createColumnDefs(data.sprintStatus);
+        this.setGridOptions();
+    }
 
     @HostListener('window:resize') onResize() {
         if (this.gridApi) {
@@ -49,38 +69,18 @@ export class RetrospectTaskModalComponent implements OnDestroy {
         }
     }
 
-    constructor(private retrospectiveService: RetrospectiveService,
-                private snackBar: MatSnackBar,
-                public dialogRef: MatDialogRef<RetrospectiveCreateComponent>,
-                @Inject(MAT_DIALOG_DATA) public data: any) {
-        this.enableRefresh = true;
-        this.taskDetails = data.taskDetails;
-        this.getSprintMembers();
-        this.columnDefs = this.createColumnDefs(data.sprintStatus);
-        this.setGridOptions();
-    }
-
     ngOnDestroy() {
-        this.enableRefresh = false;
+        this.autoRefreshCurrentState = false;
         this.destroy$.next(true);
         this.destroy$.unsubscribe();
     }
 
-    toggleAutoRefresh() {
-        this.enableRefresh = !this.enableRefresh;
-        this.autoRefreshPreviousState = this.enableRefresh;
-        if (this.enableRefresh) {
-            this.getSprintTaskMemberSummary(true);
-        }
-    }
-
     onCellEditingStarted() {
-        this.autoRefreshPreviousState = this.enableRefresh;
-        this.enableRefresh = false;
+        this.autoRefreshCurrentState = false;
     }
 
     onCellEditingStopped() {
-        this.enableRefresh = this.autoRefreshPreviousState;
+        this.autoRefreshCurrentState = this.enableRefresh;
     }
 
     getSprintMembers() {
@@ -115,7 +115,7 @@ export class RetrospectTaskModalComponent implements OnDestroy {
         Observable.interval(5000)
             .takeUntil(this.destroy$)
             .subscribe(() => {
-                if (this.enableRefresh) {
+                if (this.autoRefreshCurrentState) {
                     this.getSprintTaskMemberSummary(true);
                 }
             });
@@ -152,7 +152,55 @@ export class RetrospectTaskModalComponent implements OnDestroy {
             );
     }
 
-    private supressKeyboardEvent(event) {
+    addNewSprintTaskMember() {
+        if (this.selectedMemberID === undefined) {
+            this.snackBar.open(API_RESPONSE_MESSAGES.memberNotSelectedError, '', {duration: SNACKBAR_DURATION});
+        } else if (this.memberIDs.indexOf(this.selectedMemberID) !== -1) {
+            this.snackBar.open(API_RESPONSE_MESSAGES.memberAlreadyPresent, '', {duration: SNACKBAR_DURATION});
+        } else {
+            this.retrospectiveService.addTaskMember(
+                this.data.retrospectiveID, this.data.sprintID, this.taskDetails.ID, this.selectedMemberID
+            ).subscribe(
+                response => {
+                    this.gridApi.updateRowData({add: [response.data]});
+                    this.memberIDs.push(this.selectedMemberID);
+                },
+                () => {
+                    this.snackBar.open(API_RESPONSE_MESSAGES.addSprintTaskMemberError, '', {duration: SNACKBAR_DURATION});
+                }
+            );
+        }
+    }
+
+    updateSprintTaskMember(params, onSuccessCallback?) {
+        this.retrospectiveService.updateSprintTaskMember(this.data.retrospectiveID, this.data.sprintID, this.taskDetails.ID, params.data)
+            .subscribe(
+                response => {
+                    if (onSuccessCallback && _.isFunction(onSuccessCallback)) {
+                        onSuccessCallback(response);
+                    }
+                    params.node.setData(response.data);
+                    this.snackBar.open(API_RESPONSE_MESSAGES.memberUpdated, '', {duration: SNACKBAR_DURATION});
+                },
+                () => {
+                    this.snackBar.open(API_RESPONSE_MESSAGES.updateSprintMemberError, '', {duration: SNACKBAR_DURATION});
+                    this.revertCellValue(params);
+                }
+            );
+    }
+
+    revertCellValue(params) {
+        const rowData = params.data;
+        rowData[params.colDef.field] = params.oldValue;
+        this.gridApi.updateRowData({update: [rowData]});
+        this.gridApi.refreshCells();
+    }
+
+    closeDialog(result = false) {
+        this.dialogRef.close(result);
+    }
+
+    private suppressKeyboardEvent(event) {
         if (event.editing) {
             return true;
         }
@@ -288,7 +336,7 @@ export class RetrospectTaskModalComponent implements OnDestroy {
                             }
                         }
                     },
-                    suppressKeyboardEvent: (event) => this.supressKeyboardEvent(event)
+                    suppressKeyboardEvent: (event) => this.suppressKeyboardEvent(event)
                 },
                 ...totalPointsColumn,
                 {
@@ -328,58 +376,10 @@ export class RetrospectTaskModalComponent implements OnDestroy {
                             this.updateSprintTaskMember(cellParams);
                         }
                     },
-                    suppressKeyboardEvent: (event) => this.supressKeyboardEvent(event)
+                    suppressKeyboardEvent: (event) => this.suppressKeyboardEvent(event)
                 }
             ];
         }
         return columnDefs;
-    }
-
-    addNewSprintTaskMember() {
-        if (this.selectedMemberID === undefined) {
-            this.snackBar.open(API_RESPONSE_MESSAGES.memberNotSelectedError, '', {duration: SNACKBAR_DURATION});
-        } else if (this.memberIDs.indexOf(this.selectedMemberID) !== -1) {
-            this.snackBar.open(API_RESPONSE_MESSAGES.memberAlreadyPresent, '', {duration: SNACKBAR_DURATION});
-        } else {
-            this.retrospectiveService.addTaskMember(
-                this.data.retrospectiveID, this.data.sprintID, this.taskDetails.ID, this.selectedMemberID
-            ).subscribe(
-                response => {
-                    this.gridApi.updateRowData({ add: [response.data] });
-                    this.memberIDs.push(this.selectedMemberID);
-                },
-                () => {
-                    this.snackBar.open(API_RESPONSE_MESSAGES.addSprintTaskMemberError, '', {duration: SNACKBAR_DURATION});
-                }
-            );
-        }
-    }
-
-    updateSprintTaskMember(params, onSuccessCallback?) {
-        this.retrospectiveService.updateSprintTaskMember(this.data.retrospectiveID, this.data.sprintID, this.taskDetails.ID, params.data)
-            .subscribe(
-                response => {
-                    if (onSuccessCallback && _.isFunction(onSuccessCallback)) {
-                        onSuccessCallback(response);
-                    }
-                    params.node.setData(response.data);
-                    this.snackBar.open(API_RESPONSE_MESSAGES.memberUpdated, '', {duration: SNACKBAR_DURATION});
-                },
-                () => {
-                    this.snackBar.open(API_RESPONSE_MESSAGES.updateSprintMemberError, '', {duration: SNACKBAR_DURATION});
-                    this.revertCellValue(params);
-                }
-            );
-    }
-
-    revertCellValue(params) {
-        const rowData = params.data;
-        rowData[params.colDef.field] = params.oldValue;
-        this.gridApi.updateRowData({update: [rowData]});
-        this.gridApi.refreshCells();
-    }
-
-    closeDialog(result = false) {
-        this.dialogRef.close(result);
     }
 }

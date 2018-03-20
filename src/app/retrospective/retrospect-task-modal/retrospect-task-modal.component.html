@@ -32,10 +32,9 @@
     </div>
   </div>
   <div class="retrospect-task-refresh">
-    <button mat-button (click)="getSprintTaskMemberSummary(true)">Refresh Data <mat-icon>refresh</mat-icon></button>
-    <mat-slide-toggle labelPosition="before" (change)="toggleAutoRefresh()" [checked]="enableRefresh">
-      Autorefresh
-    </mat-slide-toggle>
+    <button mat-button (click)="getSprintTaskMemberSummary(true)">Refresh Data
+      <mat-icon>refresh</mat-icon>
+    </button>
   </div>
   <div class="ag-grid-container">
     <ag-grid-angular

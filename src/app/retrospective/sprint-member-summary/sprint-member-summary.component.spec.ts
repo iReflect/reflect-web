@@ -7,10 +7,10 @@ describe('SprintMemberSummaryComponent', () => {
     let fixture: ComponentFixture<SprintMemberSummaryComponent>;
 
     beforeEach(async(() => {
-    TestBed.configureTestingModule({
-        declarations: [ SprintMemberSummaryComponent ]
-    })
-    .compileComponents();
+        TestBed.configureTestingModule({
+            declarations: [SprintMemberSummaryComponent]
+        })
+            .compileComponents();
     }));
 
     beforeEach(() => {
