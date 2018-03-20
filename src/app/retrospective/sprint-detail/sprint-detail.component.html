@@ -58,6 +58,7 @@
     <mat-tab label="Highlights">
       <div *ngIf="sprintStatus !== sprintStates.DRAFT">
         <app-highlights [isTabActive]="selectedTabIndex === 0"
+                        [enableRefresh]="enableRefresh"
                         [sprintStatus]="sprintStatus"
                         [retrospectiveID]="retrospectiveID"
                         [sprintID]="sprintID"></app-highlights>
@@ -87,6 +88,7 @@
     <mat-tab label="Notes">
       <div *ngIf="sprintStatus !== sprintStates.DRAFT">
         <app-sprint-notes [isTabActive]="selectedTabIndex === 3"
+                          [enableRefresh]="enableRefresh"
                           [sprintStatus]="sprintStatus"
                           [retrospectiveID]="retrospectiveID"
                           [sprintID]="sprintID"></app-sprint-notes>

@@ -1,6 +1,8 @@
 <div *ngFor="let highlight of highlightsList">
   <label><b>{{highlight.LABEL}}</b></label>
   <app-retrospective-feedback
+    (resumeRefresh)="resumeRefresh()"
+    (pauseRefresh)="pauseRefresh()"
     [feedbackType]="retroFeedbackTypes.HIGHLIGHT"
     [feedbackSubType]="highlight.KEY"
     [sprintStatus]="sprintStatus"
@@ -13,6 +15,8 @@
 <div>
   <label><b>Accomplished Goals</b></label>
   <app-retrospective-feedback
+    (resumeRefresh)="resumeRefresh()"
+    (pauseRefresh)="pauseRefresh()"
     [feedbackType]="retroFeedbackTypes.GOAL"
     [feedbackSubType]="goalTypes.COMPLETED"
     [data]="accomplishedGoals"
@@ -25,6 +29,8 @@
 <div>
   <label><b>Pending Goals</b></label>
   <app-retrospective-feedback
+    (resumeRefresh)="resumeRefresh()"
+    (pauseRefresh)="pauseRefresh()"
     [feedbackType]="retroFeedbackTypes.GOAL"
     [feedbackSubType]="goalTypes.PENDING"
     [data]="pendingGoals"

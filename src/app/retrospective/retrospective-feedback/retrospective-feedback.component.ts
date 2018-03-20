@@ -1,4 +1,4 @@
-import { Component, HostListener, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 import { DatePipe } from '@angular/common';
 
@@ -42,13 +42,29 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
     @Input() feedbackSubType;
     @Input() data: any;
     @Input() teamMembers: any;
+    @Input() enableRefresh: boolean;
+
+    @Output() resumeRefresh = new EventEmitter();
+    @Output() pauseRefresh = new EventEmitter();
 
     @HostListener('window:resize') onResize() {
         if (this.gridApi) {
-            setTimeout(() => {
-                this.gridApi.sizeColumnsToFit();
-            });
+            this.resizeAgGrid();
         }
+    }
+
+    private resizeAgGrid() {
+        setTimeout(() => {
+            this.gridApi.sizeColumnsToFit();
+        });
+    }
+
+    onCellEditingStarted() {
+        this.pauseRefresh.emit();
+    }
+
+    onCellEditingStopped() {
+        this.resumeRefresh.emit();
     }
 
     private createColumnDefs(sprintStatus, teamMembers) {
@@ -204,14 +220,16 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
 
                     this.columnDefs = this.createColumnDefs(this.sprintStatus, this.teamMembers);
                     this.gridApi.setColumnDefs(this.columnDefs);
+                    this.resizeAgGrid();
                 }
                 if (changes.data) {
                     const data = changes.data.currentValue || [];
                     this.gridApi.setRowData(data.filter((feedback) => (this.feedbackType === RETRO_FEEDBACK_TYPES.GOAL) ||
                         feedback.SubType === this.feedbackSubType));
+                    this.resizeAgGrid();
                 }
                 if (changes.isTabActive && changes.isTabActive.currentValue) {
-                    this.gridApi.sizeColumnsToFit();
+                    this.resizeAgGrid();
                 }
             });
         }
@@ -220,9 +238,6 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
     setGridOptions() {
         this.gridOptions = <GridOptions>{
             columnDefs: this.columnDefs,
-            defaultColDef: {
-                width: 150,
-            },
             rowHeight: 60,
             singleClickEdit: true,
             frameworkComponents: {

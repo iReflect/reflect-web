@@ -8,6 +8,8 @@
       class="ag-theme-material"
       [gridOptions]="gridOptions"
       [stopEditingWhenGridLosesFocus]="true"
-      (gridReady)="onGridReady($event)"></ag-grid-angular>
+      (gridReady)="onGridReady($event)"
+      (cellEditingStarted)="onCellEditingStarted()"
+      (cellEditingStopped)="onCellEditingStopped()"></ag-grid-angular>
   </div>
 </div>
