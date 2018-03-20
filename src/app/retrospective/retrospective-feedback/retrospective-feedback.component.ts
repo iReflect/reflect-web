@@ -49,10 +49,14 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
 
     @HostListener('window:resize') onResize() {
         if (this.gridApi) {
-            setTimeout(() => {
-                this.gridApi.sizeColumnsToFit();
-            });
+            this.resizeAgGrid();
         }
+    }
+
+    private resizeAgGrid() {
+        setTimeout(() => {
+            this.gridApi.sizeColumnsToFit();
+        });
     }
 
     onCellEditingStarted() {
@@ -200,7 +204,6 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                 private datePipe: DatePipe) { }
 
     ngOnInit() {
-        this.autoRefreshCurrentState = this.enableRefresh;
         this.columnDefs = this.createColumnDefs(this.sprintStatus, this.teamMembers);
         this.setGridOptions();
     }
@@ -217,14 +220,16 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
 
                     this.columnDefs = this.createColumnDefs(this.sprintStatus, this.teamMembers);
                     this.gridApi.setColumnDefs(this.columnDefs);
+                    this.resizeAgGrid();
                 }
                 if (changes.data) {
                     const data = changes.data.currentValue || [];
                     this.gridApi.setRowData(data.filter((feedback) => (this.feedbackType === RETRO_FEEDBACK_TYPES.GOAL) ||
                         feedback.SubType === this.feedbackSubType));
+                    this.resizeAgGrid();
                 }
                 if (changes.isTabActive && changes.isTabActive.currentValue) {
-                    this.gridApi.sizeColumnsToFit();
+                    this.resizeAgGrid();
                 }
             });
         }
@@ -233,9 +238,6 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
     setGridOptions() {
         this.gridOptions = <GridOptions>{
             columnDefs: this.columnDefs,
-            defaultColDef: {
-                width: 150,
-            },
             rowHeight: 60,
             singleClickEdit: true,
             frameworkComponents: {

@@ -63,7 +63,7 @@ export class HighlightsComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.enableRefresh = false;
+        this.autoRefreshCurrentState = false;
         this.destroy$.next(true);
         this.destroy$.unsubscribe();
     }
