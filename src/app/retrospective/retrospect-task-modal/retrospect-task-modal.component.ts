@@ -1,11 +1,11 @@
-import { Component, HostListener, Inject, OnDestroy } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
-import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
+import {Component, HostListener, Inject, OnDestroy} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef, MatSnackBar} from '@angular/material';
+import {ColumnApi, GridApi, GridOptions} from 'ag-grid';
 import * as _ from 'lodash';
 import 'rxjs/add/observable/interval';
 import 'rxjs/add/operator/takeUntil';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
+import {Observable} from 'rxjs/Observable';
+import {Subject} from 'rxjs/Subject';
 import {
     API_RESPONSE_MESSAGES,
     MEMBER_TASK_ROLES,
@@ -15,11 +15,11 @@ import {
     SNACKBAR_DURATION,
     SPRINT_STATES
 } from '../../../constants/app-constants';
-import { NumericCellEditorComponent } from '../../shared/ag-grid-editors/numeric-cell-editor/numeric-cell-editor.component';
-import { SelectCellEditorComponent } from '../../shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
-import { RatingRendererComponent } from '../../shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
-import { RetrospectiveService } from '../../shared/services/retrospective.service';
-import { RetrospectiveCreateComponent } from '../retrospective-create/retrospective-create.component';
+import {NumericCellEditorComponent} from '../../shared/ag-grid-editors/numeric-cell-editor/numeric-cell-editor.component';
+import {SelectCellEditorComponent} from '../../shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
+import {RatingRendererComponent} from '../../shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
+import {RetrospectiveService} from '../../shared/services/retrospective.service';
+import {RetrospectiveCreateComponent} from '../retrospective-create/retrospective-create.component';
 
 @Component({
     selector: 'app-retrospect-task-modal',
@@ -47,12 +47,10 @@ export class RetrospectTaskModalComponent implements OnDestroy {
     private gridApi: GridApi;
     private columnApi: ColumnApi;
 
-    constructor(
-        private retrospectiveService: RetrospectiveService,
-        private snackBar: MatSnackBar,
-        public dialogRef: MatDialogRef<RetrospectiveCreateComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: any
-    ) {
+    constructor(private retrospectiveService: RetrospectiveService,
+                private snackBar: MatSnackBar,
+                public dialogRef: MatDialogRef<RetrospectiveCreateComponent>,
+                @Inject(MAT_DIALOG_DATA) public data: any) {
         this.enableRefresh = data.enableRefresh;
         this.autoRefreshCurrentState = data.enableRefresh;
         this.taskDetails = data.taskDetails;
@@ -150,7 +148,8 @@ export class RetrospectTaskModalComponent implements OnDestroy {
                             '', {duration: SNACKBAR_DURATION});
                     } else {
                         this.snackBar.open(
-                            err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.getSprintTaskMemberSummaryError,
+                            err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES
+                                .getSprintTaskMemberSummaryError,
                             '', {duration: SNACKBAR_DURATION});
                         this.dialogRef.close();
                     }
@@ -172,7 +171,7 @@ export class RetrospectTaskModalComponent implements OnDestroy {
                 this.data.retrospectiveID, this.data.sprintID, this.taskDetails.ID, this.selectedMemberID
             ).subscribe(
                 response => {
-                    this.gridApi.updateRowData({ add: [response.data] });
+                    this.gridApi.updateRowData({add: [response.data]});
                     this.memberIDs.push(this.selectedMemberID);
                 },
                 err => {

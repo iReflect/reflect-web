@@ -51,6 +51,12 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     private gridApi: GridApi;
     private columnApi: ColumnApi;
 
+    static suppressKeyboardEvent(event) {
+        if (event.editing) {
+            return true;
+        }
+    }
+
     constructor(
         private retrospectiveService: RetrospectiveService,
         private snackBar: MatSnackBar,
@@ -75,7 +81,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes.isTabActive) {
-            this.isTabActive = changes.isTabActive.currentValue
+            this.isTabActive = changes.isTabActive.currentValue;
         }
 
         if (this.gridApi && changes.sprintStatus && changes.sprintStatus.currentValue === this.sprintStates.FROZEN) {
@@ -173,11 +179,13 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                 err => {
                     if (isRefresh) {
                         this.snackBar.open(
-                            err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.autoRefreshFailure,
+                            err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES
+                                .autoRefreshFailure,
                             '', {duration: SNACKBAR_DURATION});
                     } else {
                         this.snackBar.open(
-                            err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.getSprintMemberSummaryError,
+                            err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES
+                                .getSprintMemberSummaryError,
                             '', {duration: SNACKBAR_DURATION});
                     }
                 }
@@ -252,18 +260,13 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                         },
                         err => {
                             this.snackBar.open(
-                                err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.deleteSprintMemberError,
+                                err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES
+                                    .deleteSprintMemberError,
                                 '', {duration: SNACKBAR_DURATION});
                         }
                     );
             }
         });
-    }
-
-    private static suppressKeyboardEvent(event) {
-        if (event.editing) {
-            return true;
-        }
     }
 
     private createColumnDefs(sprintStatus) {

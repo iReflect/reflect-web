@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialog, MatSnackBar } from '@angular/material';
-import { ActivatedRoute, Router } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {MatDialog, MatSnackBar} from '@angular/material';
+import {ActivatedRoute, Router} from '@angular/router';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 import {
@@ -13,8 +13,8 @@ import {
     SPRINT_STATES_LABEL,
     SPRINT_SYNC_STATES
 } from '../../../constants/app-constants';
-import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.component';
-import { RetrospectiveService } from '../../shared/services/retrospective.service';
+import {BasicModalComponent} from '../../shared/basic-modal/basic-modal.component';
+import {RetrospectiveService} from '../../shared/services/retrospective.service';
 
 @Component({
     selector: 'app-sprint-detail',
@@ -37,13 +37,26 @@ export class SprintDetailComponent implements OnInit {
     sprintActionsLabel = SPRINT_ACTIONS_LABEL;
     syncStates = SPRINT_SYNC_STATES;
 
-    constructor(
-        private retrospectiveService: RetrospectiveService,
-        private snackBar: MatSnackBar,
-        private router: Router,
-        public dialog: MatDialog,
-        private activatedRoute: ActivatedRoute
-    ) {
+    static workdayCount(start, end) {
+        const first = start.clone().endOf('week');
+        const last = end.clone().startOf('week');
+        const days = last.diff(first, 'days') * 5 / 7;
+        let wfirst = first.day() - start.day();
+        if (start.day() === 0) {
+            --wfirst;
+        }
+        let wlast = end.day() - last.day();
+        if (end.day() === 6) {
+            --wlast;
+        }
+        return wfirst + days + wlast;
+    }
+
+    constructor(private retrospectiveService: RetrospectiveService,
+                private snackBar: MatSnackBar,
+                private router: Router,
+                public dialog: MatDialog,
+                private activatedRoute: ActivatedRoute) {
     }
 
     ngOnInit() {
@@ -59,7 +72,7 @@ export class SprintDetailComponent implements OnInit {
                 this.sprintDetails = response.data;
                 this.sprintStatus = response.data.Status;
                 this.sprintDays = SprintDetailComponent.workdayCount(moment(response.data.StartDate), moment(response.data.EndDate));
-                if (this.sprintDetails.SyncStatus == SPRINT_SYNC_STATES.SYNCING) {
+                if (this.sprintDetails.SyncStatus === SPRINT_SYNC_STATES.SYNCING) {
                     setTimeout(() => this.getSprintDetails(), 5000);
                 }
             },
@@ -105,7 +118,8 @@ export class SprintDetailComponent implements OnInit {
                                     '', {duration: SNACKBAR_DURATION});
                             },
                             err => this.sprintStateChangeError(
-                                err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.sprintActivateError
+                                err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES
+                                    .sprintActivateError
                             )
                         );
                     } else if (action === this.sprintActions.FREEZE) {
@@ -117,7 +131,8 @@ export class SprintDetailComponent implements OnInit {
                                     '', {duration: SNACKBAR_DURATION});
                             },
                             err => this.sprintStateChangeError(
-                                err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.sprintFreezeError
+                                err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES
+                                    .sprintFreezeError
                             )
                         );
                     } else if (action === this.sprintActions.DISCARD) {
@@ -129,7 +144,8 @@ export class SprintDetailComponent implements OnInit {
                                 this.navigateToRetrospectiveDashboard();
                             },
                             err => this.sprintStateChangeError(
-                                err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.sprintDiscardError
+                                err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES
+                                    .sprintDiscardError
                             )
                         );
                     } else {
@@ -160,20 +176,5 @@ export class SprintDetailComponent implements OnInit {
 
     toggleAutoRefresh() {
         this.enableRefresh = !this.enableRefresh;
-    }
-
-    private static workdayCount(start, end) {
-        const first = start.clone().endOf('week');
-        const last = end.clone().startOf('week');
-        const days = last.diff(first, 'days') * 5 / 7;
-        let wfirst = first.day() - start.day();
-        if (start.day() === 0) {
-            --wfirst;
-        }
-        let wlast = end.day() - last.day();
-        if (end.day() === 6) {
-            --wlast;
-        }
-        return wfirst + days + wlast;
     }
 }

@@ -1,22 +1,14 @@
-import {
-    Component,
-    HostListener,
-    Input,
-    OnChanges,
-    OnDestroy,
-    OnInit,
-    SimpleChanges
-} from '@angular/core';
-import { MatDialog, MatSnackBar } from '@angular/material';
-import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
+import {Component, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import {MatDialog, MatSnackBar} from '@angular/material';
+import {ColumnApi, GridApi, GridOptions} from 'ag-grid';
 import 'rxjs/add/observable/interval';
 import 'rxjs/add/operator/takeUntil';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
-import { API_RESPONSE_MESSAGES, SNACKBAR_DURATION } from '../../../constants/app-constants';
-import { ClickableButtonRendererComponent } from '../../shared/ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
-import { RetrospectiveService } from '../../shared/services/retrospective.service';
-import { RetrospectTaskModalComponent } from '../retrospect-task-modal/retrospect-task-modal.component';
+import {Observable} from 'rxjs/Observable';
+import {Subject} from 'rxjs/Subject';
+import {API_RESPONSE_MESSAGES, SNACKBAR_DURATION} from '../../../constants/app-constants';
+import {ClickableButtonRendererComponent} from '../../shared/ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
+import {RetrospectiveService} from '../../shared/services/retrospective.service';
+import {RetrospectTaskModalComponent} from '../retrospect-task-modal/retrospect-task-modal.component';
 
 @Component({
     selector: 'app-sprint-task-summary',
@@ -39,11 +31,9 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     private gridApi: GridApi;
     private columnApi: ColumnApi;
 
-    constructor(
-        private snackBar: MatSnackBar,
-        public dialog: MatDialog,
-        private retrospectiveService: RetrospectiveService
-    ) {
+    constructor(private snackBar: MatSnackBar,
+                public dialog: MatDialog,
+                private retrospectiveService: RetrospectiveService) {
         this.columnDefs = this.createColumnDefs();
         this.setGridOptions();
     }
@@ -61,8 +51,8 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        if(changes.isTabActive) {
-            this.isTabActive = changes.isTabActive.currentValue
+        if (changes.isTabActive) {
+            this.isTabActive = changes.isTabActive.currentValue;
         }
         if (this.gridApi && this.isTabActive) {
             setTimeout(() => {
@@ -132,7 +122,8 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                             '', {duration: SNACKBAR_DURATION});
                     } else {
                         this.snackBar.open(
-                            err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.getSprintTaskSummaryError,
+                            err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES
+                                .getSprintTaskSummaryError,
                             '', {duration: SNACKBAR_DURATION});
                     }
                 }
