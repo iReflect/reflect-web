@@ -90,7 +90,9 @@ export class HighlightsComponent implements OnInit, OnChanges, OnDestroy {
                     this.pendingGoals = response.data.Feedbacks;
                 },
                 err => {
-                    this.snackBar.open('Couldn\'t get the pending goals', '', {duration: SNACKBAR_DURATION});
+                    this.snackBar.open(
+                        this.getErrorMessage(err.data) || API_RESPONSE_MESSAGES.sprintPendingGoalsGetError,
+                        '', {duration: SNACKBAR_DURATION});
                 }
             );
     }
@@ -101,8 +103,9 @@ export class HighlightsComponent implements OnInit, OnChanges, OnDestroy {
                 response => {
                     this.accomplishedGoals = response.data.Feedbacks;
                 },
-                error => {
-                    this.snackBar.open('Couldn\'t get the accomplished goals', '', {duration: SNACKBAR_DURATION});
+                err => {
+                    this.snackBar.open(this.getErrorMessage(err.data) || API_RESPONSE_MESSAGES.sprintAccomplishedGoalsGetError,
+                        '', {duration: SNACKBAR_DURATION});
                 }
             );
     }
@@ -114,7 +117,8 @@ export class HighlightsComponent implements OnInit, OnChanges, OnDestroy {
                     this.sprintHighlights = response.data.Feedbacks;
                 },
                 err => {
-                    this.snackBar.open('Couldn\'t get the sprint highlights', '', {duration: SNACKBAR_DURATION});
+                    this.snackBar.open(this.getErrorMessage(err.data) || API_RESPONSE_MESSAGES.sprintHighlightsGetError,
+                        '', {duration: SNACKBAR_DURATION});
                 }
             );
     }
@@ -124,9 +128,16 @@ export class HighlightsComponent implements OnInit, OnChanges, OnDestroy {
             response => {
                 this.teamMembers = response.data.Members;
             },
-            () => {
-                this.snackBar.open(API_RESPONSE_MESSAGES.getRetrospectiveMembersError, '', {duration: SNACKBAR_DURATION});
+            err => {
+                this.snackBar.open(this.getErrorMessage(err.data) || API_RESPONSE_MESSAGES.getRetrospectiveMembersError,
+                    '', {duration: SNACKBAR_DURATION});
             }
         );
     }
+
+    getErrorMessage(response): string {
+        const message = response.error;
+        return message.charAt(0).toUpperCase() + message.substr(1);
+    }
+
 }

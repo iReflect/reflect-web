@@ -64,7 +64,7 @@
                         [sprintID]="sprintID"></app-highlights>
       </div>
     </mat-tab>
-    <mat-tab label="Sprint Task Summary">
+    <mat-tab label="Task Summary">
       <div
         *ngIf="sprintDetails.LastSyncedAt && sprintDetails.SyncStatus !== syncStates.SYNCING; else not_synced">
         <app-sprint-task-summary [isTabActive]="selectedTabIndex === 1"
@@ -74,7 +74,7 @@
                                  [enableRefresh]="enableRefresh"></app-sprint-task-summary>
       </div>
     </mat-tab>
-    <mat-tab label="Sprint Members Summary">
+    <mat-tab label="Members Summary">
       <div
         *ngIf="sprintDetails.LastSyncedAt && sprintDetails.SyncStatus !== syncStates.SYNCING; else not_synced">
         <app-sprint-member-summary [isTabActive]="selectedTabIndex === 2"

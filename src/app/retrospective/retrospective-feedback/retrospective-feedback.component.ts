@@ -270,8 +270,10 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                 this.gridApi.updateRowData({ remove: [goalData] });
                 this.snackBar.open(API_RESPONSE_MESSAGES.goalResolvedSuccessfully, '', {duration: SNACKBAR_DURATION});
             },
-            () => {
-                this.snackBar.open(API_RESPONSE_MESSAGES.goalResolveFailed, '', {duration: SNACKBAR_DURATION});
+            err => {
+                this.snackBar.open(
+                    this.getErrorMessage(err.data) || API_RESPONSE_MESSAGES.goalResolveFailed,
+                    '', {duration: SNACKBAR_DURATION});
             });
     }
 
@@ -281,8 +283,10 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                 this.gridApi.updateRowData({ remove: [goalData] });
                 this.snackBar.open(API_RESPONSE_MESSAGES.goalUnResolvedSuccessfully, '', {duration: SNACKBAR_DURATION});
             },
-            () => {
-                this.snackBar.open(API_RESPONSE_MESSAGES.goalUnResolveFailed, '', {duration: SNACKBAR_DURATION});
+            err => {
+                this.snackBar.open(
+                    this.getErrorMessage(err.data) || API_RESPONSE_MESSAGES.goalUnResolveFailed,
+                    '', {duration: SNACKBAR_DURATION});
             });
     }
 
@@ -293,8 +297,10 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                     params.node.setData(response.data);
                     this.snackBar.open(API_RESPONSE_MESSAGES.sprintHighlightsUpdateSuccess, '', {duration: SNACKBAR_DURATION});
                 },
-                () => {
-                    this.snackBar.open(API_RESPONSE_MESSAGES.sprintHighlightsUpdateError, '', {duration: SNACKBAR_DURATION});
+                err => {
+                    this.snackBar.open(
+                        this.getErrorMessage(err.data) || API_RESPONSE_MESSAGES.sprintHighlightsUpdateError,
+                        '', {duration: SNACKBAR_DURATION});
                     this.revertCellValue(params);
                 }
             );
@@ -304,8 +310,10 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                     params.node.setData(response.data);
                     this.snackBar.open(API_RESPONSE_MESSAGES.sprintNotesUpdateSuccess, '', {duration: SNACKBAR_DURATION});
                 },
-                () => {
-                    this.snackBar.open(API_RESPONSE_MESSAGES.sprintNotesUpdateError, '', {duration: SNACKBAR_DURATION});
+                err => {
+                    this.snackBar.open(
+                        this.getErrorMessage(err.data) || API_RESPONSE_MESSAGES.sprintNotesUpdateError,
+                        '', {duration: SNACKBAR_DURATION});
                     this.revertCellValue(params);
                 });
         } else if (this.feedbackType === RETRO_FEEDBACK_TYPES.GOAL) {
@@ -314,8 +322,10 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                     params.node.setData(response.data);
                     this.snackBar.open(API_RESPONSE_MESSAGES.sprintGoalsUpdateSuccess, '', {duration: SNACKBAR_DURATION});
                 },
-                () => {
-                    this.snackBar.open(API_RESPONSE_MESSAGES.sprintGoalsUpdateError, '', {duration: SNACKBAR_DURATION});
+                err => {
+                    this.snackBar.open(
+                        this.getErrorMessage(err.data) || API_RESPONSE_MESSAGES.sprintGoalsUpdateError,
+                        '', {duration: SNACKBAR_DURATION});
                     this.revertCellValue(params);
                 });
         }
@@ -330,8 +340,10 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                             this.gridApi.updateRowData({ add: [response.data], addIndex: 0 });
                             this.snackBar.open(API_RESPONSE_MESSAGES.sprintHighlightsAddSuccess, '', {duration: SNACKBAR_DURATION});
                         },
-                        () => {
-                            this.snackBar.open(API_RESPONSE_MESSAGES.sprintHighlightsAddError, '', {duration: SNACKBAR_DURATION});
+                        err => {
+                            this.snackBar.open(
+                                this.getErrorMessage(err.data) || API_RESPONSE_MESSAGES.sprintHighlightsAddError,
+                                '', {duration: SNACKBAR_DURATION});
                         }
                     );
             } else if (this.feedbackType === RETRO_FEEDBACK_TYPES.NOTE) {
@@ -341,8 +353,10 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                             this.gridApi.updateRowData({ add: [response.data], addIndex: 0 });
                             this.snackBar.open(API_RESPONSE_MESSAGES.sprintNotesAddSuccess, '', {duration: SNACKBAR_DURATION});
                         },
-                        () => {
-                            this.snackBar.open(API_RESPONSE_MESSAGES.sprintNotesAddError, '', {duration: SNACKBAR_DURATION});
+                        err => {
+                            this.snackBar.open(
+                                this.getErrorMessage(err.data) || API_RESPONSE_MESSAGES.sprintNotesAddError,
+                                '', {duration: SNACKBAR_DURATION});
                         }
                     );
             } else if (this.feedbackType === RETRO_FEEDBACK_TYPES.GOAL) {
@@ -352,8 +366,10 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                             this.gridApi.updateRowData({ add: [response.data], addIndex: 0 });
                             this.snackBar.open(API_RESPONSE_MESSAGES.sprintGoalsAddSuccess, '', {duration: SNACKBAR_DURATION});
                         },
-                        () => {
-                            this.snackBar.open(API_RESPONSE_MESSAGES.sprintGoalsAddError, '', {duration: SNACKBAR_DURATION});
+                        err => {
+                            this.snackBar.open(
+                                this.getErrorMessage(err.data) || API_RESPONSE_MESSAGES.sprintGoalsAddError,
+                                '', {duration: SNACKBAR_DURATION});
                         }
                     );
             }
@@ -378,5 +394,10 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
 
     getDateFromString(dateString: string) {
         return this.datePipe.transform(dateString, 'MMMM dd, yyyy');
+    }
+
+    getErrorMessage(response): string {
+        const message = response.error;
+        return message.charAt(0).toUpperCase() + message.substr(1);
     }
 }

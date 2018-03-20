@@ -90,8 +90,9 @@ export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
             response => {
                 this.sprintGoals = response.data.Feedbacks;
             },
-            error => {
-                this.snackBar.open('Couldn\'t get the sprint goals', '', {duration: SNACKBAR_DURATION});
+            err => {
+                this.snackBar.open(this.getErrorMessage(err.data) || API_RESPONSE_MESSAGES.sprintAddedGoalsGetError,
+                    '', {duration: SNACKBAR_DURATION});
             }
         );
     }
@@ -102,8 +103,9 @@ export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
             response => {
                 this.sprintNotes = response.data.Feedbacks;
             },
-            error => {
-                this.snackBar.open('Couldn\'t get the sprint notes', '', {duration: SNACKBAR_DURATION});
+            err => {
+                this.snackBar.open(this.getErrorMessage(err.data) || API_RESPONSE_MESSAGES.sprintNotesGetError,
+                    '', {duration: SNACKBAR_DURATION});
             }
         );
     }
@@ -113,9 +115,16 @@ export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
             response => {
                 this.teamMembers = response.data.Members;
             },
-            () => {
-                this.snackBar.open(API_RESPONSE_MESSAGES.getRetrospectiveMembersError, '', {duration: SNACKBAR_DURATION});
+            err => {
+                this.snackBar.open(this.getErrorMessage(err.data) || API_RESPONSE_MESSAGES.getRetrospectiveMembersError,
+                    '', {duration: SNACKBAR_DURATION});
             }
         );
     }
+
+    getErrorMessage(response): string {
+        const message = response.error;
+        return message.charAt(0).toUpperCase() + message.substr(1);
+    }
+
 }
