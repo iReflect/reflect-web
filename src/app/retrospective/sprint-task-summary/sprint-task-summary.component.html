@@ -1,9 +1,8 @@
 <div>
   <div class="sprint-task-refresh">
-    <button mat-button (click)="getSprintTaskSummary(true)">Refresh Data <mat-icon>refresh</mat-icon></button>
-    <mat-slide-toggle labelPosition="before" (change)="toggleAutoRefresh()" [checked]="enableRefresh">
-      Autorefresh
-    </mat-slide-toggle>
+    <button mat-button (click)="getSprintTaskSummary(true)">Refresh Data
+      <mat-icon>refresh</mat-icon>
+    </button>
   </div>
   <div class="ag-grid-container">
     <ag-grid-angular
