@@ -103,21 +103,26 @@ export const API_RESPONSE_MESSAGES = {
     goalUnResolvedSuccessfully: 'Goal un-resolved successfully',
     goalUnResolveFailed: `Failed to un-resolve the goal`,
 
+    sprintHighlightsGetError: 'Couldn\'t get the sprint highlights',
     sprintHighlightsUpdateError: `Couldn't update sprint highlight`,
     sprintHighlightsUpdateSuccess: 'Successfully updated sprint highlight',
     sprintHighlightsAddError: `Couldn't add a sprint highlight`,
     sprintHighlightsAddSuccess: 'Successfully added a sprint highlight',
 
+    sprintNotesGetError: 'Couldn\'t get the sprint notes',
     sprintNotesUpdateError: `Couldn't update sprint note`,
     sprintNotesUpdateSuccess: 'Successfully updated sprint note',
     sprintNotesAddError: `Couldn't add a sprint note`,
     sprintNotesAddSuccess: 'Successfully added a sprint note',
 
+    sprintPendingGoalsGetError: 'Couldn\'t get the pending goals',
+    sprintAccomplishedGoalsGetError: 'Couldn\'t get the accomplished goals',
+    sprintAddedGoalsGetError: 'Couldn\'t get the added goals',
     sprintGoalsUpdateError: `Couldn't update sprint goal`,
     sprintGoalsUpdateSuccess: 'Successfully updated sprint goal',
     sprintGoalsAddError: `Couldn't add a sprint goal`,
     sprintGoalsAddSuccess: 'Successfully added a sprint goal',
-    dateNullError: 'Cannot set date as null'
+    dateNullError: 'Cannot set date as null',
 };
 
 export const QUESTION_RESPONSE_SEPARATOR = ',';
@@ -233,7 +238,7 @@ export const RETRO_FEEDBACK_GOAL_KEY = 'goal';
 export const SPRINT_NOTES_SECTIONS_LIST = [
     {
         KEY: 'key-takeaways',
-        LABEL: 'Key Takeaways',
+        LABEL: 'Key Take-Aways',
     },
     {
         KEY: 'things-well-done',
@@ -244,7 +249,7 @@ export const SPRINT_NOTES_SECTIONS_LIST = [
 export const HIGHLIGHTS_LIST = [
     {
         KEY: 'additional-things-done',
-        LABEL: 'Additional things Done'
+        LABEL: 'Additional Things Done'
     },
     {
         KEY: 'other-highlights',
