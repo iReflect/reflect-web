@@ -57,11 +57,11 @@
   <mat-tab-group [(selectedIndex)]="selectedTabIndex">
     <mat-tab label="Highlights">
       <div *ngIf="sprintStatus !== sprintStates.DRAFT">
-        <app-highlights [isTabActive]="selectedTabIndex === 0"
+        <app-sprint-highlights [isTabActive]="selectedTabIndex === 0"
                         [enableRefresh]="enableRefresh"
                         [sprintStatus]="sprintStatus"
                         [retrospectiveID]="retrospectiveID"
-                        [sprintID]="sprintID"></app-highlights>
+                        [sprintID]="sprintID"></app-sprint-highlights>
       </div>
     </mat-tab>
     <mat-tab label="Task Summary">

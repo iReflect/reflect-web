@@ -19,7 +19,7 @@ import { RetrospectiveDashboardComponent } from './retrospective-dashboard/retro
 import { SprintListComponent } from './sprint-list/sprint-list.component';
 import { SprintCreateComponent } from './sprint-create/sprint-create.component';
 import { RetrospectiveFeedbackComponent } from './retrospective-feedback/retrospective-feedback.component';
-import { HighlightsComponent } from './highlights/highlights.component';
+import { SprintHighlightsComponent } from './sprint-highlights/sprint-highlights.component';
 import { SprintNotesComponent } from './sprint-notes/sprint-notes.component';
 
 
@@ -44,7 +44,7 @@ import { SprintNotesComponent } from './sprint-notes/sprint-notes.component';
         SprintListComponent,
         SprintCreateComponent,
         RetrospectiveFeedbackComponent,
-        HighlightsComponent,
+        SprintHighlightsComponent,
         SprintNotesComponent,
     ],
     exports: [],

@@ -15,11 +15,11 @@ import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/observable/interval';
 
 @Component({
-    selector: 'app-highlights',
-    templateUrl: './highlights.component.html',
-    styleUrls: ['./highlights.component.scss']
+    selector: 'app-sprint-highlights',
+    templateUrl: './sprint-highlights.component.html',
+    styleUrls: ['./sprint-highlights.component.scss']
 })
-export class HighlightsComponent implements OnInit, OnChanges, OnDestroy {
+export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
     highlightsList = HIGHLIGHTS_LIST;
     retroFeedbackTypes = RETRO_FEEDBACK_TYPES;
     goalTypes = RETRO_FEEDBACK_GOAL_TYPES;

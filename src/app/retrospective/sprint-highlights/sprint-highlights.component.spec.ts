@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HighlightsComponent } from './highlights.component';
+import { SprintHighlightsComponent } from './sprint-highlights.component';
 
-describe('HighlightsComponent', () => {
-  let component: HighlightsComponent;
-  let fixture: ComponentFixture<HighlightsComponent>;
+describe('SprintHighlightsComponent', () => {
+  let component: SprintHighlightsComponent;
+  let fixture: ComponentFixture<SprintHighlightsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HighlightsComponent ]
+      declarations: [ SprintHighlightsComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HighlightsComponent);
+    fixture = TestBed.createComponent(SprintHighlightsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
