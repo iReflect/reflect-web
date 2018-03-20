@@ -1,4 +1,4 @@
-import { Component, HostListener, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 import { DatePipe } from '@angular/common';
 
@@ -42,6 +42,10 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
     @Input() feedbackSubType;
     @Input() data: any;
     @Input() teamMembers: any;
+    @Input() enableRefresh: boolean;
+
+    @Output() resumeRefresh = new EventEmitter();
+    @Output() pauseRefresh = new EventEmitter();
 
     @HostListener('window:resize') onResize() {
         if (this.gridApi) {
@@ -49,6 +53,14 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                 this.gridApi.sizeColumnsToFit();
             });
         }
+    }
+
+    onCellEditingStarted() {
+        this.pauseRefresh.emit();
+    }
+
+    onCellEditingStopped() {
+        this.resumeRefresh.emit();
     }
 
     private createColumnDefs(sprintStatus, teamMembers) {
@@ -188,6 +200,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                 private datePipe: DatePipe) { }
 
     ngOnInit() {
+        this.autoRefreshCurrentState = this.enableRefresh;
         this.columnDefs = this.createColumnDefs(this.sprintStatus, this.teamMembers);
         this.setGridOptions();
     }
