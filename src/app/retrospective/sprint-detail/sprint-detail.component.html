@@ -20,30 +20,24 @@
         <p mat-line>Last Synced At: {{sprintDetails.LastSyncedAt | date: dateFormat}}</p>
       </div>
       <div class="sprint-actions">
-        <div *ngIf="sprintStatus === sprintStates.FROZEN; then frozen else not_frozen"></div>
-        <ng-template #frozen>
-          <span class="status-freeze">Frozen <mat-icon color="green">done</mat-icon></span>
-        </ng-template>
-        <ng-template #not_frozen>
-          <mat-form-field>
-            <mat-select placeholder="{{sprintStatesLabel[sprintStatus]}}"
-                        [(ngModel)]="selectedValue"
-                        (selectionChange)="sprintStateChange($event.value)">
-              <mat-option *ngIf="sprintStatus === sprintStates.DRAFT"
-                          [value]="sprintActions.ACTIVATE">
-                {{sprintActionsLabel[sprintActions.ACTIVATE]}}
-              </mat-option>
-              <mat-option *ngIf="sprintStatus === sprintStates.ACTIVE"
-                          [value]="sprintActions.FREEZE">
-                {{sprintActionsLabel[sprintActions.FREEZE]}}
-              </mat-option>
-              <mat-option *ngIf="sprintStatus !== sprintStates.FROZEN"
-                          [value]="sprintActions.DISCARD">
-                {{sprintActionsLabel[sprintActions.DISCARD]}}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </ng-template>
+        <mat-form-field>
+          <mat-select [disabled]="sprintStatus === sprintStates.FROZEN" placeholder="{{sprintStatesLabel[sprintStatus]}}"
+                      [(ngModel)]="selectedValue"
+                      (selectionChange)="sprintStateChange($event.value)">
+            <mat-option *ngIf="sprintStatus === sprintStates.DRAFT"
+                        [value]="sprintActions.ACTIVATE">
+              {{sprintActionsLabel[sprintActions.ACTIVATE]}}
+            </mat-option>
+            <mat-option *ngIf="sprintStatus === sprintStates.ACTIVE"
+                        [value]="sprintActions.FREEZE">
+              {{sprintActionsLabel[sprintActions.FREEZE]}}
+            </mat-option>
+            <mat-option *ngIf="sprintStatus !== sprintStates.FROZEN"
+                        [value]="sprintActions.DISCARD">
+              {{sprintActionsLabel[sprintActions.DISCARD]}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
         <div>
           <button mat-button (click)="refreshSprintDetails()"
                   *ngIf="sprintDetails && sprintDetails.SyncStatus !== syncStates.SYNCING">
