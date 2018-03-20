@@ -1,5 +1,5 @@
 <div *ngFor="let highlight of highlightsList">
-  <label>{{highlight.LABEL}}</label>
+  <label><b>{{highlight.LABEL}}</b></label>
   <app-retrospective-feedback
     [feedbackType]="retroFeedbackTypes.HIGHLIGHT"
     [feedbackSubType]="highlight.KEY"
@@ -11,7 +11,7 @@
     [data]="sprintHighlights"></app-retrospective-feedback>
 </div>
 <div>
-  <label>Accomplished goals</label>
+  <label><b>Accomplished Goals</b></label>
   <app-retrospective-feedback
     [feedbackType]="retroFeedbackTypes.GOAL"
     [feedbackSubType]="goalTypes.COMPLETED"
@@ -23,7 +23,7 @@
     [sprintID]="sprintID"></app-retrospective-feedback>
 </div>
 <div>
-  <label>Pending goals</label>
+  <label><b>Pending Goals</b></label>
   <app-retrospective-feedback
     [feedbackType]="retroFeedbackTypes.GOAL"
     [feedbackSubType]="goalTypes.PENDING"
