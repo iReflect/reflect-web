@@ -125,11 +125,15 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                         });
                     }
                 },
-                () => {
+                err => {
                     if (isRefresh) {
-                        this.snackBar.open(API_RESPONSE_MESSAGES.autoRefreshFailure, '', {duration: SNACKBAR_DURATION});
+                        this.snackBar.open(
+                            err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.autoRefreshFailure,
+                            '', {duration: SNACKBAR_DURATION});
                     } else {
-                        this.snackBar.open(API_RESPONSE_MESSAGES.getSprintTaskSummaryError, '', {duration: SNACKBAR_DURATION});
+                        this.snackBar.open(
+                            err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.getSprintTaskSummaryError,
+                            '', {duration: SNACKBAR_DURATION});
                     }
                 }
             );

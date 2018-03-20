@@ -88,8 +88,10 @@ export class RetrospectTaskModalComponent implements OnDestroy {
             response => {
                 this.sprintMembers = response.data.Members;
             },
-            () => {
-                this.snackBar.open(API_RESPONSE_MESSAGES.getSprintMembersError, '', {duration: SNACKBAR_DURATION});
+            err => {
+                this.snackBar.open(
+                    err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.getSprintMembersError,
+                    '', {duration: SNACKBAR_DURATION});
             }
         );
     }
@@ -141,12 +143,16 @@ export class RetrospectTaskModalComponent implements OnDestroy {
                         this.gridApi.sizeColumnsToFit();
                     }
                 },
-                () => {
+                err => {
                     if (isRefresh) {
-                        this.snackBar.open(API_RESPONSE_MESSAGES.autoRefreshFailure, '', {duration: SNACKBAR_DURATION});
+                        this.snackBar.open(
+                            err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.autoRefreshFailure,
+                            '', {duration: SNACKBAR_DURATION});
                     } else {
-                        this.snackBar.open(API_RESPONSE_MESSAGES.getSprintTaskMemberSummaryError, '', {duration: SNACKBAR_DURATION});
-                        this.closeDialog();
+                        this.snackBar.open(
+                            err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.getSprintTaskMemberSummaryError,
+                            '', {duration: SNACKBAR_DURATION});
+                        this.dialogRef.close();
                     }
                 }
             );
@@ -154,19 +160,25 @@ export class RetrospectTaskModalComponent implements OnDestroy {
 
     addNewSprintTaskMember() {
         if (this.selectedMemberID === undefined) {
-            this.snackBar.open(API_RESPONSE_MESSAGES.memberNotSelectedError, '', {duration: SNACKBAR_DURATION});
+            this.snackBar.open(
+                API_RESPONSE_MESSAGES.memberNotSelectedError,
+                '', {duration: SNACKBAR_DURATION});
         } else if (this.memberIDs.indexOf(this.selectedMemberID) !== -1) {
-            this.snackBar.open(API_RESPONSE_MESSAGES.memberAlreadyPresent, '', {duration: SNACKBAR_DURATION});
+            this.snackBar.open(
+                API_RESPONSE_MESSAGES.memberAlreadyPresent,
+                '', {duration: SNACKBAR_DURATION});
         } else {
             this.retrospectiveService.addTaskMember(
                 this.data.retrospectiveID, this.data.sprintID, this.taskDetails.ID, this.selectedMemberID
             ).subscribe(
                 response => {
-                    this.gridApi.updateRowData({add: [response.data]});
+                    this.gridApi.updateRowData({ add: [response.data] });
                     this.memberIDs.push(this.selectedMemberID);
                 },
-                () => {
-                    this.snackBar.open(API_RESPONSE_MESSAGES.addSprintTaskMemberError, '', {duration: SNACKBAR_DURATION});
+                err => {
+                    this.snackBar.open(
+                        err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.addSprintTaskMemberError,
+                        '', {duration: SNACKBAR_DURATION});
                 }
             );
         }
@@ -180,10 +192,14 @@ export class RetrospectTaskModalComponent implements OnDestroy {
                         onSuccessCallback(response);
                     }
                     params.node.setData(response.data);
-                    this.snackBar.open(API_RESPONSE_MESSAGES.memberUpdated, '', {duration: SNACKBAR_DURATION});
+                    this.snackBar.open(
+                        API_RESPONSE_MESSAGES.memberUpdated,
+                        '', {duration: SNACKBAR_DURATION});
                 },
-                () => {
-                    this.snackBar.open(API_RESPONSE_MESSAGES.updateSprintMemberError, '', {duration: SNACKBAR_DURATION});
+                err => {
+                    this.snackBar.open(
+                        err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.updateSprintMemberError,
+                        '', {duration: SNACKBAR_DURATION});
                     this.revertCellValue(params);
                 }
             );
@@ -313,16 +329,12 @@ export class RetrospectTaskModalComponent implements OnDestroy {
                             if (newStoryPoints > this.taskDetails.Estimate) {
                                 this.snackBar.open(
                                     API_RESPONSE_MESSAGES.taskStoryPointsEstimatesError,
-                                    '',
-                                    {duration: SNACKBAR_DURATION}
-                                );
+                                    '', {duration: SNACKBAR_DURATION});
                                 this.revertCellValue(cellParams);
                             } else if (cellParams.newValue < 0) {
                                 this.snackBar.open(
                                     API_RESPONSE_MESSAGES.taskStoryPointsNegativeError,
-                                    '',
-                                    {duration: SNACKBAR_DURATION}
-                                );
+                                    '', {duration: SNACKBAR_DURATION});
                                 this.revertCellValue(cellParams);
                             } else {
                                 this.updateSprintTaskMember(cellParams, (response) => {

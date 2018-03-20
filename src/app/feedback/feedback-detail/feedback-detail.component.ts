@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
-import { API_RESPONSE_MESSAGES, FEEDBACK_STATES } from '../../../constants/app-constants';
+import { API_RESPONSE_MESSAGES, FEEDBACK_STATES, SNACKBAR_DURATION } from '../../../constants/app-constants';
 import { FeedbackService } from '../../shared/services/feedback.service';
 import { TeamFeedbackService } from '../../shared/services/team-feedback.service';
 
@@ -30,7 +30,6 @@ export class FeedbackDetailComponent implements OnInit {
     submittedAt: string;
     isDataLoaded = false;
     dateFormat = 'MMMM dd, yyyy';
-    snackBarDuration = 2000; // in ms
 
     constructor(private activatedRoute: ActivatedRoute, private snackBar: MatSnackBar, private router: Router) {
     }
@@ -49,9 +48,10 @@ export class FeedbackDetailComponent implements OnInit {
                         this.isFormSubmitted = data['Status'] ? data['Status'] === this.submittedState : false;
                         this.form = this.service.toFormGroup(data['Categories'], this.isFormSubmitted && this.showControls);
                     },
-                    error => {
-                        this.snackBar.open(error.data.message || API_RESPONSE_MESSAGES.error,
-                            '', {duration: this.snackBarDuration})
+                    err => {
+                        this.snackBar.open(
+                            err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.error,
+                            '', {duration: SNACKBAR_DURATION})
                             .afterDismissed().subscribe(() => {
                             this.router.navigateByUrl(this.feedbackListURL);
                         });
@@ -78,20 +78,20 @@ export class FeedbackDetailComponent implements OnInit {
             data: this.form.value, saveAndSubmit: saveAndSubmit,
             status: status, submittedAt: submittedAt
         }).subscribe(
-            (response) => {
+            response => {
                 this.isFormSubmitted = status === FEEDBACK_STATES.SUBMITTED;
                 this.snackBar.open(
                     this.isFormSubmitted ? API_RESPONSE_MESSAGES.feedBackSubmitted : API_RESPONSE_MESSAGES.feedBackSaved,
-                    '',
-                    {duration: this.snackBarDuration}
-                );
+                    '', {duration: SNACKBAR_DURATION});
                 if (this.isFormSubmitted) {
                     this.submittedAt = submittedAt;
                     this.form.disable();
                 }
             },
-            (error) => {
-                this.snackBar.open(error.data.message || API_RESPONSE_MESSAGES.error, '', {duration: this.snackBarDuration});
+            err => {
+                this.snackBar.open(
+                    err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.error,
+                    '', {duration: SNACKBAR_DURATION});
             }
         );
     }
