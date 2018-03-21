@@ -1,4 +1,9 @@
 <div>
+    <button mat-raised-button color="primary" (click)="refreshTab()">
+        <mat-icon>refresh</mat-icon> Refresh
+    </button>
+</div>
+<div>
     <div *ngFor="let noteSection of notesSectionsList" class="table-box">
         <app-retrospective-feedback
             [title]="noteSection.LABEL"
