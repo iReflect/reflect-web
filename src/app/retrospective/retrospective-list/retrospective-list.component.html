@@ -1,43 +1,46 @@
 <ng-container>
   <div class="retro-list-container">
-    <mat-card class="retro-list-header">
-      <div>
-        <span><b>Team Retrospectives</b></span>
-      </div>
+    <mat-toolbar>
+      <span><b>Team Retrospectives</b></span>
+      <span class="fill-remaining-space"></span>
       <div class="action-buttons">
-        <button mat-raised-button (click)="showCreateRetroModal()">Create</button>
+        <button mat-raised-button color="primary" (click)="showCreateRetroModal()">Create</button>
       </div>
-    </mat-card>
-    <div class="retro-table-content">
-      <div class="retro-table-container mat-elevation-z5">
-        <mat-table #table class="custom-mat-table" [dataSource]="dataSource">
-          <!-- Team Column -->
-          <ng-container matColumnDef="team">
-            <mat-header-cell *matHeaderCellDef>Team</mat-header-cell>
-            <mat-cell *matCellDef="let element"
-                      (click)="navigateToRetrospectiveDetail(element)">
-              <span matTooltip="Link to the Retrospective Dashboard" class="retro-dashboard-link">{{element.Title}}</span>
-            </mat-cell>
-          </ng-container>
+    </mat-toolbar>
+    <div class="layout-container">
+      <div class="single-grid">
+        <div class="table-container mat-elevation-z1">
+          <div class="retro-table-container">
+            <mat-table #table class="custom-mat-table" [dataSource]="dataSource">
+              <!-- Team Column -->
+              <ng-container matColumnDef="team">
+                <mat-header-cell *matHeaderCellDef>Team</mat-header-cell>
+                <mat-cell *matCellDef="let element"
+                          (click)="navigateToRetrospectiveDetail(element)">
+                  <span matTooltip="Link to the Retrospective Dashboard" class="retro-dashboard-link">{{element.Title}}</span>
+                </mat-cell>
+              </ng-container>
 
-          <!-- Created At Column -->
-          <ng-container matColumnDef="created_at">
-            <mat-header-cell *matHeaderCellDef>Created At</mat-header-cell>
-            <mat-cell *matCellDef="let element"> {{parseToDate(element.CreatedAt)}}</mat-cell>
-          </ng-container>
+              <!-- Created At Column -->
+              <ng-container matColumnDef="created_at">
+                <mat-header-cell *matHeaderCellDef>Created At</mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{parseToDate(element.CreatedAt)}}</mat-cell>
+              </ng-container>
 
-          <!-- Latest Sprint Column -->
-          <ng-container matColumnDef="latest_sprint">
-            <mat-header-cell *matHeaderCellDef>Latest Sprint</mat-header-cell>
-            <mat-cell *matCellDef="let element"
-                      (click)="navigateToLatestSprint(element)">
-              <span matTooltip="Link to the Latest Active or Frozen Sprint Retrospective" class="latest-sprint-link">Latest Sprint</span>
-            </mat-cell>
-          </ng-container>
+              <!-- Latest Sprint Column -->
+              <ng-container matColumnDef="latest_sprint">
+                <mat-header-cell *matHeaderCellDef>Latest Sprint</mat-header-cell>
+                <mat-cell *matCellDef="let element"
+                          (click)="navigateToLatestSprint(element)">
+                  <span matTooltip="Link to the Latest Active or Frozen Sprint Retrospective" class="latest-sprint-link">Latest Sprint</span>
+                </mat-cell>
+              </ng-container>
 
-          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-        </mat-table>
+              <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table>
+          </div>
+        </div>
       </div>
     </div>
   </div>

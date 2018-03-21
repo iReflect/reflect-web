@@ -5,6 +5,8 @@ import { AuthService } from '../../../shared/services/auth.service';
 import { UserService } from '../../../shared/services/user.service';
 import { UserStoreService } from '../../../shared/stores/user.store.service';
 
+
+
 @Component({
     selector: 'app-header',
     templateUrl: './header.component.html',
@@ -14,7 +16,7 @@ export class HeaderComponent implements OnInit {
     @Input() userLoggedIn: boolean;
     logoutInProgress = false;
     user: any = {};
-
+    userImage = 'assets/img/user-default.png';
     constructor(private router: Router,
                 private authService: AuthService,
                 private userStoreService: UserStoreService,

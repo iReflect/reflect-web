@@ -1,0 +1,34 @@
+@import "colors";
+.table-container {
+  padding: 0;
+}
+
+mat-row {
+  background: #FFF;
+}
+
+.custom-mat-table {
+  mat-header-row {
+    background-color: #F5F5F5;
+  }
+  mat-row {
+    background-color: #FFF;
+  }
+  mat-row, mat-header-row {
+    mat-cell {
+      font-size: 13px;
+    }
+  }
+  &.-row-clickable {
+    mat-row {
+      &:hover {
+        cursor: pointer;
+        background-color: rgba(161, 194, 250, 0.16);
+        mat-cell {
+          font-weight: 500;
+          color: $primary;
+        }
+      }
+    }
+  }
+}

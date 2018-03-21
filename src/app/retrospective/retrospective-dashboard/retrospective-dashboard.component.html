@@ -1,19 +1,45 @@
 <ng-container>
-  <div *ngIf="isDataLoaded">
-    <mat-card class="retro-details">
-      <div *ngIf="retrospectiveData">
-        <span>Team: <b>{{ retrospectiveData.Team.Name }}</b></span>&nbsp;|&nbsp;
-        <span>Project:<b> {{ retrospectiveData.ProjectName }}</b></span>&nbsp;|&nbsp;
-        <span>Created At: <b>{{ retrospectiveData.CreatedAt | date:dateFormat}}</b></span>&nbsp;|&nbsp;
-        <span>Created By: <b>{{ getCreatorName() }}</b></span>&nbsp;|&nbsp;
-        <span>Expected Story Point Per Week Per Person: <b>{{ retrospectiveData.StoryPointPerWeek}}</b></span>
-      </div>
+  <div *ngIf="isDataLoaded" class="container-with-view-height -colored">
+    <mat-toolbar>
+      <span>Team:  <b>{{ retrospectiveData.Team.Name }}</b></span>
+      <span class="fill-remaining-space"></span>
       <div class="action-buttons">
-        <button mat-raised-button class="add-sprint" (click)="showNewSprintDialog()">
-          Create
-        </button>
+        <button mat-raised-button color="primary" (click)="showNewSprintDialog()">Create Sprint</button>
       </div>
-    </mat-card>
+    </mat-toolbar>
+    <div class="layout-container" *ngIf="retrospectiveData">
+      <div class="single-grid">
+        <div class="information-box -small-box mat-elevation-z1">
+          <div class="box-header">
+            <h4 class="title">
+              Project: {{ retrospectiveData.ProjectName }}
+            </h4>
+            <h6 class="subtitle">
+              By {{ getCreatorName()}}
+            </h6>
+          </div>
+          <div class="info-box-content">
+            <div class="info-left">
+              <p>
+                Expected Story Point Per Week Per Person: {{ retrospectiveData.StoryPointPerWeek}}
+              </p>
+            </div>
+            <span class="fill-remaining-space"></span>
+            <div class="info-right">
+
+            </div>
+          </div>
+          <div class="info-box-footer">
+            <span class="fill-remaining-space"></span>
+            <p class="text-indented">
+              Created on: {{ retrospectiveData.CreatedAt | date:dateFormat}}
+            </p>
+          </div>
+        </div>
+        <app-sprint-list #sprintList [retrospectiveID]="retrospectiveID"></app-sprint-list>
+      </div>
+    </div>
+
   </div>
-  <app-sprint-list #sprintList [retrospectiveID]="retrospectiveID"></app-sprint-list>
+
 </ng-container>

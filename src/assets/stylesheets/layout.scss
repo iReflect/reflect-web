@@ -1,0 +1,58 @@
+
+.layout-container {
+  padding: 24px;
+
+  &.-colored {
+    background-color: #ECEFF1;
+  }
+}
+
+.container-with-view-height {
+  min-height: calc(100vh - 64px);
+
+  &.-colored {
+    background-color: #ECEFF1;
+  }
+}
+
+.single-grid {
+  max-width: 1440px;
+  padding: 0 24px;
+  margin: 0 auto;
+}
+
+.fill-remaining-space {
+  flex: 1 1 auto;
+}
+
+.layout-row {
+  flex-direction: row;
+  display: flex;
+}
+
+.flex {
+  flex: 1;
+}
+
+.paddling-left {
+  padding-left: 10px !important;
+}
+
+.layout-side-margin {
+  margin: 0 10px !important;
+}
+
+.toolbar-title {
+  margin: 0;
+  > i {
+    font-style: normal;
+    margin: 0 10px;
+    font-weight: 300;
+    font-size: inherit;
+    color: inherit;
+    &+span {
+      font-size: 14px;
+      color: #666;
+    }
+  }
+}

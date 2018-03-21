@@ -1,114 +1,100 @@
-<div *ngIf="sprintDetails">
-  <mat-card>
-    <div class="flex-container">
-      <div>
-        <mat-card-title>{{sprintDetails.Title}}</mat-card-title>
-      </div>
-      <div>
-        <a mat-icon-button class="dashboard-back" matTooltip="Retrospective dashboard"
-           matTooltipPosition="before">
-       <span (click)="navigateToRetrospectiveDashboard()" class="circular-icon">
-         &nbsp;<mat-icon>arrow_back</mat-icon>&nbsp;
-       </span>
-        </a>
-      </div>
-    </div>
-    <mat-card-content class="flex-container">
-      <div>
-        <p mat-line>{{sprintDetails.StartDate | date: dateFormat}} to {{sprintDetails.EndDate |
-          date: dateFormat}}</p>
-        <p mat-line>Last Synced At: {{sprintDetails.LastSyncedAt | date: dateFormat}}</p>
-      </div>
-      <div class="sprint-actions">
-        <mat-form-field>
-          <mat-select [disabled]="sprintStatus === sprintStates.FROZEN" placeholder="{{sprintStatesLabel[sprintStatus]}}"
-                      [(ngModel)]="selectedValue"
-                      (selectionChange)="sprintStateChange($event.value)">
-            <mat-option *ngIf="sprintStatus === sprintStates.DRAFT"
-                        [value]="sprintActions.ACTIVATE">
-              {{sprintActionsLabel[sprintActions.ACTIVATE]}}
-            </mat-option>
-            <mat-option *ngIf="sprintStatus === sprintStates.ACTIVE"
-                        [value]="sprintActions.FREEZE">
-              {{sprintActionsLabel[sprintActions.FREEZE]}}
-            </mat-option>
-            <mat-option *ngIf="sprintStatus !== sprintStates.FROZEN"
-                        [value]="sprintActions.DISCARD">
-              {{sprintActionsLabel[sprintActions.DISCARD]}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-        <div>
-          <button mat-button (click)="refreshSprintDetails()"
-                  *ngIf="sprintDetails && sprintDetails.SyncStatus !== syncStates.SYNCING">
-            Re-Sync Sprint
-            <mat-icon>refresh</mat-icon>
-          </button>
-        </div>
-        <div>
-          <mat-slide-toggle labelPosition="before" (change)="toggleAutoRefresh()"
-                            [checked]="enableRefresh">
-            Auto Refresh
-          </mat-slide-toggle>
-        </div>
-      </div>
-    </mat-card-content>
-  </mat-card>
-  <mat-tab-group [(selectedIndex)]="selectedTabIndex">
-    <mat-tab label="Highlights">
-      <div *ngIf="sprintStatus !== sprintStates.DRAFT">
-        <app-sprint-highlights [isTabActive]="selectedTabIndex === 0"
-                        [enableRefresh]="enableRefresh"
-                        [sprintStatus]="sprintStatus"
-                        [retrospectiveID]="retrospectiveID"
-                        [sprintID]="sprintID"></app-sprint-highlights>
-      </div>
-    </mat-tab>
-    <mat-tab label="Task Summary">
-      <div
-        *ngIf="sprintDetails.LastSyncedAt && sprintDetails.SyncStatus !== syncStates.SYNCING; else not_synced">
-        <app-sprint-task-summary [isTabActive]="selectedTabIndex === 1"
-                                 [sprintStatus]="sprintStatus"
-                                 [retrospectiveID]="retrospectiveID"
-                                 [sprintID]="sprintID"
-                                 [enableRefresh]="enableRefresh"></app-sprint-task-summary>
-      </div>
-    </mat-tab>
-    <mat-tab label="Members Summary">
-      <div
-        *ngIf="sprintDetails.LastSyncedAt && sprintDetails.SyncStatus !== syncStates.SYNCING; else not_synced">
-        <app-sprint-member-summary [isTabActive]="selectedTabIndex === 2"
-                                   [sprintDays]="sprintDays"
+<div *ngIf="sprintDetails" class="container-with-view-height -colored">
+  <mat-toolbar>
+    <button mat-icon-button matTooltip="Retrospective dashboard"
+            matTooltipPosition="before" (click)="navigateToRetrospectiveDashboard()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <p class="paddling-left toolbar-title">
+      {{sprintDetails.Title}}
+      <i class="divider">|</i>
+      <span>{{sprintDetails.StartDate | date: dateFormat}} to {{sprintDetails.EndDate | date: dateFormat}}</span>
+    </p>
+    <span class="fill-remaining-space"></span>
+    <mat-slide-toggle labelPosition="before" (change)="toggleAutoRefresh()" [checked]="enableRefresh" class="layout-side-margin" color="primary">
+      Auto Refresh
+      <p class="small-text">Last Synced at: {{sprintDetails.LastSyncedAt | date: dateFormat}}</p>
+    </mat-slide-toggle>
+    <button mat-raised-button color="primary" class="layout-side-margin" (click)="refreshSprintDetails()" *ngIf="sprintDetails && sprintDetails.SyncStatus !== syncStates.SYNCING">
+      <mat-icon>refresh</mat-icon>&nbsp;&nbsp;Re-Sync Sprint
+    </button>
+    <mat-form-field class="layout-side-margin">
+      <mat-select [disabled]="sprintStatus === sprintStates.FROZEN" placeholder="{{sprintStatesLabel[sprintStatus]}}"
+                  [(ngModel)]="selectedValue"
+                  (selectionChange)="sprintStateChange($event.value)">
+        <mat-option *ngIf="sprintStatus === sprintStates.DRAFT"
+                    [value]="sprintActions.ACTIVATE">
+          {{sprintActionsLabel[sprintActions.ACTIVATE]}}
+        </mat-option>
+        <mat-option *ngIf="sprintStatus === sprintStates.ACTIVE"
+                    [value]="sprintActions.FREEZE">
+          {{sprintActionsLabel[sprintActions.FREEZE]}}
+        </mat-option>
+        <mat-option *ngIf="sprintStatus !== sprintStates.FROZEN"
+                    [value]="sprintActions.DISCARD">
+          {{sprintActionsLabel[sprintActions.DISCARD]}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </mat-toolbar>
+  <div class="layout-container">
+    <div class="single-grid">
+      <mat-tab-group [(selectedIndex)]="selectedTabIndex">
+        <mat-tab label="Highlights">
+          <div *ngIf="sprintStatus !== sprintStates.DRAFT">
+            <app-sprint-highlights [isTabActive]="selectedTabIndex === 0"
+                                   [enableRefresh]="enableRefresh"
                                    [sprintStatus]="sprintStatus"
                                    [retrospectiveID]="retrospectiveID"
-                                   [sprintID]="sprintID"
-                                   [enableRefresh]="enableRefresh"></app-sprint-member-summary>
-      </div>
-    </mat-tab>
-    <mat-tab label="Notes">
-      <div *ngIf="sprintStatus !== sprintStates.DRAFT">
-        <app-sprint-notes [isTabActive]="selectedTabIndex === 3"
-                          [enableRefresh]="enableRefresh"
-                          [sprintStatus]="sprintStatus"
-                          [retrospectiveID]="retrospectiveID"
-                          [sprintID]="sprintID"></app-sprint-notes>
-      </div>
-    </mat-tab>
-  </mat-tab-group>
-  <ng-template #not_synced>
-    <mat-card class="sync-error-card">
-      <div
-        *ngIf="sprintDetails.SyncStatus === syncStates.SYNCING; then syncing else not_syncing"></div>
-      <ng-template #syncing>
-        <mat-error>
-          Please Wait! Sync in Progress!
-        </mat-error>
+                                   [sprintID]="sprintID"></app-sprint-highlights>
+          </div>
+        </mat-tab>
+        <mat-tab label="Task Summary">
+          <div
+            *ngIf="sprintDetails.LastSyncedAt && sprintDetails.SyncStatus !== syncStates.SYNCING; else not_synced">
+            <app-sprint-task-summary [isTabActive]="selectedTabIndex === 1"
+                                     [sprintStatus]="sprintStatus"
+                                     [retrospectiveID]="retrospectiveID"
+                                     [sprintID]="sprintID"
+                                     [enableRefresh]="enableRefresh"></app-sprint-task-summary>
+          </div>
+        </mat-tab>
+        <mat-tab label="Members Summary">
+          <div
+            *ngIf="sprintDetails.LastSyncedAt && sprintDetails.SyncStatus !== syncStates.SYNCING; else not_synced">
+            <app-sprint-member-summary [isTabActive]="selectedTabIndex === 2"
+                                       [sprintDays]="sprintDays"
+                                       [sprintStatus]="sprintStatus"
+                                       [retrospectiveID]="retrospectiveID"
+                                       [sprintID]="sprintID"
+                                       [enableRefresh]="enableRefresh"></app-sprint-member-summary>
+          </div>
+        </mat-tab>
+        <mat-tab label="Notes">
+          <div *ngIf="sprintStatus !== sprintStates.DRAFT">
+            <app-sprint-notes [isTabActive]="selectedTabIndex === 3"
+                              [enableRefresh]="enableRefresh"
+                              [sprintStatus]="sprintStatus"
+                              [retrospectiveID]="retrospectiveID"
+                              [sprintID]="sprintID"></app-sprint-notes>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+      <ng-template #not_synced>
+        <mat-card class="sync-error-card">
+          <div
+            *ngIf="sprintDetails.SyncStatus === syncStates.SYNCING; then syncing else not_syncing"></div>
+          <ng-template #syncing>
+            <mat-error>
+              Please Wait! Sync in Progress!
+            </mat-error>
+          </ng-template>
+          <ng-template #not_syncing>
+            <mat-error>
+              Please Refresh to fetch data!
+            </mat-error>
+          </ng-template>
+        </mat-card>
       </ng-template>
-      <ng-template #not_syncing>
-        <mat-error>
-          Please Refresh to fetch data!
-        </mat-error>
-      </ng-template>
-    </mat-card>
-  </ng-template>
+    </div>
+  </div>
 </div>
