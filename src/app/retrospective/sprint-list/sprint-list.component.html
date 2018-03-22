@@ -1,50 +1,56 @@
 <ng-container>
   <div class="sprint-list-container">
     <div class="sprint-table-container mat-elevation-z1">
-      <mat-table #table class="custom-mat-table -row-clickable" [dataSource]="dataSource">
-        <!-- Title Column -->
-        <ng-container matColumnDef="title">
-          <mat-header-cell *matHeaderCellDef>Title</mat-header-cell>
-          <mat-cell *matCellDef="let element"
-                    (click)="navigateToSprint(element)">
+      <mat-table #table  class="custom-mat-table -row-clickable" [dataSource]="dataSource">
+          <!-- Title Column -->
+          <ng-container matColumnDef="title">
+            <mat-header-cell *matHeaderCellDef>Title</mat-header-cell>
+            <mat-cell *matCellDef="let element"
+                      (click)="navigateToSprint(element)">
             <span class="link-type-cell"
                   matTooltip="Link to Sprint Dashboard">{{element.Title}}</span>
-          </mat-cell>
-        </ng-container>
+            </mat-cell>
+          </ng-container>
 
-        <!-- User Column -->
-        <ng-container matColumnDef="created_by">
-          <mat-header-cell *matHeaderCellDef>Created By</mat-header-cell>
-          <mat-cell *matCellDef="let element"> {{getUserName(element.CreatedBy)}}</mat-cell>
-        </ng-container>
+          <!-- User Column -->
+          <ng-container matColumnDef="created_by">
+            <mat-header-cell *matHeaderCellDef>Created By</mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{getUserName(element.CreatedBy)}}</mat-cell>
+          </ng-container>
 
-        <!-- Start Date Column -->
-        <ng-container matColumnDef="start_date">
-          <mat-header-cell *matHeaderCellDef>Start Date</mat-header-cell>
-          <mat-cell *matCellDef="let element"> {{element.StartDate | date: dateFormat}}</mat-cell>
-        </ng-container>
+          <!-- Start Date Column -->
+          <ng-container matColumnDef="start_date">
+            <mat-header-cell *matHeaderCellDef>Start Date</mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.StartDate | date: dateFormat}}</mat-cell>
+          </ng-container>
 
-        <!-- End Date Column -->
-        <ng-container matColumnDef="end_date">
-          <mat-header-cell *matHeaderCellDef>End Date</mat-header-cell>
-          <mat-cell *matCellDef="let element"> {{element.EndDate | date: dateFormat}}</mat-cell>
-        </ng-container>
+          <!-- End Date Column -->
+          <ng-container matColumnDef="end_date">
+            <mat-header-cell *matHeaderCellDef>End Date</mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.EndDate | date: dateFormat}}</mat-cell>
+          </ng-container>
 
-        <!-- Last Synced At Column -->
-        <ng-container matColumnDef="last_synced_at">
-          <mat-header-cell *matHeaderCellDef>Last Synced At</mat-header-cell>
-          <mat-cell *matCellDef="let element"> {{element.LastSyncedAt | date: dateFormat}}</mat-cell>
-        </ng-container>
+          <!-- Last Synced At Column -->
+          <ng-container matColumnDef="last_synced_at">
+            <mat-header-cell *matHeaderCellDef>Last Synced At</mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.LastSyncedAt | date: dateFormat}}</mat-cell>
+          </ng-container>
 
-        <!-- Status Column -->
-        <ng-container matColumnDef="status">
-          <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
-          <mat-cell *matCellDef="let element"> {{getStatusValue(element.Status)}}</mat-cell>
-        </ng-container>
+          <!-- Status Column -->
+          <ng-container matColumnDef="status">
+            <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{getStatusValue(element.Status)}}</mat-cell>
+          </ng-container>
 
-        <mat-header-row *matHeaderRowDef="displayedSprintColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedSprintColumns;"></mat-row>
-      </mat-table>
+          <mat-header-row *matHeaderRowDef="displayedSprintColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedSprintColumns;"></mat-row>
+        </mat-table>
+      <div class="empty-message-container" *ngIf="dataSource.dataChange.value.length == 0">
+        <!--Empty table-->
+        <h3 class="empty-message">
+          No Sprints Found.
+        </h3>
+      </div>
     </div>
   </div>
 </ng-container>

@@ -32,6 +32,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
     private gridApi: GridApi;
     private columnApi: ColumnApi;
 
+    @Input() title;
     @Input() retrospectiveID;
     @Input() sprintID;
     @Input() sprintStatus;

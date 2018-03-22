@@ -1,37 +1,3 @@
-.sprint-member-actions {
-  div {
-    margin: 10px;
-    float: left;
-  }
-  mat-select {
-    width: 150px;
-    line-height: 35px;
-  }
-  button {
-    background-color: #f4f5f7;
-    color: #42516e;
-  }
-}
-
-:host ::ng-deep div .ag-theme-material .ag-cell-inline-editing {
-  box-shadow: initial;
-  height: inherit;
-}
-
-.ag-grid-container {
-  float: left;
-  margin: 1px auto;
-  height: -webkit-calc(100vh - 100px);
-  height: -moz-calc(100vh - 100px);
-  height: calc(100vh - 100px);
-  width: calc(100vw - 7rem);
-  ag-grid-angular {
-    width: 100%;
-    height: 100%;
-  }
-  ::ng-deep .delete-column {
-    mat-icon {
-      line-height: inherit;
-    }
-  }
+mat-select {
+  max-width: 200px;
 }

@@ -1,70 +1,15 @@
-//.card-header {
-//  color: rgba(0, 0, 0, .54);
-//  font-weight: 500;
-//  height: 48px;
-//  font-size: 14px;
-//  padding: 0;
-//}
-//
-//.flex-container {
-//  display: flex;
-//  justify-content: space-between;
-//}
-//
-//.sync-error-card {
-//  margin-top: 15%;
-//  margin-left: 32%;
-//  width: 30%;
-//  text-align: center;
-//  mat-error {
-//    span {
-//      color: #57A8CB;
-//    }
-//  }
-//}
-//
-//:host ::ng-deep .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar {
-//  background-color: #3293D2;
-//}
-//
-//:host ::ng-deep .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
-//  background-color: #0078B8;
-//}
-//
-//:host ::ng-deep .mat-tab-body-content {
-//  backface-visibility: visible;
-//}
-//
-//.dashboard-back {
-//  .circular-icon {
-//    border-radius: 50%;
-//    background-color: #3293D2;
-//    color: #FFF;
-//    font-size: 32px;
-//    cursor: pointer;
-//  }
-//}
-//
-//.sprint-actions {
-//  text-align: right;
-//  mat-form-field {
-//    width: 15em;
-//  }
-//  button {
-//    width: 100%;
-//    font-size: 1rem;
-//    font-weight: 500;
-//    background-color: #f4f5f7;
-//    color: #42516e;
-//  }
-//}
-//
-//mat-tab-group {
-//  border: 1px solid #E8E8E8;
-//  mat-tab {
-//    height: 100%;
-//  }
-//  .mat-tab-body-content {
-//    height: 100%;
-//  }
-//}
+.auto-refresh-toggle {
+  text-align: right;
+  p.small-text {
+    font-size: 12px;
+    margin: 0;
+  }
+}
+
+.multi-table-container {
+  background: #FFF;
+}
+
+.mat-tab-header {
+  background: #FFF;
+}

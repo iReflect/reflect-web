@@ -11,7 +11,8 @@ import {
     SPRINT_ACTIONS_LABEL,
     SPRINT_STATES,
     SPRINT_STATES_LABEL,
-    SPRINT_SYNC_STATES
+    SPRINT_SYNC_STATES,
+    ACTIONABLE_SPRINT_STATES
 } from '../../../constants/app-constants';
 import {BasicModalComponent} from '../../shared/basic-modal/basic-modal.component';
 import {RetrospectiveService} from '../../shared/services/retrospective.service';
@@ -71,6 +72,7 @@ export class SprintDetailComponent implements OnInit {
             response => {
                 this.sprintDetails = response.data;
                 this.sprintStatus = response.data.Status;
+                this.selectedValue = ACTIONABLE_SPRINT_STATES[this.sprintStatus];
                 this.sprintDays = SprintDetailComponent.workdayCount(moment(response.data.StartDate), moment(response.data.EndDate));
                 if (this.sprintDetails.SyncStatus === SPRINT_SYNC_STATES.SYNCING) {
                     setTimeout(() => this.getSprintDetails(), 5000);

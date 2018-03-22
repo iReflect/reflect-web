@@ -1,7 +1,11 @@
 <ng-container>
   <div *ngIf="isDataLoaded" class="container-with-view-height -colored">
     <mat-toolbar>
-      <span>Team:  <b>{{ retrospectiveData.Team.Name }}</b></span>
+      <button mat-icon-button matTooltip="Retrospective dashboard"
+              matTooltipPosition="before" (click)="navigateToRetrospectives()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <span class="paddling-left">Team:  <b>{{ retrospectiveData.Team.Name }}</b></span>
       <span class="fill-remaining-space"></span>
       <div class="action-buttons">
         <button mat-raised-button color="primary" (click)="showNewSprintDialog()">Create Sprint</button>

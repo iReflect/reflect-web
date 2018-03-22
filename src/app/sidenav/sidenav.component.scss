@@ -3,6 +3,7 @@
 //  justify-content: center;
 //  background: rgb(255, 255, 255);
 //}
+@import "../core/colors";
 
 mat-sidenav-container {
   min-height: calc(100vh - 64px);
@@ -48,7 +49,7 @@ mat-sidenav {
       }
       &.active-nav {
         .mat-list-icon {
-          color: #3367d6;
+          color: $primary;
         }
       }
     }
@@ -84,10 +85,10 @@ mat-sidenav {
   //justify-items: center;
 
   &.active-nav {
-    color: #3367d6;
+    color: $primary;
     background: rgba(161,194,250,0.16);
     mat-icon {
-      color: #3367d6;
+      color: $primary;
     }
   }
 

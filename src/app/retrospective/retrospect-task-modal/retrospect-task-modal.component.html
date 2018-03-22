@@ -1,44 +1,36 @@
-<div class="retrospect-task">
-  <h2 mat-dialog-title>{{taskDetails.TaskID}}: {{taskDetails.Summary}}</h2>
-  <span class="close-icon" (click)="closeDialog()"><mat-icon>clear</mat-icon></span>
-  <mat-card>
-    <mat-card-content>
-      <div>
-        <div *ngIf="taskDetails.Assignee">
-          <span>Assignee:</span> {{taskDetails.Assignee}}
-        </div>
-        <div *ngIf="taskDetails.Estimate">
-          <span>Estimates:</span> {{taskDetails.Estimate}}
-        </div>
-        <div *ngIf="taskDetails.Status">
-          <span>Status:</span> {{taskDetails.Status}}
-        </div>
-        <div *ngIf="taskDetails.Type">
-          <span>Story Type:</span> {{taskDetails.Type}}
-        </div>
-      </div>
-    </mat-card-content>
-  </mat-card>
-  <div class="add-member" *ngIf="data.sprintStatus !== sprintStates.FROZEN">
-    <div>
-      <mat-select placeholder="Select a Member" [(ngModel)]="selectedMemberID">
+<div class="retrospect-task app-dialog">
+  <h2 mat-dialog-title>
+    {{taskDetails.TaskID}}: {{taskDetails.Summary}}
+    <p class="dialog-subtitle">
+      {{taskDetails.Type}}
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <!--Assignee: -->{{taskDetails.Assignee}}
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <span>Estimates:</span> {{taskDetails.Estimate}}
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <span>Status:</span> {{taskDetails.Status}}
+    </p>
+  </h2>
+  <button mat-icon-button class="close-icon" tabindex="-1" (click)="closeDialog()"><mat-icon>clear</mat-icon></button>
+  <mat-toolbar>
+    <b>Members</b>
+    <span class="fill-remaining-space"></span>
+    <button mat-button (click)="getSprintTaskMemberSummary(true)" class="layout-side-margin">
+      <mat-icon>refresh</mat-icon>
+      Refresh
+    </button>
+    <div class="add-member layout-side-margin" *ngIf="data.sprintStatus !== sprintStates.FROZEN">
+      <mat-select class="tabbar-mat-select" placeholder="Select a Member" [(ngModel)]="selectedMemberID">
         <mat-option *ngFor="let member of sprintMembers" [value]="member.ID">
           {{(member.FirstName + ' ' + member.LastName).trim()}}
         </mat-option>
       </mat-select>
+      <button mat-raised-button color="primary" (click)="addNewSprintTaskMember()" class="layout-side-margin">Add Member</button>
     </div>
-    <div>
-      <button mat-button (click)="addNewSprintTaskMember()">Add Member</button>
-    </div>
-  </div>
-  <div class="retrospect-task-refresh">
-    <button mat-button (click)="getSprintTaskMemberSummary(true)">Refresh Data
-      <mat-icon>refresh</mat-icon>
-    </button>
-  </div>
+  </mat-toolbar>
   <div class="ag-grid-container">
     <ag-grid-angular
-      class="ag-theme-material"
+      class="ag-theme-material custom-ag-grid"
       [gridOptions]="gridOptions"
       [stopEditingWhenGridLosesFocus]="true"
       [overlayLoadingTemplate]="overlayLoadingTemplate"

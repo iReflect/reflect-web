@@ -1,20 +1,23 @@
-<div class="sprint-member-actions">
-  <div *ngIf="sprintStatus !== sprintStates.FROZEN">
-    <mat-select placeholder="Select a Member" [(ngModel)]="selectedMemberID">
+<mat-card>
+  <mat-toolbar>
+    <b>Members</b>
+    <span class="fill-remaining-space"></span>
+    <button mat-button (click)="getSprintMemberSummary(true)" class="layout-side-margin">
+      <mat-icon>refresh</mat-icon>
+      Refresh
+    </button>
+    <mat-select  *ngIf="sprintStatus !== sprintStates.FROZEN" placeholder="Select a Member" [(ngModel)]="selectedMemberID"
+                 class="tabbar-mat-select"
+    >
       <mat-option *ngFor="let member of retroMembers" [value]="member.ID">
         {{(member.FirstName + ' ' + member.LastName).trim()}}
       </mat-option>
     </mat-select>
-    <button mat-button (click)="addSprintMember()">Add Member</button>
-  </div>
-  <div>
-    <button mat-button (click)="getSprintMemberSummary(true)">Refresh
-      <mat-icon>refresh</mat-icon>
-    </button>
-  </div>
-  <div class="ag-grid-container">
+    <button *ngIf="sprintStatus !== sprintStates.FROZEN" mat-raised-button color="primary" (click)="addSprintMember()" class="layout-side-margin">Add Member</button>
+  </mat-toolbar>
+  <div class="ag-grid-container dynamic-grid-height -adjust-tabs">
     <ag-grid-angular
-      class="ag-theme-material"
+      class="ag-theme-material custom-ag-grid"
       [gridOptions]="gridOptions"
       [stopEditingWhenGridLosesFocus]="true"
       [overlayLoadingTemplate]="overlayLoadingTemplate"
@@ -24,4 +27,4 @@
       (cellEditingStopped)="onCellEditingStopped()">
     </ag-grid-angular>
   </div>
-</div>
+</mat-card>
