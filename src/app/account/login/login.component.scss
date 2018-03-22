@@ -1,8 +1,14 @@
+
 .login-card {
-  max-width: 360px;
+  max-width: 480px;
   margin: 4em auto;
   text-align: center;
   mat-form-field {
     display: block;
   }
+}
+
+mat-spinner {
+  display: inline-block;
+  margin: 20px;
 }
