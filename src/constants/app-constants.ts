@@ -250,7 +250,7 @@ export const SPRINT_NOTES_SECTIONS_LIST = [
     {
         KEY: 'things-well-done',
         LABEL: 'Things Well Done',
-    },
+    }
 ];
 
 export const HIGHLIGHTS_LIST = [

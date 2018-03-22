@@ -1,17 +1,3 @@
-<div *ngFor="let highlight of highlightsList" class="table-box">
-  <app-retrospective-feedback
-    [title]="highlight.LABEL"
-    (resumeRefresh)="resumeRefresh()"
-    (pauseRefresh)="pauseRefresh()"
-    [feedbackType]="retroFeedbackTypes.HIGHLIGHT"
-    [feedbackSubType]="highlight.KEY"
-    [sprintStatus]="sprintStatus"
-    [retrospectiveID]="retrospectiveID"
-    [sprintID]="sprintID"
-    [isTabActive]="isTabActive"
-    [teamMembers]="teamMembers"
-    [data]="sprintHighlights"></app-retrospective-feedback>
-</div>
 <div class="table-box">
   <!--<span class="retrospective-feedback-title" ><b>Accomplished Goals</b></span>-->
   <app-retrospective-feedback
@@ -26,6 +12,20 @@
     [sprintStatus]="sprintStatus"
     [retrospectiveID]="retrospectiveID"
     [sprintID]="sprintID"></app-retrospective-feedback>
+</div>
+<div *ngFor="let highlight of highlightsList" class="table-box">
+  <app-retrospective-feedback
+    [title]="highlight.LABEL"
+    (resumeRefresh)="resumeRefresh()"
+    (pauseRefresh)="pauseRefresh()"
+    [feedbackType]="retroFeedbackTypes.HIGHLIGHT"
+    [feedbackSubType]="highlight.KEY"
+    [sprintStatus]="sprintStatus"
+    [retrospectiveID]="retrospectiveID"
+    [sprintID]="sprintID"
+    [isTabActive]="isTabActive"
+    [teamMembers]="teamMembers"
+    [data]="sprintHighlights"></app-retrospective-feedback>
 </div>
 <div class="table-box">
   <!--<span class="retrospective-feedback-title" ><b>Pending Goals</b></span>-->

@@ -1,12 +1,12 @@
 <div>
   <mat-card class="no-padding-container">
-    <mat-toolbar class="small-toolbar">
-      <span class="retrospective-feedback-title" ><b>{{title}}</b></span>
+    <mat-toolbar class="small-toolbar" color="primary">
+      <span class="retrospective-feedback-title" ><b>{{title}}</b></span>&nbsp;&nbsp;(50)
       <span class="fill-remaining-space"></span>
-      <button mat-button color="primary" (click)="addMoreRow()"
+      <button mat-button (click)="addMoreRow()"
               *ngIf="feedbackSubType !== goalTypes.COMPLETED && feedbackSubType !== goalTypes.PENDING">
         <mat-icon>add</mat-icon>
-        <span>add new</span>
+        <span>Add New</span>
       </button>
     </mat-toolbar>
     <div class="ag-grid-container -small-height">

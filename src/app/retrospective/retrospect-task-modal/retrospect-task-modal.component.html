@@ -1,18 +1,31 @@
 <div class="retrospect-task app-dialog">
   <h2 mat-dialog-title>
     {{taskDetails.TaskID}}: {{taskDetails.Summary}}
-    <p class="dialog-subtitle">
-      {{taskDetails.Type}}
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      <!--Assignee: -->{{taskDetails.Assignee}}
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      <span>Estimates:</span> {{taskDetails.Estimate}}
-      &nbsp;&nbsp;|&nbsp;&nbsp;
-      <span>Status:</span> {{taskDetails.Status}}
-    </p>
   </h2>
   <button mat-icon-button class="close-icon" tabindex="-1" (click)="closeDialog()"><mat-icon>clear</mat-icon></button>
-  <mat-toolbar>
+  <div class="modal-header-sticky-box">
+    <div class="information-box mat-elevation-z1">
+      <div class="box-header">
+        <h4 class="title">
+          Assignee: {{taskDetails.Assignee}}
+        </h4>
+        <h6 class="subtitle">
+          Type: {{taskDetails.Type}}
+        </h6>
+      </div>
+      <div class="info-box-content">
+        <div class="info-left">
+          <p>
+            Estimates: {{taskDetails.Estimate}}
+          </p>
+          <p>
+            Status: {{taskDetails.Status}}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <mat-toolbar class="small-toolbar" color="primary">
     <b>Members</b>
     <span class="fill-remaining-space"></span>
     <button mat-button (click)="getSprintTaskMemberSummary(true)" class="layout-side-margin">
@@ -25,7 +38,7 @@
           {{(member.FirstName + ' ' + member.LastName).trim()}}
         </mat-option>
       </mat-select>
-      <button mat-raised-button color="primary" (click)="addNewSprintTaskMember()" class="layout-side-margin">Add Member</button>
+      <button mat-button (click)="addNewSprintTaskMember()" class="layout-side-margin">Add Member</button>
     </div>
   </mat-toolbar>
   <div class="ag-grid-container">

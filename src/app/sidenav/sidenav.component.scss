@@ -36,16 +36,16 @@ mat-sidenav {
     line-height: 18px;
   }
   mat-list-item {
-    height: 36px;
-    min-height: 36px;
+    height: 48px;
+    min-height: 48px;
     margin: 0 -16px;
     .side-nav-item {
       .mat-list-icon {
         @extend .side-nav-item-icon;
         border-radius: 0;
-        line-height: 36px !important;
+        line-height: 48px !important;
         padding: 0 15px 0 8px;
-        height: 36px !important;
+        height: 48px !important;
       }
       &.active-nav {
         .mat-list-icon {
@@ -67,7 +67,7 @@ mat-sidenav {
 
 .side-nav-item {
   color: rgba(0,0,0,0.655);
-  height: 36px;
+  height: 48px;
   width: 100%;
   text-align: left;
   padding: 0 16px;
@@ -96,16 +96,16 @@ mat-sidenav {
 
   .link-name {
     padding: 0 8px;
-    font-size: 13px;
+    font-size: 16px;
     text-overflow: ellipsis;
     overflow: hidden;
     display: block;
-    line-height: 36px;
+    line-height: 48px;
   }
 }
 
 .mat-list-nav-item {
-  height: 36px;
+  height: 48px;
   width: 100%;
   margin: 8px 0;
   display: block;

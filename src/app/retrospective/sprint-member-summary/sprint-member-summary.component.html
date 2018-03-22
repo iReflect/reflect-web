@@ -1,5 +1,5 @@
 <mat-card>
-  <mat-toolbar>
+  <mat-toolbar class="small-toolbar" color="primary">
     <b>Members</b>
     <span class="fill-remaining-space"></span>
     <button mat-button (click)="getSprintMemberSummary(true)" class="layout-side-margin">
@@ -13,7 +13,7 @@
         {{(member.FirstName + ' ' + member.LastName).trim()}}
       </mat-option>
     </mat-select>
-    <button *ngIf="sprintStatus !== sprintStates.FROZEN" mat-raised-button color="primary" (click)="addSprintMember()" class="layout-side-margin">Add Member</button>
+    <button *ngIf="sprintStatus !== sprintStates.FROZEN" mat-button (click)="addSprintMember()" class="layout-side-margin">Add Member</button>
   </mat-toolbar>
   <div class="ag-grid-container dynamic-grid-height -adjust-tabs">
     <ag-grid-angular

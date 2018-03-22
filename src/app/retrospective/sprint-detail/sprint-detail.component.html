@@ -14,7 +14,7 @@
       <mat-select [disabled]="sprintStatus === sprintStates.FROZEN"
                   [(value)]="selectedValue"
                   (selectionChange)="sprintStateChange($event.value)"
-                  class="tabbar-mat-select"
+                  class="toolbar-mat-select"
       >
         <mat-option [disabled]="true" [value]="3" *ngIf="selectedValue === 3">
           Draft
@@ -51,6 +51,37 @@
       <mat-icon>refresh</mat-icon>&nbsp;&nbsp;Re-Sync Sprint
     </button>
   </mat-toolbar>
+  <div class="toolbar-sticky-box -layout-width">
+    <div class="single-grid">
+      <div class="information-box mat-elevation-z1">
+        <div class="box-header">
+          <h4 class="title">
+            Project:
+          </h4>
+          <h6 class="subtitle">
+            By AAAA
+          </h6>
+        </div>
+        <div class="info-box-content">
+          <div class="info-left">
+            <p>
+              Expected Story Point Per Week Per Person: 1
+            </p>
+          </div>
+          <span class="fill-remaining-space"></span>
+          <div class="info-right">
+
+          </div>
+        </div>
+        <div class="info-box-footer">
+          <span class="fill-remaining-space"></span>
+          <p class="text-indented">
+            Created on: 12121
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="layout-container">
     <div class="single-grid">
       <div class="multi-table-container">

@@ -1,6 +1,6 @@
 <ng-container>
-  <div *ngIf="isDataLoaded" class="container-with-view-height -colored">
-    <mat-toolbar>
+  <div *ngIf="isDataLoaded" class="container-with-view-height -colored -fixed-nav-toolbar">
+    <mat-toolbar class="nav-toolbar -fixed">
       <button mat-icon-button matTooltip="Retrospective dashboard"
               matTooltipPosition="before" (click)="navigateToRetrospectives()">
         <mat-icon>arrow_back</mat-icon>
@@ -11,9 +11,9 @@
         <button mat-raised-button color="primary" (click)="showNewSprintDialog()">Create Sprint</button>
       </div>
     </mat-toolbar>
-    <div class="layout-container" *ngIf="retrospectiveData">
+    <div class="toolbar-sticky-box -layout-width">
       <div class="single-grid">
-        <div class="information-box -small-box mat-elevation-z1">
+        <div class="information-box mat-elevation-z1">
           <div class="box-header">
             <h4 class="title">
               Project: {{ retrospectiveData.ProjectName }}
@@ -40,6 +40,10 @@
             </p>
           </div>
         </div>
+      </div>
+    </div>
+    <div class="layout-container" *ngIf="retrospectiveData">
+      <div class="single-grid">
         <app-sprint-list #sprintList [retrospectiveID]="retrospectiveID"></app-sprint-list>
       </div>
     </div>

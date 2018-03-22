@@ -19,24 +19,25 @@ mat-row {
 
 .custom-ag-grid {
   .ag-header-row {
-    background: #F5F5F5;
+    background: $primary;
+    color: #FFF;
   }
   .ag-header-cell {
-    color: #444;
+    color: #FFF;
     font-weight: bold;
   }
   .ag-cell.ag-cell-not-inline-editing {
-    line-height: normal !important;
-    vertical-align: middle;
-    display: flex;
-    /* justify-content: flex-start; */
-    align-items: center;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    /* max-width: 100%; */
-    flex-wrap: nowrap;
-    flex-direction: row;
-    white-space: normal;
+    line-height: 48px !important;
+    //vertical-align: middle;
+    //display: flex;
+    ///* justify-content: flex-start; */
+    //align-items: center;
+    //overflow: hidden;
+    //text-overflow: ellipsis;
+    ///* max-width: 100%; */
+    //flex-wrap: nowrap;
+    //flex-direction: row;
+    //white-space: normal;
   }
   .ag-cell.ag-cell-inline-editing {
     //padding: 20px;

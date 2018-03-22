@@ -238,7 +238,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
     setGridOptions() {
         this.gridOptions = <GridOptions>{
             columnDefs: this.columnDefs,
-            rowHeight: 60,
+            rowHeight: 48,
             singleClickEdit: true,
             frameworkComponents: {
                 'selectEditor': SelectCellEditorComponent,
@@ -246,6 +246,8 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                 'datePicker': DatePickerEditorComponent,
             }
         };
+
+        console.log('aaaaa', this.gridOptions);
     }
 
     onGridReady(params) {
