@@ -22,6 +22,7 @@ import {
 import { RatingRendererComponent } from '../../shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
 import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.component';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
+import { UtilsService } from '../../shared/utils/utils.service';
 
 @Component({
     selector: 'app-sprint-member-summary',
@@ -51,18 +52,10 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     private gridApi: GridApi;
     private columnApi: ColumnApi;
 
-    static suppressKeyboardEvent(event) {
-        if (event.editing) {
-            return true;
-        }
-    }
-
-    constructor(
-        private retrospectiveService: RetrospectiveService,
-        private snackBar: MatSnackBar,
-        public dialog: MatDialog
-    ) {
-    }
+    constructor(private retrospectiveService: RetrospectiveService,
+                private snackBar: MatSnackBar,
+                private utils: UtilsService,
+                public dialog: MatDialog) { }
 
     @HostListener('window:resize') onResize() {
         if (this.gridApi && this.isTabActive) {
@@ -117,7 +110,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             },
             err => {
                 this.snackBar.open(
-                    err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.getRetrospectiveMembersError,
+                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getRetrospectiveMembersError,
                     '', {duration: SNACKBAR_DURATION});
             }
         );
@@ -179,12 +172,12 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                 err => {
                     if (isRefresh) {
                         this.snackBar.open(
-                            err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES
+                            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES
                                 .autoRefreshFailure,
                             '', {duration: SNACKBAR_DURATION});
                     } else {
                         this.snackBar.open(
-                            err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES
+                            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES
                                 .getSprintMemberSummaryError,
                             '', {duration: SNACKBAR_DURATION});
                     }
@@ -210,7 +203,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                     },
                     err => {
                         this.snackBar.open(
-                            err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.addSprintMemberError,
+                            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.addSprintMemberError,
                             '', {duration: SNACKBAR_DURATION});
                     }
                 );
@@ -228,7 +221,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             },
             err => {
                 this.snackBar.open(
-                    err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.updateSprintMemberError,
+                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.updateSprintMemberError,
                     '', {duration: SNACKBAR_DURATION});
                 this.revertCellValue(params);
             });
@@ -260,7 +253,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                         },
                         err => {
                             this.snackBar.open(
-                                err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES
+                                this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES
                                     .deleteSprintMemberError,
                                 '', {duration: SNACKBAR_DURATION});
                         }
@@ -270,8 +263,11 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     }
 
     private createColumnDefs(sprintStatus) {
-        let columnDefs;
-        const nameColumn = [
+        let editable = true;
+        if (sprintStatus === this.sprintStates.FROZEN) {
+            editable = false;
+        }
+        const columnDefs = [
             {
                 headerName: 'Name',
                 colId: 'Name',
@@ -281,206 +277,152 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                 minWidth: 160,
                 pinned: true
 
-            }
-        ];
-
-        const velocitiesColumns = [
+            },
+            {
+                headerName: 'Allocation',
+                field: 'AllocationPercent',
+                editable: editable,
+                minWidth: 125,
+                valueParser: 'Number(newValue)',
+                cellEditor: 'numericEditor',
+                cellEditorParams: {
+                    minValue: 0
+                },
+                valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value) + '%',
+                onCellValueChanged: (cellParams) => {
+                    if (cellParams.newValue !== cellParams.oldValue) {
+                        if (cellParams.newValue >= 0) {
+                            this.updateSprintMember(cellParams);
+                        } else {
+                            this.snackBar.open(
+                                API_RESPONSE_MESSAGES.allocationNegativeError,
+                                '', {duration: SNACKBAR_DURATION});
+                            this.revertCellValue(cellParams);
+                        }
+                    }
+                },
+                suppressKeyboardEvent: (event) => this.utils.isAgGridEditingEvent(event)
+            },
+            {
+                headerName: 'Expectation',
+                field: 'ExpectationPercent',
+                editable: editable,
+                minWidth: 130,
+                valueParser: 'Number(newValue)',
+                cellEditor: 'numericEditor',
+                cellEditorParams: {
+                    minValue: 0
+                },
+                valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value) + '%',
+                onCellValueChanged: (cellParams) => {
+                    if (cellParams.newValue !== cellParams.oldValue) {
+                        if (cellParams.newValue >= 0) {
+                            this.updateSprintMember(cellParams);
+                        } else {
+                            this.snackBar.open(
+                                API_RESPONSE_MESSAGES.expectationNegativeError,
+                                '', {duration: SNACKBAR_DURATION});
+                            this.revertCellValue(cellParams);
+                        }
+                    }
+                },
+                suppressKeyboardEvent: (event) => this.utils.isAgGridEditingEvent(event)
+            },
+            {
+                headerName: 'Vacations',
+                field: 'Vacations',
+                editable: editable,
+                minWidth: 125,
+                valueParser: 'Number(newValue)',
+                cellEditor: 'numericEditor',
+                cellEditorParams: {
+                    minValue: 0,
+                    maxValue: this.sprintDays
+                },
+                valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value) + (cellParams.value === 1 ? ' day' : ' days'),
+                onCellValueChanged: (cellParams) => {
+                    if (cellParams.newValue !== cellParams.oldValue) {
+                        if (cellParams.newValue < 0) {
+                            this.snackBar.open(
+                                API_RESPONSE_MESSAGES.vacationNumberError,
+                                '', {duration: SNACKBAR_DURATION});
+                            this.revertCellValue(cellParams);
+                        } else if (cellParams.newValue > this.sprintDays) {
+                            this.snackBar.open(
+                                API_RESPONSE_MESSAGES.vacationTimeError,
+                                '', {duration: SNACKBAR_DURATION});
+                            this.revertCellValue(cellParams);
+                        } else {
+                            this.updateSprintMember(cellParams);
+                        }
+                    }
+                },
+                suppressKeyboardEvent: (event) => this.utils.isAgGridEditingEvent(event)
+            },
             {
                 headerName: 'Expected SP',
                 field: 'ExpectedStoryPoint',
                 minWidth: 150,
-                filter: 'agNumberColumnFilter'
+                valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value)
             },
             {
                 headerName: 'Actual SP',
                 field: 'ActualStoryPoint',
                 minWidth: 130,
-                filter: 'agNumberColumnFilter'
-            }
-        ];
-
-        const totalSprintTimeColumn = [
+                valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value)
+            },
             {
                 headerName: 'Total Sprint Time',
                 field: 'TotalTimeSpentInMin',
                 minWidth: 180,
-                filter: 'agNumberColumnFilter',
-                valueFormatter: (cellParams) => cellParams.value && (cellParams.value / 60).toFixed(2),
-            }
-        ];
-
-        if (sprintStatus === this.sprintStates.FROZEN) {
-            columnDefs = [
-                ...nameColumn,
-                {
-                    headerName: 'Allocation',
-                    field: 'AllocationPercent',
-                    minWidth: 125,
-                    valueFormatter: (cellParams) => cellParams.value + '%'
+                valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value / 60),
+            },
+            {
+                headerName: 'Rating',
+                field: 'Rating',
+                minWidth: 150,
+                editable: editable,
+                cellEditor: 'ratingEditor',
+                cellEditorParams: {
+                    selectOptions: _.map(RATING_STATES_LABEL, (value, key) => {
+                        return {
+                            id: _.parseInt(key),
+                            value: value
+                        };
+                    }).reverse(),
                 },
-                {
-                    headerName: 'Expectation',
-                    field: 'ExpectationPercent',
-                    minWidth: 130,
-                    valueFormatter: (cellParams) => cellParams.value + '%'
-                },
-                {
-                    headerName: 'Vacations',
-                    field: 'Vacations',
-                    minWidth: 125,
-                    valueFormatter: (cellParams) => cellParams.value + (cellParams.value === 1 ? ' day' : ' days')
-                },
-                ...velocitiesColumns,
-                ...totalSprintTimeColumn,
-                {
-                    headerName: 'Rating',
-                    field: 'Rating',
-                    minWidth: 150,
-                    cellRenderer: 'ratingRenderer'
-                },
-                {
-                    headerName: 'Comments',
-                    field: 'Comment',
-                    minWidth: 300,
-                    tooltipField: 'Comment',
+                cellRenderer: 'ratingRenderer',
+                onCellValueChanged: (cellParams) => {
+                    if ((cellParams.newValue !== cellParams.oldValue) &&
+                        (cellParams.newValue >= this.ratingStates.RED && cellParams.newValue <= this.ratingStates.NOTABLE)) {
+                        this.updateSprintMember(cellParams);
+                    }
                 }
-            ];
-        } else {
-            columnDefs = [
-                ...nameColumn,
-                {
-                    headerName: 'Allocation',
-                    field: 'AllocationPercent',
-                    editable: true,
-                    minWidth: 125,
-                    valueParser: 'Number(newValue)',
-                    cellEditor: 'numericEditor',
-                    cellEditorParams: {
-                        minValue: 0
-                    },
-                    valueFormatter: (cellParams) => cellParams.value + '%',
-                    onCellValueChanged: (cellParams) => {
-                        if (cellParams.newValue !== cellParams.oldValue) {
-                            if (cellParams.newValue >= 0) {
-                                this.updateSprintMember(cellParams);
-                            } else {
-                                this.snackBar.open(
-                                    API_RESPONSE_MESSAGES.allocationNegativeError,
-                                    '', {duration: SNACKBAR_DURATION});
-                                this.revertCellValue(cellParams);
-                            }
-                        }
-                    },
-                    suppressKeyboardEvent: (event) => SprintMemberSummaryComponent.suppressKeyboardEvent(event)
-                },
-                {
-                    headerName: 'Expectation',
-                    field: 'ExpectationPercent',
-                    editable: true,
-                    minWidth: 130,
-                    valueParser: 'Number(newValue)',
-                    cellEditor: 'numericEditor',
-                    cellEditorParams: {
-                        minValue: 0
-                    },
-                    valueFormatter: (cellParams) => cellParams.value + '%',
-                    onCellValueChanged: (cellParams) => {
-                        if (cellParams.newValue !== cellParams.oldValue) {
-                            if (cellParams.newValue >= 0) {
-                                this.updateSprintMember(cellParams);
-                            } else {
-                                this.snackBar.open(
-                                    API_RESPONSE_MESSAGES.expectationNegativeError,
-                                    '', {duration: SNACKBAR_DURATION});
-                                this.revertCellValue(cellParams);
-                            }
-                        }
-                    },
-                    suppressKeyboardEvent: (event) => SprintMemberSummaryComponent.suppressKeyboardEvent(event)
-                },
-                {
-                    headerName: 'Vacations',
-                    field: 'Vacations',
-                    editable: true,
-                    minWidth: 125,
-                    valueParser: 'Number(newValue)',
-                    filter: 'agNumberColumnFilter',
-                    cellEditor: 'numericEditor',
-                    cellEditorParams: {
-                        minValue: 0,
-                        maxValue: this.sprintDays
-                    },
-                    valueFormatter: (cellParams) => cellParams.value + (cellParams.value === 1 ? ' day' : ' days'),
-                    onCellValueChanged: (cellParams) => {
-                        if (cellParams.newValue !== cellParams.oldValue) {
-                            if (cellParams.newValue < 0) {
-                                this.snackBar.open(
-                                    API_RESPONSE_MESSAGES.vacationNumberError,
-                                    '', {duration: SNACKBAR_DURATION});
-                                this.revertCellValue(cellParams);
-                            } else if (cellParams.newValue > this.sprintDays) {
-                                this.snackBar.open(
-                                    API_RESPONSE_MESSAGES.vacationTimeError,
-                                    '', {duration: SNACKBAR_DURATION});
-                                this.revertCellValue(cellParams);
-                            } else {
-                                this.updateSprintMember(cellParams);
-                            }
-                        }
-                    },
-                    suppressKeyboardEvent: (event) => SprintMemberSummaryComponent.suppressKeyboardEvent(event)
-                },
-                ...velocitiesColumns,
-                ...totalSprintTimeColumn,
-                {
-                    headerName: 'Rating',
-                    field: 'Rating',
-                    minWidth: 150,
-                    editable: true,
-                    cellEditor: 'ratingEditor',
-                    cellEditorParams: {
-                        selectOptions: _.map(RATING_STATES_LABEL, (value, key) => {
-                            return {
-                                id: _.parseInt(key),
-                                value: value
-                            };
-                        }),
-                    },
-                    cellRenderer: 'ratingRenderer',
-                    onCellValueChanged: (cellParams) => {
-                        if ((cellParams.newValue !== cellParams.oldValue) &&
-                            (cellParams.newValue >= this.ratingStates.RED && cellParams.newValue <= this.ratingStates.NOTABLE)) {
-                            this.updateSprintMember(cellParams);
-                        }
+            },
+            {
+                headerName: 'Comments',
+                field: 'Comment',
+                minWidth: 300,
+                cellEditor: 'agLargeTextCellEditor',
+                tooltipField: 'Comment',
+                editable: editable,
+                onCellValueChanged: (cellParams) => {
+                    if (cellParams.newValue !== cellParams.oldValue) {
+                        this.updateSprintMember(cellParams);
                     }
                 },
-                {
-                    headerName: 'Comments',
-                    field: 'Comment',
-                    minWidth: 300,
-                    filter: 'text',
-                    cellEditor: 'agLargeTextCellEditor',
-                    tooltipField: 'Comment',
-                    editable: true,
-                    onCellValueChanged: (cellParams) => {
-                        if (cellParams.newValue !== cellParams.oldValue) {
-                            this.updateSprintMember(cellParams);
-                        }
-                    },
-                    suppressKeyboardEvent: (event) => SprintMemberSummaryComponent.suppressKeyboardEvent(event)
+                suppressKeyboardEvent: (event) => this.utils.isAgGridEditingEvent(event)
+            },
+            {
+                cellRenderer: 'deleteButtonRenderer',
+                cellRendererParams: {
+                    useIcon: true,
+                    icon: 'delete',
+                    onClick: this.deleteSprintMember.bind(this)
                 },
-                {
-                    cellRenderer: 'deleteButtonRenderer',
-                    cellRendererParams: {
-                        useIcon: true,
-                        icon: 'delete',
-                        onClick: this.deleteSprintMember.bind(this)
-                    },
-                    minWidth: 100,
-                    cellClass: 'delete-column'
-                }
-            ];
-        }
-        return columnDefs;
+                minWidth: 100,
+                cellClass: 'delete-column'
+            }
+        ];
     }
 }

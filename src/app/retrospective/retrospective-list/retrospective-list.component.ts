@@ -6,6 +6,7 @@ import { APP_ROUTE_URLS, SNACKBAR_DURATION } from '../../../constants/app-consta
 import { API_RESPONSE_MESSAGES } from '../../../constants/app-constants';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { RetrospectiveCreateComponent } from '../retrospective-create/retrospective-create.component';
+import { UtilsService } from '../../shared/utils/utils.service';
 
 @Component({
   selector: 'app-retrospective-list',
@@ -18,17 +19,18 @@ export class RetrospectiveListComponent implements OnInit {
 
     constructor(private retrospectiveService: RetrospectiveService,
                 private snackBar: MatSnackBar,
-                public dialog: MatDialog,
                 private router: Router,
-                private changeDetectorRefs: ChangeDetectorRef) { }
+                private utils: UtilsService,
+                private changeDetectorRefs: ChangeDetectorRef,
+                public dialog: MatDialog) { }
 
     initializeDataSource() {
         this.dataSource = new RetrospectiveListDataSource(this.retrospectiveService, this.showCannotGetRetrospectivesError.bind(this));
     }
 
-    showCannotGetRetrospectivesError(message) {
+    showCannotGetRetrospectivesError(err) {
         this.snackBar.open(
-            message || API_RESPONSE_MESSAGES.getRetrospectivesError,
+            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getRetrospectivesError,
             '', {duration: SNACKBAR_DURATION});
     }
 
@@ -60,7 +62,7 @@ export class RetrospectiveListComponent implements OnInit {
             },
             err => {
                 this.snackBar.open(
-                    err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.noSprintsError,
+                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.noSprintsError,
                     '', {duration: SNACKBAR_DURATION});
                 this.router.navigateByUrl(APP_ROUTE_URLS.retrospectiveDashboard
                     .replace(':retrospectiveID', row.ID));

@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
 import { API_RESPONSE_MESSAGES, SNACKBAR_DURATION } from '../../../constants/app-constants';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
+import { UtilsService } from '../../shared/utils/utils.service';
 
 @Component({
   selector: 'app-sprint-create',
@@ -16,6 +17,7 @@ export class SprintCreateComponent implements OnInit {
 
     constructor(private retrospectiveService: RetrospectiveService,
                 private snackBar: MatSnackBar,
+                private utils: UtilsService,
                 public dialogRef: MatDialogRef<SprintCreateComponent>,
                 @Inject(MAT_DIALOG_DATA) public data: any) { }
 
@@ -87,7 +89,7 @@ export class SprintCreateComponent implements OnInit {
             },
             err => {
                 this.snackBar.open(
-                    err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.sprintCreateError,
+                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintCreateError,
                     '', {duration: SNACKBAR_DURATION});
                 this.disableButton = false;
             }

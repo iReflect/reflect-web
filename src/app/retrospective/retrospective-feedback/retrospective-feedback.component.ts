@@ -1,8 +1,6 @@
-import {Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
-import {MatSnackBar} from '@angular/material';
-import {DatePipe} from '@angular/common';
-
-import {ColumnApi, GridApi, GridOptions} from 'ag-grid';
+import { Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { MatSnackBar } from '@angular/material';
+import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
 import * as _ from 'lodash';
 
 import {
@@ -13,10 +11,11 @@ import {
     SNACKBAR_DURATION,
     SPRINT_STATES
 } from '../../../constants/app-constants';
-import {SelectCellEditorComponent} from '../../shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
-import {DatePickerEditorComponent} from '../../shared/ag-grid-editors/date-picker-editor/date-picker-editor.component';
-import {ClickableButtonRendererComponent} from '../../shared/ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
-import {RetrospectiveService} from '../../shared/services/retrospective.service';
+import { SelectCellEditorComponent } from '../../shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
+import { DatePickerEditorComponent } from '../../shared/ag-grid-editors/date-picker-editor/date-picker-editor.component';
+import { ClickableButtonRendererComponent } from '../../shared/ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
+import { RetrospectiveService } from '../../shared/services/retrospective.service';
+import { UtilsService } from '../../shared/utils/utils.service';
 
 @Component({
     selector: 'app-retrospective-feedback',
@@ -112,27 +111,27 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                 minWidth: 160,
                 editable: editable,
                 valueFormatter: (cellParams) => {
-                    const assignee = cellParams.data.Assignee;
+                    const assignee: any = _.filter(this.teamMembers, (member) => member.ID === cellParams.value)[0];
                     if (_.isEmpty(assignee)) {
                         return '-';
                     }
                     return (assignee.FirstName + ' ' + assignee.LastName).trim();
                 },
+                onCellValueChanged: (cellParams) => {
+                    if (cellParams.newValue !== cellParams.oldValue) {
+                        this.updateRetroFeedback(cellParams);
+                    }
+                },
                 cellEditor: 'selectEditor',
                 cellEditorParams: {
                     selectOptions: this.getTeamMemberOptions(teamMembers),
-                },
-                onCellValueChanged: (cellParams) => {
-                    if (!cellParams.newValue || cellParams.newValue !== cellParams.oldValue) {
-                        this.updateRetroFeedback(cellParams);
-                    }
                 }
             },
             {
                 headerName: 'Added At',
                 field: 'AddedAt',
                 minWidth: 160,
-                valueFormatter: (cellParams) => this.getDateFromString(cellParams.value || '')
+                valueFormatter: (cellParams) => this.utils.getDateFromString(cellParams.value || '')
             },
             {
                 headerName: 'Created By',
@@ -150,7 +149,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                     minWidth: 160,
                     editable: editable,
                     cellEditor: 'datePicker',
-                    valueFormatter: (cellParams) => this.getDateFromString(cellParams.value || ''),
+                    valueFormatter: (cellParams) => this.utils.getDateFromString(cellParams.value || ''),
                     onCellValueChanged: (cellParams) => {
                         if (!cellParams.newValue || cellParams.newValue !== cellParams.oldValue) {
                             this.updateRetroFeedback(cellParams);
@@ -175,7 +174,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                     headerName: 'Resolved At',
                     field: 'ResolvedAt',
                     minWidth: 160,
-                    valueFormatter: (cellParams) => this.getDateFromString(cellParams.value || '')
+                    valueFormatter: (cellParams) => this.utils.getDateFromString(cellParams.value || '')
                 },
                 {
                     headerName: 'Mark Unresolved',
@@ -200,7 +199,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
 
     constructor(private retrospectiveService: RetrospectiveService,
                 private snackBar: MatSnackBar,
-                private datePipe: DatePipe) {
+                private utils: UtilsService) {
     }
 
     ngOnInit() {
@@ -272,7 +271,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
             },
             err => {
                 this.snackBar.open(
-                    this.getErrorMessage(err.data) || API_RESPONSE_MESSAGES.goalResolveFailed,
+                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.goalResolveFailed,
                     '', {duration: SNACKBAR_DURATION});
             });
     }
@@ -285,7 +284,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
             },
             err => {
                 this.snackBar.open(
-                    this.getErrorMessage(err.data) || API_RESPONSE_MESSAGES.goalUnResolveFailed,
+                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.goalUnResolveFailed,
                     '', {duration: SNACKBAR_DURATION});
             });
     }
@@ -299,7 +298,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                 },
                 err => {
                     this.snackBar.open(
-                        this.getErrorMessage(err.data) || API_RESPONSE_MESSAGES.sprintHighlightsUpdateError,
+                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintHighlightsUpdateError,
                         '', {duration: SNACKBAR_DURATION});
                     this.revertCellValue(params);
                 }
@@ -312,7 +311,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                 },
                 err => {
                     this.snackBar.open(
-                        this.getErrorMessage(err.data) || API_RESPONSE_MESSAGES.sprintNotesUpdateError,
+                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintNotesUpdateError,
                         '', {duration: SNACKBAR_DURATION});
                     this.revertCellValue(params);
                 });
@@ -324,7 +323,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                 },
                 err => {
                     this.snackBar.open(
-                        this.getErrorMessage(err.data) || API_RESPONSE_MESSAGES.sprintGoalsUpdateError,
+                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintGoalsUpdateError,
                         '', {duration: SNACKBAR_DURATION});
                     this.revertCellValue(params);
                 });
@@ -342,7 +341,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                         },
                         err => {
                             this.snackBar.open(
-                                this.getErrorMessage(err.data) || API_RESPONSE_MESSAGES.sprintHighlightsAddError,
+                                this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintHighlightsAddError,
                                 '', {duration: SNACKBAR_DURATION});
                         }
                     );
@@ -355,7 +354,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                         },
                         err => {
                             this.snackBar.open(
-                                this.getErrorMessage(err.data) || API_RESPONSE_MESSAGES.sprintNotesAddError,
+                                this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintNotesAddError,
                                 '', {duration: SNACKBAR_DURATION});
                         }
                     );
@@ -368,7 +367,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                         },
                         err => {
                             this.snackBar.open(
-                                this.getErrorMessage(err.data) || API_RESPONSE_MESSAGES.sprintGoalsAddError,
+                                this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintGoalsAddError,
                                 '', {duration: SNACKBAR_DURATION});
                         }
                     );
@@ -390,14 +389,5 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
         const rowData = params.data;
         rowData[params.colDef.field] = params.oldValue;
         this.gridApi.updateRowData({update: [rowData]});
-    }
-
-    getDateFromString(dateString: string) {
-        return this.datePipe.transform(dateString, 'MMMM dd, yyyy');
-    }
-
-    getErrorMessage(response): string {
-        const message = response.error;
-        return message.charAt(0).toUpperCase() + message.substr(1);
     }
 }

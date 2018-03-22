@@ -15,7 +15,7 @@ export class NumericCellEditorComponent implements ICellEditorAngularComp, After
 
     agInit(params: any): void {
         this.params = params;
-        this.value = params.value;
+        this.value = params.value ? params.value : 0;
         this.minValue = params.minValue;
         if (params.addCellValueToMax) {
             this.maxValue = params.baseMaxValue + params.value;

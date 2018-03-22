@@ -1,14 +1,15 @@
-import {Component, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
-import {MatDialog, MatSnackBar} from '@angular/material';
-import {ColumnApi, GridApi, GridOptions} from 'ag-grid';
+import { Component, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { MatDialog, MatSnackBar } from '@angular/material';
+import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
 import 'rxjs/add/observable/interval';
 import 'rxjs/add/operator/takeUntil';
-import {Observable} from 'rxjs/Observable';
-import {Subject} from 'rxjs/Subject';
-import {API_RESPONSE_MESSAGES, SNACKBAR_DURATION} from '../../../constants/app-constants';
-import {ClickableButtonRendererComponent} from '../../shared/ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
-import {RetrospectiveService} from '../../shared/services/retrospective.service';
-import {RetrospectTaskModalComponent} from '../retrospect-task-modal/retrospect-task-modal.component';
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
+import { API_RESPONSE_MESSAGES, SNACKBAR_DURATION } from '../../../constants/app-constants';
+import { ClickableButtonRendererComponent } from '../../shared/ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
+import { RetrospectiveService } from '../../shared/services/retrospective.service';
+import { RetrospectTaskModalComponent } from '../retrospect-task-modal/retrospect-task-modal.component';
+import { UtilsService } from '../../shared/utils/utils.service';
 
 @Component({
     selector: 'app-sprint-task-summary',
@@ -33,7 +34,8 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
 
     constructor(private snackBar: MatSnackBar,
                 public dialog: MatDialog,
-                private retrospectiveService: RetrospectiveService) {
+                private retrospectiveService: RetrospectiveService,
+                private utils: UtilsService) {
         this.columnDefs = this.createColumnDefs();
         this.setGridOptions();
     }
@@ -118,11 +120,11 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 err => {
                     if (isRefresh) {
                         this.snackBar.open(
-                            err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.autoRefreshFailure,
+                            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.autoRefreshFailure,
                             '', {duration: SNACKBAR_DURATION});
                     } else {
                         this.snackBar.open(
-                            err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES
+                            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES
                                 .getSprintTaskSummaryError,
                             '', {duration: SNACKBAR_DURATION});
                     }
@@ -180,6 +182,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 minWidth: 120,
                 suppressSorting: true,
                 suppressFilter: true,
+                valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value)
             },
             {
                 headerName: 'Status',
@@ -191,7 +194,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             {
                 headerName: 'Sprint Hours',
                 field: 'SprintTime',
-                valueFormatter: (cellParams) => (cellParams.value / 60).toFixed(2),
+                valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value / 60),
                 minWidth: 140,
                 suppressSorting: true,
                 suppressFilter: true,
@@ -199,7 +202,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             {
                 headerName: 'Total Time Spent',
                 field: 'TotalTime',
-                valueFormatter: (cellParams) => (cellParams.value / 60).toFixed(2),
+                valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value / 60),
                 minWidth: 160,
                 suppressSorting: true,
                 suppressFilter: true,

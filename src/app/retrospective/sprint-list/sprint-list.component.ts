@@ -1,9 +1,13 @@
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { SprintListDataSource } from './sprint-list.data-source';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
-import { API_RESPONSE_MESSAGES, SPRINT_STATES_LABEL, APP_ROUTE_URLS, SNACKBAR_DURATION } from '../../../constants/app-constants';
+import {
+    API_RESPONSE_MESSAGES, SPRINT_STATES_LABEL, APP_ROUTE_URLS, SNACKBAR_DURATION,
+    DATE_FORMAT
+} from '../../../constants/app-constants';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
+import { UtilsService } from '../../shared/utils/utils.service';
 
 @Component({
   selector: 'app-sprint-list',
@@ -15,16 +19,17 @@ export class SprintListComponent implements OnInit {
     displayedSprintColumns = ['title', 'start_date', 'end_date', 'status', 'created_by', 'last_synced_at'];
 
     dataSource: SprintListDataSource;
-    dateFormat = 'MMMM dd, yyyy';
     sprintStates = SPRINT_STATES_LABEL;
+    dateFormat = DATE_FORMAT;
 
     constructor(private retrospectiveService: RetrospectiveService,
                 private snackBar: MatSnackBar,
                 private router: Router,
+                private utils: UtilsService,
                 private changeDetectorRefs: ChangeDetectorRef) { }
 
-    showCannotGetSprintsError(message) {
-        this.snackBar.open(message || API_RESPONSE_MESSAGES.getSprintsError, '', {duration: SNACKBAR_DURATION});
+    showCannotGetSprintsError(err) {
+        this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getSprintsError, '', {duration: SNACKBAR_DURATION});
     }
 
     refresh() {
@@ -48,13 +53,5 @@ export class SprintListComponent implements OnInit {
 
     ngOnInit() {
         this.initializeDataSource();
-    }
-
-    getUserName(user: any) {
-        return (user.FirstName + ' ' + user.LastName).trim();
-    }
-
-    getStatusValue(status) {
-        return SPRINT_STATES_LABEL[status];
     }
 }

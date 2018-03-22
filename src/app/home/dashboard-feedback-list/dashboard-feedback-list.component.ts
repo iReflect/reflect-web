@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FeedBackListDataSource } from '../../feedback/feedback-list/feedback-list.data-source';
 import { FeedbackService } from '../../shared/services/feedback.service';
-import { APP_ROUTE_URLS, FEEDBACK_STATES } from '../../../constants/app-constants';
+import { APP_ROUTE_URLS, DATE_FORMAT, FEEDBACK_STATES } from '../../../constants/app-constants';
 
 @Component({
     selector: 'app-dashboard-feedback-list',
@@ -33,7 +33,7 @@ export class DashboardFeedbackListComponent implements OnInit {
 
     // TODO: using feedback's data source for now, either create a separate data source or move it to shared.
     dataSource: FeedBackListDataSource;
-    dateFormat = 'MMMM dd, yyyy';
+    dateFormat = DATE_FORMAT;
 
     constructor(private router: Router) {
     }

@@ -4,6 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { API_RESPONSE_MESSAGES, SNACKBAR_DURATION } from '../../../constants/app-constants';
 import * as _ from 'lodash';
+import { UtilsService } from '../../shared/utils/utils.service';
 
 @Component({
     selector: 'app-retrospective-create',
@@ -32,6 +33,7 @@ export class RetrospectiveCreateComponent implements OnInit {
 
     constructor(private retrospectiveService: RetrospectiveService,
                 private snackBar: MatSnackBar,
+                private utils: UtilsService,
                 public dialogRef: MatDialogRef<RetrospectiveCreateComponent>,
                 @Inject(MAT_DIALOG_DATA) public data: any) { }
 
@@ -57,7 +59,7 @@ export class RetrospectiveCreateComponent implements OnInit {
             },
             err => {
                 this.snackBar.open(
-                    err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.getTeamListError,
+                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getTeamListError,
                     '', {duration: SNACKBAR_DURATION});
                 this.dialogRef.close();
             }
@@ -72,7 +74,7 @@ export class RetrospectiveCreateComponent implements OnInit {
             },
             err => {
                 this.snackBar.open(
-                    err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.getTeamProviderOptionsError,
+                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getTeamProviderOptionsError,
                     '', {duration: SNACKBAR_DURATION});
                 this.dialogRef.close();
             }
@@ -136,7 +138,7 @@ export class RetrospectiveCreateComponent implements OnInit {
             },
             err => {
                 this.snackBar.open(
-                    err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.createRetroError,
+                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.createRetroError,
                     '', {duration: SNACKBAR_DURATION});
                 this.disableButton = false;
             }

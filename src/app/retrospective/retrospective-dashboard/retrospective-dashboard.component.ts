@@ -3,8 +3,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { SprintCreateComponent } from '../sprint-create/sprint-create.component';
-import { API_RESPONSE_MESSAGES, APP_ROUTE_URLS, SNACKBAR_DURATION } from '../../../constants/app-constants';
+import { API_RESPONSE_MESSAGES, APP_ROUTE_URLS, DATE_FORMAT, SNACKBAR_DURATION } from '../../../constants/app-constants';
 import { SprintListComponent } from '../sprint-list/sprint-list.component';
+import { UtilsService } from '../../shared/utils/utils.service';
 
 @Component({
   selector: 'app-retrospective-dashboard',
@@ -14,7 +15,7 @@ import { SprintListComponent } from '../sprint-list/sprint-list.component';
 export class RetrospectiveDashboardComponent implements OnInit {
     retrospectiveID: any;
     retrospectiveData: any = {};
-    dateFormat = 'MMMM dd, yyyy';
+    dateFormat = DATE_FORMAT;
     isDataLoaded = false;
     @ViewChild('sprintList') private sprintList: SprintListComponent;
 
@@ -22,6 +23,7 @@ export class RetrospectiveDashboardComponent implements OnInit {
                 private retrospectiveService: RetrospectiveService,
                 private snackBar: MatSnackBar,
                 private router: Router,
+                private utils: UtilsService,
                 public dialog: MatDialog) {
         this.retrospectiveID = this.activatedRoute.snapshot.params['retrospectiveID'];
     }
@@ -38,7 +40,7 @@ export class RetrospectiveDashboardComponent implements OnInit {
             },
             err => {
                 this.snackBar.open(
-                    err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.invalidRetroAccessError,
+                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.invalidRetroAccessError,
                     '', {duration: SNACKBAR_DURATION});
                 this.router.navigateByUrl(APP_ROUTE_URLS.retrospectiveList);
             }

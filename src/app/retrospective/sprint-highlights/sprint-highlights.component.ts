@@ -13,6 +13,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/observable/interval';
+import { UtilsService } from '../../shared/utils/utils.service';
 
 @Component({
     selector: 'app-sprint-highlights',
@@ -37,7 +38,8 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
     @Input() isTabActive: boolean;
 
     constructor(private retrospectiveService: RetrospectiveService,
-        private snackBar: MatSnackBar) { }
+                private snackBar: MatSnackBar,
+                private utils: UtilsService) { }
 
     ngOnInit() {
         Observable.interval(5000)
@@ -90,8 +92,7 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
                     this.pendingGoals = response.data.Feedbacks;
                 },
                 err => {
-                    this.snackBar.open(
-                        this.getErrorMessage(err.data) || API_RESPONSE_MESSAGES.sprintPendingGoalsGetError,
+                    this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintPendingGoalsGetError,
                         '', {duration: SNACKBAR_DURATION});
                 }
             );
@@ -104,7 +105,7 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
                     this.accomplishedGoals = response.data.Feedbacks;
                 },
                 err => {
-                    this.snackBar.open(this.getErrorMessage(err.data) || API_RESPONSE_MESSAGES.sprintAccomplishedGoalsGetError,
+                    this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintAccomplishedGoalsGetError,
                         '', {duration: SNACKBAR_DURATION});
                 }
             );
@@ -117,7 +118,7 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
                     this.sprintHighlights = response.data.Feedbacks;
                 },
                 err => {
-                    this.snackBar.open(this.getErrorMessage(err.data) || API_RESPONSE_MESSAGES.sprintHighlightsGetError,
+                    this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintHighlightsGetError,
                         '', {duration: SNACKBAR_DURATION});
                 }
             );
@@ -129,15 +130,9 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
                 this.teamMembers = response.data.Members;
             },
             err => {
-                this.snackBar.open(this.getErrorMessage(err.data) || API_RESPONSE_MESSAGES.getRetrospectiveMembersError,
+                this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getRetrospectiveMembersError,
                     '', {duration: SNACKBAR_DURATION});
             }
         );
     }
-
-    getErrorMessage(response): string {
-        const message = response.error;
-        return message.charAt(0).toUpperCase() + message.substr(1);
-    }
-
 }
