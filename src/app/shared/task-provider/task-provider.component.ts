@@ -1,5 +1,6 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { TRACKER_TICKET_TYPE_MAP, COMMA_SEPARATED_STRING_PATTERN } from '../../../constants/app-constants';
 
 @Component({
   selector: 'app-task-provider',
@@ -16,6 +17,8 @@ export class TaskProviderComponent implements OnInit {
     taskProviderFormGroup: FormGroup;
     isInitialized = false;
     showConfigFields = false;
+    trackerTicketTypeMap = TRACKER_TICKET_TYPE_MAP;
+    commaSeparatedRegex = COMMA_SEPARATED_STRING_PATTERN;
 
     // Since we are dynamically generating the task provider's form, these are the possible fields
     selectedTaskProviderConfigOptions: any = {};
@@ -49,6 +52,15 @@ export class TaskProviderComponent implements OnInit {
             configFieldsGroup[field.FieldName] = new FormControl('',
                 field.Required ? Validators.required : null);
         });
+
+        const ticketTypeMappingGroup = {
+            [TRACKER_TICKET_TYPE_MAP.FEATURE]: new FormControl('', Validators.required),
+            [TRACKER_TICKET_TYPE_MAP.TASK]: new FormControl('', Validators.required),
+            [TRACKER_TICKET_TYPE_MAP.BUG]: new FormControl('', Validators.required)
+        };
+
+        configFieldsGroup = {...configFieldsGroup, ...ticketTypeMappingGroup};
+
         this.taskProviderFormGroup.setControl(this.taskProviderConfigKey,
             new FormGroup(configFieldsGroup, Validators.required));
 
@@ -64,5 +76,17 @@ export class TaskProviderComponent implements OnInit {
             'supportedAuthTypes': selectedTaskProvider['SupportedAuthTypes']
         };
         this.showConfigFields = true;
+    }
+
+    get featureTypeControl() {
+        return this.taskProviderFormGroup.get([this.taskProviderConfigKey, TRACKER_TICKET_TYPE_MAP.FEATURE]);
+    }
+
+    get taskTypeControl() {
+        return this.taskProviderFormGroup.get([this.taskProviderConfigKey, TRACKER_TICKET_TYPE_MAP.TASK]);
+    }
+
+    get bugTypeControl() {
+        return this.taskProviderFormGroup.get([this.taskProviderConfigKey, TRACKER_TICKET_TYPE_MAP.BUG]);
     }
 }

@@ -7,8 +7,8 @@
     </mat-select>
   </mat-form-field>
   <div *ngIf="showConfigFields">
-    <mat-grid-list cols="2" rowHeight="300px">
-      <mat-grid-tile>
+    <mat-grid-list cols="2" rowHeight="250px">
+      <mat-grid-tile [colspan]="1" [rowspan]="1">
         <mat-card>
           <mat-card-header>
             <mat-card-title>Credentials</mat-card-title>
@@ -23,7 +23,7 @@
           </mat-card-content>
         </mat-card>
       </mat-grid-tile>
-      <mat-grid-tile>
+      <mat-grid-tile [colspan]="1" [rowspan]="2">
         <mat-card>
           <mat-card-header>
             <mat-card-title>Provider Configurations</mat-card-title>
@@ -35,6 +35,39 @@
                   <input matInput [placeholder]="field.FieldDisplayName" [formControlName]="field.FieldName"/>
                 </mat-form-field>
               </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </mat-grid-tile>
+      <mat-grid-tile [colspan]="1" [rowspan]="1">
+        <mat-card [formGroupName]="taskProviderConfigKey">
+          <mat-card-header>
+            <mat-card-title>Tracker Ticket Type Mapping</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div>
+              <mat-form-field>
+                <input matInput placeholder="Feature (Comma Separated)" [pattern]="commaSeparatedRegex" [formControlName]="trackerTicketTypeMap.FEATURE"/>
+                <mat-error *ngIf="featureTypeControl.errors && featureTypeControl.errors['pattern']">
+                  It should be a comma separated string
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div>
+              <mat-form-field>
+                <input matInput placeholder="Task (Comma Separated)" [pattern]="commaSeparatedRegex" [formControlName]="trackerTicketTypeMap.TASK"/>
+                <mat-error *ngIf="taskTypeControl.errors && taskTypeControl.errors['pattern']">
+                  It should be a comma separated string
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div>
+              <mat-form-field>
+                <input matInput placeholder="Bug (Comma Separated)" [pattern]="commaSeparatedRegex" [formControlName]="trackerTicketTypeMap.BUG"/>
+                <mat-error *ngIf="bugTypeControl.errors && bugTypeControl.errors['pattern']">
+                  It should be a comma separated string
+                </mat-error>
+              </mat-form-field>
             </div>
           </mat-card-content>
         </mat-card>

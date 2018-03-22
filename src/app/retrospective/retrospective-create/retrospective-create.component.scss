@@ -8,8 +8,8 @@ mat-grid-list {
   min-width: 600px;
 }
 
-.task-provider {
-  height: 470px !important;
+mat-grid-tile.task-provider {
+  height: 670px !important;
 }
 
 .create-retro {
@@ -37,5 +37,8 @@ button .mat-raised-button {
 }
 
 .dialog-actions {
-  float: right;
+  mat-dialog-actions {
+    float: right;
+    margin-top: 70px
+  }
 }

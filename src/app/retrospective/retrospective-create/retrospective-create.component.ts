@@ -113,10 +113,14 @@ export class RetrospectiveCreateComponent implements OnInit {
             'storyPointPerWeek': formValue.storyPointPerWeek,
             'projectName': formValue.projectName,
             'taskProvider': formValue.taskProvider.map(provider => {
+                const taskProviderConfig = provider.taskProviderConfig;
+                taskProviderConfig['featureTypes'] = taskProviderConfig['featureTypes'].split(',');
+                taskProviderConfig['bugTypes'] = taskProviderConfig['bugTypes'].split(',');
+                taskProviderConfig['taskTypes'] = taskProviderConfig['taskTypes'].split(',');
                 return {
                     'type': provider.selectedTaskProvider,
                     'data': {
-                        ...provider.taskProviderConfig,
+                        ...taskProviderConfig,
                         'credentials': {
                             ...provider.Credentials.data,
                             'type': provider.Credentials.type
