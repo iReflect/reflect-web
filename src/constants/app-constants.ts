@@ -267,3 +267,11 @@ export const MARK_DONE_LABELS = {
     DONE: 'Mark Done',
     UNDONE: 'Mark Undone',
 };
+
+export const TRACKER_TICKET_TYPE_MAP = {
+    FEATURE: 'FeatureTypes',
+    TASK: 'TaskTypes',
+    BUG: 'BugTypes',
+};
+
+export const COMMA_SEPARATED_STRING_PATTERN = '([a-zA-Z\\s]+,\\s?)*([(a-zA-Z\\s]+)';
