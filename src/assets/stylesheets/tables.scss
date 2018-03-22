@@ -19,11 +19,11 @@ mat-row {
 
 .custom-ag-grid {
   .ag-header-row {
-    background: $primary;
-    color: #FFF;
+    background: #f1f1f1;
+    color: #999;
   }
   .ag-header-cell {
-    color: #FFF;
+    color: #000;
     font-weight: bold;
   }
   .ag-cell.ag-cell-not-inline-editing {
