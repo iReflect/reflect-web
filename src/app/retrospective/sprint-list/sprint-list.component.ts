@@ -16,6 +16,7 @@ export class SprintListComponent implements OnInit {
 
     dataSource: SprintListDataSource;
     dateFormat = 'MMMM dd, yyyy';
+    sprintStates = SPRINT_STATES_LABEL;
 
     constructor(private retrospectiveService: RetrospectiveService,
                 private snackBar: MatSnackBar,

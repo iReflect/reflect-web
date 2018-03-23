@@ -98,66 +98,88 @@ export class SprintDetailComponent implements OnInit {
         this.selectedValue = undefined;
     }
 
-    sprintStateChange(action) {
-        if (_.includes(this.sprintActions, action)) {
-            const dialogRef = this.dialog.open(BasicModalComponent, {
-                data: {
-                    content: 'Are you sure you want to ' + this.sprintActionsLabel[action] + ' sprint?',
-                    confirmBtn: 'Yes',
-                    cancelBtn: 'Cancel'
-                },
-                disableClose: true
-            });
+    activateSprint() {
+        const dialogRef = this.dialog.open(BasicModalComponent, {
+            data: {
+                content: 'Are you sure you want to Activate sprint?',
+                confirmBtn: 'Yes',
+                cancelBtn: 'Cancel'
+            },
+            disableClose: true
+        });
 
-            dialogRef.afterClosed().subscribe(result => {
-                if (result) {
-                    if (action === this.sprintActions.ACTIVATE) {
-                        this.retrospectiveService.activateSprint(this.retrospectiveID, this.sprintID).subscribe(
-                            () => {
-                                this.sprintStatus = this.sprintStates.ACTIVE;
-                                this.snackBar.open(
-                                    API_RESPONSE_MESSAGES.sprintActivated,
-                                    '', {duration: SNACKBAR_DURATION});
-                            },
-                            err => this.sprintStateChangeError(
-                                err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES
-                                    .sprintActivateError
-                            )
-                        );
-                    } else if (action === this.sprintActions.FREEZE) {
-                        this.retrospectiveService.freezeSprint(this.retrospectiveID, this.sprintID).subscribe(
-                            () => {
-                                this.sprintStatus = this.sprintStates.FROZEN;
-                                this.snackBar.open(
-                                    API_RESPONSE_MESSAGES.sprintFrozen,
-                                    '', {duration: SNACKBAR_DURATION});
-                            },
-                            err => this.sprintStateChangeError(
-                                err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES
-                                    .sprintFreezeError
-                            )
-                        );
-                    } else if (action === this.sprintActions.DISCARD) {
-                        this.retrospectiveService.discardSprint(this.retrospectiveID, this.sprintID).subscribe(
-                            () => {
-                                this.snackBar.open(
-                                    API_RESPONSE_MESSAGES.sprintDiscarded,
-                                    '', {duration: SNACKBAR_DURATION});
-                                this.navigateToRetrospectiveDashboard();
-                            },
-                            err => this.sprintStateChangeError(
-                                err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES
-                                    .sprintDiscardError
-                            )
-                        );
-                    } else {
-                        this.sprintStateChangeError(API_RESPONSE_MESSAGES.invalidOption);
-                    }
-                } else {
-                    this.sprintStateChangeError('');
-                }
-            });
-        }
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.retrospectiveService.activateSprint(this.retrospectiveID, this.sprintID).subscribe(
+                    () => {
+                        this.sprintStatus = this.sprintStates.ACTIVE;
+                        this.snackBar.open(
+                            API_RESPONSE_MESSAGES.sprintActivated,
+                            '', {duration: SNACKBAR_DURATION});
+                    },
+                    err => this.sprintStateChangeError(
+                        err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES
+                            .sprintActivateError
+                    )
+                );
+            }
+        });
+    }
+
+    freezeSprint() {
+        const dialogRef = this.dialog.open(BasicModalComponent, {
+            data: {
+                content: 'Are you sure you want to Freeze sprint?',
+                confirmBtn: 'Yes',
+                cancelBtn: 'Cancel'
+            },
+            disableClose: true
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.retrospectiveService.freezeSprint(this.retrospectiveID, this.sprintID).subscribe(
+                    () => {
+                        this.sprintStatus = this.sprintStates.FROZEN;
+                        this.snackBar.open(
+                            API_RESPONSE_MESSAGES.sprintFrozen,
+                            '', {duration: SNACKBAR_DURATION});
+                    },
+                    err => this.sprintStateChangeError(
+                        err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES
+                            .sprintFreezeError
+                    )
+                );
+            }
+        });
+    }
+
+    discardSprint() {
+        const dialogRef = this.dialog.open(BasicModalComponent, {
+            data: {
+                content: 'Are you sure you want to Activate sprint?',
+                confirmBtn: 'Yes',
+                cancelBtn: 'Cancel'
+            },
+            disableClose: true
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.retrospectiveService.discardSprint(this.retrospectiveID, this.sprintID).subscribe(
+                    () => {
+                        this.snackBar.open(
+                            API_RESPONSE_MESSAGES.sprintDiscarded,
+                            '', {duration: SNACKBAR_DURATION});
+                        this.navigateToRetrospectiveDashboard();
+                    },
+                    err => this.sprintStateChangeError(
+                        err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES
+                            .sprintDiscardError
+                    )
+                );
+            }
+        });
     }
 
     refreshSprintDetails() {

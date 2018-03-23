@@ -9,49 +9,20 @@
       <i class="divider">|</i>
       <div>
         <span>{{sprintDetails.StartDate | date: dateFormat}} to {{sprintDetails.EndDate | date: dateFormat}}</span>
-        <span class="small-text">Last Synced on: {{sprintDetails.LastSyncedAt | date: dateFormat}}</span>
+        <span class="small-text">Status: {{sprintStatesLabel[sprintStatus]}} | Last Synced on: {{sprintDetails.LastSyncedAt | date: dateFormat}}</span>
       </div>
     </div>
     <span class="fill-remaining-space"></span>
-    <mat-form-field class="layout-side-margin">
-      <mat-select [disabled]="sprintStatus === sprintStates.FROZEN"
-                  [(value)]="selectedValue"
-                  (selectionChange)="sprintStateChange($event.value)"
-                  class="toolbar-mat-select"
-      >
-        <mat-option [disabled]="true" [value]="3" *ngIf="selectedValue === 3">
-          Draft
-        </mat-option>
-        <mat-option [disabled]="true" [value]="4" *ngIf="selectedValue === 4">
-          Active
-        </mat-option>
-        <mat-option [disabled]="true" [value]="5" *ngIf="selectedValue === 5">
-          Frozen
-        </mat-option>
-        <mat-option *ngIf="sprintStatus === sprintStates.DRAFT"
-                    [value]="0"
-        >
-          Activate
-        </mat-option>
-        <mat-option *ngIf="sprintStatus === sprintStates.ACTIVE"
-                    [value]="1"
-        >
-          Freeze
-        </mat-option>
-        <mat-option *ngIf="sprintStatus !== sprintStates.FROZEN"
-                    [value]="2"
-        >
-          Discard
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+    <button mat-raised-button color="primary" class="layout-side-margin" (click)="refreshSprintDetails()" *ngIf="sprintDetails && sprintDetails.SyncStatus !== syncStates.SYNCING">
+      Re-Sync Sprint
+    </button>
+    <button mat-raised-button class="layout-side-margin" color="primary" *ngIf="sprintStatus === sprintStates.DRAFT" (click)="activateSprint()">{{sprintActionsLabel[sprintActions.ACTIVATE]}}</button>
+    <button mat-raised-button class="layout-side-margin" color="primary" *ngIf="sprintStatus === sprintStates.ACTIVE" (click)="freezeSprint()">{{sprintActionsLabel[sprintActions.FREEZE]}}</button>
+    <button mat-raised-button class="layout-side-margin" color="primary" *ngIf="sprintStatus !== sprintStates.FROZEN" (click)="discardSprint()">{{sprintActionsLabel[sprintActions.DISCARD]}}</button>
     <mat-slide-toggle labelPosition="before" (change)="toggleAutoRefresh()" [checked]="enableRefresh"
       class="layout-side-margin auto-refresh-toggle" color="primary">
       Auto Refresh
     </mat-slide-toggle>
-    <button mat-raised-button color="primary" class="layout-side-margin" (click)="refreshSprintDetails()" *ngIf="sprintDetails && sprintDetails.SyncStatus !== syncStates.SYNCING">
-      Re-Sync Sprint
-    </button>
   </mat-toolbar>
   <div class="toolbar-sticky-box -layout-width">
     <div class="single-grid">
