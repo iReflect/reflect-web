@@ -233,7 +233,8 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         this.gridApi.updateRowData({update: [rowData]});
     }
 
-    deleteSprintMember(member) {
+    deleteSprintMember(params) {
+        const member = params.data;
         const dialogRef = this.dialog.open(BasicModalComponent, {
             data: {
                 content: 'Are you sure you want to delete ' + (member.FirstName + ' ' + member.LastName).trim() + '?',

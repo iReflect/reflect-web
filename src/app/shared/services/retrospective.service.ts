@@ -378,4 +378,26 @@ export class RetrospectiveService {
             )
             .customPUT(noteData);
     }
+
+    markSprintTaskDone(retrospectiveID, sprintID, taskID): Observable<any> {
+        return this.restangular
+            .one(
+                API_URLS.sprintTaskMarkDone
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+                    .replace(':taskID', taskID)
+            )
+            .post('');
+    }
+
+    markSprintTaskUnDone(retrospectiveID, sprintID, taskID): Observable<any> {
+        return this.restangular
+            .one(
+                API_URLS.sprintTaskMarkDone
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+                    .replace(':taskID', taskID)
+            )
+            .remove();
+    }
 }

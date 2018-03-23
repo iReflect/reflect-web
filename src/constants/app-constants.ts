@@ -76,6 +76,8 @@ export const API_RESPONSE_MESSAGES = {
     getSprintMemberSummaryError: 'Cannot get Sprint Members Details!',
     getSprintTaskMemberSummaryError: 'Cannot get Sprint task member summary!',
     getSprintTaskSummaryError: 'Cannot get Sprint Task Summary!',
+    getSprintTaskMarkDoneSuccess: 'Successfully marked the sprint task as done',
+    getSprintTaskMarkUnDoneSuccess: 'Successfully marked the sprint task as undone',
     getSprintDetailsError: 'Cannot update sprint details!',
     memberAlreadyPresent: 'Member already present!',
     addSprintMemberError: 'Cannot add new sprint member!',
@@ -260,3 +262,8 @@ export const HIGHLIGHTS_LIST = [
         LABEL: 'Other Highlights'
     }
 ];
+
+export const MARK_DONE_LABELS = {
+    DONE: 'Mark Done',
+    UNDONE: 'Mark Undone',
+};
