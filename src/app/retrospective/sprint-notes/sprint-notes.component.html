@@ -1,7 +1,7 @@
 <div class="notes-section">
-  <div *ngFor="let noteSection of notesSectionsList">
-    <span class="retrospective-feedback-title"><b>{{ noteSection.LABEL }}</b></span>
+  <div *ngFor="let noteSection of notesSectionsList" class="table-box">
     <app-retrospective-feedback
+      [title]="noteSection.LABEL"
       (resumeRefresh)="resumeRefresh()"
       (pauseRefresh)="pauseRefresh()"
       [feedbackType]="retroFeedbackTypes.NOTE"
@@ -12,9 +12,9 @@
       [teamMembers]="teamMembers"
       [data]="sprintNotes"></app-retrospective-feedback>
   </div>
-  <div>
-    <span class="retrospective-feedback-title"><b>Things To Be Improved</b></span>
+  <div class="table-box">
     <app-retrospective-feedback
+      title="Things To Be Improved"
       (resumeRefresh)="resumeRefresh()"
       (pauseRefresh)="pauseRefresh()"
       [feedbackType]="retroFeedbackTypes.GOAL"

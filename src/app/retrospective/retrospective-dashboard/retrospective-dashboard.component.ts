@@ -26,6 +26,10 @@ export class RetrospectiveDashboardComponent implements OnInit {
         this.retrospectiveID = this.activatedRoute.snapshot.params['retrospectiveID'];
     }
 
+    navigateToRetrospectives() {
+        this.router.navigateByUrl(APP_ROUTE_URLS.retrospectiveList);
+    }
+
     getRetrospective() {
         this.retrospectiveService.getRetrospectiveByID(this.retrospectiveID).subscribe(
             response => {

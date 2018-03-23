@@ -9,6 +9,7 @@ import { MatIconRegistry } from '@angular/material';
 })
 export class SideNavComponent {
     hide = true;
+    sidenavWidth = 64;
 
     constructor(iconRegistry: MatIconRegistry, sanitizer: DomSanitizer) {
         iconRegistry.addSvgIcon(
@@ -23,5 +24,12 @@ export class SideNavComponent {
             'retrospective-icon',
             sanitizer.bypassSecurityTrustResourceUrl('assets/img/icons/retrospective-icon.svg')
         );
+    }
+
+    increase() {
+        this.sidenavWidth = 258;
+    }
+    decrease() {
+        this.sidenavWidth = 64;
     }
 }

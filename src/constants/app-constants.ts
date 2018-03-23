@@ -134,6 +134,13 @@ export const SPRINT_STATES = {
     DISCARDED: 3
 };
 
+export const ACTIONABLE_SPRINT_STATES = {
+    [SPRINT_STATES.DRAFT]: 3,
+    [SPRINT_STATES.ACTIVE]: 4,
+    [SPRINT_STATES.FROZEN]: 5,
+    [SPRINT_STATES.DISCARDED]: 6
+};
+
 export const SPRINT_STATES_LABEL = {
     [SPRINT_STATES.DRAFT]: 'Draft',
     [SPRINT_STATES.ACTIVE]: 'Active',
@@ -243,7 +250,7 @@ export const SPRINT_NOTES_SECTIONS_LIST = [
     {
         KEY: 'things-well-done',
         LABEL: 'Things Well Done',
-    },
+    }
 ];
 
 export const HIGHLIGHTS_LIST = [

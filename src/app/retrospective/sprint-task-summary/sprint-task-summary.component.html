@@ -1,12 +1,14 @@
-<div>
-  <div class="sprint-task-refresh">
-    <button mat-button (click)="getSprintTaskSummary(true)">Refresh Data
-      <mat-icon>refresh</mat-icon>
+<div class="table-box">
+  <mat-toolbar class="small-toolbar" color="primary">
+    <span><b>Tasks</b></span>
+    <span class="fill-remaining-space"></span>
+    <button mat-button (click)="getSprintTaskSummary(true)">
+      <mat-icon>refresh</mat-icon>Refresh
     </button>
-  </div>
-  <div class="ag-grid-container">
+  </mat-toolbar>
+  <div class="ag-grid-container dynamic-grid-height -adjust-tabs">
     <ag-grid-angular
-      class="ag-theme-material"
+      class="ag-theme-material custom-ag-grid"
       [stopEditingWhenGridLosesFocus]="true"
       [gridOptions]="gridOptions"
       [overlayLoadingTemplate]="overlayLoadingTemplate"

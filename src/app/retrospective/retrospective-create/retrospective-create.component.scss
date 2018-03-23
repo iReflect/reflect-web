@@ -1,44 +1,11 @@
-mat-card {
-  width: calc(100% - 70px);
-  height: calc(100% - 70px);
-  overflow: auto;
-}
-
-mat-grid-list {
-  min-width: 600px;
-}
-
-mat-grid-tile.task-provider {
-  height: 670px !important;
-}
-
-.create-retro {
-  mat-form-field {
-    width: 100%;
-  }
-  .close-icon {
-    float: right;
-    margin-top: -6%;
-    cursor: pointer;
-    mat-icon {
-      font-size: xx-large;
-    }
-  }
-}
-
-button .mat-raised-button {
-  margin-right: 5px;
-  color: white;
-  background-color: #3293be;
+mat-form-field {
+  width: 100%;
 }
 
 .project-name-hint {
-  font-size: small;
+  font-size: larger;
 }
 
-.dialog-actions {
-  mat-dialog-actions {
-    float: right;
-    margin-top: 70px
-  }
+.table-box.padded-container {
+  padding: 30px;
 }

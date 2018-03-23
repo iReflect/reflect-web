@@ -37,6 +37,7 @@ export class SprintListComponent implements OnInit {
             this.retrospectiveID,
             this.showCannotGetSprintsError.bind(this)
         );
+        console.log('saasdas', this.dataSource);
     }
 
     navigateToSprint(row) {

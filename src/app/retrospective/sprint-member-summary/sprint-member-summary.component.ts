@@ -129,7 +129,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             defaultColDef: {
                 width: 100,
             },
-            rowHeight: 60,
+            rowHeight: 48,
             singleClickEdit: true,
             frameworkComponents: {
                 'ratingEditor': SelectCellEditorComponent,
