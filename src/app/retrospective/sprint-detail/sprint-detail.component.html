@@ -4,11 +4,14 @@
             matTooltipPosition="before" (click)="navigateToRetrospectiveDashboard()">
       <mat-icon>arrow_back</mat-icon>
     </button>
-    <p class="paddling-left toolbar-title">
+    <div class="paddling-left toolbar-title">
       {{sprintDetails.Title}}
       <i class="divider">|</i>
-      <span>{{sprintDetails.StartDate | date: dateFormat}} to {{sprintDetails.EndDate | date: dateFormat}}</span>
-    </p>
+      <div>
+        <span>{{sprintDetails.StartDate | date: dateFormat}} to {{sprintDetails.EndDate | date: dateFormat}}</span>
+        <span class="small-text">Last Synced on: {{sprintDetails.LastSyncedAt | date: dateFormat}}</span>
+      </div>
+    </div>
     <span class="fill-remaining-space"></span>
     <mat-form-field class="layout-side-margin">
       <mat-select [disabled]="sprintStatus === sprintStates.FROZEN"
@@ -45,10 +48,9 @@
     <mat-slide-toggle labelPosition="before" (change)="toggleAutoRefresh()" [checked]="enableRefresh"
       class="layout-side-margin auto-refresh-toggle" color="primary">
       Auto Refresh
-      <p class="small-text">Last Synced on: {{sprintDetails.LastSyncedAt | date: dateFormat}}</p>
     </mat-slide-toggle>
     <button mat-raised-button color="primary" class="layout-side-margin" (click)="refreshSprintDetails()" *ngIf="sprintDetails && sprintDetails.SyncStatus !== syncStates.SYNCING">
-      <mat-icon>refresh</mat-icon>&nbsp;&nbsp;Re-Sync Sprint
+      Re-Sync Sprint
     </button>
   </mat-toolbar>
   <div class="toolbar-sticky-box -layout-width">

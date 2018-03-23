@@ -48,15 +48,25 @@
 
 .toolbar-title {
   margin: 0;
+  display: flex;
+  align-items: center;
   > i {
     font-style: normal;
     margin: 0 10px;
     font-weight: 300;
     font-size: inherit;
     color: inherit;
-    &+span {
+    &+div {
       font-size: 14px;
       color: #666;
+      > span {
+        display: block;
+        line-height: 1.8;
+      }
+      > span.small-text {
+        font-size: 11px;
+        margin: 0;
+      }
     }
   }
 }
