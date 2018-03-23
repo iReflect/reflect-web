@@ -9,7 +9,8 @@ mat-row {
 
 .dynamic-grid-height {
   &.-adjust-tabs {
-    height: calc(100vh - 340px);
+    height: calc(100vh - 500px);
+    min-height: 100px;
     ag-grid-angular {
       width: 100%;
       height: 100%;

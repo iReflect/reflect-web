@@ -45,7 +45,7 @@
     <mat-slide-toggle labelPosition="before" (change)="toggleAutoRefresh()" [checked]="enableRefresh"
       class="layout-side-margin auto-refresh-toggle" color="primary">
       Auto Refresh
-      <p class="small-text">Last Synced at: {{sprintDetails.LastSyncedAt | date: dateFormat}}</p>
+      <p class="small-text">Last Synced on: {{sprintDetails.LastSyncedAt | date: dateFormat}}</p>
     </mat-slide-toggle>
     <button mat-raised-button color="primary" class="layout-side-margin" (click)="refreshSprintDetails()" *ngIf="sprintDetails && sprintDetails.SyncStatus !== syncStates.SYNCING">
       <mat-icon>refresh</mat-icon>&nbsp;&nbsp;Re-Sync Sprint
@@ -53,31 +53,120 @@
   </mat-toolbar>
   <div class="toolbar-sticky-box -layout-width">
     <div class="single-grid">
-      <div class="information-box mat-elevation-z1">
-        <div class="box-header">
-          <h4 class="title">
-            Project:
-          </h4>
-          <h6 class="subtitle">
-            By AAAA
-          </h6>
-        </div>
-        <div class="info-box-content">
-          <div class="info-left">
-            <p>
-              Expected Story Point Per Week Per Person: 1
-            </p>
+      <div class="layout-row">
+        <div class="information-box mat-elevation-z1  flex layout-side-margin">
+          <div class="box-header">
+            <h4 class="title">
+              Features
+            </h4>
           </div>
-          <span class="fill-remaining-space"></span>
-          <div class="info-right">
+          <div class="info-box-content">
+            <div class="info-left">
+              <p>
+                No. of Tickets Assigned: 99999
+              </p>
+              <p>
+                No. of Tickets Completed: 99999
+              </p>
+            </div>
+            <span class="fill-remaining-space"></span>
+            <div class="info-right">
 
+            </div>
           </div>
+          <!--<div class="info-box-footer">-->
+            <!--<span class="fill-remaining-space"></span>-->
+            <!--<p class="text-indented">-->
+              <!--Created on: -->
+            <!--</p>-->
+          <!--</div>-->
         </div>
-        <div class="info-box-footer">
-          <span class="fill-remaining-space"></span>
-          <p class="text-indented">
-            Created on: 12121
-          </p>
+        <div class="information-box mat-elevation-z1  flex layout-side-margin">
+          <div class="box-header">
+            <h4 class="title">
+              Tasks
+            </h4>
+          </div>
+          <div class="info-box-content">
+            <div class="info-left">
+              <p>
+                No. of Tickets Assigned: 99999
+              </p>
+              <p>
+                No. of Tickets Completed: 99999
+              </p>
+            </div>
+            <span class="fill-remaining-space"></span>
+            <div class="info-right">
+
+            </div>
+          </div>
+          <!--<div class="info-box-footer">-->
+          <!--<span class="fill-remaining-space"></span>-->
+          <!--<p class="text-indented">-->
+          <!--Created on: -->
+          <!--</p>-->
+          <!--</div>-->
+        </div>
+        <div class="information-box mat-elevation-z1  flex  layout-side-margin">
+          <div class="box-header">
+            <h4 class="title">
+              Bugs
+            </h4>
+          </div>
+          <div class="info-box-content">
+            <div class="info-left">
+              <p>
+                No. of Tickets Assigned: 99999
+              </p>
+              <p>
+                No. of Tickets Completed: 99999
+              </p>
+            </div>
+            <span class="fill-remaining-space"></span>
+            <div class="info-right">
+
+            </div>
+          </div>
+          <!--<div class="info-box-footer">-->
+          <!--<span class="fill-remaining-space"></span>-->
+          <!--<p class="text-indented">-->
+          <!--Created on: -->
+          <!--</p>-->
+          <!--</div>-->
+        </div>
+        <div class="information-box mat-elevation-z1  flex layout-side-margin">
+          <div class="box-header">
+            <h4 class="title">
+              Stats
+            </h4>
+          </div>
+          <div class="info-box-content">
+            <div class="info-left">
+              <p>
+                100/999 Tickets done
+              </p>
+              <p>
+                2nd Line
+              </p>
+              <p>
+                3rd Line
+              </p>
+              <p>
+                4th Line (do not go beyond this)
+              </p>
+            </div>
+            <span class="fill-remaining-space"></span>
+            <div class="info-right">
+
+            </div>
+          </div>
+          <!--<div class="info-box-footer">-->
+          <!--<span class="fill-remaining-space"></span>-->
+          <!--<p class="text-indented">-->
+          <!--Created on: -->
+          <!--</p>-->
+          <!--</div>-->
         </div>
       </div>
     </div>
