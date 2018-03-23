@@ -17,9 +17,7 @@
       <mat-form-field class="flex">
         <input matInput (click)="startDatePicker.open()" readonly formControlName="startDate" [matDatepicker]="startDatePicker" placeholder="Start date">
         <button matSuffix (click)="clearValue(startDateControl)" mat-icon-button>
-          <!--<span class="mat-button-wrapper">-->
           <mat-icon>clear</mat-icon>
-          <!--</span>-->
         </button>
         <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
         <mat-datepicker #startDatePicker></mat-datepicker>
@@ -33,9 +31,7 @@
       <mat-form-field class="flex">
         <input matInput (click)="endDatePicker.open()" readonly [min]="startDateControl" formControlName="endDate" [matDatepicker]="endDatePicker" placeholder="End date">
         <button matSuffix (click)="clearValue(endDateControl)" mat-icon-button>
-          <!--<span class="mat-button-wrapper">-->
           <mat-icon>clear</mat-icon>
-          <!--</span>-->
         </button>
         <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
         <mat-datepicker #endDatePicker></mat-datepicker>

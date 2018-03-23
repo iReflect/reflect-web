@@ -29,20 +29,6 @@ mat-row {
   }
   .ag-cell.ag-cell-not-inline-editing {
     line-height: 48px !important;
-    //vertical-align: middle;
-    //display: flex;
-    ///* justify-content: flex-start; */
-    //align-items: center;
-    //overflow: hidden;
-    //text-overflow: ellipsis;
-    ///* max-width: 100%; */
-    //flex-wrap: nowrap;
-    //flex-direction: row;
-    //white-space: normal;
-  }
-  .ag-cell.ag-cell-inline-editing {
-    //padding: 20px;
-    //height: 60px;
   }
 }
 
@@ -78,7 +64,5 @@ mat-row {
 }
 
 .table-box {
-  //border-bottom: 1.1px solid rgba(0,0,0,0.12);
-  //margin: 20px;
   padding: 20px;
 }

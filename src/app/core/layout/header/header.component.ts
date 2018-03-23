@@ -5,8 +5,6 @@ import { AuthService } from '../../../shared/services/auth.service';
 import { UserService } from '../../../shared/services/user.service';
 import { UserStoreService } from '../../../shared/stores/user.store.service';
 
-
-
 @Component({
     selector: 'app-header',
     templateUrl: './header.component.html',

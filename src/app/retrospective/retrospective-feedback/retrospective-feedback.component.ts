@@ -246,8 +246,6 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                 'datePicker': DatePickerEditorComponent,
             }
         };
-
-        console.log('aaaaa', this.gridOptions);
     }
 
     onGridReady(params) {
