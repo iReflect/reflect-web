@@ -424,5 +424,6 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                 cellClass: 'delete-column'
             }
         ];
+        return columnDefs;
     }
 }

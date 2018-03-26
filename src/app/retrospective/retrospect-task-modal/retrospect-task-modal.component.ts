@@ -350,5 +350,6 @@ export class RetrospectTaskModalComponent implements OnDestroy {
                 suppressKeyboardEvent: (event) => this.utils.isAgGridEditingEvent(event)
             }
         ];
+        return columnDefs;
     }
 }
