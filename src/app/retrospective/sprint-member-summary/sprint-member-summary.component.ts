@@ -426,4 +426,8 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         ];
         return columnDefs;
     }
+
+    getDisplayedRowCount() {
+        return (this.gridApi && this.gridApi.getDisplayedRowCount()) || 0;
+    }
 }
