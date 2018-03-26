@@ -1,6 +1,6 @@
 <div class="retrospect-task app-dialog">
   <h2 mat-dialog-title>
-    {{taskDetails.TaskID}}: {{taskDetails.Summary}}
+    {{taskDetails.TaskID}}<span *ngIf="taskDetails.Summary"> : {{taskDetails.Summary}}</span>
   </h2>
   <button mat-icon-button class="close-icon" tabindex="-1" (click)="closeDialog()"><mat-icon>clear</mat-icon></button>
   <div class="modal-header-sticky-box">

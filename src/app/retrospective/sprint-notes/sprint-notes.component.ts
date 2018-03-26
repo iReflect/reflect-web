@@ -13,6 +13,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/observable/interval';
+import { UtilsService } from '../../shared/utils/utils.service';
 
 @Component({
   selector: 'app-sprint-notes',
@@ -36,7 +37,8 @@ export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
     destroy$: Subject<boolean> = new Subject<boolean>();
 
     constructor(private retrospectiveService: RetrospectiveService,
-                private snackBar: MatSnackBar) { }
+                private snackBar: MatSnackBar,
+                private utils: UtilsService) { }
 
     ngOnInit() {
         Observable.interval(5000)
@@ -91,7 +93,7 @@ export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
                 this.sprintGoals = response.data.Feedbacks;
             },
             err => {
-                this.snackBar.open(this.getErrorMessage(err.data) || API_RESPONSE_MESSAGES.sprintAddedGoalsGetError,
+                this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintAddedGoalsGetError,
                     '', {duration: SNACKBAR_DURATION});
             }
         );
@@ -104,7 +106,7 @@ export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
                 this.sprintNotes = response.data.Feedbacks;
             },
             err => {
-                this.snackBar.open(this.getErrorMessage(err.data) || API_RESPONSE_MESSAGES.sprintNotesGetError,
+                this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintNotesGetError,
                     '', {duration: SNACKBAR_DURATION});
             }
         );
@@ -116,15 +118,9 @@ export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
                 this.teamMembers = response.data.Members;
             },
             err => {
-                this.snackBar.open(this.getErrorMessage(err.data) || API_RESPONSE_MESSAGES.getRetrospectiveMembersError,
+                this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getRetrospectiveMembersError,
                     '', {duration: SNACKBAR_DURATION});
             }
         );
     }
-
-    getErrorMessage(response): string {
-        const message = response.error;
-        return message.charAt(0).toUpperCase() + message.substr(1);
-    }
-
 }

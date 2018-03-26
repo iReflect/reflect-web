@@ -2,9 +2,10 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
-import { API_RESPONSE_MESSAGES, FEEDBACK_STATES, SNACKBAR_DURATION } from '../../../constants/app-constants';
+import { API_RESPONSE_MESSAGES, DATE_FORMAT, FEEDBACK_STATES, SNACKBAR_DURATION } from '../../../constants/app-constants';
 import { FeedbackService } from '../../shared/services/feedback.service';
 import { TeamFeedbackService } from '../../shared/services/team-feedback.service';
+import { UtilsService } from '../../shared/utils/utils.service';
 
 @Component({
     selector: 'app-feedback-detail',
@@ -29,9 +30,12 @@ export class FeedbackDetailComponent implements OnInit {
     submittedState: number;
     submittedAt: string;
     isDataLoaded = false;
-    dateFormat = 'MMMM dd, yyyy';
+    dateFormat = DATE_FORMAT;
 
-    constructor(private activatedRoute: ActivatedRoute, private snackBar: MatSnackBar, private router: Router) {
+    constructor(private activatedRoute: ActivatedRoute,
+                private snackBar: MatSnackBar,
+                private utils: UtilsService,
+                private router: Router) {
     }
 
     getFeedBack() {
@@ -50,7 +54,7 @@ export class FeedbackDetailComponent implements OnInit {
                     },
                     err => {
                         this.snackBar.open(
-                            err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.error,
+                            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.error,
                             '', {duration: SNACKBAR_DURATION})
                             .afterDismissed().subscribe(() => {
                             this.router.navigateByUrl(this.feedbackListURL);
@@ -90,7 +94,7 @@ export class FeedbackDetailComponent implements OnInit {
             },
             err => {
                 this.snackBar.open(
-                    err.data.error.charAt(0).toUpperCase() + err.data.error.substr(1) || API_RESPONSE_MESSAGES.error,
+                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.error,
                     '', {duration: SNACKBAR_DURATION});
             }
         );

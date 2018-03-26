@@ -24,6 +24,7 @@ import { SelectCellEditorComponent } from './ag-grid-editors/select-cell-editor/
 import { ClickableButtonRendererComponent } from './ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
 import { RatingRendererComponent } from './ag-grid-renderers/rating-renderer/rating-renderer.component';
 import { DatePickerEditorComponent } from './ag-grid-editors/date-picker-editor/date-picker-editor.component';
+import { UtilsService } from './utils/utils.service';
 
 @NgModule({
     imports: [
@@ -64,7 +65,8 @@ import { DatePickerEditorComponent } from './ag-grid-editors/date-picker-editor/
         TeamFeedbackService,
         UserStoreService,
         RetrospectiveService,
-        RestApiHelperService
+        RestApiHelperService,
+        UtilsService
     ],
     entryComponents: [
         BasicModalComponent

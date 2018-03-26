@@ -96,25 +96,20 @@ export const API_RESPONSE_MESSAGES = {
     sprintDiscardError: 'Cannot Discard Sprint',
     refreshSprintError: 'Cannot initiate sprint computation',
     autoRefreshFailure: 'Failed to refresh data!',
-
     goalResolvedSuccessfully: 'Goal resolved successfully',
     goalResolveFailed: `Failed to resolve the goal`,
-
     goalUnResolvedSuccessfully: 'Goal un-resolved successfully',
     goalUnResolveFailed: `Failed to un-resolve the goal`,
-
     sprintHighlightsGetError: 'Couldn\'t get the sprint highlights',
     sprintHighlightsUpdateError: `Couldn't update sprint highlight`,
     sprintHighlightsUpdateSuccess: 'Successfully updated sprint highlight',
     sprintHighlightsAddError: `Couldn't add a sprint highlight`,
     sprintHighlightsAddSuccess: 'Successfully added a sprint highlight',
-
     sprintNotesGetError: 'Couldn\'t get the sprint notes',
     sprintNotesUpdateError: `Couldn't update sprint note`,
     sprintNotesUpdateSuccess: 'Successfully updated sprint note',
     sprintNotesAddError: `Couldn't add a sprint note`,
     sprintNotesAddSuccess: 'Successfully added a sprint note',
-
     sprintPendingGoalsGetError: 'Couldn\'t get the pending goals',
     sprintAccomplishedGoalsGetError: 'Couldn\'t get the accomplished goals',
     sprintAddedGoalsGetError: 'Couldn\'t get the added goals',
@@ -161,6 +156,8 @@ export const SPRINT_ACTIONS_LABEL = {
 };
 
 export const SNACKBAR_DURATION = 2000;
+
+export const DATE_FORMAT = 'MMMM dd, yyyy';
 
 export const RATING_STATES = {
     RED: 0,
