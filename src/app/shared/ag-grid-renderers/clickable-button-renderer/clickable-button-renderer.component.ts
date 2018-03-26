@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { ICellRendererAngularComp } from 'ag-grid-angular';
+import {ICellRendererParams} from 'ag-grid';
+import * as _ from 'lodash';
 
 @Component({
     selector: 'app-clickable-button-renderer',
@@ -21,11 +23,22 @@ export class ClickableButtonRendererComponent implements ICellRendererAngularCom
         }
     }
 
-    refresh(): boolean {
-        return false;
+    refresh(params: ICellRendererParams): boolean {
+        const cellRendererParams = params.colDef.cellRendererParams;
+        let cellParams;
+        if (_.isFunction(cellRendererParams)) {
+            cellParams = cellRendererParams(params);
+        } else {
+            cellParams = cellRendererParams;
+        }
+        this.label = cellParams.label;
+        this.isIcon = cellParams.useIcon;
+        this.icon = cellParams.icon;
+        this.params = {...params, ...cellParams};
+        return true;
     }
 
     onButtonClicked() {
-        this.params.onClick(this.params.data);
+        this.params.onClick(this.params);
     }
 }

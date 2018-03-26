@@ -263,7 +263,8 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
         });
     }
 
-    resolveSprintGoal(goalData: any) {
+    resolveSprintGoal(params: any) {
+        const goalData = params.data;
         this.retrospectiveService.resolveSprintGoal(this.retrospectiveID, this.sprintID, goalData.ID).subscribe(
             response => {
                 this.gridApi.updateRowData({remove: [goalData]});
@@ -276,7 +277,8 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
             });
     }
 
-    unresolveSprintGoal(goalData: any) {
+    unresolveSprintGoal(params: any) {
+        const goalData = params.data;
         this.retrospectiveService.unresolveSprintGoal(this.retrospectiveID, this.sprintID, goalData.ID).subscribe(
             response => {
                 this.gridApi.updateRowData({remove: [goalData]});
