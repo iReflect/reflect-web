@@ -15,10 +15,13 @@ export class HeaderComponent implements OnInit {
     logoutInProgress = false;
     user: any = {};
     userImage = 'assets/img/user-default.png';
-    constructor(private router: Router,
-                private authService: AuthService,
-                private userStoreService: UserStoreService,
-                private userService: UserService) {
+
+    constructor(
+        private router: Router,
+        private authService: AuthService,
+        private userStoreService: UserStoreService,
+        private userService: UserService
+    ) {
     }
 
     subscribeUserData() {

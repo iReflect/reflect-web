@@ -1,4 +1,4 @@
-import { Component, Injectable, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as _ from 'lodash';
 import { FEEDBACK_STATES, FEEDBACK_STATES_LABEL } from '../../../constants/app-constants';
@@ -30,9 +30,11 @@ export class FeedbackListComponent implements OnInit {
     defaultStatusFilters = [FEEDBACK_STATES.NEW, FEEDBACK_STATES.IN_PROGRESS];
     statusChoices;
 
-    constructor(private router: Router,
-                private route: ActivatedRoute,
-                private urlHelperService: UrlHelperService) {
+    constructor(
+        private router: Router,
+        private route: ActivatedRoute,
+        private urlHelperService: UrlHelperService
+    ) {
         this.statusChoices = [];
         Object.keys(FEEDBACK_STATES_LABEL).forEach(key =>
             this.statusChoices.push({value: key, label: FEEDBACK_STATES_LABEL[key]}));

@@ -1,51 +1,51 @@
 <ng-container>
-  <div *ngIf="isDataLoaded" class="container-with-view-height -colored -fixed-nav-toolbar">
-    <mat-toolbar class="nav-toolbar -fixed">
-      <button mat-icon-button matTooltip="Retrospective dashboard"
-              matTooltipPosition="before" (click)="navigateToRetrospectives()">
-        <mat-icon>arrow_back</mat-icon>
-      </button>
-      <span class="paddling-left">Team:  <b>{{ retrospectiveData.Team.Name }}</b></span>
-      <span class="fill-remaining-space"></span>
-      <div class="action-buttons">
-        <button mat-raised-button color="primary" (click)="showNewSprintDialog()">Create Sprint</button>
-      </div>
-    </mat-toolbar>
-    <div class="toolbar-sticky-box -layout-width">
-      <div class="single-grid">
-        <div class="information-box mat-elevation-z1">
-          <div class="box-header">
-            <h4 class="title">
-              Project: {{ retrospectiveData.ProjectName }}
-            </h4>
-            <h6 class="subtitle">
-              By {{ getCreatorName()}}
-            </h6>
-          </div>
-          <div class="info-box-content">
-            <div class="info-left">
-              <p>
-                Expected Story Point Per Week Per Person: {{ retrospectiveData.StoryPointPerWeek}}
-              </p>
-            </div>
+    <div *ngIf="isDataLoaded" class="container-with-view-height -colored -fixed-nav-toolbar">
+        <mat-toolbar class="nav-toolbar -fixed">
+            <button mat-icon-button matTooltip="Retrospective dashboard"
+                    matTooltipPosition="before" (click)="navigateToRetrospectives()">
+                <mat-icon>arrow_back</mat-icon>
+            </button>
+            <span class="paddling-left">Team:  <b>{{ retrospectiveData.Team.Name }}</b></span>
             <span class="fill-remaining-space"></span>
-            <div class="info-right">
+            <div class="action-buttons">
+                <button mat-raised-button color="primary" (click)="showNewSprintDialog()">Create Sprint</button>
+            </div>
+        </mat-toolbar>
+        <div class="toolbar-sticky-box -layout-width">
+            <div class="single-grid">
+                <div class="information-box mat-elevation-z1">
+                    <div class="box-header">
+                        <h4 class="title">
+                            Project: {{ retrospectiveData.ProjectName }}
+                        </h4>
+                        <h6 class="subtitle">
+                            By {{ getCreatorName()}}
+                        </h6>
+                    </div>
+                    <div class="info-box-content">
+                        <div class="info-left">
+                            <p>
+                                Expected Story Point Per Week Per Person: {{ retrospectiveData.StoryPointPerWeek}}
+                            </p>
+                        </div>
+                        <span class="fill-remaining-space"></span>
+                        <div class="info-right">
 
+                        </div>
+                    </div>
+                    <div class="info-box-footer">
+                        <span class="fill-remaining-space"></span>
+                        <p class="text-indented">
+                            Created on: {{ retrospectiveData.CreatedAt | date:dateFormat}}
+                        </p>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="info-box-footer">
-            <span class="fill-remaining-space"></span>
-            <p class="text-indented">
-              Created on: {{ retrospectiveData.CreatedAt | date:dateFormat}}
-            </p>
-          </div>
         </div>
-      </div>
+        <div class="layout-container" *ngIf="retrospectiveData">
+            <div class="single-grid">
+                <app-sprint-list #sprintList [retrospectiveID]="retrospectiveID"></app-sprint-list>
+            </div>
+        </div>
     </div>
-    <div class="layout-container" *ngIf="retrospectiveData">
-      <div class="single-grid">
-        <app-sprint-list #sprintList [retrospectiveID]="retrospectiveID"></app-sprint-list>
-      </div>
-    </div>
-  </div>
 </ng-container>

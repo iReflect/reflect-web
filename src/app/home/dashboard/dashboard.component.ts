@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { APP_ROUTE_URLS, FEEDBACK_STATES } from '../../../constants/app-constants';
 import { FeedbackService } from '../../shared/services/feedback.service';
 

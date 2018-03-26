@@ -1,15 +1,18 @@
 mat-form-field {
-  padding: 0 5px;
-  box-sizing: border-box;
+    padding: 0 5px;
+    box-sizing: border-box;
+    // TODO: (Bug) .mat-form-field-underline not rendering in Webkit browsers
+    // Refer "https://github.com/angular/material2/issues/7494" for details
+    // transform: perspective(1px);
 }
 
 .tabbar-mat-select {
-  font-size: 14px;
-  background: #FFF;
-  padding: 3px 14px;
-  border-radius: 2px;
+    font-size: 14px;
+    background: #FFF;
+    padding: 3px 14px;
+    border-radius: 2px;
 }
 
 .toolbar-mat-select {
-  font-size: 14px;
+    font-size: 14px;
 }

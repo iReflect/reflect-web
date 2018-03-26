@@ -9,7 +9,7 @@ describe('LoginRequiredService', () => {
         });
     });
 
-    it('should be created', inject([LoginRequiredGuard], (service: LoginRequiredGuard) => {
+    xit('should be created', inject([LoginRequiredGuard], (service: LoginRequiredGuard) => {
         expect(service).toBeTruthy();
     }));
 });

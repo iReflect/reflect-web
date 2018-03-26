@@ -1,31 +1,31 @@
 <mat-card>
-  <div class="question-group" [formGroup]="form">
-    <label [attr.for]="question.ID" class="question-text">{{question.Text}}</label>
-    <div [ngSwitch]="question.Type" class="question-response">
-      <app-multi-choice-question *ngSwitchCase="multipleChoiceType"
-                                 [id]="question.ID"
-                                 [question]="question"
-                                 formControlName="response"></app-multi-choice-question>
+    <div class="question-group" [formGroup]="form">
+        <label [attr.for]="question.ID" class="question-text">{{question.Text}}</label>
+        <div [ngSwitch]="question.Type" class="question-response">
+            <app-multi-choice-question *ngSwitchCase="multipleChoiceType"
+                                       [id]="question.ID"
+                                       [question]="question"
+                                       formControlName="response"></app-multi-choice-question>
 
-      <app-grade-question *ngSwitchCase="gradeType" [id]="question.ID"
-                          [question]="question"
-                          formControlName="response"></app-grade-question>
+            <app-grade-question *ngSwitchCase="gradeType" [id]="question.ID"
+                                [question]="question"
+                                formControlName="response"></app-grade-question>
 
-      <app-boolean-question *ngSwitchCase="booleanType"
-                            [id]="question.ID" [question]="question"
-                            formControlName="response"></app-boolean-question>
+            <app-boolean-question *ngSwitchCase="booleanType"
+                                  [id]="question.ID" [question]="question"
+                                  formControlName="response"></app-boolean-question>
+        </div>
+        <a class="comment-icon"
+           [matTooltip]="getCommentToolTipText()"
+           (click)="toggleComment()"
+           [ngClass]="{'edit-comment': commentControl.value, 'add-comment': !commentControl.value}">
+            <mat-icon>comment</mat-icon>
+        </a>
+        <mat-form-field class="question-comment" floatLabel="always" *ngIf="showComment">
+            <mat-label></mat-label>
+            <textarea matInput matTextareaAutosize
+                      formControlName="comment"
+                      placeholder="Comments"></textarea>
+        </mat-form-field>
     </div>
-    <a class="comment-icon"
-       [matTooltip]="getCommentToolTipText()"
-       (click)="toggleComment()"
-       [ngClass]="{'edit-comment': commentControl.value, 'add-comment': !commentControl.value}">
-      <mat-icon>comment</mat-icon>
-    </a>
-    <mat-form-field class="question-comment" floatLabel="always" *ngIf="showComment">
-      <mat-label></mat-label>
-      <textarea matInput matTextareaAutosize
-                formControlName="comment"
-                placeholder="Comments"></textarea>
-    </mat-form-field>
-  </div>
 </mat-card>

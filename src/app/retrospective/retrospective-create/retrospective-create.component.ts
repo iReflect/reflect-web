@@ -31,11 +31,14 @@ export class RetrospectiveCreateComponent implements OnInit {
     // Keys used for form controls and provider lookups
     taskProviderKey = 'taskProvider';
 
-    constructor(private retrospectiveService: RetrospectiveService,
-                private snackBar: MatSnackBar,
-                private utils: UtilsService,
-                public dialogRef: MatDialogRef<RetrospectiveCreateComponent>,
-                @Inject(MAT_DIALOG_DATA) public data: any) { }
+    constructor(
+        private retrospectiveService: RetrospectiveService,
+        private snackBar: MatSnackBar,
+        private utils: UtilsService,
+        public dialogRef: MatDialogRef<RetrospectiveCreateComponent>,
+        @Inject(MAT_DIALOG_DATA) public data: any
+    ) {
+    }
 
     ngOnInit() {
         this.getTeamList();

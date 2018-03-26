@@ -1,40 +1,40 @@
 <ng-container>
-  <div class="feedback-container" *ngIf="isDataLoaded">
-    <mat-card class="feedback-details">
-      <div>
-        <span><b>{{ feedbackData.Title }}</b></span>&nbsp;|&nbsp;
-        <span>From {{ feedbackData.DurationStart | date:dateFormat}} To {{ feedbackData.DurationEnd | date:dateFormat}}</span>&nbsp;|&nbsp;
-        <span>Expires At: {{ feedbackData.ExpireAt | date:dateFormat}}</span>
-        <span *ngIf="isFormSubmitted && submittedAt">
+    <div class="feedback-container" *ngIf="isDataLoaded">
+        <mat-card class="feedback-details">
+            <div>
+                <span><b>{{ feedbackData.Title }}</b></span>&nbsp;|&nbsp;
+                <span>From {{ feedbackData.DurationStart | date:dateFormat}} To {{ feedbackData.DurationEnd | date:dateFormat}}</span>&nbsp;|&nbsp;
+                <span>Expires At: {{ feedbackData.ExpireAt | date:dateFormat}}</span>
+                <span *ngIf="isFormSubmitted && submittedAt">
         &nbsp;|&nbsp; Submitted At: {{ submittedAt | date:dateFormat}}
         </span>
-      </div>
-      <div class="action-buttons" *ngIf="showControls">
-        <button mat-raised-button
-                *ngIf="!isFormSubmitted"
-                class="save-draft"
-                (click)="onSubmit()">
-          Save as Draft
-        </button>
-        <button mat-raised-button *ngIf="!isFormSubmitted"
-                class="save-submit"
-                (click)="onSubmit(true)"
-                [disabled]="!form.valid">
-          Save and Submit
-        </button>
-      </div>
-    </mat-card>
-    <div class="feedback-form-container">
-      <div class="feedback-form">
-        <div [formGroup]="form">
-          <app-category *ngFor="let category of feedbackData.Categories | values"
-                        [formGroupName]="''+category.ID"
-                        [form]="form.controls[category.ID]"
-                        [category]="category">
-          </app-category>
+            </div>
+            <div class="action-buttons" *ngIf="showControls">
+                <button mat-raised-button
+                        *ngIf="!isFormSubmitted"
+                        class="save-draft"
+                        (click)="onSubmit()">
+                    Save as Draft
+                </button>
+                <button mat-raised-button *ngIf="!isFormSubmitted"
+                        class="save-submit"
+                        (click)="onSubmit(true)"
+                        [disabled]="!form.valid">
+                    Save and Submit
+                </button>
+            </div>
+        </mat-card>
+        <div class="feedback-form-container">
+            <div class="feedback-form">
+                <div [formGroup]="form">
+                    <app-category *ngFor="let category of feedbackData.Categories | values"
+                                  [formGroupName]="''+category.ID"
+                                  [form]="form.controls[category.ID]"
+                                  [category]="category">
+                    </app-category>
+                </div>
+            </div>
+            <div class="empty-block"></div>
         </div>
-      </div>
-      <div class="empty-block"></div>
     </div>
-  </div>
 </ng-container>

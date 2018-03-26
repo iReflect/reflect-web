@@ -1,12 +1,12 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges, OnDestroy } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 
 import {
-    RETRO_FEEDBACK_TYPES,
-    SPRINT_NOTES_SECTIONS_LIST,
-    SNACKBAR_DURATION,
     API_RESPONSE_MESSAGES,
-    RETRO_FEEDBACK_GOAL_TYPES
+    RETRO_FEEDBACK_GOAL_TYPES,
+    RETRO_FEEDBACK_TYPES,
+    SNACKBAR_DURATION,
+    SPRINT_NOTES_SECTIONS_LIST
 } from '../../../constants/app-constants';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { Observable } from 'rxjs/Observable';
@@ -16,9 +16,9 @@ import 'rxjs/add/observable/interval';
 import { UtilsService } from '../../shared/utils/utils.service';
 
 @Component({
-  selector: 'app-sprint-notes',
-  templateUrl: './sprint-notes.component.html',
-  styleUrls: ['./sprint-notes.component.scss']
+    selector: 'app-sprint-notes',
+    templateUrl: './sprint-notes.component.html',
+    styleUrls: ['./sprint-notes.component.scss']
 })
 export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
     @Input() enableRefresh: boolean;
@@ -36,9 +36,12 @@ export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
     autoRefreshCurrentState = true;
     destroy$: Subject<boolean> = new Subject<boolean>();
 
-    constructor(private retrospectiveService: RetrospectiveService,
-                private snackBar: MatSnackBar,
-                private utils: UtilsService) { }
+    constructor(
+        private retrospectiveService: RetrospectiveService,
+        private snackBar: MatSnackBar,
+        private utils: UtilsService
+    ) {
+    }
 
     ngOnInit() {
         Observable.interval(5000)

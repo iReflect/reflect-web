@@ -1,37 +1,37 @@
 mat-form-field {
-  width: 500px;
+    width: 500px;
 }
 
 .feedback-details {
-  div:not(.action-buttons) {
-    float: left;
-    margin: -10px;
-  }
-  .action-buttons {
-    float: right;
-    margin: -18px;
-    button {
-      margin-right: 5px;
-      color: white;
+    div:not(.action-buttons) {
+        float: left;
+        margin: -10px;
     }
-    .save-draft {
-      background-color: #3293d2;
+    .action-buttons {
+        float: right;
+        margin: -18px;
+        button {
+            margin-right: 5px;
+            color: white;
+        }
+        .save-draft {
+            background-color: #3293d2;
+        }
+        .save-submit {
+            background-color: #64e63c;
+        }
     }
-    .save-submit {
-      background-color: #64e63c;
-    }
-  }
 }
 
 .feedback-form-container {
-  display: flex;
-  .feedback-form {
-    width: 75%;
-    margin-left: 25px;
-    margin-top: 11px;
-    margin-bottom: 25px;
-  }
-  .empty-block {
-    width: 25%;
-  }
+    display: flex;
+    .feedback-form {
+        width: 75%;
+        margin-left: 25px;
+        margin-top: 11px;
+        margin-bottom: 25px;
+    }
+    .empty-block {
+        width: 25%;
+    }
 }

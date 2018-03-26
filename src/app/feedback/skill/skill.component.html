@@ -1,15 +1,14 @@
 <mat-expansion-panel [expanded]="true">
-  <mat-expansion-panel-header>
-    <mat-panel-title>
-      {{ skill.DisplayTitle }}
-    </mat-panel-title>
-    <mat-divider></mat-divider>
-  </mat-expansion-panel-header>
-  <!--<ng-template >-->
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            {{ skill.DisplayTitle }}
+        </mat-panel-title>
+        <mat-divider></mat-divider>
+    </mat-expansion-panel-header>
     <div matExpansionPanelContent [formGroup]="form">
-      <mat-toolbar>
-        {{ skill.Description }}
-      </mat-toolbar>
+        <mat-toolbar>
+            {{ skill.Description }}
+        </mat-toolbar>
         <app-question-response *ngFor="let question of skill.Questions; let questionNo=index"
                                [formGroupName]="''+question.ResponseID"
                                [question]="question"
@@ -17,5 +16,4 @@
                                [form]="form.controls[question.ResponseID]">
         </app-question-response>
     </div>
-  <!--</ng-template>-->
 </mat-expansion-panel>

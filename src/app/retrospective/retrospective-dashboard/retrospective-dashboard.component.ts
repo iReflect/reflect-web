@@ -8,9 +8,9 @@ import { SprintListComponent } from '../sprint-list/sprint-list.component';
 import { UtilsService } from '../../shared/utils/utils.service';
 
 @Component({
-  selector: 'app-retrospective-dashboard',
-  templateUrl: './retrospective-dashboard.component.html',
-  styleUrls: ['./retrospective-dashboard.component.scss']
+    selector: 'app-retrospective-dashboard',
+    templateUrl: './retrospective-dashboard.component.html',
+    styleUrls: ['./retrospective-dashboard.component.scss']
 })
 export class RetrospectiveDashboardComponent implements OnInit {
     retrospectiveID: any;
@@ -19,12 +19,14 @@ export class RetrospectiveDashboardComponent implements OnInit {
     isDataLoaded = false;
     @ViewChild('sprintList') private sprintList: SprintListComponent;
 
-    constructor(private activatedRoute: ActivatedRoute,
-                private retrospectiveService: RetrospectiveService,
-                private snackBar: MatSnackBar,
-                private router: Router,
-                private utils: UtilsService,
-                public dialog: MatDialog) {
+    constructor(
+        private activatedRoute: ActivatedRoute,
+        private retrospectiveService: RetrospectiveService,
+        private snackBar: MatSnackBar,
+        private router: Router,
+        private utils: UtilsService,
+        public dialog: MatDialog
+    ) {
         this.retrospectiveID = this.activatedRoute.snapshot.params['retrospectiveID'];
     }
 

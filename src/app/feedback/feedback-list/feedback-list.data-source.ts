@@ -6,22 +6,21 @@ import { TeamFeedbackService } from '../../shared/services/team-feedback.service
 
 export class FeedBackListDataSource extends DataSource<any> {
     filters: any;
-    private dataChange: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
-
     public newFeedbackCount: number;
     public draftFeedbackCount: number;
     public submittedFeedbackCount: number;
+    private dataChange: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
 
     constructor(private service: FeedbackService | TeamFeedbackService) {
         super();
     }
 
-    setFilters(filters: any) {
-        this.filters = filters;
-    }
-
     get dataChange$() {
         return this.dataChange.asObservable();
+    }
+
+    setFilters(filters: any) {
+        this.filters = filters;
     }
 
     connect(): Observable<any[]> {
