@@ -32,11 +32,13 @@ export class SprintDetailComponent implements OnInit {
     selectedTabIndex = 0;
     enableRefresh = true;
     dateFormat = DATE_FORMAT;
+    decimalFormat = '1.0-2';
     sprintStates = SPRINT_STATES;
     sprintStatesLabel = SPRINT_STATES_LABEL;
     sprintActions = SPRINT_ACTIONS;
     sprintActionsLabel = SPRINT_ACTIONS_LABEL;
     syncStates = SPRINT_SYNC_STATES;
+    tabIndexMapping: any = {highlights: 0, taskSummary: 1, memberSummary: 2, notes: 3};
 
     constructor(private retrospectiveService: RetrospectiveService,
                 private snackBar: MatSnackBar,
@@ -48,6 +50,13 @@ export class SprintDetailComponent implements OnInit {
 
     ngOnInit() {
         this.getSprintDetails();
+    }
+
+    getSprintAssignedPoints() {
+        const featureType = this.sprintDetails.Summary.TaskSummary.FeatureTypes.TotalPointsEarned;
+        const taskType = this.sprintDetails.Summary.TaskSummary.TaskTypes.TotalPointsEarned;
+        const bugType = this.sprintDetails.Summary.TaskSummary.BugTypes.TotalPointsEarned;
+        return (featureType + taskType + bugType);
     }
 
     getSprintDetails() {
@@ -62,6 +71,11 @@ export class SprintDetailComponent implements OnInit {
                 this.sprintDays = this.utils.workdayCount(response.data.StartDate, response.data.EndDate);
                 if (this.sprintDetails.SyncStatus === SPRINT_SYNC_STATES.SYNCING) {
                     setTimeout(() => this.getSprintDetails(), 5000);
+                }
+                if (this.sprintStatus === SPRINT_STATES.DRAFT) {
+                    // Since we are hiding the "Highlights" and "Notes" tab for draft sprints,
+                    // we need to make sure that the summary tabs are following the correct order.
+                    this.tabIndexMapping = {taskSummary: 0, memberSummary: 1};
                 }
             },
             err => {

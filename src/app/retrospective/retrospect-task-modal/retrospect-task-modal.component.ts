@@ -352,4 +352,8 @@ export class RetrospectTaskModalComponent implements OnDestroy {
         ];
         return columnDefs;
     }
+
+    getDisplayedRowCount() {
+        return (this.gridApi && this.gridApi.getDisplayedRowCount()) || 0;
+    }
 }

@@ -390,4 +390,8 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
         rowData[params.colDef.field] = params.oldValue;
         this.gridApi.updateRowData({update: [rowData]});
     }
+
+    getDisplayedRowCount() {
+        return (this.gridApi && this.gridApi.getDisplayedRowCount()) || 0;
+    }
 }

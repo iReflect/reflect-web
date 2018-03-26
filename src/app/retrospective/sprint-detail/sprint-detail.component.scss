@@ -9,3 +9,19 @@
 .mat-tab-header {
   background: #FFF;
 }
+
+.sprint-header-box {
+  .stats-box {
+    flex-basis: 18%;
+  }
+  .box-header{
+    .title {
+      font-size: 18px;
+    }
+  }
+  .info-box-content {
+    p {
+      font-size: medium;
+    }
+  }
+}

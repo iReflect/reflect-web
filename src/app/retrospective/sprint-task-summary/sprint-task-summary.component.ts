@@ -238,4 +238,8 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             }
         ];
     }
+
+    getDisplayedRowCount() {
+        return (this.gridApi && this.gridApi.getDisplayedRowCount()) || 0;
+    }
 }

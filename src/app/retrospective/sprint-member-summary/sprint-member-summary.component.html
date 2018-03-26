@@ -1,6 +1,6 @@
 <mat-card>
   <mat-toolbar class="small-toolbar" color="primary">
-    <b>Members</b>
+    <b>Members &nbsp;&nbsp;({{ getDisplayedRowCount() }})</b>
     <span class="fill-remaining-space"></span>
     <button mat-button (click)="getSprintMemberSummary(true)" class="layout-side-margin">
       <mat-icon>refresh</mat-icon>
