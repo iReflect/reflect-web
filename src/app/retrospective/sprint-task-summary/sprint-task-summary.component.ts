@@ -32,10 +32,12 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     private gridApi: GridApi;
     private columnApi: ColumnApi;
 
-    constructor(private snackBar: MatSnackBar,
-                public dialog: MatDialog,
-                private retrospectiveService: RetrospectiveService,
-                private utils: UtilsService) {
+    constructor(
+        private snackBar: MatSnackBar,
+        public dialog: MatDialog,
+        private retrospectiveService: RetrospectiveService,
+        private utils: UtilsService
+    ) {
         this.columnDefs = this.createColumnDefs();
         this.setGridOptions();
     }
@@ -89,6 +91,11 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             },
             enableFilter: true,
             enableSorting: true,
+            rowClassRules: {
+                'invalid-ag-grid-row': (params) => {
+                    return params.data.IsInvalid;
+                }
+            }
         };
     }
 
