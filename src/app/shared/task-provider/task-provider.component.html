@@ -9,7 +9,6 @@
     </mat-form-field>
   </div>
   <div *ngIf="showConfigFields">
-
     <mat-toolbar class="small-toolbar">
       Credentials
     </mat-toolbar>
@@ -31,6 +30,35 @@
             <input matInput [placeholder]="field.FieldDisplayName" [formControlName]="field.FieldName"/>
           </mat-form-field>
         </div>
+      </div>
+    </div>
+    <mat-toolbar class="small-toolbar">
+      Tracker Ticket Type Mapping
+    </mat-toolbar>
+    <div [formGroupName]="taskProviderConfigKey" class="table-box padded-container">
+      <div class="layout-row">
+        <mat-form-field class="flex">
+          <input matInput placeholder="Feature (Comma Separated)" [pattern]="commaSeparatedRegex" [formControlName]="trackerTicketTypeMap.FEATURE"/>
+          <mat-error *ngIf="featureTypeControl.errors && featureTypeControl.errors['pattern']">
+            It should be a comma separated string
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="layout-row">
+        <mat-form-field class="flex">
+          <input matInput placeholder="Task (Comma Separated)" [pattern]="commaSeparatedRegex" [formControlName]="trackerTicketTypeMap.TASK"/>
+          <mat-error *ngIf="taskTypeControl.errors && taskTypeControl.errors['pattern']">
+            It should be a comma separated string
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="layout-row">
+        <mat-form-field class="flex">
+          <input matInput placeholder="Bug (Comma Separated)" [pattern]="commaSeparatedRegex" [formControlName]="trackerTicketTypeMap.BUG"/>
+          <mat-error *ngIf="bugTypeControl.errors && bugTypeControl.errors['pattern']">
+            It should be a comma separated string
+          </mat-error>
+        </mat-form-field>
       </div>
     </div>
   </div>

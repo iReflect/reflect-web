@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
-import { API_RESPONSE_MESSAGES, SNACKBAR_DURATION } from '../../../constants/app-constants';
+import {API_RESPONSE_MESSAGES, SNACKBAR_DURATION, TRACKER_TICKET_TYPE_MAP} from '../../../constants/app-constants';
 import * as _ from 'lodash';
 
 @Component({
@@ -113,10 +113,20 @@ export class RetrospectiveCreateComponent implements OnInit {
             'storyPointPerWeek': formValue.storyPointPerWeek,
             'projectName': formValue.projectName,
             'taskProvider': formValue.taskProvider.map(provider => {
+                const taskProviderConfig = provider.taskProviderConfig;
+
+                // Parse the ticket type mapping to a list of keywords
+                _.forEach(TRACKER_TICKET_TYPE_MAP, (ticketType) => {
+                    const ticketTypeValue = taskProviderConfig[ticketType];
+                    if (_.isString(ticketTypeValue)) {
+                        taskProviderConfig[ticketType] = ticketTypeValue.split(',');
+                    }
+                });
+
                 return {
                     'type': provider.selectedTaskProvider,
                     'data': {
-                        ...provider.taskProviderConfig,
+                        ...taskProviderConfig,
                         'credentials': {
                             ...provider.Credentials.data,
                             'type': provider.Credentials.type

@@ -263,3 +263,11 @@ export const HIGHLIGHTS_LIST = [
         LABEL: 'Other Highlights'
     }
 ];
+
+export const TRACKER_TICKET_TYPE_MAP = {
+    FEATURE: 'featureTypes',
+    TASK: 'taskTypes',
+    BUG: 'bugTypes',
+};
+
+export const COMMA_SEPARATED_STRING_PATTERN = '\\w+(,\\w+)*';
