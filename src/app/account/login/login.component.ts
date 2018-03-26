@@ -11,7 +11,7 @@ import { AuthService } from '../../shared/services/auth.service';
 export class LoginComponent implements OnInit {
 
     title: String = 'Sign In';
-    button_text: String = 'Login with Google!';
+    button_text: String = 'LOGIN WITH GOOGLE';
     returnUrl = '';
     loginUrl = '';
     showError = false;

@@ -1,17 +1,10 @@
-.auth-card {
-  max-width: 30%;
+.login-card {
+  max-width: 480px;
   margin: 4em auto;
   text-align: center;
-  mat-toolbar {
-    background-color: #3293BE;
-    color: #FFF;
-  }
-  mat-card-content {
-    padding: 16px;
-    margin-left: 30%;
-  }
 }
 
-:host ::ng-deep circle {
-  stroke: #3293BE;
+mat-spinner {
+  display: inline-block;
+  margin: 20px;
 }

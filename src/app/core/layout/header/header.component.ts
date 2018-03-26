@@ -14,7 +14,7 @@ export class HeaderComponent implements OnInit {
     @Input() userLoggedIn: boolean;
     logoutInProgress = false;
     user: any = {};
-
+    userImage = 'assets/img/user-default.png';
     constructor(private router: Router,
                 private authService: AuthService,
                 private userStoreService: UserStoreService,

@@ -5,6 +5,7 @@
   {{data.content}}
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button mat-raised-button [mat-dialog-close]="false" *ngIf="data.cancelBtn">{{data.cancelBtn}}</button>
-  <button mat-raised-button [mat-dialog-close]="true" *ngIf="data.confirmBtn">{{data.confirmBtn}}</button>
+  <button mat-button [mat-dialog-close]="false" *ngIf="data.cancelBtn">{{data.cancelBtn}}</button>
+  <span class="fill-remaining-space"></span>
+  <button mat-raised-button color="primary" [mat-dialog-close]="true" *ngIf="data.confirmBtn">{{data.confirmBtn}}</button>
 </mat-dialog-actions>

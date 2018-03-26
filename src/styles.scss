@@ -1,5 +1,4 @@
 /* You can add global styles to this file, and also import other style files */
-@import "~@angular/material/prebuilt-themes/deeppurple-amber.css";
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 
 body {
@@ -11,17 +10,4 @@ mat-drawer-content {
   height: auto;
 }
 
-.custom-mat-table {
-  mat-row, mat-header-row {
-    &:nth-child(odd) {
-      background-color: #f5f5f5;
-    }
-    mat-cell {
-      font-size: 13px;
-    }
-  }
-  .link-type-cell {
-    color: #3293be;
-    cursor: pointer;
-  }
-}
+@import "assets/stylesheets/all";

@@ -1,6 +1,8 @@
 <mat-sidenav-container class="sidenav-container">
-  <mat-sidenav #sidenav class="side-nav" mode="side" opened="true" fixedInViewport="true" [fixedTopGap]="60">
-    <mat-nav-list (mouseover)="hide = false" (mouseleave)="hide = true">
+  <mat-sidenav #sidenav class="side-nav" mode="side" opened="true" fixedInViewport="true" [fixedTopGap]="64"
+               [ngStyle]="{ 'width.px': sidenavWidth }" (mouseover)="increase()" (mouseleave)="decrease()">
+    <mat-toolbar></mat-toolbar>
+    <mat-nav-list>
       <!-- TODO: Enable Feedbacks -->
       <!--<a routerLink=".">-->
         <!--<mat-list-item>-->
@@ -20,13 +22,21 @@
           <!--<span [hidden]="hide">Team Feedbacks</span>-->
         <!--</mat-list-item>-->
       <!--</a>-->
-      <a routerLink="./retrospectives">
-        <mat-list-item>
-          <mat-icon mat-list-icon svgIcon="retrospective-icon"></mat-icon>
-          <span [hidden]="hide">Retrospectives</span>
-        </mat-list-item>
-      </a>
+      <mat-list-item>
+        <div class="mat-list-nav-item">
+          <a routerLink="./retrospectives" routerLinkActive="active-nav" class="side-nav-item">
+            <mat-icon matLine mat-list-icon class="side-nav-item-icon">rate_review</mat-icon>
+            <span class="link-name">Retrospectives</span>
+          </a>
+        </div>
+      </mat-list-item>
     </mat-nav-list>
+    <!--<mat-toolbar class="toggle-sidenav-button-bar">-->
+      <!--<button mat-icon-button (click)="changeSideNavMode()">-->
+        <!--<mat-icon class="side-nav-item-icon" [hidden]="sidenavMode === 'side'">skip_next</mat-icon>-->
+        <!--<mat-icon class="side-nav-item-icon" [hidden]="sidenavMode === 'overlay'">skip_previous</mat-icon>-->
+      <!--</button>-->
+    <!--</mat-toolbar>-->
   </mat-sidenav>
   <mat-sidenav-content class="side-nav-content">
     <router-outlet></router-outlet>

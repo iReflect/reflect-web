@@ -1,41 +1,8 @@
-mat-card {
-  width: calc(100% - 70px);
-  height: calc(100% - 70px);
-  overflow: auto;
+mat-form-field {
+  width: 100%;
+  box-sizing: border-box;
 }
 
-mat-grid-list {
-  min-width: 600px;
-}
-
-.task-provider {
-  height: 470px !important;
-}
-
-.create-retro {
-  mat-form-field {
-    width: 100%;
-  }
-  .close-icon {
-    float: right;
-    margin-top: -6%;
-    cursor: pointer;
-    mat-icon {
-      font-size: xx-large;
-    }
-  }
-}
-
-button .mat-raised-button {
-  margin-right: 5px;
-  color: white;
-  background-color: #3293be;
-}
-
-.project-name-hint {
-  font-size: small;
-}
-
-.dialog-actions {
-  float: right;
+.table-box.padded-container {
+  padding: 30px;
 }

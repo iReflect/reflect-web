@@ -1,14 +1,21 @@
-<div>
-  <ng-container>
-    <div class="auth-page">
-      <mat-card class="auth-card">
-        <mat-toolbar>
-          <span>{{ title }}</span>
-        </mat-toolbar>
+<ng-container>
+  <mat-toolbar color="primary">
+    <span><b>iReflect</b></span>
+    <span class="fill-remaining-space"></span>
+  </mat-toolbar>
+  <div class="login-page">
+    <div class="login-card">
+      <mat-card>
         <mat-card-content>
-          <mat-spinner></mat-spinner>
+          <h2>Welcome to iReflect</h2>
+          <p>Signing in....</p>
+          <div class="layout-row">
+            <div class="flex text-center">
+              <mat-spinner diameter="45"></mat-spinner>
+            </div>
+          </div>
         </mat-card-content>
       </mat-card>
     </div>
-  </ng-container>
-</div>
+  </div>
+</ng-container>

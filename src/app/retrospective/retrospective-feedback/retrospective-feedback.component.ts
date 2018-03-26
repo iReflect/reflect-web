@@ -32,6 +32,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
     private gridApi: GridApi;
     private columnApi: ColumnApi;
 
+    @Input() title;
     @Input() retrospectiveID;
     @Input() sprintID;
     @Input() sprintStatus;
@@ -237,7 +238,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
     setGridOptions() {
         this.gridOptions = <GridOptions>{
             columnDefs: this.columnDefs,
-            rowHeight: 60,
+            rowHeight: 48,
             singleClickEdit: true,
             frameworkComponents: {
                 'selectEditor': SelectCellEditorComponent,

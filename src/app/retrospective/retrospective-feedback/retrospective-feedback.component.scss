@@ -1,26 +1,11 @@
 .ag-grid-container {
-  float: left;
-  margin: 1px auto;
-  height: -webkit-calc(100vh - 100px);
-  height: -moz-calc(100vh - 100px);
-  height: calc(100vh - 100px);
-  width: calc(100vw - 7rem);
+  width: 100%;
+  height: 350px;
+  &.-small-height {
+    height: 350px;
+  }
   ag-grid-angular {
     width: 100%;
     height: 100%;
-  }
-}
-
-.add-more {
-  padding: 10px;
-  display: flex;
-  width: 7%;
-  float: right;
-  margin-right: 25px;
-  &:hover {
-    background-color: lightgrey;
-  }
-  span {
-    margin-top: 3px;
   }
 }
