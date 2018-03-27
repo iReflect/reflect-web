@@ -14,7 +14,8 @@ export class SelectCellEditorComponent implements ICellEditorAngularComp, AfterV
     private params: ICellEditorParams;
     @ViewChild('select', {read: ViewContainerRef}) private select;
 
-    constructor() { }
+    constructor() {
+    }
 
     agInit(params: any): void {
         this.params = params;

@@ -29,6 +29,7 @@ export class SideNavComponent {
     increase() {
         this.sidenavWidth = 258;
     }
+
     decrease() {
         this.sidenavWidth = 64;
     }

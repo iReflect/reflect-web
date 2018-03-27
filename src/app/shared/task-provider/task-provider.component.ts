@@ -1,10 +1,10 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'app-task-provider',
-  templateUrl: './task-provider.component.html',
-  styleUrls: ['./task-provider.component.scss']
+    selector: 'app-task-provider',
+    templateUrl: './task-provider.component.html',
+    styleUrls: ['./task-provider.component.scss']
 })
 export class TaskProviderComponent implements OnInit {
 
@@ -20,7 +20,8 @@ export class TaskProviderComponent implements OnInit {
     // Since we are dynamically generating the task provider's form, these are the possible fields
     selectedTaskProviderConfigOptions: any = {};
 
-    constructor() { }
+    constructor() {
+    }
 
     ngOnInit() {
         this.initializeTaskProvider();
@@ -57,7 +58,7 @@ export class TaskProviderComponent implements OnInit {
             'data': new FormGroup({})
         };
         this.taskProviderFormGroup.setControl('Credentials',
-                new FormGroup(credentialFieldsGroup));
+            new FormGroup(credentialFieldsGroup));
 
         this.selectedTaskProviderConfigOptions = {
             'fields': selectedTaskProvider['Fields'],

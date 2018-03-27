@@ -1,71 +1,71 @@
 @import "colors";
 
 .table-container {
-  padding: 0;
+    padding: 0;
 }
 
 mat-row {
-  background: #FFF;
+    background: #FFF;
 }
 
 .dynamic-grid-height {
-  &.-adjust-tabs {
-    height: calc(100vh - 500px);
-    min-height: 400px;
-    ag-grid-angular {
-      width: 100%;
-      height: 100%;
+    &.-adjust-tabs {
+        height: calc(100vh - 500px);
+        min-height: 400px;
+        ag-grid-angular {
+            width: 100%;
+            height: 100%;
+        }
     }
-  }
 }
 
 .custom-ag-grid {
-  .ag-header-row {
-    background: #f1f1f1;
-    color: #999;
-  }
-  .ag-header-cell {
-    color: #000;
-    font-weight: bold;
-  }
-  .ag-cell.ag-cell-not-inline-editing {
-    line-height: 48px !important;
-  }
+    .ag-header-row {
+        background: #f1f1f1;
+        color: #999;
+    }
+    .ag-header-cell {
+        color: #000;
+        font-weight: bold;
+    }
+    .ag-cell.ag-cell-not-inline-editing {
+        line-height: 48px !important;
+    }
 }
 
 .ag-row-hover {
-  /* putting in !important so it overrides the theme's styling as it hovers the row also */
-  background-color: rgba(161, 194, 250, 0.16) !important;
+    /* putting in !important so it overrides the theme's styling as it hovers the row also */
+    background-color: rgba(161, 194, 250, 0.16) !important;
 }
 
 .custom-mat-table {
-  mat-header-row {
-    background-color: #F5F5F5;
-  }
-  mat-row {
-    background-color: #FFF;
-  }
-  mat-row, mat-header-row {
-    mat-cell {
-      font-size: 13px;
+    mat-header-row {
+        background-color: #F5F5F5;
     }
-  }
-  &.-row-clickable {
     mat-row {
-      &:hover {
-        cursor: pointer;
-        background-color: rgba(161, 194, 250, 0.16);
-        mat-cell {
-          font-weight: 500;
-          color: $primary;
-        }
-      }
+        background-color: #FFF;
     }
-  }
+    mat-row, mat-header-row {
+        mat-cell {
+            font-size: 13px;
+        }
+    }
+    &.-row-clickable {
+        mat-row {
+            &:hover {
+                cursor: pointer;
+                background-color: rgba(161, 194, 250, 0.16);
+                mat-cell {
+                    font-weight: 500;
+                    color: $primary;
+                }
+            }
+        }
+    }
 }
 
 .table-box {
-  padding: 20px;
+    padding: 20px;
 }
 
 .invalid-ag-grid-row {

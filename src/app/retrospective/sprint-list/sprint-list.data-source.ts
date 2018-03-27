@@ -6,9 +6,11 @@ import { RetrospectiveService } from '../../shared/services/retrospective.servic
 export class SprintListDataSource extends DataSource<any> {
     private dataChange: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
 
-    constructor(private retrospectiveService: RetrospectiveService,
-                private retrospectiveID: any,
-                private errorCallback: any) {
+    constructor(
+        private retrospectiveService: RetrospectiveService,
+        private retrospectiveID: any,
+        private errorCallback: any
+    ) {
         super();
     }
 

@@ -1,37 +1,39 @@
 <div [formGroup]="taskProviderFormGroup" *ngIf="isInitialized">
-  <div class="layout-row">
-    <mat-form-field floatLabel="always" class="task-provider-select flex">
-      <mat-label></mat-label>
-      <mat-select [formControlName]="selectedTaskProviderKey" placeholder="Select a Task Provider"
-                  (selectionChange)="onProviderChange($event.value)">
-        <mat-option *ngFor="let provider of taskProviderOptions" [value]="provider.Type">{{provider.DisplayTitle}}</mat-option>
-      </mat-select>
-    </mat-form-field>
-  </div>
-  <div *ngIf="showConfigFields">
+    <div class="layout-row">
+        <mat-form-field floatLabel="always" class="task-provider-select flex">
+            <mat-label></mat-label>
+            <mat-select [formControlName]="selectedTaskProviderKey" placeholder="Select a Task Provider"
+                        (selectionChange)="onProviderChange($event.value)">
+                <mat-option *ngFor="let provider of taskProviderOptions" [value]="provider.Type">
+                    {{provider.DisplayTitle}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div *ngIf="showConfigFields">
 
-    <mat-toolbar class="small-toolbar">
-      Credentials
-    </mat-toolbar>
-    <div class="table-box padded-container">
-      <div formGroupName="Credentials">
-        <app-task-provider-auth
-          [authFormGroup]="taskProviderFormGroup.controls['Credentials']"
-          [supportedAuthTypes]="selectedTaskProviderConfigOptions['supportedAuthTypes']"
-        ></app-task-provider-auth>
-      </div>
-    </div>
-    <mat-toolbar class="small-toolbar">
-      Provider Configurations
-    </mat-toolbar>
-    <div class="table-box padded-container">
-      <div [formGroupName]="taskProviderConfigKey">
-        <div *ngFor="let field of selectedTaskProviderConfigOptions['fields']" class="layout-row">
-          <mat-form-field class="flex">
-            <input matInput [placeholder]="field.FieldDisplayName" [formControlName]="field.FieldName"/>
-          </mat-form-field>
+        <mat-toolbar class="small-toolbar">
+            Credentials
+        </mat-toolbar>
+        <div class="table-box padded-container">
+            <div formGroupName="Credentials">
+                <app-task-provider-auth
+                    [authFormGroup]="taskProviderFormGroup.controls['Credentials']"
+                    [supportedAuthTypes]="selectedTaskProviderConfigOptions['supportedAuthTypes']"
+                ></app-task-provider-auth>
+            </div>
         </div>
-      </div>
+        <mat-toolbar class="small-toolbar">
+            Provider Configurations
+        </mat-toolbar>
+        <div class="table-box padded-container">
+            <div [formGroupName]="taskProviderConfigKey">
+                <div *ngFor="let field of selectedTaskProviderConfigOptions['fields']" class="layout-row">
+                    <mat-form-field class="flex">
+                        <input matInput [placeholder]="field.FieldDisplayName" [formControlName]="field.FieldName"/>
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 </div>

@@ -2,7 +2,11 @@
   "rulesDirectory": [
     "node_modules/codelyzer"
   ],
+  "extends": [
+    "tslint-eslint-rules"
+  ],
   "rules": {
+    "no-constant-condition": true,
     "arrow-return-shorthand": true,
     "callable-types": true,
     "class-name": true,
@@ -93,6 +97,7 @@
       true,
       "always"
     ],
+    "no-unnecessary-semicolon": false,
     "triple-equals": [
       true,
       "allow-null-check"

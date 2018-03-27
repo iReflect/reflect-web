@@ -1,13 +1,12 @@
 @import '~@angular/material/theming';
 
 @function color($colors, $key) {
-  @if map-has-key($colors, $key) {
-    @return map-get($colors, $key);
-  }
+    @if map-has-key($colors, $key) {
+        @return map-get($colors, $key);
+    }
 
-  @warn "Unknown `#{$key}` in $colors.";
-  @return null;
+    @warn "Unknown `#{$key}` in $colors.";
+    @return null;
 }
-
 
 $primary: color($mat-blue, 500);

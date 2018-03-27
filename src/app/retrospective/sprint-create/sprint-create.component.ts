@@ -6,20 +6,35 @@ import { RetrospectiveService } from '../../shared/services/retrospective.servic
 import { UtilsService } from '../../shared/utils/utils.service';
 
 @Component({
-  selector: 'app-sprint-create',
-  templateUrl: './sprint-create.component.html',
-  styleUrls: ['./sprint-create.component.scss'],
+    selector: 'app-sprint-create',
+    templateUrl: './sprint-create.component.html',
+    styleUrls: ['./sprint-create.component.scss'],
 })
 export class SprintCreateComponent implements OnInit {
     disableButton = false;
     sprintFormGroup: FormGroup;
     errors: any = {};
 
-    constructor(private retrospectiveService: RetrospectiveService,
-                private snackBar: MatSnackBar,
-                private utils: UtilsService,
-                public dialogRef: MatDialogRef<SprintCreateComponent>,
-                @Inject(MAT_DIALOG_DATA) public data: any) { }
+    constructor(
+        private retrospectiveService: RetrospectiveService,
+        private snackBar: MatSnackBar,
+        private utils: UtilsService,
+        public dialogRef: MatDialogRef<SprintCreateComponent>,
+        @Inject(MAT_DIALOG_DATA) public data: any
+    ) {
+    }
+
+    get titleControl() {
+        return this.sprintFormGroup.get('title');
+    }
+
+    get startDateControl() {
+        return this.sprintFormGroup.get('startDate');
+    }
+
+    get endDateControl() {
+        return this.sprintFormGroup.get('endDate');
+    }
 
     ngOnInit() {
         this.createSprintFormGroup();
@@ -38,34 +53,34 @@ export class SprintCreateComponent implements OnInit {
         }, this.validateForm.bind(this));
     }
 
-    get titleControl() {
-        return this.sprintFormGroup.get('title');
-    }
-
-    get startDateControl() {
-        return this.sprintFormGroup.get('startDate');
-    }
-
-    get endDateControl() {
-        return this.sprintFormGroup.get('endDate');
-    }
-
     validateForm(sprintFormGroup: FormGroup) {
         this.errors = {};
         const sprintFormValue = sprintFormGroup.value;
+
         if (sprintFormValue.startDate && !sprintFormValue.endDate) {
-            this.errors.endDateShouldExist = true;
+            if (this.endDateControl.untouched) {
+                // Errors are not visible if the form control is untouched
+                this.endDateControl.markAsTouched();
+            }
+            this.endDateControl.setErrors({endDateShouldExist: true});
+        } else if (!sprintFormValue.startDate && sprintFormValue.endDate) {
+            if (this.startDateControl.untouched) {
+                // Errors are not visible if the form control is untouched
+                this.startDateControl.markAsTouched();
+            }
+            this.startDateControl.setErrors({startDateShouldExist: true});
+        } else {
+            this.endDateControl.setErrors(null);
+            this.startDateControl.setErrors(null);
         }
-        if (!sprintFormValue.startDate && sprintFormValue.endDate) {
-            this.errors.startDateShouldExist = true;
-        }
+
         if (sprintFormValue.startDate && sprintFormValue.endDate && sprintFormValue.startDate > sprintFormValue.endDate) {
             this.errors.startGreaterThanEnd = true;
         }
+
         if (!sprintFormValue.title) {
             this.errors.titleRequired = true;
-        } else if (!sprintFormValue.startDate && !sprintFormValue.endDate && !sprintFormValue.sprintID
-            && this.startDateControl.valid && this.endDateControl.valid) {
+        } else if (!sprintFormValue.startDate && !sprintFormValue.endDate && !sprintFormValue.sprintID) {
             this.errors.atleastOne = true;
         }
         return this.errors;

@@ -1,26 +1,26 @@
 <header>
-  <div class="header-container">
-    <div *ngIf="userLoggedIn">
-      <mat-toolbar color="primary">
-        <div class="logo-wrap">
-          <button mat-button (click)="navigateToRoot()"><h1><b>iReflect</b></h1></button>
-        </div>
+    <div class="header-container">
+        <div *ngIf="userLoggedIn">
+            <mat-toolbar color="primary">
+                <div class="logo-wrap">
+                    <button mat-button (click)="navigateToRoot()"><h1><b>iReflect</b></h1></button>
+                </div>
 
-        <span class="fill-remaining-space"></span>
+                <span class="fill-remaining-space"></span>
 
-        <div class="header-contents">
-          <mat-menu #appMenu="matMenu" [overlapTrigger]="false">
-            <button mat-menu-item (click)="logout()" [hidden]="logoutInProgress">Logout</button>
-          </mat-menu>
-          <button mat-button [matMenuTriggerFor]="appMenu">
+                <div class="header-contents">
+                    <mat-menu #appMenu="matMenu" [overlapTrigger]="false">
+                        <button mat-menu-item (click)="logout()" [hidden]="logoutInProgress">Logout</button>
+                    </mat-menu>
+                    <button mat-button [matMenuTriggerFor]="appMenu">
             <span class="header-user">
-              <img [src]="userImage" class="user-image" />
+              <img [src]="userImage" class="user-image"/>
               <span class="user-name">{{ user.FirstName || 'User' }}</span>
             </span>
-            <mat-icon>arrow_drop_down</mat-icon>
-          </button>
+                        <mat-icon>arrow_drop_down</mat-icon>
+                    </button>
+                </div>
+            </mat-toolbar>
         </div>
-      </mat-toolbar>
     </div>
-  </div>
 </header>

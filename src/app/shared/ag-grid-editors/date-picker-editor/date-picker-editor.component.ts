@@ -13,7 +13,8 @@ export class DatePickerEditorComponent implements ICellEditorAngularComp {
     value: Date;
     @ViewChild('picker', {read: MatDatepicker}) picker: MatDatepicker<Date>;
 
-    constructor() { }
+    constructor() {
+    }
 
     isPopup(): boolean {
         return true;

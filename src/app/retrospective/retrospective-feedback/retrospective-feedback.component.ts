@@ -25,12 +25,6 @@ import { UtilsService } from '../../shared/utils/utils.service';
 export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
     goalTypes = RETRO_FEEDBACK_GOAL_TYPES;
     gridOptions: GridOptions;
-
-    private columnDefs: any;
-    private params: any;
-    private gridApi: GridApi;
-    private columnApi: ColumnApi;
-
     @Input() title;
     @Input() retrospectiveID;
     @Input() sprintID;
@@ -41,20 +35,19 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
     @Input() data: any;
     @Input() teamMembers: any;
     @Input() enableRefresh: boolean;
-
     @Output() resumeRefresh = new EventEmitter();
     @Output() pauseRefresh = new EventEmitter();
+    private columnDefs: any;
+    private params: any;
+    private gridApi: GridApi;
+    private columnApi: ColumnApi;
 
-    @HostListener('window:resize') onResize() {
+
+    @HostListener('window:resize')
+    onResize() {
         if (this.gridApi) {
             this.resizeAgGrid();
         }
-    }
-
-    private resizeAgGrid() {
-        setTimeout(() => {
-            this.gridApi.sizeColumnsToFit();
-        });
     }
 
     onCellEditingStarted() {
@@ -63,138 +56,6 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
 
     onCellEditingStopped() {
         this.resumeRefresh.emit();
-    }
-
-    private createColumnDefs(sprintStatus, teamMembers) {
-        let editable = true;
-        if (sprintStatus === SPRINT_STATES.FROZEN || this.feedbackSubType === this.goalTypes.COMPLETED) {
-            editable = false;
-        }
-
-        let columnDefs;
-        columnDefs = [
-            {
-                headerName: 'Text',
-                field: 'Text',
-                minWidth: 160,
-                editable: editable,
-                onCellValueChanged: (cellParams) => {
-                    if (cellParams.newValue !== cellParams.oldValue) {
-                        this.updateRetroFeedback(cellParams);
-                    }
-                }
-            },
-            {
-                headerName: 'Scope',
-                field: 'Scope',
-                minWidth: 160,
-                editable: editable,
-                valueFormatter: (cellParams) => RETRO_FEEDBACK_SCOPE_LABELS[cellParams.value],
-                cellEditor: 'selectEditor',
-                cellEditorParams: {
-                    selectOptions: _.map(RETRO_FEEDBACK_SCOPE_LABELS, (value, key) => {
-                        return {
-                            id: _.parseInt(key),
-                            value: value
-                        };
-                    }),
-                },
-                onCellValueChanged: (cellParams) => {
-                    if (cellParams.newValue !== cellParams.oldValue) {
-                        this.updateRetroFeedback(cellParams);
-                    }
-                }
-            },
-            {
-                headerName: 'Assignee',
-                field: 'AssigneeID',
-                minWidth: 160,
-                editable: editable,
-                valueFormatter: (cellParams) => {
-                    const assignee: any = _.filter(this.teamMembers, (member) => member.ID === cellParams.value)[0];
-                    if (_.isEmpty(assignee)) {
-                        return '-';
-                    }
-                    return (assignee.FirstName + ' ' + assignee.LastName).trim();
-                },
-                onCellValueChanged: (cellParams) => {
-                    if (cellParams.newValue !== cellParams.oldValue) {
-                        this.updateRetroFeedback(cellParams);
-                    }
-                },
-                cellEditor: 'selectEditor',
-                cellEditorParams: {
-                    selectOptions: this.getTeamMemberOptions(teamMembers),
-                }
-            },
-            {
-                headerName: 'Added At',
-                field: 'AddedAt',
-                minWidth: 160,
-                valueFormatter: (cellParams) => this.utils.getDateFromString(cellParams.value || '')
-            },
-            {
-                headerName: 'Created By',
-                field: 'CreatedBy',
-                minWidth: 160,
-                valueFormatter: (cellParams) => cellParams.value && (cellParams.value.FirstName + ' ' + cellParams.value.LastName).trim()
-            },
-        ];
-
-        if (this.feedbackType === RETRO_FEEDBACK_TYPES.GOAL) {
-            const goalSpecificColumns = [
-                {
-                    headerName: 'Expected At',
-                    field: 'ExpectedAt',
-                    minWidth: 160,
-                    editable: editable,
-                    cellEditor: 'datePicker',
-                    valueFormatter: (cellParams) => this.utils.getDateFromString(cellParams.value || ''),
-                    onCellValueChanged: (cellParams) => {
-                        if (!cellParams.newValue || cellParams.newValue !== cellParams.oldValue) {
-                            this.updateRetroFeedback(cellParams);
-                        }
-                    }
-                },
-            ];
-
-            const pendingGoalColumn = [
-                {
-                    headerName: 'Mark Resolved',
-                    minWidth: 160,
-                    cellRenderer: 'clickableButtonRenderer',
-                    cellRendererParams: {
-                        label: 'Mark Resolved',
-                        onClick: this.resolveSprintGoal.bind(this)
-                    },
-                }
-            ];
-            const accomplishedGoalColumn = [
-                {
-                    headerName: 'Resolved At',
-                    field: 'ResolvedAt',
-                    minWidth: 160,
-                    valueFormatter: (cellParams) => this.utils.getDateFromString(cellParams.value || '')
-                },
-                {
-                    headerName: 'Mark Unresolved',
-                    minWidth: 160,
-                    cellRenderer: 'clickableButtonRenderer',
-                    cellRendererParams: {
-                        label: 'Mark Unresolved',
-                        onClick: this.unresolveSprintGoal.bind(this)
-                    },
-                }
-            ];
-
-            columnDefs = [...columnDefs, ...goalSpecificColumns];
-            if (this.feedbackSubType === this.goalTypes.COMPLETED) {
-                columnDefs = [...columnDefs, ...accomplishedGoalColumn];
-            } else {
-                columnDefs = [...columnDefs, ...pendingGoalColumn];
-            }
-        }
-        return columnDefs;
     }
 
     constructor(private retrospectiveService: RetrospectiveService,
@@ -395,5 +256,143 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
 
     getDisplayedRowCount() {
         return (this.gridApi && this.gridApi.getDisplayedRowCount()) || 0;
+    }
+
+    private resizeAgGrid() {
+        setTimeout(() => {
+            this.gridApi.sizeColumnsToFit();
+        });
+    }
+
+    private createColumnDefs(sprintStatus, teamMembers) {
+        let editable = true;
+        if (sprintStatus === SPRINT_STATES.FROZEN || this.feedbackSubType === this.goalTypes.COMPLETED) {
+            editable = false;
+        }
+
+        let columnDefs;
+        columnDefs = [
+            {
+                headerName: 'Text',
+                field: 'Text',
+                minWidth: 160,
+                editable: editable,
+                onCellValueChanged: (cellParams) => {
+                    if (cellParams.newValue !== cellParams.oldValue) {
+                        this.updateRetroFeedback(cellParams);
+                    }
+                }
+            },
+            {
+                headerName: 'Scope',
+                field: 'Scope',
+                minWidth: 160,
+                editable: editable,
+                valueFormatter: (cellParams) => RETRO_FEEDBACK_SCOPE_LABELS[cellParams.value],
+                cellEditor: 'selectEditor',
+                cellEditorParams: {
+                    selectOptions: _.map(RETRO_FEEDBACK_SCOPE_LABELS, (value, key) => {
+                        return {
+                            id: _.parseInt(key),
+                            value: value
+                        };
+                    }),
+                },
+                onCellValueChanged: (cellParams) => {
+                    if (cellParams.newValue !== cellParams.oldValue) {
+                        this.updateRetroFeedback(cellParams);
+                    }
+                }
+            },
+            {
+                headerName: 'Assignee',
+                field: 'AssigneeID',
+                minWidth: 160,
+                editable: editable,
+                valueFormatter: (cellParams) => {
+                    const assignee: any = _.filter(this.teamMembers, (member) => member.ID === cellParams.value)[0];
+                    if (_.isEmpty(assignee)) {
+                        return '-';
+                    }
+                    return (assignee.FirstName + ' ' + assignee.LastName).trim();
+                },
+                onCellValueChanged: (cellParams) => {
+                    if (cellParams.newValue !== cellParams.oldValue) {
+                        this.updateRetroFeedback(cellParams);
+                    }
+                },
+                cellEditor: 'selectEditor',
+                cellEditorParams: {
+                    selectOptions: this.getTeamMemberOptions(teamMembers),
+                }
+            },
+            {
+                headerName: 'Added At',
+                field: 'AddedAt',
+                minWidth: 160,
+                valueFormatter: (cellParams) => this.utils.getDateFromString(cellParams.value || '')
+            },
+            {
+                headerName: 'Created By',
+                field: 'CreatedBy',
+                minWidth: 160,
+                valueFormatter: (cellParams) => cellParams.value && (cellParams.value.FirstName + ' ' + cellParams.value.LastName).trim()
+            },
+        ];
+
+        if (this.feedbackType === RETRO_FEEDBACK_TYPES.GOAL) {
+            const goalSpecificColumns = [
+                {
+                    headerName: 'Expected At',
+                    field: 'ExpectedAt',
+                    minWidth: 160,
+                    editable: editable,
+                    cellEditor: 'datePicker',
+                    valueFormatter: (cellParams) => this.utils.getDateFromString(cellParams.value || ''),
+                    onCellValueChanged: (cellParams) => {
+                        if (!cellParams.newValue || cellParams.newValue !== cellParams.oldValue) {
+                            this.updateRetroFeedback(cellParams);
+                        }
+                    }
+                },
+            ];
+
+            const pendingGoalColumn = [
+                {
+                    headerName: 'Mark Resolved',
+                    minWidth: 160,
+                    cellRenderer: 'clickableButtonRenderer',
+                    cellRendererParams: {
+                        label: 'Mark Resolved',
+                        onClick: this.resolveSprintGoal.bind(this)
+                    },
+                }
+            ];
+            const accomplishedGoalColumn = [
+                {
+                    headerName: 'Resolved At',
+                    field: 'ResolvedAt',
+                    minWidth: 160,
+                    valueFormatter: (cellParams) => this.utils.getDateFromString(cellParams.value || '')
+                },
+                {
+                    headerName: 'Mark Unresolved',
+                    minWidth: 160,
+                    cellRenderer: 'clickableButtonRenderer',
+                    cellRendererParams: {
+                        label: 'Mark Unresolved',
+                        onClick: this.unresolveSprintGoal.bind(this)
+                    },
+                }
+            ];
+
+            columnDefs = [...columnDefs, ...goalSpecificColumns];
+            if (this.feedbackSubType === this.goalTypes.COMPLETED) {
+                columnDefs = [...columnDefs, ...accomplishedGoalColumn];
+            } else {
+                columnDefs = [...columnDefs, ...pendingGoalColumn];
+            }
+        }
+        return columnDefs;
     }
 }

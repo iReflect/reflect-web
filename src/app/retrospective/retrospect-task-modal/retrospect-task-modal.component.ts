@@ -48,11 +48,13 @@ export class RetrospectTaskModalComponent implements OnDestroy {
     private gridApi: GridApi;
     private columnApi: ColumnApi;
 
-    constructor(private retrospectiveService: RetrospectiveService,
-                private snackBar: MatSnackBar,
-                private utils: UtilsService,
-                public dialogRef: MatDialogRef<RetrospectiveCreateComponent>,
-                @Inject(MAT_DIALOG_DATA) public data: any) {
+    constructor(
+        private retrospectiveService: RetrospectiveService,
+        private snackBar: MatSnackBar,
+        private utils: UtilsService,
+        public dialogRef: MatDialogRef<RetrospectiveCreateComponent>,
+        @Inject(MAT_DIALOG_DATA) public data: any
+    ) {
         this.enableRefresh = data.enableRefresh;
         this.autoRefreshCurrentState = data.enableRefresh;
         this.taskDetails = data.taskDetails;

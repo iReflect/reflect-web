@@ -16,9 +16,7 @@ import {
 } from '../../../constants/app-constants';
 import { NumericCellEditorComponent } from '../../shared/ag-grid-editors/numeric-cell-editor/numeric-cell-editor.component';
 import { SelectCellEditorComponent } from '../../shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
-import {
-    ClickableButtonRendererComponent
-} from '../../shared/ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
+import { ClickableButtonRendererComponent } from '../../shared/ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
 import { RatingRendererComponent } from '../../shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
 import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.component';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
@@ -52,10 +50,13 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     private gridApi: GridApi;
     private columnApi: ColumnApi;
 
-    constructor(private retrospectiveService: RetrospectiveService,
-                private snackBar: MatSnackBar,
-                private utils: UtilsService,
-                public dialog: MatDialog) { }
+    constructor(
+        private retrospectiveService: RetrospectiveService,
+        private snackBar: MatSnackBar,
+        private utils: UtilsService,
+        public dialog: MatDialog
+    ) {
+    }
 
     @HostListener('window:resize') onResize() {
         if (this.gridApi && this.isTabActive) {
@@ -198,7 +199,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             this.retrospectiveService.addSprintMember(this.retrospectiveID, this.sprintID, this.selectedMemberID)
                 .subscribe(
                     response => {
-                        this.gridApi.updateRowData({ add: [response.data] });
+                        this.gridApi.updateRowData({add: [response.data]});
                         this.memberIDs.push(this.selectedMemberID);
                     },
                     err => {
@@ -249,7 +250,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                 this.retrospectiveService.deleteSprintMember(this.retrospectiveID, this.sprintID, member.ID)
                     .subscribe(
                         () => {
-                            this.gridApi.updateRowData({ remove: [member] });
+                            this.gridApi.updateRowData({remove: [member]});
                             this.memberIDs = this.memberIDs.filter(ID => ID !== member.ID);
                         },
                         err => {

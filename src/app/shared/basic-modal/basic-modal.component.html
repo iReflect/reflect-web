@@ -1,11 +1,12 @@
 <h2 mat-dialog-title *ngIf="data.title">
-  {{data.title}}
+    {{data.title}}
 </h2>
 <mat-dialog-content *ngIf="data.content">
-  {{data.content}}
+    {{data.content}}
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button mat-button [mat-dialog-close]="false" *ngIf="data.cancelBtn">{{data.cancelBtn}}</button>
-  <span class="fill-remaining-space"></span>
-  <button mat-raised-button color="primary" [mat-dialog-close]="true" *ngIf="data.confirmBtn">{{data.confirmBtn}}</button>
+    <button mat-button [mat-dialog-close]="false" *ngIf="data.cancelBtn">{{data.cancelBtn}}</button>
+    <span class="fill-remaining-space"></span>
+    <button mat-raised-button color="primary" [mat-dialog-close]="true" *ngIf="data.confirmBtn">{{data.confirmBtn}}
+    </button>
 </mat-dialog-actions>

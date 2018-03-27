@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
-import { QUESTION_TYPES, COMMENT_TOOLTIP_MAP } from '../../../constants/app-constants';
+import { COMMENT_TOOLTIP_MAP, QUESTION_TYPES } from '../../../constants/app-constants';
 
 @Component({
-  selector: 'app-question-response',
-  templateUrl: './question-response.component.html',
-  styleUrls: ['./question-response.component.scss']
+    selector: 'app-question-response',
+    templateUrl: './question-response.component.html',
+    styleUrls: ['./question-response.component.scss']
 })
 export class QuestionResponseComponent implements OnInit {
 
@@ -17,7 +17,9 @@ export class QuestionResponseComponent implements OnInit {
     booleanType = QUESTION_TYPES.BOOLEAN;
     showComment = false;
     commentControl: AbstractControl;
-    constructor() {}
+
+    constructor() {
+    }
 
     initializeCommentControl() {
         this.commentControl = this.form.controls['comment'];
@@ -26,7 +28,7 @@ export class QuestionResponseComponent implements OnInit {
     getCommentToolTipText() {
         return this.showComment ? COMMENT_TOOLTIP_MAP.hideComment
             : (this.commentControl.disabled ? COMMENT_TOOLTIP_MAP.viewComment
-            : (this.commentControl.value ? COMMENT_TOOLTIP_MAP.editComment : COMMENT_TOOLTIP_MAP.addComment));
+                : (this.commentControl.value ? COMMENT_TOOLTIP_MAP.editComment : COMMENT_TOOLTIP_MAP.addComment));
     }
 
     ngOnInit() {

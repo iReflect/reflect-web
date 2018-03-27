@@ -1,14 +1,14 @@
 .ag-grid-container {
-  width: 100%;
-  height: 330px;
-  ag-grid-angular {
     width: 100%;
-    height: 100%;
-  }
+    height: 330px;
+    ag-grid-angular {
+        width: 100%;
+        height: 100%;
+    }
 }
 
 .add-member {
-  mat-select {
-    max-width: 200px;
-  }
+    mat-select {
+        max-width: 200px;
+    }
 }

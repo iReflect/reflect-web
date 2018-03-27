@@ -1,24 +1,24 @@
 <ng-container>
-  <mat-toolbar color="primary">
-    <span><b>iReflect</b></span>
-    <span class="fill-remaining-space"></span>
-  </mat-toolbar>
-  <div class="login-page">
-    <div class="login-card">
-      <mat-card>
-        <mat-card-content>
-          <h2>Welcome to iReflect</h2>
-          <p>Please Sign In to continue</p>
-          <p>
-            <mat-error *ngIf="showError">{{errorMessage}}</mat-error>
-          </p>
-        </mat-card-content>
-        <div>
-          <a mat-raised-button href="{{ loginUrl }}" color="primary">
-            {{ button_text }}
-          </a>
+    <mat-toolbar color="primary">
+        <span><b>iReflect</b></span>
+        <span class="fill-remaining-space"></span>
+    </mat-toolbar>
+    <div class="login-page">
+        <div class="login-card">
+            <mat-card>
+                <mat-card-content>
+                    <h2>Welcome to iReflect</h2>
+                    <p>Please Sign In to continue</p>
+                    <p>
+                        <mat-error *ngIf="showError">{{errorMessage}}</mat-error>
+                    </p>
+                </mat-card-content>
+                <div>
+                    <a mat-raised-button href="{{ loginUrl }}" color="primary">
+                        {{ button_text }}
+                    </a>
+                </div>
+            </mat-card>
         </div>
-      </mat-card>
     </div>
-  </div>
 </ng-container>

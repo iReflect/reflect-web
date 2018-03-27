@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
+    ACTIONABLE_SPRINT_STATES,
     API_RESPONSE_MESSAGES,
     APP_ROUTE_URLS,
     DATE_FORMAT,
@@ -10,8 +11,7 @@ import {
     SPRINT_ACTIONS_LABEL,
     SPRINT_STATES,
     SPRINT_STATES_LABEL,
-    SPRINT_SYNC_STATES,
-    ACTIONABLE_SPRINT_STATES
+    SPRINT_SYNC_STATES
 } from '../../../constants/app-constants';
 import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.component';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
@@ -40,12 +40,14 @@ export class SprintDetailComponent implements OnInit {
     syncStates = SPRINT_SYNC_STATES;
     tabIndexMapping: any = {highlights: 0, taskSummary: 1, memberSummary: 2, notes: 3};
 
-    constructor(private retrospectiveService: RetrospectiveService,
-                private snackBar: MatSnackBar,
-                private router: Router,
-                private activatedRoute: ActivatedRoute,
-                private utils: UtilsService,
-                public dialog: MatDialog) {
+    constructor(
+        private retrospectiveService: RetrospectiveService,
+        private snackBar: MatSnackBar,
+        private router: Router,
+        private utils: UtilsService,
+        private activatedRoute: ActivatedRoute,
+        public dialog: MatDialog,
+    ) {
     }
 
     ngOnInit() {

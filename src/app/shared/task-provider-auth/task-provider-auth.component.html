@@ -1,32 +1,33 @@
 <div [formGroup]="authFormGroup">
-  <mat-form-field floatLabel="always">
-    <mat-label></mat-label>
-    <mat-select formControlName="type" placeholder="Select an Auth Type"
-                (selectionChange)="onAuthTypeChange($event.value)">
-      <mat-option *ngFor="let option of supportedAuthTypeConfigList" [value]="option.type">{{option.displayName}}</mat-option>
-    </mat-select>
-  </mat-form-field>
-  <div formGroupName="data">
-    <div class="layout-row">
-      <div class="flex layout-row" *ngIf="selectedAuthType === 'basicAuth'">
-        <div class="flex">
-          <mat-form-field>
-            <input matInput placeholder="Username" formControlName="username"/>
-          </mat-form-field>
+    <mat-form-field floatLabel="always">
+        <mat-label></mat-label>
+        <mat-select formControlName="type" placeholder="Select an Auth Type"
+                    (selectionChange)="onAuthTypeChange($event.value)">
+            <mat-option *ngFor="let option of supportedAuthTypeConfigList" [value]="option.type">{{option.displayName}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <div formGroupName="data">
+        <div class="layout-row">
+            <div class="flex layout-row" *ngIf="selectedAuthType === 'basicAuth'">
+                <div class="flex">
+                    <mat-form-field>
+                        <input matInput placeholder="Username" formControlName="username"/>
+                    </mat-form-field>
+                </div>
+                <div class="flex">
+                    <mat-form-field>
+                        <input matInput type="password" placeholder="Password" formControlName="password"/>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="flex layout-row" *ngIf="selectedAuthType === 'apiToken'">
+                <div class="flex">
+                    <mat-form-field>
+                        <input matInput placeholder="API Token" formControlName="apiToken"/>
+                    </mat-form-field>
+                </div>
+            </div>
         </div>
-        <div class="flex">
-          <mat-form-field>
-            <input matInput type="password" placeholder="Password" formControlName="password"/>
-          </mat-form-field>
-        </div>
-      </div>
-      <div class="flex layout-row" *ngIf="selectedAuthType === 'apiToken'">
-        <div class="flex">
-          <mat-form-field>
-            <input matInput placeholder="API Token" formControlName="apiToken"/>
-          </mat-form-field>
-        </div>
-      </div>
     </div>
-  </div>
 </div>

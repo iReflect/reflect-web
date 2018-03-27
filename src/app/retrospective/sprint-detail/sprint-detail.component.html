@@ -1,189 +1,204 @@
 <div *ngIf="sprintDetails" class="container-with-view-height -colored -fixed-nav-toolbar">
-  <mat-toolbar class="nav-toolbar -fixed">
-    <button mat-icon-button matTooltip="Retrospective dashboard"
-            matTooltipPosition="before" (click)="navigateToRetrospectiveDashboard()">
-      <mat-icon>arrow_back</mat-icon>
-    </button>
-    <div class="paddling-left toolbar-title">
-      {{sprintDetails.Title}}
-      <i class="divider">|</i>
-      <div>
-        <span>{{sprintDetails.StartDate | date: dateFormat}} to {{sprintDetails.EndDate | date: dateFormat}}</span>
-        <span class="small-text">Status: {{sprintStatesLabel[sprintStatus]}} | Last Synced on: {{sprintDetails.LastSyncedAt | date: dateFormat}}</span>
-      </div>
+    <mat-toolbar class="nav-toolbar -fixed">
+        <button mat-icon-button matTooltip="Retrospective dashboard"
+                matTooltipPosition="before" (click)="navigateToRetrospectiveDashboard()">
+            <mat-icon>arrow_back</mat-icon>
+        </button>
+        <div class="paddling-left toolbar-title">
+            {{sprintDetails.Title}}
+            <i class="divider">|</i>
+            <div>
+                <span>{{sprintDetails.StartDate | date: dateFormat}} to {{sprintDetails.EndDate | date: dateFormat}}</span>
+                <span class="small-text">Status: {{sprintStatesLabel[sprintStatus]}} | Last Synced on: {{sprintDetails.LastSyncedAt | date: dateFormat}}</span>
+            </div>
+        </div>
+        <span class="fill-remaining-space"></span>
+        <button mat-raised-button color="primary" class="layout-side-margin" (click)="refreshSprintDetails()"
+                *ngIf="sprintDetails && sprintDetails.SyncStatus !== syncStates.SYNCING">
+            Re-Sync Sprint
+        </button>
+        <button mat-raised-button class="layout-side-margin" color="primary" *ngIf="sprintStatus === sprintStates.DRAFT"
+                (click)="activateSprint()">{{sprintActionsLabel[sprintActions.ACTIVATE]}}
+        </button>
+        <button mat-raised-button class="layout-side-margin" color="primary"
+                *ngIf="sprintStatus === sprintStates.ACTIVE" (click)="freezeSprint()">
+            {{sprintActionsLabel[sprintActions.FREEZE]}}
+        </button>
+        <button mat-raised-button class="layout-side-margin" color="primary"
+                *ngIf="sprintStatus !== sprintStates.FROZEN" (click)="discardSprint()">
+            {{sprintActionsLabel[sprintActions.DISCARD]}}
+        </button>
+        <mat-slide-toggle labelPosition="before" (change)="toggleAutoRefresh()" [checked]="enableRefresh"
+                          class="layout-side-margin auto-refresh-toggle" color="primary">
+            Auto Refresh
+        </mat-slide-toggle>
+    </mat-toolbar>
+    <div class="toolbar-sticky-box -layout-width sprint-header-box">
+        <div class="single-grid">
+            <div class="layout-row">
+                <div class="information-box stats-box mat-elevation-z1 flex layout-side-margin">
+                    <div class="box-header">
+                        <h4 class="title">
+                            Statistics
+                        </h4>
+                    </div>
+                    <div class="info-box-content">
+                        <div class="info-left">
+                            <p>
+                                <b>{{ sprintDetails.Summary.MemberCount }}</b> Members, <b>{{
+                                sprintDetails.Summary.TotalAllocation / 100 | number:decimalFormat }}</b> Allocation
+                            </p>
+                            <p>
+                                Expected Points: <b>{{ sprintDetails.Summary.TargetSP | number:decimalFormat }}</b>
+                            </p>
+                            <p>
+                                Assigned Points: <b>{{ getSprintAssignedPoints() | number:decimalFormat }}</b>
+                            </p>
+                            <p>
+                                Vacations: <b>{{ sprintDetails.Summary.TotalVacations | number:decimalFormat }}</b>
+                            </p>
+                        </div>
+                        <span class="fill-remaining-space"></span>
+                        <div class="info-right">
+                        </div>
+                    </div>
+                </div>
+                <div class="information-box mat-elevation-z1 flex layout-side-margin">
+                    <div class="box-header">
+                        <h4 class="title">
+                            Bugs
+                        </h4>
+                    </div>
+                    <div class="info-box-content">
+                        <div class="info-left">
+                            <p>
+                                Tickets Delivered: <b>{{ sprintDetails.Summary.TaskSummary.BugTypes.Count }}</b>
+                            </p>
+                            <p>
+                                Points Delivered: <b>{{ sprintDetails.Summary.TaskSummary.BugTypes.TotalPointsEarned
+                                | number:decimalFormat }}</b>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="information-box mat-elevation-z1 flex layout-side-margin">
+                    <div class="box-header">
+                        <h4 class="title">
+                            Features
+                        </h4>
+                    </div>
+                    <div class="info-box-content">
+                        <div class="info-left">
+                            <p>
+                                Tickets Delivered: <b>{{ sprintDetails.Summary.TaskSummary.FeatureTypes.Count }}</b>
+                            </p>
+                            <p>
+                                Points Delivered: <b>{{
+                                sprintDetails.Summary.TaskSummary.FeatureTypes.TotalPointsEarned |
+                                number:decimalFormat }}</b>
+                            </p>
+                        </div>
+                        <span class="fill-remaining-space"></span>
+                        <div class="info-right">
+                        </div>
+                    </div>
+                </div>
+                <div class="information-box mat-elevation-z1 flex layout-side-margin">
+                    <div class="box-header">
+                        <h4 class="title">
+                            Tasks
+                        </h4>
+                    </div>
+                    <div class="info-box-content">
+                        <div class="info-left">
+                            <p>
+                                Tickets Delivered: <b>{{ sprintDetails.Summary.TaskSummary.TaskTypes.Count }}</b>
+                            </p>
+                            <p>
+                                Points Delivered: <b>{{
+                                sprintDetails.Summary.TaskSummary.TaskTypes.TotalPointsEarned | number:decimalFormat
+                                }}</b>
+                            </p>
+                        </div>
+                        <span class="fill-remaining-space"></span>
+                        <div class="info-right">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <span class="fill-remaining-space"></span>
-    <button mat-raised-button color="primary" class="layout-side-margin" (click)="refreshSprintDetails()" *ngIf="sprintDetails && sprintDetails.SyncStatus !== syncStates.SYNCING">
-      Re-Sync Sprint
-    </button>
-    <button mat-raised-button class="layout-side-margin" color="primary" *ngIf="sprintStatus === sprintStates.DRAFT" (click)="activateSprint()">{{sprintActionsLabel[sprintActions.ACTIVATE]}}</button>
-    <button mat-raised-button class="layout-side-margin" color="primary" *ngIf="sprintStatus === sprintStates.ACTIVE" (click)="freezeSprint()">{{sprintActionsLabel[sprintActions.FREEZE]}}</button>
-    <button mat-raised-button class="layout-side-margin" color="primary" *ngIf="sprintStatus !== sprintStates.FROZEN" (click)="discardSprint()">{{sprintActionsLabel[sprintActions.DISCARD]}}</button>
-    <mat-slide-toggle labelPosition="before" (change)="toggleAutoRefresh()" [checked]="enableRefresh"
-      class="layout-side-margin auto-refresh-toggle" color="primary">
-      Auto Refresh
-    </mat-slide-toggle>
-  </mat-toolbar>
-  <div class="toolbar-sticky-box -layout-width sprint-header-box">
-    <div class="single-grid">
-      <div class="layout-row">
-        <div class="information-box stats-box mat-elevation-z1 flex layout-side-margin">
-          <div class="box-header">
-            <h4 class="title">
-              Statistics
-            </h4>
-          </div>
-          <div class="info-box-content">
-            <div class="info-left">
-              <p>
-                <b>{{ sprintDetails.Summary.MemberCount }}</b> Members, <b>{{ sprintDetails.Summary.TotalAllocation / 100 | number:decimalFormat }}</b> Allocation
-              </p>
-              <p>
-                Expected Points: <b>{{ sprintDetails.Summary.TargetSP | number:decimalFormat }}</b>
-              </p>
-              <p>
-                Assigned Points: <b>{{ getSprintAssignedPoints() | number:decimalFormat }}</b>
-              </p>
-              <p>
-                Vacations: <b>{{ sprintDetails.Summary.TotalVacations | number:decimalFormat }}</b>
-              </p>
+    <div class="layout-container">
+        <div class="single-grid">
+            <div class="multi-table-container">
+                <div>
+                    <mat-tab-group [(selectedIndex)]="selectedTabIndex">
+                        <mat-tab label="Highlights" *ngIf="sprintStatus !== sprintStates.DRAFT">
+                            <div>
+                                <app-sprint-highlights
+                                    [isTabActive]="selectedTabIndex === tabIndexMapping.highlights"
+                                    [enableRefresh]="enableRefresh"
+                                    [sprintStatus]="sprintStatus"
+                                    [retrospectiveID]="retrospectiveID"
+                                    [sprintID]="sprintID">
+                                </app-sprint-highlights>
+                            </div>
+                        </mat-tab>
+                        <mat-tab label="Task Summary">
+                            <div
+                                *ngIf="sprintDetails.LastSyncedAt && sprintDetails.SyncStatus !== syncStates.SYNCING; else not_synced">
+                                <app-sprint-task-summary
+                                    [isTabActive]="selectedTabIndex === tabIndexMapping.taskSummary"
+                                    [sprintStatus]="sprintStatus"
+                                    [retrospectiveID]="retrospectiveID"
+                                    [sprintID]="sprintID"
+                                    [enableRefresh]="enableRefresh">
+                                </app-sprint-task-summary>
+                            </div>
+                        </mat-tab>
+                        <mat-tab label="Members Summary">
+                            <div
+                                *ngIf="sprintDetails.LastSyncedAt && sprintDetails.SyncStatus !== syncStates.SYNCING; else not_synced">
+                                <app-sprint-member-summary
+                                    [isTabActive]="selectedTabIndex === tabIndexMapping.memberSummary"
+                                    [sprintDays]="sprintDays"
+                                    [sprintStatus]="sprintStatus"
+                                    [retrospectiveID]="retrospectiveID"
+                                    [sprintID]="sprintID"
+                                    [enableRefresh]="enableRefresh">
+                                </app-sprint-member-summary>
+                            </div>
+                        </mat-tab>
+                        <mat-tab label="Notes" *ngIf="sprintStatus !== sprintStates.DRAFT">
+                            <div>
+                                <app-sprint-notes
+                                    [isTabActive]="selectedTabIndex === tabIndexMapping.notes"
+                                    [enableRefresh]="enableRefresh"
+                                    [sprintStatus]="sprintStatus"
+                                    [retrospectiveID]="retrospectiveID"
+                                    [sprintID]="sprintID">
+                                </app-sprint-notes>
+                            </div>
+                        </mat-tab>
+                    </mat-tab-group>
+                </div>
+                <ng-template #not_synced>
+                    <mat-card class="sync-error-card">
+                        <div
+                            *ngIf="sprintDetails.SyncStatus === syncStates.SYNCING; then syncing else not_syncing"></div>
+                        <ng-template #syncing>
+                            <mat-error>
+                                Please Wait! Sync in Progress!
+                            </mat-error>
+                        </ng-template>
+                        <ng-template #not_syncing>
+                            <mat-error>
+                                Please Refresh to fetch data!
+                            </mat-error>
+                        </ng-template>
+                    </mat-card>
+                </ng-template>
             </div>
-            <span class="fill-remaining-space"></span>
-            <div class="info-right">
-            </div>
-          </div>
         </div>
-        <div class="information-box mat-elevation-z1 flex layout-side-margin">
-          <div class="box-header">
-            <h4 class="title">
-              Features
-            </h4>
-          </div>
-          <div class="info-box-content">
-            <div class="info-left">
-              <p>
-                Tickets Delivered: <b>{{ sprintDetails.Summary.TaskSummary.FeatureTypes.Count }}</b>
-              </p>
-              <p>
-                Points Delivered: <b>{{ sprintDetails.Summary.TaskSummary.FeatureTypes.TotalPointsEarned | number:decimalFormat }}</b>
-              </p>
-            </div>
-            <span class="fill-remaining-space"></span>
-            <div class="info-right">
-            </div>
-          </div>
-        </div>
-        <div class="information-box mat-elevation-z1 flex layout-side-margin">
-          <div class="box-header">
-            <h4 class="title">
-              Tasks
-            </h4>
-          </div>
-          <div class="info-box-content">
-            <div class="info-left">
-              <p>
-                Tickets Delivered: <b>{{ sprintDetails.Summary.TaskSummary.TaskTypes.Count }}</b>
-              </p>
-              <p>
-                Points Delivered: <b>{{ sprintDetails.Summary.TaskSummary.TaskTypes.TotalPointsEarned | number:decimalFormat }}</b>
-              </p>
-            </div>
-            <span class="fill-remaining-space"></span>
-            <div class="info-right">
-
-            </div>
-          </div>
-        </div>
-        <div class="information-box mat-elevation-z1 flex layout-side-margin">
-          <div class="box-header">
-            <h4 class="title">
-              Bugs
-            </h4>
-          </div>
-          <div class="info-box-content">
-            <div class="info-left">
-              <p>
-                Tickets Delivered: <b>{{ sprintDetails.Summary.TaskSummary.BugTypes.Count }}</b>
-              </p>
-              <p>
-                Points Delivered: <b>{{ sprintDetails.Summary.TaskSummary.BugTypes.TotalPointsEarned | number:decimalFormat }}</b>
-              </p>
-            </div>
-            <span class="fill-remaining-space"></span>
-            <div class="info-right">
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
-  </div>
-  <div class="layout-container">
-    <div class="single-grid">
-      <div class="multi-table-container">
-        <div>
-          <mat-tab-group [(selectedIndex)]="selectedTabIndex">
-            <mat-tab label="Highlights" *ngIf="sprintStatus !== sprintStates.DRAFT">
-              <div>
-                <app-sprint-highlights [isTabActive]="selectedTabIndex === tabIndexMapping.highlights"
-                                       [enableRefresh]="enableRefresh"
-                                       [sprintStatus]="sprintStatus"
-                                       [retrospectiveID]="retrospectiveID"
-                                       [sprintID]="sprintID">
-                </app-sprint-highlights>
-              </div>
-            </mat-tab>
-            <mat-tab label="Task Summary">
-              <div
-                *ngIf="sprintDetails.LastSyncedAt && sprintDetails.SyncStatus !== syncStates.SYNCING; else not_synced">
-                <app-sprint-task-summary [isTabActive]="selectedTabIndex === tabIndexMapping.taskSummary"
-                                         [sprintStatus]="sprintStatus"
-                                         [retrospectiveID]="retrospectiveID"
-                                         [sprintID]="sprintID"
-                                         [enableRefresh]="enableRefresh">
-                </app-sprint-task-summary>
-              </div>
-            </mat-tab>
-            <mat-tab label="Members Summary">
-              <div
-                *ngIf="sprintDetails.LastSyncedAt && sprintDetails.SyncStatus !== syncStates.SYNCING; else not_synced">
-                <app-sprint-member-summary [isTabActive]="selectedTabIndex === tabIndexMapping.memberSummary"
-                                           [sprintDays]="sprintDays"
-                                           [sprintStatus]="sprintStatus"
-                                           [retrospectiveID]="retrospectiveID"
-                                           [sprintID]="sprintID"
-                                           [enableRefresh]="enableRefresh">
-                </app-sprint-member-summary>
-              </div>
-            </mat-tab>
-            <mat-tab label="Notes" *ngIf="sprintStatus !== sprintStates.DRAFT">
-              <div>
-                <app-sprint-notes [isTabActive]="selectedTabIndex === tabIndexMapping.notes"
-                                  [enableRefresh]="enableRefresh"
-                                  [sprintStatus]="sprintStatus"
-                                  [retrospectiveID]="retrospectiveID"
-                                  [sprintID]="sprintID">
-                </app-sprint-notes>
-              </div>
-            </mat-tab>
-          </mat-tab-group>
-        </div>
-        <ng-template #not_synced>
-          <mat-card class="sync-error-card">
-            <div
-              *ngIf="sprintDetails.SyncStatus === syncStates.SYNCING; then syncing else not_syncing"></div>
-            <ng-template #syncing>
-              <mat-error>
-                Please Wait! Sync in Progress!
-              </mat-error>
-            </ng-template>
-            <ng-template #not_syncing>
-              <mat-error>
-                Please Refresh to fetch data!
-              </mat-error>
-            </ng-template>
-          </mat-card>
-        </ng-template>
-      </div>
-    </div>
-  </div>
 </div>

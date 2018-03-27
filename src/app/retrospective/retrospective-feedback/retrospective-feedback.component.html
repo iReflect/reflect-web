@@ -1,22 +1,22 @@
 <div>
-  <mat-card class="no-padding-container">
-    <mat-toolbar class="small-toolbar" color="primary">
-      <span class="retrospective-feedback-title" ><b>{{title}}</b></span>&nbsp;&nbsp;({{ getDisplayedRowCount() }})
-      <span class="fill-remaining-space"></span>
-      <button mat-button (click)="addMoreRow()"
-              *ngIf="feedbackSubType !== goalTypes.COMPLETED && feedbackSubType !== goalTypes.PENDING">
-        <mat-icon>add</mat-icon>
-        <span>Add New</span>
-      </button>
-    </mat-toolbar>
-    <div class="ag-grid-container -small-height">
-      <ag-grid-angular
-        class="ag-theme-material custom-ag-grid"
-        [gridOptions]="gridOptions"
-        [stopEditingWhenGridLosesFocus]="true"
-        (gridReady)="onGridReady($event)"
-        (cellEditingStarted)="onCellEditingStarted()"
-        (cellEditingStopped)="onCellEditingStopped()"></ag-grid-angular>
-    </div>
-  </mat-card>
+    <mat-card class="no-padding-container">
+        <mat-toolbar class="small-toolbar" color="primary">
+            <span class="retrospective-feedback-title"><b>{{title}}</b></span>&nbsp;&nbsp;({{ getDisplayedRowCount() }})
+            <span class="fill-remaining-space"></span>
+            <button mat-button (click)="addMoreRow()"
+                    *ngIf="feedbackSubType !== goalTypes.COMPLETED && feedbackSubType !== goalTypes.PENDING">
+                <mat-icon>add</mat-icon>
+                <span>Add New</span>
+            </button>
+        </mat-toolbar>
+        <div class="ag-grid-container -small-height">
+            <ag-grid-angular
+                class="ag-theme-material custom-ag-grid"
+                [gridOptions]="gridOptions"
+                [stopEditingWhenGridLosesFocus]="true"
+                (gridReady)="onGridReady($event)"
+                (cellEditingStarted)="onCellEditingStarted()"
+                (cellEditingStopped)="onCellEditingStopped()"></ag-grid-angular>
+        </div>
+    </mat-card>
 </div>

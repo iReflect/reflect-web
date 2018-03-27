@@ -2,11 +2,11 @@ import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@
 import { MatSnackBar } from '@angular/material';
 
 import {
-    RETRO_FEEDBACK_TYPES,
-    SNACKBAR_DURATION,
     API_RESPONSE_MESSAGES,
     HIGHLIGHTS_LIST,
-    RETRO_FEEDBACK_GOAL_TYPES
+    RETRO_FEEDBACK_GOAL_TYPES,
+    RETRO_FEEDBACK_TYPES,
+    SNACKBAR_DURATION
 } from '../../../constants/app-constants';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { Observable } from 'rxjs/Observable';
@@ -37,9 +37,12 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
     @Input() sprintStatus;
     @Input() isTabActive: boolean;
 
-    constructor(private retrospectiveService: RetrospectiveService,
-                private snackBar: MatSnackBar,
-                private utils: UtilsService) { }
+    constructor(
+        private retrospectiveService: RetrospectiveService,
+        private snackBar: MatSnackBar,
+        private utils: UtilsService
+    ) {
+    }
 
     ngOnInit() {
         Observable.interval(5000)

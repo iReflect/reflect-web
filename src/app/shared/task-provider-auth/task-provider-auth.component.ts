@@ -2,9 +2,9 @@ import { Component, Input, OnChanges } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'app-task-provider-auth',
-  templateUrl: './task-provider-auth.component.html',
-  styleUrls: ['./task-provider-auth.component.scss']
+    selector: 'app-task-provider-auth',
+    templateUrl: './task-provider-auth.component.html',
+    styleUrls: ['./task-provider-auth.component.scss']
 })
 export class TaskProviderAuthComponent implements OnChanges {
 
@@ -15,15 +15,18 @@ export class TaskProviderAuthComponent implements OnChanges {
     supportedAuthTypeConfigList: any = [];
 
     authTypeConfigList = [
-        {   'type': 'basicAuth',
+        {
+            'type': 'basicAuth',
             'displayName': 'Basic Auth',
         },
-        {   'type': 'apiToken',
+        {
+            'type': 'apiToken',
             'displayName': 'API Token',
         }
     ];
 
-    constructor() { }
+    constructor() {
+    }
 
     initializeSupportedAuthTypeConfig(supportedAuthTypes) {
         this.selectedAuthType = '';
