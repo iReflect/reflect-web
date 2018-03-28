@@ -57,21 +57,24 @@ export class SprintCreateComponent implements OnInit {
         this.errors = {};
         const sprintFormValue = sprintFormGroup.value;
 
+        const endDateControl = sprintFormGroup.get('endDate');
+        const startDateControl = sprintFormGroup.get('startDate');
+
         if (sprintFormValue.startDate && !sprintFormValue.endDate) {
-            if (this.endDateControl.untouched) {
+            if (endDateControl.untouched) {
                 // Errors are not visible if the form control is untouched
-                this.endDateControl.markAsTouched();
+                endDateControl.markAsTouched();
             }
-            this.endDateControl.setErrors({endDateShouldExist: true});
+            endDateControl.setErrors({endDateShouldExist: true});
         } else if (!sprintFormValue.startDate && sprintFormValue.endDate) {
-            if (this.startDateControl.untouched) {
+            if (startDateControl.untouched) {
                 // Errors are not visible if the form control is untouched
-                this.startDateControl.markAsTouched();
+                startDateControl.markAsTouched();
             }
-            this.startDateControl.setErrors({startDateShouldExist: true});
+            startDateControl.setErrors({startDateShouldExist: true});
         } else {
-            this.endDateControl.setErrors(null);
-            this.startDateControl.setErrors(null);
+            endDateControl.setErrors(null);
+            startDateControl.setErrors(null);
         }
 
         if (sprintFormValue.startDate && sprintFormValue.endDate && sprintFormValue.startDate > sprintFormValue.endDate) {
