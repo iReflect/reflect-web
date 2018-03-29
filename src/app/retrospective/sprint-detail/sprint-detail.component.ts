@@ -125,6 +125,7 @@ export class SprintDetailComponent implements OnInit {
                 this.retrospectiveService.activateSprint(this.retrospectiveID, this.sprintID).subscribe(
                     () => {
                         this.sprintStatus = this.sprintStates.ACTIVE;
+                        this.selectedTabIndex += 1;
                         this.snackBar.open(
                             API_RESPONSE_MESSAGES.sprintActivated,
                             '', {duration: SNACKBAR_DURATION});
