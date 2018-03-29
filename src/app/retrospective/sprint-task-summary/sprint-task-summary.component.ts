@@ -74,7 +74,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         if (changes.enableRefresh) {
             this.enableRefresh = changes.enableRefresh.currentValue;
             this.autoRefreshCurrentState = changes.enableRefresh.currentValue;
-            if (this.autoRefreshCurrentState && this.isTabActive) {
+            if (this.autoRefreshCurrentState && this.isTabActive && this.gridApi) {
                 this.getSprintTaskSummary(true);
             }
             if (this.gridApi && changes.sprintStatus) {
@@ -118,7 +118,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         Observable.interval(5000)
             .takeUntil(this.destroy$)
             .subscribe(() => {
-                if (this.isTabActive && this.autoRefreshCurrentState) {
+                if (this.isTabActive && this.autoRefreshCurrentState && this.gridApi) {
                     this.getSprintTaskSummary(true);
                 }
             });
