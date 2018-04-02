@@ -9,7 +9,15 @@
             <i class="divider">|</i>
             <div>
                 <span>{{sprintDetails.StartDate | date: dateFormat}} to {{sprintDetails.EndDate | date: dateFormat}}</span>
-                <span class="small-text">Status: {{sprintStatesLabel[sprintStatus]}} | Last Synced on: {{sprintDetails.LastSyncedAt | date: dateFormat}}</span>
+                <span class="small-text"
+                      *ngIf="sprintDetails.SyncStatus !== syncStates.SYNC_FAILED; else last_synced_failed">
+                    Status: {{sprintStatesLabel[sprintStatus]}} | Last Synced on: {{sprintDetails.LastSyncedAt | date: dateFormat}}
+                </span>
+                <ng-template #last_synced_failed>
+                    <span class="small-text">
+                        Status: {{sprintStatesLabel[sprintStatus]}} | <span class="sync-failed">Last Sync Failed</span>
+                    </span>
+                </ng-template>
             </div>
         </div>
         <span class="fill-remaining-space"></span>

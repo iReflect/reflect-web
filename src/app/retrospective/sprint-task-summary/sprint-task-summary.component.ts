@@ -199,7 +199,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         return [
             {
                 headerName: 'Task ID',
-                field: 'TaskID',
+                field: 'Key',
                 minWidth: 110,
                 pinned: true,
                 suppressSorting: true,
