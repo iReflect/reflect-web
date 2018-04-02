@@ -26,6 +26,7 @@ export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
     @Input() sprintID;
     @Input() sprintStatus;
     @Input() isTabActive: boolean;
+    @Input() refreshOnChange: boolean;
 
     notesSectionsList = SPRINT_NOTES_SECTIONS_LIST;
     retroFeedbackTypes = RETRO_FEEDBACK_TYPES;
@@ -44,25 +45,29 @@ export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     ngOnInit() {
+        this.getSprintNotesTab(false);
         Observable.interval(5000)
             .takeUntil(this.destroy$)
             .subscribe(() => {
                 if (this.autoRefreshCurrentState && this.isTabActive) {
-                    this.refreshTab();
+                    this.getSprintNotesTab();
                 }
             });
     }
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes.isTabActive && changes.isTabActive.currentValue) {
-            this.refreshTab();
+            this.getSprintNotesTab();
         }
         if (changes.enableRefresh) {
             this.enableRefresh = changes.enableRefresh.currentValue;
             this.autoRefreshCurrentState = changes.enableRefresh.currentValue;
             if (this.autoRefreshCurrentState) {
-                this.refreshTab();
+                this.getSprintNotesTab();
             }
+        }
+        if (changes.refreshOnChange && this.isTabActive) {
+            this.getSprintNotesTab();
         }
     }
 
@@ -72,10 +77,10 @@ export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
         this.destroy$.unsubscribe();
     }
 
-    refreshTab() {
-        this.getTeamMembers();
-        this.getSprintGoals();
-        this.getSprintNotes();
+    getSprintNotesTab(isRefresh = true) {
+        this.getTeamMembers(isRefresh);
+        this.getSprintGoals(isRefresh);
+        this.getSprintNotes(isRefresh);
     }
 
     pauseRefresh() {
@@ -86,7 +91,7 @@ export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
         this.autoRefreshCurrentState = this.enableRefresh;
     }
 
-    getSprintGoals() {
+    getSprintGoals(isRefresh = false) {
         this.retrospectiveService.getSprintGoals(
             this.retrospectiveID,
             this.sprintID,
@@ -96,33 +101,51 @@ export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
                 this.sprintGoals = response.data.Feedbacks;
             },
             err => {
-                this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintAddedGoalsGetError,
-                    '', {duration: SNACKBAR_DURATION});
+                if (isRefresh) {
+                    this.snackBar.open(
+                        API_RESPONSE_MESSAGES.sprintNotesTabRefreshFailure,
+                        '', {duration: SNACKBAR_DURATION});
+                } else {
+                    this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintAddedGoalsGetError,
+                        '', {duration: SNACKBAR_DURATION});
+                }
             }
         );
     }
 
-    getSprintNotes() {
+    getSprintNotes(isRefresh = false) {
         this.retrospectiveService.getSprintNotes(this.retrospectiveID, this.sprintID)
             .subscribe(
             response => {
                 this.sprintNotes = response.data.Feedbacks;
             },
             err => {
-                this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintNotesGetError,
-                    '', {duration: SNACKBAR_DURATION});
+                if (isRefresh) {
+                    this.snackBar.open(
+                        API_RESPONSE_MESSAGES.sprintNotesTabRefreshFailure,
+                        '', {duration: SNACKBAR_DURATION});
+                } else {
+                    this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintNotesGetError,
+                        '', {duration: SNACKBAR_DURATION});
+                }
             }
         );
     }
 
-    getTeamMembers() {
+    getTeamMembers(isRefresh = false) {
         this.retrospectiveService.getRetroMembers(this.retrospectiveID).subscribe(
             response => {
                 this.teamMembers = response.data.Members;
             },
             err => {
-                this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getRetrospectiveMembersError,
-                    '', {duration: SNACKBAR_DURATION});
+                if (isRefresh) {
+                    this.snackBar.open(
+                        API_RESPONSE_MESSAGES.sprintNotesTabRefreshFailure,
+                        '', {duration: SNACKBAR_DURATION});
+                } else {
+                    this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getRetrospectiveMembersError,
+                        '', {duration: SNACKBAR_DURATION});
+                }
             }
         );
     }

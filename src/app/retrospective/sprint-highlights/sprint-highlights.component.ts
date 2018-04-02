@@ -36,6 +36,7 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
     @Input() sprintID;
     @Input() sprintStatus;
     @Input() isTabActive: boolean;
+    @Input() refreshOnChange: boolean;
 
     constructor(
         private retrospectiveService: RetrospectiveService,
@@ -45,25 +46,29 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     ngOnInit() {
+        this.getSprintHighlightsTab(false);
         Observable.interval(5000)
             .takeUntil(this.destroy$)
             .subscribe(() => {
                 if (this.autoRefreshCurrentState && this.isTabActive) {
-                    this.refreshTab();
+                    this.getSprintHighlightsTab();
                 }
             });
     }
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes.isTabActive && changes.isTabActive.currentValue) {
-            this.refreshTab();
+            this.getSprintHighlightsTab();
         }
         if (changes.enableRefresh) {
             this.enableRefresh = changes.enableRefresh.currentValue;
             this.autoRefreshCurrentState = changes.enableRefresh.currentValue;
             if (this.autoRefreshCurrentState) {
-                this.refreshTab();
+                this.getSprintHighlightsTab();
             }
+        }
+        if (changes.refreshOnChange && this.isTabActive) {
+            this.getSprintHighlightsTab();
         }
     }
 
@@ -73,11 +78,11 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
         this.destroy$.unsubscribe();
     }
 
-    refreshTab() {
-        this.getTeamMembers();
-        this.getSprintHighlights();
-        this.getPendingGoals();
-        this.getAccomplishedGoals();
+    getSprintHighlightsTab(isRefresh = true) {
+        this.getTeamMembers(isRefresh);
+        this.getSprintHighlights(isRefresh);
+        this.getPendingGoals(isRefresh);
+        this.getAccomplishedGoals(isRefresh);
     }
 
     pauseRefresh() {
@@ -88,53 +93,77 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
         this.autoRefreshCurrentState = this.enableRefresh;
     }
 
-    getPendingGoals() {
+    getPendingGoals(isRefresh = false) {
         this.retrospectiveService.getSprintGoals(this.retrospectiveID, this.sprintID, 'pending')
             .subscribe(
                 response => {
                     this.pendingGoals = response.data.Feedbacks;
                 },
                 err => {
-                    this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintPendingGoalsGetError,
-                        '', {duration: SNACKBAR_DURATION});
+                    if (isRefresh) {
+                        this.snackBar.open(
+                            API_RESPONSE_MESSAGES.sprintHighlightsTabRefreshFailure,
+                            '', {duration: SNACKBAR_DURATION});
+                    } else {
+                        this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintPendingGoalsGetError,
+                            '', {duration: SNACKBAR_DURATION});
+                    }
                 }
             );
     }
 
-    getAccomplishedGoals() {
+    getAccomplishedGoals(isRefresh = false) {
         this.retrospectiveService.getSprintGoals(this.retrospectiveID, this.sprintID, 'completed')
             .subscribe(
                 response => {
                     this.accomplishedGoals = response.data.Feedbacks;
                 },
                 err => {
-                    this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintAccomplishedGoalsGetError,
-                        '', {duration: SNACKBAR_DURATION});
+                    if (isRefresh) {
+                        this.snackBar.open(
+                            API_RESPONSE_MESSAGES.sprintHighlightsTabRefreshFailure,
+                            '', {duration: SNACKBAR_DURATION});
+                    } else {
+                        this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintAccomplishedGoalsGetError,
+                            '', {duration: SNACKBAR_DURATION});
+                    }
                 }
             );
     }
 
-    getSprintHighlights() {
+    getSprintHighlights(isRefresh = false) {
         this.retrospectiveService.getSprintHighlights(this.retrospectiveID, this.sprintID)
             .subscribe(
                 response => {
                     this.sprintHighlights = response.data.Feedbacks;
                 },
                 err => {
-                    this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintHighlightsGetError,
-                        '', {duration: SNACKBAR_DURATION});
+                    if (isRefresh) {
+                        this.snackBar.open(
+                            API_RESPONSE_MESSAGES.sprintHighlightsTabRefreshFailure,
+                            '', {duration: SNACKBAR_DURATION});
+                    } else {
+                        this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintHighlightsGetError,
+                            '', {duration: SNACKBAR_DURATION});
+                    }
                 }
             );
     }
 
-    getTeamMembers() {
+    getTeamMembers(isRefresh = false) {
         this.retrospectiveService.getRetroMembers(this.retrospectiveID).subscribe(
             response => {
                 this.teamMembers = response.data.Members;
             },
             err => {
-                this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getRetrospectiveMembersError,
-                    '', {duration: SNACKBAR_DURATION});
+                if (isRefresh) {
+                    this.snackBar.open(
+                        API_RESPONSE_MESSAGES.sprintHighlightsTabRefreshFailure,
+                        '', {duration: SNACKBAR_DURATION});
+                } else {
+                    this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getRetrospectiveMembersError,
+                        '', {duration: SNACKBAR_DURATION});
+                }
             }
         );
     }
