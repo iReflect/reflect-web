@@ -31,6 +31,7 @@ export class SprintDetailComponent implements OnInit {
     sprintDetails: any;
     selectedTabIndex = 0;
     enableRefresh = true;
+    toggleToTriggerRefresh = false;
     dateFormat = DATE_FORMAT;
     decimalFormat = '1.0-2';
     sprintStates = SPRINT_STATES;
@@ -65,10 +66,8 @@ export class SprintDetailComponent implements OnInit {
         const params = this.activatedRoute.snapshot.params;
         this.retrospectiveID = params['retrospectiveID'];
         this.sprintID = params['sprintID'];
-        let enableRefreshPreviousState;
         if (isRefresh) {
-            enableRefreshPreviousState = this.enableRefresh;
-            this.enableRefresh = false;
+            this.toggleToTriggerRefresh = !this.toggleToTriggerRefresh;
         }
         this.retrospectiveService.getSprintDetails(this.retrospectiveID, this.sprintID).subscribe(
             response => {
@@ -84,9 +83,6 @@ export class SprintDetailComponent implements OnInit {
                     // we need to make sure that the summary tabs are following the correct order.
                     this.tabIndexMapping = {taskSummary: 0, memberSummary: 1};
                 }
-                if (isRefresh) {
-                    this.enableRefresh = enableRefreshPreviousState;
-                }
             },
             err => {
                 if (!isRefresh) {
@@ -95,7 +91,9 @@ export class SprintDetailComponent implements OnInit {
                         '', {duration: SNACKBAR_DURATION});
                     this.navigateToRetrospectiveDashboard();
                 } else {
-                    this.enableRefresh = enableRefreshPreviousState;
+                    this.snackBar.open(
+                        API_RESPONSE_MESSAGES.sprintDetailsRefreshFailure,
+                        '', {duration: SNACKBAR_DURATION});
                 }
             }
         );
@@ -189,7 +187,7 @@ export class SprintDetailComponent implements OnInit {
         });
     }
 
-    refreshSprintDetails() {
+    resyncSprintDetails() {
         this.retrospectiveService.refreshSprintDetails(this.retrospectiveID, this.sprintID).subscribe(
             () => {
                 this.sprintDetails.SyncStatus = SPRINT_SYNC_STATES.SYNCING;
@@ -199,7 +197,7 @@ export class SprintDetailComponent implements OnInit {
             },
             err => {
                 this.snackBar.open(
-                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.refreshSprintError,
+                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.resyncSprintError,
                     '', {duration: SNACKBAR_DURATION});
             }
         );

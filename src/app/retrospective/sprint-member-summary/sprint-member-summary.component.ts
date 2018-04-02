@@ -45,6 +45,8 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     @Input() sprintDays: any;
     @Input() isTabActive: boolean;
     @Input() enableRefresh: boolean;
+    @Input() refreshOnChange: boolean;
+
     private columnDefs: any;
     private params: any;
     private gridApi: GridApi;
@@ -77,11 +79,11 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         if (changes.isTabActive) {
             this.isTabActive = changes.isTabActive.currentValue;
         }
-
         if (this.gridApi && changes.sprintStatus && changes.sprintStatus.currentValue === this.sprintStates.FROZEN) {
             this.columnDefs = this.createColumnDefs(changes.sprintStatus.currentValue);
             this.gridApi.setColumnDefs(this.columnDefs);
         }
+        // this if block also executes when this.refreshOnChange toggles
         if (this.gridApi && this.isTabActive) {
             setTimeout(() => {
                 this.gridApi.sizeColumnsToFit();
@@ -95,7 +97,6 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                 this.getSprintMemberSummary(true);
             }
         }
-
     }
 
     ngOnDestroy() {
@@ -173,8 +174,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                 err => {
                     if (isRefresh) {
                         this.snackBar.open(
-                            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES
-                                .autoRefreshFailure,
+                            API_RESPONSE_MESSAGES.memberSummaryRefreshFailure,
                             '', {duration: SNACKBAR_DURATION});
                     } else {
                         this.snackBar.open(

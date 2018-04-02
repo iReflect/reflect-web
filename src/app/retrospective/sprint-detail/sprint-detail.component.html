@@ -13,7 +13,7 @@
             </div>
         </div>
         <span class="fill-remaining-space"></span>
-        <button mat-raised-button color="primary" class="layout-side-margin" (click)="refreshSprintDetails()"
+        <button mat-raised-button color="primary" class="layout-side-margin" (click)="resyncSprintDetails()"
                 *ngIf="sprintDetails && sprintDetails.SyncStatus !== syncStates.SYNCING">
             Re-Sync Sprint
         </button>
@@ -28,7 +28,7 @@
                 *ngIf="sprintStatus !== sprintStates.FROZEN" (click)="discardSprint()">
             {{sprintActionsLabel[sprintActions.DISCARD]}}
         </button>
-        <button mat-raised-button color="primary" (click)="getSprintDetails(true)" *ngIf="sprintDetails.SyncStatus !== syncStates.SYNCING">
+        <button mat-raised-button color="primary" (click)="getSprintDetails(true)">
             <mat-icon>refresh</mat-icon> Refresh
         </button>
         <mat-slide-toggle labelPosition="before" (change)="toggleAutoRefresh()" [checked]="enableRefresh"
@@ -141,6 +141,7 @@
                                 <app-sprint-highlights
                                     [isTabActive]="selectedTabIndex === tabIndexMapping.highlights"
                                     [enableRefresh]="enableRefresh"
+                                    [refreshOnChange]="toggleToTriggerRefresh"
                                     [sprintStatus]="sprintStatus"
                                     [retrospectiveID]="retrospectiveID"
                                     [sprintID]="sprintID">
@@ -155,6 +156,7 @@
                                     [sprintStatus]="sprintStatus"
                                     [retrospectiveID]="retrospectiveID"
                                     [sprintID]="sprintID"
+                                    [refreshOnChange]="toggleToTriggerRefresh"
                                     [enableRefresh]="enableRefresh">
                                 </app-sprint-task-summary>
                             </div>
@@ -168,6 +170,7 @@
                                     [sprintStatus]="sprintStatus"
                                     [retrospectiveID]="retrospectiveID"
                                     [sprintID]="sprintID"
+                                    [refreshOnChange]="toggleToTriggerRefresh"
                                     [enableRefresh]="enableRefresh">
                                 </app-sprint-member-summary>
                             </div>
@@ -177,6 +180,7 @@
                                 <app-sprint-notes
                                     [isTabActive]="selectedTabIndex === tabIndexMapping.notes"
                                     [enableRefresh]="enableRefresh"
+                                    [refreshOnChange]="toggleToTriggerRefresh"
                                     [sprintStatus]="sprintStatus"
                                     [retrospectiveID]="retrospectiveID"
                                     [sprintID]="sprintID">

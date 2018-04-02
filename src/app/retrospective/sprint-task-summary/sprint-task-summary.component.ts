@@ -25,11 +25,14 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     destroy$: Subject<boolean> = new Subject<boolean>();
     overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the tasks are loading!</span>';
     overlayNoRowsTemplate = '<span>No Tasks in this sprint!</span>';
+
     @Input() retrospectiveID;
     @Input() sprintID;
     @Input() sprintStatus;
     @Input() isTabActive: boolean;
     @Input() enableRefresh: boolean;
+    @Input() refreshOnChange: boolean;
+
     private params: any;
     private columnDefs: any;
     private gridApi: GridApi;
@@ -61,6 +64,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         if (changes.isTabActive) {
             this.isTabActive = changes.isTabActive.currentValue;
         }
+        // this if block also executes when this.refreshOnChange toggles
         if (this.gridApi && this.isTabActive) {
             setTimeout(() => {
                 this.gridApi.sizeColumnsToFit();
@@ -134,7 +138,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 err => {
                     if (isRefresh) {
                         this.snackBar.open(
-                            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.autoRefreshFailure,
+                            API_RESPONSE_MESSAGES.taskSummaryRefreshFailure,
                             '', {duration: SNACKBAR_DURATION});
                     } else {
                         this.snackBar.open(
