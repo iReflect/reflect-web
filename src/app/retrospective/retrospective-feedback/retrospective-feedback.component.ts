@@ -285,6 +285,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
             {
                 headerName: 'Text',
                 field: 'Text',
+                tooltipField: 'Text',
                 minWidth: 160,
                 editable: editable,
                 onCellValueChanged: (cellParams) => {
