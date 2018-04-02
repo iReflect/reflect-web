@@ -154,7 +154,7 @@ export class SprintDetailComponent implements OnInit {
     discardSprint() {
         const dialogRef = this.dialog.open(BasicModalComponent, {
             data: {
-                content: 'Are you sure you want to Activate sprint?',
+                content: 'Are you sure you want to Discard sprint?',
                 confirmBtn: 'Yes',
                 cancelBtn: 'Cancel'
             },
