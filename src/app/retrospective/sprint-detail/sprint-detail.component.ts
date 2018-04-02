@@ -61,10 +61,15 @@ export class SprintDetailComponent implements OnInit {
         return (featureType + taskType + bugType);
     }
 
-    getSprintDetails() {
+    getSprintDetails(isRefresh = false) {
         const params = this.activatedRoute.snapshot.params;
         this.retrospectiveID = params['retrospectiveID'];
         this.sprintID = params['sprintID'];
+        let enableRefreshPreviousState;
+        if (isRefresh) {
+            enableRefreshPreviousState = this.enableRefresh;
+            this.enableRefresh = false;
+        }
         this.retrospectiveService.getSprintDetails(this.retrospectiveID, this.sprintID).subscribe(
             response => {
                 this.sprintDetails = response.data;
@@ -79,12 +84,19 @@ export class SprintDetailComponent implements OnInit {
                     // we need to make sure that the summary tabs are following the correct order.
                     this.tabIndexMapping = {taskSummary: 0, memberSummary: 1};
                 }
+                if (isRefresh) {
+                    this.enableRefresh = enableRefreshPreviousState;
+                }
             },
             err => {
-                this.snackBar.open(
-                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getSprintDetailsError,
-                    '', {duration: SNACKBAR_DURATION});
-                this.navigateToRetrospectiveDashboard();
+                if (!isRefresh) {
+                    this.snackBar.open(
+                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getSprintDetailsError,
+                        '', {duration: SNACKBAR_DURATION});
+                    this.navigateToRetrospectiveDashboard();
+                } else {
+                    this.enableRefresh = enableRefreshPreviousState;
+                }
             }
         );
     }

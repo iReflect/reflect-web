@@ -28,6 +28,9 @@
                 *ngIf="sprintStatus !== sprintStates.FROZEN" (click)="discardSprint()">
             {{sprintActionsLabel[sprintActions.DISCARD]}}
         </button>
+        <button mat-raised-button color="primary" (click)="getSprintDetails(true)" *ngIf="sprintDetails.SyncStatus !== syncStates.SYNCING">
+            <mat-icon>refresh</mat-icon> Refresh
+        </button>
         <mat-slide-toggle labelPosition="before" (change)="toggleAutoRefresh()" [checked]="enableRefresh"
                           class="layout-side-margin auto-refresh-toggle" color="primary">
             Auto Refresh
