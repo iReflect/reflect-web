@@ -46,29 +46,29 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     ngOnInit() {
-        this.getSprintHighlights(false);
+        this.getSprintHighlightsTab(false);
         Observable.interval(5000)
             .takeUntil(this.destroy$)
             .subscribe(() => {
                 if (this.autoRefreshCurrentState && this.isTabActive) {
-                    this.getSprintHighlights();
+                    this.getSprintHighlightsTab();
                 }
             });
     }
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes.isTabActive && changes.isTabActive.currentValue) {
-            this.getSprintHighlights();
+            this.getSprintHighlightsTab();
         }
         if (changes.enableRefresh) {
             this.enableRefresh = changes.enableRefresh.currentValue;
             this.autoRefreshCurrentState = changes.enableRefresh.currentValue;
             if (this.autoRefreshCurrentState) {
-                this.getSprintHighlights();
+                this.getSprintHighlightsTab();
             }
         }
         if (changes.refreshOnChange && this.isTabActive) {
-            this.getSprintHighlights();
+            this.getSprintHighlightsTab();
         }
     }
 
@@ -78,7 +78,7 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
         this.destroy$.unsubscribe();
     }
 
-    getSprintHighlights(isRefresh = true) {
+    getSprintHighlightsTab(isRefresh = true) {
         this.getTeamMembers(isRefresh);
         this.getSprintHighlights(isRefresh);
         this.getPendingGoals(isRefresh);

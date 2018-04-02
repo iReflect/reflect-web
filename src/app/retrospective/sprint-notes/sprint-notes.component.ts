@@ -45,29 +45,29 @@ export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     ngOnInit() {
-        this.getSprintNotes(false);
+        this.getSprintNotesTab(false);
         Observable.interval(5000)
             .takeUntil(this.destroy$)
             .subscribe(() => {
                 if (this.autoRefreshCurrentState && this.isTabActive) {
-                    this.getSprintNotes();
+                    this.getSprintNotesTab();
                 }
             });
     }
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes.isTabActive && changes.isTabActive.currentValue) {
-            this.getSprintNotes();
+            this.getSprintNotesTab();
         }
         if (changes.enableRefresh) {
             this.enableRefresh = changes.enableRefresh.currentValue;
             this.autoRefreshCurrentState = changes.enableRefresh.currentValue;
             if (this.autoRefreshCurrentState) {
-                this.getSprintNotes();
+                this.getSprintNotesTab();
             }
         }
         if (changes.refreshOnChange && this.isTabActive) {
-            this.getSprintNotes();
+            this.getSprintNotesTab();
         }
     }
 
@@ -77,7 +77,7 @@ export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
         this.destroy$.unsubscribe();
     }
 
-    getSprintNotes(isRefresh = true) {
+    getSprintNotesTab(isRefresh = true) {
         this.getTeamMembers(isRefresh);
         this.getSprintGoals(isRefresh);
         this.getSprintNotes(isRefresh);
