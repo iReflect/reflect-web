@@ -80,17 +80,23 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
 
                     this.columnDefs = this.createColumnDefs(this.sprintStatus, this.teamMembers);
                     this.gridApi.setColumnDefs(this.columnDefs);
+                    if (this.isTabActive) {
+                        this.gridApi.sizeColumnsToFit();
+                    }
                 });
-                this.resizeAgGrid();
             }
-            if (changes.data) {
+            if (changes.data && this.gridApi) {
                 const data = changes.data.currentValue || [];
+                if (this.isTabActive) {
+                    this.gridApi.sizeColumnsToFit();
+                }
                 this.gridApi.setRowData(data.filter((feedback) => (this.feedbackType === RETRO_FEEDBACK_TYPES.GOAL) ||
                     feedback.SubType === this.feedbackSubType));
-                this.resizeAgGrid();
             }
             if (changes.isTabActive && changes.isTabActive.currentValue) {
-                this.resizeAgGrid();
+                setTimeout(() => {
+                    this.gridApi.sizeColumnsToFit();
+                });
             }
         }
     }
@@ -118,6 +124,10 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                     this.data.filter((feedback) => this.feedbackType === RETRO_FEEDBACK_TYPES.GOAL
                         || feedback.SubType === this.feedbackSubType));
             }
+            if (this.teamMembers && this.sprintStatus) {
+                this.columnDefs = this.createColumnDefs(this.sprintStatus, this.teamMembers);
+                this.gridApi.setColumnDefs(this.columnDefs);
+            }
             if (this.isTabActive) {
                 this.gridApi.sizeColumnsToFit();
             }
@@ -127,7 +137,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
     resolveSprintGoal(params: any) {
         const goalData = params.data;
         this.retrospectiveService.resolveSprintGoal(this.retrospectiveID, this.sprintID, goalData.ID).subscribe(
-            response => {
+            () => {
                 this.gridApi.updateRowData({remove: [goalData]});
                 this.snackBar.open(API_RESPONSE_MESSAGES.goalResolvedSuccessfully, '', {duration: SNACKBAR_DURATION});
             },
@@ -141,7 +151,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
     unresolveSprintGoal(params: any) {
         const goalData = params.data;
         this.retrospectiveService.unresolveSprintGoal(this.retrospectiveID, this.sprintID, goalData.ID).subscribe(
-            response => {
+            () => {
                 this.gridApi.updateRowData({remove: [goalData]});
                 this.snackBar.open(API_RESPONSE_MESSAGES.goalUnResolvedSuccessfully, '', {duration: SNACKBAR_DURATION});
             },
@@ -239,7 +249,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
     }
 
     getTeamMemberOptions(teamMembers) {
-        teamMembers = _.map(teamMembers, (value: any, key) => {
+        teamMembers = _.map(teamMembers, (value: any) => {
             return {
                 id: _.parseInt(value.ID),
                 value: (value.FirstName + ' ' + value.LastName).trim(),
@@ -275,6 +285,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
             {
                 headerName: 'Text',
                 field: 'Text',
+                tooltipField: 'Text',
                 minWidth: 160,
                 editable: editable,
                 onCellValueChanged: (cellParams) => {

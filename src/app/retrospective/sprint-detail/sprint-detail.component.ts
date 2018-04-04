@@ -52,6 +52,9 @@ export class SprintDetailComponent implements OnInit {
     }
 
     ngOnInit() {
+        const params = this.activatedRoute.snapshot.params;
+        this.retrospectiveID = params['retrospectiveID'];
+        this.sprintID = params['sprintID'];
         this.getSprintDetails();
     }
 
@@ -63,9 +66,6 @@ export class SprintDetailComponent implements OnInit {
     }
 
     getSprintDetails(isRefresh = false) {
-        const params = this.activatedRoute.snapshot.params;
-        this.retrospectiveID = params['retrospectiveID'];
-        this.sprintID = params['sprintID'];
         if (isRefresh) {
             this.toggleToTriggerRefresh = !this.toggleToTriggerRefresh;
         }
@@ -125,6 +125,7 @@ export class SprintDetailComponent implements OnInit {
                 this.retrospectiveService.activateSprint(this.retrospectiveID, this.sprintID).subscribe(
                     () => {
                         this.sprintStatus = this.sprintStates.ACTIVE;
+                        this.selectedTabIndex += 1;
                         this.snackBar.open(
                             API_RESPONSE_MESSAGES.sprintActivated,
                             '', {duration: SNACKBAR_DURATION});
@@ -194,6 +195,7 @@ export class SprintDetailComponent implements OnInit {
                 this.snackBar.open(
                     API_RESPONSE_MESSAGES.sprintComputationInitiated,
                     '', {duration: SNACKBAR_DURATION});
+                this.getSprintDetails();
             },
             err => {
                 this.snackBar.open(

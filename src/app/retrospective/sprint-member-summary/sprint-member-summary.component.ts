@@ -93,7 +93,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         if (changes.enableRefresh) {
             this.enableRefresh = changes.enableRefresh.currentValue;
             this.autoRefreshCurrentState = changes.enableRefresh.currentValue;
-            if (this.autoRefreshCurrentState && this.isTabActive) {
+            if (this.autoRefreshCurrentState && this.isTabActive && this.gridApi) {
                 this.getSprintMemberSummary(true);
             }
         }
@@ -143,7 +143,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         Observable.interval(5000)
             .takeUntil(this.destroy$)
             .subscribe(() => {
-                if (this.autoRefreshCurrentState && this.isTabActive) {
+                if (this.autoRefreshCurrentState && this.isTabActive && this.gridApi) {
                     this.getSprintMemberSummary(true);
                 }
             });
