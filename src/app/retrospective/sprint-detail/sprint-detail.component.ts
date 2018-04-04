@@ -16,6 +16,7 @@ import {
 import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.component';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { UtilsService } from '../../shared/utils/utils.service';
+import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
 @Component({
@@ -35,6 +36,7 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
     toggleToTriggerRefresh = false;
 
     refresh$: Subject<number> = new Subject<number>();
+    destroy$: Subject<boolean> = new Subject<boolean>();
     dateFormat = DATE_FORMAT;
     decimalFormat = '1.0-2';
     sprintStates = SPRINT_STATES;
@@ -65,10 +67,19 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
                 }, delay);
             });
         this.refresh$.next();
+        Observable.interval(5000)
+            .takeUntil(this.destroy$)
+            .subscribe(() => {
+                if (this.enableRefresh) {
+                    this.refresh$.next();
+                }
+            });
     }
 
     ngOnDestroy() {
         this.refresh$.unsubscribe();
+        this.destroy$.next(true);
+        this.destroy$.unsubscribe();
     }
 
     getSprintAssignedPoints() {

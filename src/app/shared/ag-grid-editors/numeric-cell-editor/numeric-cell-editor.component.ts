@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { ICellEditorAngularComp } from 'ag-grid-angular';
+import * as _ from 'lodash';
 
 @Component({
     selector: 'app-numeric-cell-editor',
@@ -22,6 +23,10 @@ export class NumericCellEditorComponent implements ICellEditorAngularComp, After
         } else {
             this.maxValue = params.maxValue;
         }
+    }
+
+    isCancelAfterEnd() {
+        return _.isNull(this.value) || !_.isNumber(this.value);
     }
 
     getValue(): any {
