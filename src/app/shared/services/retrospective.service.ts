@@ -104,7 +104,7 @@ export class RetrospectiveService {
             .remove();
     }
 
-    refreshSprintDetails(retrospectiveID, sprintID): Observable<any> {
+    resyncSprintDetails(retrospectiveID, sprintID): Observable<any> {
         return this.restangular
             .one(
                 API_URLS.refreshSprintDetails

@@ -118,7 +118,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         Observable.interval(5000)
             .takeUntil(this.destroy$)
             .subscribe(() => {
-                if (this.isTabActive && this.autoRefreshCurrentState && this.gridApi) {
+                if (this.isTabActive && this.autoRefreshCurrentState) {
                     this.getSprintTaskSummary(true);
                 }
             });
@@ -173,14 +173,6 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         let markedDoneColumns = [];
         if (sprintStatus !== SPRINT_STATES.DRAFT && sprintStatus !== SPRINT_STATES.FROZEN) {
             markedDoneColumns = [
-                {
-                    headerName: 'Done At',
-                    field: 'DoneAt',
-                    minWidth: 170,
-                    valueFormatter: (params) => this.utils.getDateFromString(params.value || ''),
-                    suppressSorting: true,
-                    suppressFilter: true,
-                },
                 {
                     colId: 'markDone',
                     cellRenderer: 'clickableButtonRenderer',
@@ -262,6 +254,14 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     // To preserve the currently applied filters
                     newRowsAction: 'keep'
                 }
+            },
+            {
+                headerName: 'Done At',
+                field: 'DoneAt',
+                minWidth: 170,
+                valueFormatter: (params) => this.utils.getDateFromString(params.value || ''),
+                suppressSorting: true,
+                suppressFilter: true,
             },
             ...markedDoneColumns,
             {

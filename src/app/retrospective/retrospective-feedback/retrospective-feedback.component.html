@@ -4,7 +4,7 @@
             <span class="retrospective-feedback-title"><b>{{title}}</b></span>&nbsp;&nbsp;({{ getDisplayedRowCount() }})
             <span class="fill-remaining-space"></span>
             <button mat-button (click)="addMoreRow()"
-                    *ngIf="feedbackSubType !== goalTypes.COMPLETED && feedbackSubType !== goalTypes.PENDING">
+                    *ngIf="feedbackSubType !== goalTypes.COMPLETED && feedbackSubType !== goalTypes.PENDING && sprintStatus !== sprintStates.FROZEN">
                 <mat-icon>add</mat-icon>
                 <span>Add New</span>
             </button>

@@ -23,8 +23,10 @@ import { UtilsService } from '../../shared/utils/utils.service';
     styleUrls: ['./retrospective-feedback.component.scss']
 })
 export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
-    goalTypes = RETRO_FEEDBACK_GOAL_TYPES;
     gridOptions: GridOptions;
+    sprintStates = SPRINT_STATES;
+    goalTypes = RETRO_FEEDBACK_GOAL_TYPES;
+
     @Input() title;
     @Input() retrospectiveID;
     @Input() sprintID;
@@ -35,8 +37,10 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
     @Input() data: any;
     @Input() teamMembers: any;
     @Input() enableRefresh: boolean;
+
     @Output() resumeRefresh = new EventEmitter();
     @Output() pauseRefresh = new EventEmitter();
+
     private columnDefs: any;
     private params: any;
     private gridApi: GridApi;
@@ -71,29 +75,23 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
     ngOnChanges(changes: SimpleChanges): void {
         if (this.gridApi) {
             if (changes.sprintStatus || changes.teamMembers) {
-                setTimeout(() => {
-                    this.teamMembers = (changes.teamMembers && changes.teamMembers.currentValue)
-                        || this.teamMembers;
-
-                    this.sprintStatus = (changes.sprintStatus && changes.sprintStatus.currentValue)
-                        || this.sprintStatus;
-
-                    this.columnDefs = this.createColumnDefs(this.sprintStatus, this.teamMembers);
-                    this.gridApi.setColumnDefs(this.columnDefs);
-                    if (this.isTabActive) {
-                        this.gridApi.sizeColumnsToFit();
-                    }
-                });
-            }
-            if (changes.data && this.gridApi) {
+                this.teamMembers = (changes.teamMembers && changes.teamMembers.currentValue)
+                    || this.teamMembers;
+                this.sprintStatus = (changes.sprintStatus && changes.sprintStatus.currentValue)
+                    || this.sprintStatus;
+                this.columnDefs = this.createColumnDefs(this.sprintStatus, this.teamMembers);
+                this.gridApi.setColumnDefs(this.columnDefs);
+                if (this.isTabActive) {
+                    this.gridApi.sizeColumnsToFit();
+                }
+            } else if (changes.data) {
                 const data = changes.data.currentValue || [];
                 if (this.isTabActive) {
                     this.gridApi.sizeColumnsToFit();
                 }
                 this.gridApi.setRowData(data.filter((feedback) => (this.feedbackType === RETRO_FEEDBACK_TYPES.GOAL) ||
                     feedback.SubType === this.feedbackSubType));
-            }
-            if (changes.isTabActive && changes.isTabActive.currentValue) {
+            } else if (changes.isTabActive && changes.isTabActive.currentValue) {
                 setTimeout(() => {
                     this.gridApi.sizeColumnsToFit();
                 });

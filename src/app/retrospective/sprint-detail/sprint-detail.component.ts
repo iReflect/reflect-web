@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -16,13 +16,14 @@ import {
 import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.component';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { UtilsService } from '../../shared/utils/utils.service';
+import { Subject } from 'rxjs/Subject';
 
 @Component({
     selector: 'app-sprint-detail',
     templateUrl: './sprint-detail.component.html',
     styleUrls: ['./sprint-detail.component.scss']
 })
-export class SprintDetailComponent implements OnInit {
+export class SprintDetailComponent implements OnInit, OnDestroy  {
     sprintDays: number;
     sprintStatus: number;
     selectedValue: number;
@@ -32,6 +33,8 @@ export class SprintDetailComponent implements OnInit {
     selectedTabIndex = 0;
     enableRefresh = true;
     toggleToTriggerRefresh = false;
+
+    refresh$: Subject<number> = new Subject<number>();
     dateFormat = DATE_FORMAT;
     decimalFormat = '1.0-2';
     sprintStates = SPRINT_STATES;
@@ -55,7 +58,17 @@ export class SprintDetailComponent implements OnInit {
         const params = this.activatedRoute.snapshot.params;
         this.retrospectiveID = params['retrospectiveID'];
         this.sprintID = params['sprintID'];
-        this.getSprintDetails();
+        this.refresh$
+            .subscribe((delay = 0) => {
+                setTimeout(() => {
+                    this.getSprintDetails();
+                }, delay);
+            });
+        this.refresh$.next();
+    }
+
+    ngOnDestroy() {
+        this.refresh$.unsubscribe();
     }
 
     getSprintAssignedPoints() {
@@ -77,7 +90,7 @@ export class SprintDetailComponent implements OnInit {
                 this.sprintDays = this.utils.workdayCount(response.data.StartDate, response.data.EndDate);
                 if (this.sprintDetails.SyncStatus === SPRINT_SYNC_STATES.SYNCING ||
                     this.sprintDetails.SyncStatus === SPRINT_SYNC_STATES.QUEUED) {
-                    setTimeout(() => this.getSprintDetails(), 5000);
+                    this.refresh$.next(5000);
                 }
                 if (this.sprintStatus === SPRINT_STATES.DRAFT) {
                     // Since we are hiding the "Highlights" and "Notes" tab for draft sprints,
@@ -190,13 +203,13 @@ export class SprintDetailComponent implements OnInit {
     }
 
     resyncSprintDetails() {
-        this.retrospectiveService.refreshSprintDetails(this.retrospectiveID, this.sprintID).subscribe(
+        this.retrospectiveService.resyncSprintDetails(this.retrospectiveID, this.sprintID).subscribe(
             () => {
-                this.sprintDetails.SyncStatus = SPRINT_SYNC_STATES.SYNCING;
+                this.sprintDetails.SyncStatus = SPRINT_SYNC_STATES.QUEUED;
                 this.snackBar.open(
                     API_RESPONSE_MESSAGES.sprintComputationInitiated,
-                    '', {duration: SNACKBAR_DURATION});
-                this.getSprintDetails();
+                        '', {duration: SNACKBAR_DURATION});
+                this.refresh$.next(30000);
             },
             err => {
                 this.snackBar.open(
