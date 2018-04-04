@@ -190,12 +190,6 @@ export const RATING_COLORS = {
     [RATING_STATES_LABEL[RATING_STATES.RED]]: '#FF3030'
 };
 
-export const SPRINT_HIGHLIGHT_TYPES = {
-    GOOD: 0,
-    OKAY: 1,
-    BAD: 2
-};
-
 export const MEMBER_TASK_ROLES = {
     IMPLEMENTOR: 0,
     REVIEWER: 1,
@@ -212,14 +206,16 @@ export const SPRINT_SYNC_STATES = {
     NOT_SYNCED: 0,
     SYNCING: 1,
     SYNCED: 2,
-    SYNC_FAILED: 3
+    SYNC_FAILED: 3,
+    QUEUED: 4
 };
 
 export const SPRINT_SYNC_STATES_LABEL = {
     [SPRINT_SYNC_STATES.NOT_SYNCED]: 'Not Synced',
     [SPRINT_SYNC_STATES.SYNCING]: 'Syncing',
     [SPRINT_SYNC_STATES.SYNCED]: 'Synced',
-    [SPRINT_SYNC_STATES.SYNC_FAILED]: 'Sync Failed'
+    [SPRINT_SYNC_STATES.SYNC_FAILED]: 'Sync Failed',
+    [SPRINT_SYNC_STATES.QUEUED]: 'Queued'
 };
 
 export const RETRO_FEEDBACK_TYPES = {
@@ -243,8 +239,6 @@ export const RETRO_FEEDBACK_SCOPE_LABELS = {
     [RETRO_FEEDBACK_SCOPE_TYPES.Team]: 'Team',
     [RETRO_FEEDBACK_SCOPE_TYPES.Individual]: 'Individual',
 };
-
-export const RETRO_FEEDBACK_GOAL_KEY = 'goal';
 
 export const SPRINT_NOTES_SECTIONS_LIST = [
     {
