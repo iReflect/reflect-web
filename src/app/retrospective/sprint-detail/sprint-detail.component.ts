@@ -75,7 +75,8 @@ export class SprintDetailComponent implements OnInit {
                 this.sprintStatus = response.data.Status;
                 this.selectedValue = ACTIONABLE_SPRINT_STATES[this.sprintStatus];
                 this.sprintDays = this.utils.workdayCount(response.data.StartDate, response.data.EndDate);
-                if (this.sprintDetails.SyncStatus === SPRINT_SYNC_STATES.SYNCING) {
+                if (this.sprintDetails.SyncStatus === SPRINT_SYNC_STATES.SYNCING ||
+                    this.sprintDetails.SyncStatus === SPRINT_SYNC_STATES.QUEUED) {
                     setTimeout(() => this.getSprintDetails(), 5000);
                 }
                 if (this.sprintStatus === SPRINT_STATES.DRAFT) {

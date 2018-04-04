@@ -22,7 +22,7 @@
         </div>
         <span class="fill-remaining-space"></span>
         <button mat-raised-button color="primary" class="layout-side-margin" (click)="resyncSprintDetails()"
-                *ngIf="sprintDetails && sprintDetails.SyncStatus !== syncStates.SYNCING">
+                *ngIf="sprintDetails && [syncStates.SYNCING, syncStates.QUEUED].indexOf(sprintDetails.SyncStatus) == -1">
             Re-Sync Sprint
         </button>
         <button mat-raised-button class="layout-side-margin" color="primary" *ngIf="sprintStatus === sprintStates.DRAFT"
