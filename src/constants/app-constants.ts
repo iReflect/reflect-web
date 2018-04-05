@@ -47,6 +47,7 @@ export const APP_ROUTE_URLS = {
     teamFeedbackList: 'team/feedbacks',
     retrospectiveList: 'retrospectives',
     sprintDetails: 'retrospectives/:retrospectiveID/sprint/:sprintID',
+    retrospectiveDetail: 'retrospectives/:retrospectiveID',
     retrospectiveDashboard: 'retrospectives/:retrospectiveID/dashboard',
 };
 

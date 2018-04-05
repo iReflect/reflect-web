@@ -100,7 +100,7 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
                 this.selectedValue = ACTIONABLE_SPRINT_STATES[this.sprintStatus];
                 this.sprintDays = this.utils.workdayCount(response.data.StartDate, response.data.EndDate);
                 if (this.sprintDetails.SyncStatus === SPRINT_SYNC_STATES.SYNCING ||
-                    this.sprintDetails.SyncStatus === SPRINT_SYNC_STATES.QUEUED) {
+                    this.sprintDetails.SyncStatus === SPRINT_SYNC_STATES.QUEUED && !this.enableRefresh) {
                     this.refresh$.next(5000);
                 }
                 if (this.sprintStatus === SPRINT_STATES.DRAFT) {

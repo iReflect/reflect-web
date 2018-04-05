@@ -24,6 +24,10 @@ const routes: Routes = [
         path: APP_ROUTE_URLS.retrospectiveDashboard,
         component: RetrospectiveDashboardComponent,
         canActivate: [LoginRequiredGuard]
+    },
+    {
+        path: APP_ROUTE_URLS.retrospectiveDetail,
+        redirectTo: APP_ROUTE_URLS.retrospectiveDashboard,
     }
 ];
 
