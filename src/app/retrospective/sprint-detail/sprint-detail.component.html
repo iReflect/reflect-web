@@ -143,7 +143,7 @@
         <div class="single-grid">
             <div class="multi-table-container">
                 <div>
-                    <mat-tab-group [(selectedIndex)]="selectedTabIndex">
+                    <mat-tab-group #tabGroup [selectedIndex]="selectedTabIndex" (selectedIndexChange)="changeSelectedTabAndUrl($event)">
                         <mat-tab label="Highlights" *ngIf="sprintStatus !== sprintStates.DRAFT">
                             <div>
                                 <app-sprint-highlights

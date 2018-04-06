@@ -18,7 +18,13 @@ const routes: Routes = [
     {
         path: APP_ROUTE_URLS.sprintDetails,
         component: SprintDetailComponent,
-        canActivate: [LoginRequiredGuard]
+        canActivate: [LoginRequiredGuard],
+        children: [
+            {
+                path: ':slug',
+                component: SprintDetailComponent,
+            }
+        ]
     },
     {
         path: APP_ROUTE_URLS.retrospectiveDashboard,

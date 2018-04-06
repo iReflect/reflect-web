@@ -51,7 +51,9 @@ export class SprintListComponent implements OnInit {
 
     navigateToSprint(row) {
         this.router.navigateByUrl(
-            APP_ROUTE_URLS.sprintDetails.replace(':retrospectiveID', this.retrospectiveID).replace(':sprintID', row.ID)
+            APP_ROUTE_URLS.sprintDetails
+                .replace(':retrospectiveID', this.retrospectiveID)
+                .replace(':sprintID', row.ID)
         );
     }
 

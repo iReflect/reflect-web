@@ -78,7 +78,7 @@ export const API_RESPONSE_MESSAGES = {
     getSprintTaskSummaryError: 'Cannot get Sprint Task Summary!',
     getSprintTaskMarkDoneSuccess: 'Successfully marked the sprint task as done',
     getSprintTaskMarkUnDoneSuccess: 'Successfully marked the sprint task as undone',
-    getSprintDetailsError: 'Cannot update sprint details!',
+    getSprintDetailsError: 'Cannot get sprint details!',
     memberAlreadyPresent: 'Member already present!',
     addSprintMemberError: 'Cannot add new sprint member!',
     addSprintTaskMemberError: 'Cannot add new sprint task member!',

@@ -1,5 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatDialog, MatSnackBar, MatTabGroup } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
     ACTIONABLE_SPRINT_STATES,
@@ -17,6 +17,7 @@ import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.compon
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { UtilsService } from '../../shared/utils/utils.service';
 import { Subject } from 'rxjs/Subject';
+import { Location } from '@angular/common';
 
 @Component({
     selector: 'app-sprint-detail',
@@ -24,6 +25,7 @@ import { Subject } from 'rxjs/Subject';
     styleUrls: ['./sprint-detail.component.scss']
 })
 export class SprintDetailComponent implements OnInit, OnDestroy  {
+    params: any;
     sprintDays: number;
     sprintStatus: number;
     selectedValue: number;
@@ -42,7 +44,14 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
     sprintActions = SPRINT_ACTIONS;
     sprintActionsLabel = SPRINT_ACTIONS_LABEL;
     syncStates = SPRINT_SYNC_STATES;
-    tabIndexMapping: any = {highlights: 0, taskSummary: 1, memberSummary: 2, notes: 3};
+    tabIndexMapping: any = { highlights: 0, taskSummary: 1, memberSummary: 2, notes: 3 };
+    tabInfos = [
+        { slug: 'highlights' },
+        { slug: 'task-summary' },
+        { slug: 'member-summary' },
+        { slug: 'notes' },
+    ];
+    @ViewChild('tabGroup') tabGroup: MatTabGroup;
 
     constructor(
         private retrospectiveService: RetrospectiveService,
@@ -50,14 +59,15 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
         private router: Router,
         private utils: UtilsService,
         private activatedRoute: ActivatedRoute,
+        private location: Location,
         public dialog: MatDialog,
     ) {
     }
 
     ngOnInit() {
-        const params = this.activatedRoute.snapshot.params;
-        this.retrospectiveID = params['retrospectiveID'];
-        this.sprintID = params['sprintID'];
+        this.params = this.activatedRoute.snapshot.params;
+        this.retrospectiveID = this.params['retrospectiveID'];
+        this.sprintID = this.params['sprintID'];
         this.refresh$
             .subscribe((delay = 0) => {
                 setTimeout(() => {
@@ -65,10 +75,32 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
                 }, delay);
             });
         this.refresh$.next();
+        const tabIndex = this.getTabIndex();
+        this.changeSelectedTabAndUrl(tabIndex);
     }
 
     ngOnDestroy() {
         this.refresh$.unsubscribe();
+    }
+
+    getTabIndex() {
+        if ('slug' in this.params) {
+            const slug = this.params['slug'];
+            return Math.max(0, this.tabInfos.findIndex(tabInfo => tabInfo.slug === slug));
+        } else {
+            const normalizedUrl = this.location.normalize(this.location.path());
+            this.location.go(Location.joinWithSlash(normalizedUrl, this.tabInfos[this.selectedTabIndex].slug));
+        }
+        return 0;
+    }
+
+    changeSelectedTabAndUrl(newTabIndex) {
+        this.selectedTabIndex = newTabIndex;
+        // this.tabGroup.selectedIndex = newTabIndex;
+        const tabInfo = this.tabInfos[newTabIndex];
+        const normalizedUrl = this.location.normalize(this.location.path());
+        const baseUrl = normalizedUrl.substring(0, normalizedUrl.lastIndexOf('/') + 1);
+        this.location.replaceState(Location.joinWithSlash(baseUrl, tabInfo.slug));
     }
 
     getSprintAssignedPoints() {
@@ -96,6 +128,11 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
                     // Since we are hiding the "Highlights" and "Notes" tab for draft sprints,
                     // we need to make sure that the summary tabs are following the correct order.
                     this.tabIndexMapping = {taskSummary: 0, memberSummary: 1};
+                    this.tabInfos = [
+                        { slug: 'task-summary' },
+                        { slug: 'member-summary' }
+                    ];
+                    this.changeSelectedTabAndUrl(this.selectedTabIndex);
                 }
             },
             err => {
