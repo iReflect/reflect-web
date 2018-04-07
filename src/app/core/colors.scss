@@ -1,4 +1,4 @@
-@import '~@angular/material/theming';
+@import "~@angular/material/theming";
 
 @function color($colors, $key) {
     @if map-has-key($colors, $key) {

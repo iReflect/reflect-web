@@ -3,30 +3,32 @@
 }
 
 .multi-table-container {
-    background: #FFF;
+    background: #fff;
 }
 
 .mat-tab-header {
-    background: #FFF;
+    background: #fff;
 }
 
 .sprint-header-box {
-  .stats-box {
-    flex-basis: 18%;
-  }
-  .box-header{
-    .title {
-      font-size: 18px;
+    .stats-box {
+        flex-basis: 18%;
     }
-  }
-  .info-box-content {
-    p {
-      font-size: medium;
+
+    .box-header {
+        .title {
+            font-size: 18px;
+        }
     }
-  }
+
+    .info-box-content {
+        p {
+            font-size: medium;
+        }
+    }
 }
 
 .sync-failed {
-    color: #FF0000;
+    color: #f00;
     font-weight: 600;
 }

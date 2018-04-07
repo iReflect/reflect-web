@@ -2,21 +2,24 @@
 
 .app-dialog {
     position: relative;
+
     .mat-dialog-title {
         margin: -24px -24px 20px;
         padding: 15px 54px 15px 24px;
         background-color: $primary;
-        color: #FFF;
+        color: #fff;
         line-height: 1.4;
     }
+
     .dialog-subtitle {
         margin: 0;
         font-size: 14px;
     }
+
     .close-icon {
         position: absolute;
         background-color: $primary;
-        color: #FFF;
+        color: #fff;
         right: -13px;
         top: 10px;
     }
