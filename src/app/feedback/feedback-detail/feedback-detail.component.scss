@@ -7,16 +7,20 @@ mat-form-field {
         float: left;
         margin: -10px;
     }
+
     .action-buttons {
         float: right;
         margin: -18px;
+
         button {
             margin-right: 5px;
             color: white;
         }
+
         .save-draft {
             background-color: #3293d2;
         }
+
         .save-submit {
             background-color: #64e63c;
         }
@@ -25,12 +29,14 @@ mat-form-field {
 
 .feedback-form-container {
     display: flex;
+
     .feedback-form {
         width: 75%;
         margin-left: 25px;
         margin-top: 11px;
         margin-bottom: 25px;
     }
+
     .empty-block {
         width: 25%;
     }

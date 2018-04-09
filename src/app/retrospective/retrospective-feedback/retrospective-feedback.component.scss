@@ -1,9 +1,11 @@
 .ag-grid-container {
     width: 100%;
     height: 350px;
+
     &.-small-height {
         height: 350px;
     }
+
     ag-grid-angular {
         width: 100%;
         height: 100%;

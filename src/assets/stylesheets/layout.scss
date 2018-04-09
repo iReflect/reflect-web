@@ -2,7 +2,7 @@
     padding: 24px;
 
     &.-colored {
-        background-color: #ECEFF1;
+        background-color: #eceff1;
     }
 }
 
@@ -10,8 +10,9 @@
     min-height: calc(100vh - 64px);
 
     &.-colored {
-        background-color: #ECEFF1;
+        background-color: #eceff1;
     }
+
     &.-fixed-nav-toolbar {
         margin-top: 64px;
         min-height: calc(100vh - 128px);
@@ -49,19 +50,23 @@
     margin: 0;
     display: flex;
     align-items: center;
+
     > i {
         font-style: normal;
         margin: 0 10px;
         font-weight: 300;
         font-size: inherit;
         color: inherit;
+
         & + div {
             font-size: 14px;
             color: #666;
+
             > span {
                 display: block;
                 line-height: 1.8;
             }
+
             > span.small-text {
                 font-size: 11px;
                 margin: 0;
@@ -72,6 +77,7 @@
 
 .nav-toolbar {
     border-bottom: 1.1px solid rgba(0, 0, 0, 0.12);
+
     &.-fixed {
         position: fixed;
         top: 64px;
@@ -95,7 +101,7 @@
 .empty-message-container {
     margin: 0 auto;
     text-align: center;
-    background: #FFF;
+    background: #fff;
     width: 100%;
 }
 

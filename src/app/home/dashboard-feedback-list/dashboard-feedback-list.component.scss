@@ -1,8 +1,10 @@
 mat-toolbar-row {
     display: flex;
+
     .list-title {
         flex-basis: 90%;
     }
+
     .list-count {
         flex-basis: 10%;
     }

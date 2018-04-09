@@ -12,7 +12,8 @@
 .information-box {
     padding: 20px;
     margin: 10px 0;
-    background-color: #FFF;
+    background-color: #fff;
+
     &.-transparent {
         background-color: transparent;
     }
@@ -32,15 +33,17 @@
         margin-bottom: 5px;
         color: #000;
     }
+
     .subtitle {
-        color: rgba(0, 0, 0, .654);
+        color: rgba(0, 0, 0, 0.654);
         font-size: 13px;
         font-weight: 300;
         line-height: 20px;
         margin: 0;
     }
+
     p {
-        color: rgba(0, 0, 0, .654);
+        color: rgba(0, 0, 0, 0.654);
         font-size: 13px;
         line-height: 20px;
         margin-top: 5px;
@@ -51,7 +54,9 @@
         font-style: italic;
         font-size: 12px;
     }
-    .info-box-footer, .info-box-content {
+
+    .info-box-footer,
+    .info-box-content {
         display: flex;
     }
 }
