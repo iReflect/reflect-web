@@ -21,8 +21,9 @@ const routes: Routes = [
         canActivate: [LoginRequiredGuard],
         children: [
             {
-                path: ':slug',
+                path: APP_ROUTE_URLS.slug,
                 component: SprintDetailComponent,
+                canActivate: [LoginRequiredGuard],
             }
         ]
     },

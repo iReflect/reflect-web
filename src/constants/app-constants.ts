@@ -41,6 +41,7 @@ export const APP_ROUTE_URLS = {
     root: '',
     login: 'login',
     auth: 'auth',
+    slug: ':slug',
     feedback: 'feedbacks/:id',
     feedbackList: 'feedbacks',
     teamFeedback: 'team/feedbacks/:id',

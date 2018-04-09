@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatSnackBar, MatTabGroup } from '@angular/material';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import {
     ACTIONABLE_SPRINT_STATES,
     API_RESPONSE_MESSAGES,
@@ -18,6 +18,7 @@ import { RetrospectiveService } from '../../shared/services/retrospective.servic
 import { UtilsService } from '../../shared/utils/utils.service';
 import { Subject } from 'rxjs/Subject';
 import { Location } from '@angular/common';
+import * as _ from 'lodash';
 
 @Component({
     selector: 'app-sprint-detail',
@@ -75,32 +76,53 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
                 }, delay);
             });
         this.refresh$.next();
-        const tabIndex = this.getTabIndex();
-        this.changeSelectedTabAndUrl(tabIndex);
+
+        this.router.events
+            .filter(event => event instanceof NavigationEnd)
+            .map(() => this.activatedRoute)
+            .map(route => {
+                while (route.firstChild) {
+                    route = route.firstChild;
+                }
+                return route;
+            })
+            .filter(route => route.outlet === 'primary')
+            .subscribe(route => {
+                const newTabIndex = this.getTabIndex(route);
+                if (this.selectedTabIndex !== newTabIndex) {
+                    this.selectedTabIndex = newTabIndex;
+                    // https://github.com/angular/material2/issues/687
+                    this.tabGroup.selectedIndex = newTabIndex;
+                }
+            });
     }
 
     ngOnDestroy() {
         this.refresh$.unsubscribe();
     }
 
-    getTabIndex() {
-        if ('slug' in this.params) {
-            const slug = this.params['slug'];
-            return Math.max(0, this.tabInfos.findIndex(tabInfo => tabInfo.slug === slug));
-        } else {
-            const normalizedUrl = this.location.normalize(this.location.path());
-            this.location.go(Location.joinWithSlash(normalizedUrl, this.tabInfos[this.selectedTabIndex].slug));
+    getTabIndex(route: ActivatedRoute) {
+        while (route.firstChild) {
+            route = route.firstChild;
         }
-        return 0;
+        const params = route.snapshot.params;
+        if ('slug' in params) {
+            const slug = params['slug'];
+            return Math.max(0, this.tabInfos.findIndex(tabInfo => tabInfo.slug === slug));
+        }
+        return this.selectedTabIndex;
     }
 
     changeSelectedTabAndUrl(newTabIndex) {
         this.selectedTabIndex = newTabIndex;
-        // this.tabGroup.selectedIndex = newTabIndex;
         const tabInfo = this.tabInfos[newTabIndex];
-        const normalizedUrl = this.location.normalize(this.location.path());
-        const baseUrl = normalizedUrl.substring(0, normalizedUrl.lastIndexOf('/') + 1);
-        this.location.replaceState(Location.joinWithSlash(baseUrl, tabInfo.slug));
+        const baseUrl = this.location.normalize(APP_ROUTE_URLS.sprintDetails
+            .replace(':retrospectiveID', this.retrospectiveID)
+            .replace(':sprintID', this.sprintID)
+        );
+        this.router.navigate([baseUrl, tabInfo.slug], {
+            replaceUrl: true,
+        });
     }
 
     getSprintAssignedPoints() {
@@ -132,8 +154,9 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
                         { slug: 'task-summary' },
                         { slug: 'member-summary' }
                     ];
-                    this.changeSelectedTabAndUrl(this.selectedTabIndex);
                 }
+                const tabIndex = this.getTabIndex(this.activatedRoute);
+                this.changeSelectedTabAndUrl(tabIndex);
             },
             err => {
                 if (!isRefresh) {
