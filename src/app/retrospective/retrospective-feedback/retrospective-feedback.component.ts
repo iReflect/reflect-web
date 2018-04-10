@@ -31,6 +31,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
     @Input() retrospectiveID;
     @Input() sprintID;
     @Input() sprintStatus;
+    @Input() sprintEndDate;
     @Input() isTabActive;
     @Input() feedbackType: number;
     @Input() feedbackSubType;
@@ -357,6 +358,9 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                     minWidth: 160,
                     editable: editable,
                     cellEditor: 'datePicker',
+                    cellEditorParams: {
+                        minValue: this.sprintEndDate,
+                    },
                     valueFormatter: (cellParams) => this.utils.getDateFromString(cellParams.value || ''),
                     onCellValueChanged: (cellParams) => {
                         if (!cellParams.newValue || cellParams.newValue !== cellParams.oldValue) {
