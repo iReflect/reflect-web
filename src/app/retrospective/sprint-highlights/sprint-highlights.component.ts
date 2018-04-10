@@ -35,6 +35,7 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
     @Input() retrospectiveID;
     @Input() sprintID;
     @Input() sprintStatus;
+    @Input() sprintEndDate;
     @Input() isTabActive: boolean;
     @Input() refreshOnChange: boolean;
 

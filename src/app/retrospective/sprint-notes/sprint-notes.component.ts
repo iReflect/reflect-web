@@ -25,6 +25,7 @@ export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
     @Input() retrospectiveID;
     @Input() sprintID;
     @Input() sprintStatus;
+    @Input() sprintEndDate;
     @Input() isTabActive: boolean;
     @Input() refreshOnChange: boolean;
 
