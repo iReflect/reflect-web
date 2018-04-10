@@ -5,7 +5,9 @@ import {
     ACTIONABLE_SPRINT_STATES,
     API_RESPONSE_MESSAGES,
     APP_ROUTE_URLS,
+    AUTO_REFRESH_DURATION,
     DATE_FORMAT,
+    RESYNC_REFRESH_DURATION,
     SNACKBAR_DURATION,
     SPRINT_ACTIONS,
     SPRINT_ACTIONS_LABEL,
@@ -67,7 +69,7 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
                 }, delay);
             });
         this.refresh$.next();
-        Observable.interval(5000)
+        Observable.interval(AUTO_REFRESH_DURATION)
             .takeUntil(this.destroy$)
             .subscribe(() => {
                 if (this.enableRefresh) {
@@ -99,9 +101,9 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
                 this.sprintStatus = response.data.Status;
                 this.selectedValue = ACTIONABLE_SPRINT_STATES[this.sprintStatus];
                 this.sprintDays = this.utils.workdayCount(response.data.StartDate, response.data.EndDate);
-                if (this.sprintDetails.SyncStatus === SPRINT_SYNC_STATES.SYNCING ||
-                    this.sprintDetails.SyncStatus === SPRINT_SYNC_STATES.QUEUED && !this.enableRefresh) {
-                    this.refresh$.next(5000);
+                if ([this.syncStates.SYNCING, this.syncStates.QUEUED].indexOf(this.sprintDetails.SyncStatus) !== -1
+                    && !this.enableRefresh) {
+                    this.refresh$.next(AUTO_REFRESH_DURATION);
                 }
                 if (this.sprintStatus === SPRINT_STATES.DRAFT) {
                     // Since we are hiding the "Highlights" and "Notes" tab for draft sprints,
@@ -220,7 +222,7 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
                 this.snackBar.open(
                     API_RESPONSE_MESSAGES.sprintComputationInitiated,
                         '', {duration: SNACKBAR_DURATION});
-                this.refresh$.next(30000);
+                this.refresh$.next(RESYNC_REFRESH_DURATION);
             },
             err => {
                 this.snackBar.open(

@@ -8,6 +8,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import {
     API_RESPONSE_MESSAGES,
+    AUTO_REFRESH_DURATION,
     MEMBER_TASK_ROLES,
     MEMBER_TASK_ROLES_LABEL,
     RATING_STATES,
@@ -119,7 +120,7 @@ export class RetrospectTaskModalComponent implements OnDestroy {
         this.gridApi = params.api;
         this.columnApi = params.columnApi;
         this.getSprintTaskMemberSummary(false);
-        Observable.interval(5000)
+        Observable.interval(AUTO_REFRESH_DURATION)
             .takeUntil(this.destroy$)
             .subscribe(() => {
                 if (this.autoRefreshCurrentState) {

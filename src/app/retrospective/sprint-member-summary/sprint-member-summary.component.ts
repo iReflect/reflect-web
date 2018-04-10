@@ -9,6 +9,7 @@ import 'rxjs/add/observable/interval';
 
 import {
     API_RESPONSE_MESSAGES,
+    AUTO_REFRESH_DURATION,
     RATING_STATES,
     RATING_STATES_LABEL,
     SNACKBAR_DURATION,
@@ -140,7 +141,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         this.gridApi = params.api;
         this.columnApi = params.columnApi;
         this.getSprintMemberSummary(false);
-        Observable.interval(5000)
+        Observable.interval(AUTO_REFRESH_DURATION)
             .takeUntil(this.destroy$)
             .subscribe(() => {
                 if (this.autoRefreshCurrentState && this.isTabActive) {
