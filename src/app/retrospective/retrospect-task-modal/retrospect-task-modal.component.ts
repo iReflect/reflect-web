@@ -105,13 +105,20 @@ export class RetrospectTaskModalComponent implements OnDestroy {
     setGridOptions() {
         this.gridOptions = <GridOptions>{
             columnDefs: this.columnDefs,
-            rowHeight: 48,
-            singleClickEdit: true,
             frameworkComponents: {
                 'selectEditor': SelectCellEditorComponent,
                 'ratingRenderer': RatingRendererComponent,
                 'numericEditor': NumericCellEditorComponent
-            }
+            },
+            onCellEditingStarted: () => this.onCellEditingStarted(),
+            onCellEditingStopped: () => this.onCellEditingStopped(),
+            onGridReady: event => this.onGridReady(event),
+            overlayLoadingTemplate: this.overlayLoadingTemplate,
+            overlayNoRowsTemplate: this.overlayNoRowsTemplate,
+            rowHeight: 48,
+            singleClickEdit: true,
+            stopEditingWhenGridLosesFocus: true,
+            suppressScrollOnNewData: true
         };
     }
 

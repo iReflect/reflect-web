@@ -85,14 +85,16 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                 if (this.isTabActive) {
                     this.gridApi.sizeColumnsToFit();
                 }
-            } else if (changes.data) {
+            }
+            if (changes.data) {
                 const data = changes.data.currentValue || [];
                 if (this.isTabActive) {
                     this.gridApi.sizeColumnsToFit();
                 }
                 this.gridApi.setRowData(data.filter((feedback) => (this.feedbackType === RETRO_FEEDBACK_TYPES.GOAL) ||
                     feedback.SubType === this.feedbackSubType));
-            } else if (changes.isTabActive && changes.isTabActive.currentValue) {
+            }
+            if (changes.isTabActive && changes.isTabActive.currentValue) {
                 setTimeout(() => {
                     this.gridApi.sizeColumnsToFit();
                 });
@@ -103,13 +105,18 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
     setGridOptions() {
         this.gridOptions = <GridOptions>{
             columnDefs: this.columnDefs,
-            rowHeight: 48,
-            singleClickEdit: true,
             frameworkComponents: {
                 'selectEditor': SelectCellEditorComponent,
                 'clickableButtonRenderer': ClickableButtonRendererComponent,
                 'datePicker': DatePickerEditorComponent,
-            }
+            },
+            onCellEditingStarted: () => this.onCellEditingStarted(),
+            onCellEditingStopped: () => this.onCellEditingStopped(),
+            onGridReady: event => this.onGridReady(event),
+            rowHeight: 48,
+            singleClickEdit: true,
+            stopEditingWhenGridLosesFocus: true,
+            suppressScrollOnNewData: true
         };
     }
 

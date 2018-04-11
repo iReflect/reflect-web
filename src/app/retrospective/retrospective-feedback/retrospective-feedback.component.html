@@ -12,11 +12,8 @@
         <div class="ag-grid-container -small-height">
             <ag-grid-angular
                 class="ag-theme-material custom-ag-grid"
-                [gridOptions]="gridOptions"
-                [stopEditingWhenGridLosesFocus]="true"
-                (gridReady)="onGridReady($event)"
-                (cellEditingStarted)="onCellEditingStarted()"
-                (cellEditingStopped)="onCellEditingStopped()"></ag-grid-angular>
+                [gridOptions]="gridOptions">
+            </ag-grid-angular>
         </div>
     </mat-card>
 </div>

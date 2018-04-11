@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -34,8 +34,10 @@ export class TaskProviderAuthComponent implements OnChanges {
             authConfig => supportedAuthTypes.indexOf(authConfig.type) !== -1);
     }
 
-    ngOnChanges(changes) {
-        this.initializeSupportedAuthTypeConfig(changes.supportedAuthTypes.currentValue || []);
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes.supportedAuthTypes) {
+            this.initializeSupportedAuthTypeConfig(changes.supportedAuthTypes.currentValue || []);
+        }
     }
 
     onAuthTypeChange(selectedValue: any) {

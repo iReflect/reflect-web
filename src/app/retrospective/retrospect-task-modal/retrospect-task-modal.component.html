@@ -46,13 +46,7 @@
     <div class="ag-grid-container">
         <ag-grid-angular
             class="ag-theme-material custom-ag-grid"
-            [gridOptions]="gridOptions"
-            [stopEditingWhenGridLosesFocus]="true"
-            [overlayLoadingTemplate]="overlayLoadingTemplate"
-            [overlayNoRowsTemplate]="overlayNoRowsTemplate"
-            (gridReady)="onGridReady($event)"
-            (cellEditingStarted)="onCellEditingStarted()"
-            (cellEditingStopped)="onCellEditingStopped()">
+            [gridOptions]="gridOptions">
         </ag-grid-angular>
     </div>
 </div>
