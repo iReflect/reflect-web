@@ -1,18 +1,21 @@
 import { Injectable } from '@angular/core';
-import { DATE_FORMAT } from '../../../constants/app-constants';
+import { API_RESPONSE_MESSAGES, DATE_FORMAT } from '../../../constants/app-constants';
 import { DatePipe } from '@angular/common';
 import * as moment from 'moment';
+import * as _ from 'lodash';
 
 @Injectable()
 export class UtilsService {
     constructor(private datePipe: DatePipe) { }
 
     getApiErrorMessage(response): string {
-        if (!response.data.error) {
+        if (response.data.error) {
+            return _.upperFirst(response.data.error.trim());
+        } else if (response.status === 403) {
+            return API_RESPONSE_MESSAGES.permissionDeniedError;
+        } else {
             return '';
         }
-        const message = response.data.error;
-        return message.charAt(0).toUpperCase() + message.substr(1);
     }
 
     isAgGridEditingEvent(event) {

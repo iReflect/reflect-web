@@ -5,6 +5,7 @@ import {
     API_RESPONSE_MESSAGES,
     RETRO_FEEDBACK_GOAL_TYPES,
     RETRO_FEEDBACK_TYPES,
+    AUTO_REFRESH_DURATION,
     SNACKBAR_DURATION,
     SPRINT_NOTES_SECTIONS_LIST
 } from '../../../constants/app-constants';
@@ -47,7 +48,7 @@ export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
 
     ngOnInit() {
         this.getSprintNotesTab(false);
-        Observable.interval(5000)
+        Observable.interval(AUTO_REFRESH_DURATION)
             .takeUntil(this.destroy$)
             .subscribe(() => {
                 if (this.autoRefreshCurrentState && this.isTabActive) {

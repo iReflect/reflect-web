@@ -6,7 +6,10 @@ import 'rxjs/add/operator/takeUntil';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import {
-    API_RESPONSE_MESSAGES, MARK_DONE_LABELS, SNACKBAR_DURATION,
+    API_RESPONSE_MESSAGES,
+    AUTO_REFRESH_DURATION,
+    MARK_DONE_LABELS,
+    SNACKBAR_DURATION,
     SPRINT_STATES
 } from '../../../constants/app-constants';
 import { ClickableButtonRendererComponent } from '../../shared/ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
@@ -115,7 +118,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         this.gridApi = params.api;
         this.columnApi = params.columnApi;
         this.getSprintTaskSummary(false);
-        Observable.interval(5000)
+        Observable.interval(AUTO_REFRESH_DURATION)
             .takeUntil(this.destroy$)
             .subscribe(() => {
                 if (this.isTabActive && this.autoRefreshCurrentState) {

@@ -31,23 +31,28 @@ export const LOGIN_ERROR_TYPES = {
 };
 
 export const LOGIN_ERROR_MESSAGES = {
-    notFound: `User doesn't exist! Try with another user or contact admin.`,
+    notFound: 'User doesn\'t exist! Try with another user or contact admin.',
     unauthorized: 'Invalid Session! Login again.',
     internalError: 'Some error occurred! Try again.'
 };
 
 export const APP_ROUTE_URLS = {
-    forwardSlash: '/',
     root: '',
+    forwardSlash: '/',
     login: 'login',
     auth: 'auth',
-    feedback: 'feedbacks/:id',
+
     feedbackList: 'feedbacks',
-    teamFeedback: 'team/feedbacks/:id',
+    feedback: 'feedbacks/:id',
+
     teamFeedbackList: 'team/feedbacks',
+    teamFeedback: 'team/feedbacks/:id',
+
     retrospectiveList: 'retrospectives',
-    sprintDetails: 'retrospectives/:retrospectiveID/sprint/:sprintID',
+    retrospectiveDetail: 'retrospectives/:retrospectiveID',
     retrospectiveDashboard: 'retrospectives/:retrospectiveID/dashboard',
+
+    sprintDetails: 'retrospectives/:retrospectiveID/sprint/:sprintID',
 };
 
 export const API_RESPONSE_MESSAGES = {
@@ -103,28 +108,29 @@ export const API_RESPONSE_MESSAGES = {
     memberSummaryRefreshFailure: 'Failed to refresh Member Summary!',
     taskSummaryRefreshFailure: 'Failed to refresh Task Summary!',
     sprintNotesTabRefreshFailure: 'Failed to refresh Sprint Notes Tab!',
-    goalResolvedSuccessfully: 'Goal resolved successfully',
-    goalResolveFailed: `Failed to resolve the goal`,
-    goalUnResolvedSuccessfully: 'Goal un-resolved successfully',
-    goalUnResolveFailed: `Failed to un-resolve the goal`,
-    sprintHighlightsGetError: 'Couldn\'t get the sprint highlights',
-    sprintHighlightsUpdateError: `Couldn't update sprint highlight`,
-    sprintHighlightsUpdateSuccess: 'Successfully updated sprint highlight',
-    sprintHighlightsAddError: `Couldn't add a sprint highlight`,
-    sprintHighlightsAddSuccess: 'Successfully added a sprint highlight',
-    sprintNotesGetError: 'Couldn\'t get the sprint notes',
-    sprintNotesUpdateError: `Couldn't update sprint note`,
-    sprintNotesUpdateSuccess: 'Successfully updated sprint note',
-    sprintNotesAddError: `Couldn't add a sprint note`,
-    sprintNotesAddSuccess: 'Successfully added a sprint note',
-    sprintPendingGoalsGetError: 'Couldn\'t get the pending goals',
-    sprintAccomplishedGoalsGetError: 'Couldn\'t get the accomplished goals',
-    sprintAddedGoalsGetError: 'Couldn\'t get the added goals',
-    sprintGoalsUpdateError: `Couldn't update sprint goal`,
-    sprintGoalsUpdateSuccess: 'Successfully updated sprint goal',
-    sprintGoalsAddError: `Couldn't add a sprint goal`,
-    sprintGoalsAddSuccess: 'Successfully added a sprint goal',
-    dateNullError: 'Cannot set date as null',
+    goalResolvedSuccessfully: 'Goal resolved successfully!',
+    goalResolveFailed: 'Failed to resolve the goal!',
+    goalUnResolvedSuccessfully: 'Goal un-resolved successfully!',
+    goalUnResolveFailed: 'Failed to un-resolve the goal!',
+    sprintHighlightsGetError: 'Cannot get the sprint highlights!',
+    sprintHighlightsUpdateError: 'Cannot update sprint highlight!',
+    sprintHighlightsUpdateSuccess: 'Successfully updated sprint highlight!',
+    sprintHighlightsAddError: 'Cannot add a sprint highlight!',
+    sprintHighlightsAddSuccess: 'Successfully added a sprint highlight!',
+    sprintNotesGetError: 'Cannot get the sprint notes!',
+    sprintNotesUpdateError: 'Cannot update sprint note!',
+    sprintNotesUpdateSuccess: 'Successfully updated sprint note!',
+    sprintNotesAddError: 'Cannot add a sprint note!',
+    sprintNotesAddSuccess: 'Successfully added a sprint note!',
+    sprintPendingGoalsGetError: 'Cannot get the pending goals!',
+    sprintAccomplishedGoalsGetError: 'Cannot get the accomplished goals!',
+    sprintAddedGoalsGetError: 'Cannot get the added goals!',
+    sprintGoalsUpdateError: 'Cannot update sprint goal!',
+    sprintGoalsUpdateSuccess: 'Successfully updated sprint goal!',
+    sprintGoalsAddError: 'Cannot add a sprint goal!',
+    sprintGoalsAddSuccess: 'Successfully added a sprint goal!',
+    dateNullError: 'Cannot set date as null!',
+    permissionDeniedError: 'You do not have permission to view this page!'
 };
 
 export const QUESTION_RESPONSE_SEPARATOR = ',';
@@ -163,6 +169,10 @@ export const SPRINT_ACTIONS_LABEL = {
 };
 
 export const SNACKBAR_DURATION = 2000;
+
+export const AUTO_REFRESH_DURATION = 5000;
+
+export const RESYNC_REFRESH_DURATION = 30000;
 
 export const DATE_FORMAT = 'MMMM dd, yyyy';
 

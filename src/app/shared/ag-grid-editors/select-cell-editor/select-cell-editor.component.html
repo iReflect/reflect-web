@@ -1,5 +1,5 @@
-<div class="container" #select tabindex="0">
-    <mat-select (change)="onSelectChange($event)" [(ngModel)]="value">
+<div class="container" #container tabindex="0">
+    <mat-select #select (change)="onSelectChange($event)" [(ngModel)]="value">
         <mat-option *ngFor="let option of selectOptions" [value]="option.id">
             {{ option.value }}
         </mat-option>

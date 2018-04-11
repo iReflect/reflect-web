@@ -3,6 +3,7 @@ import { MatSnackBar } from '@angular/material';
 
 import {
     API_RESPONSE_MESSAGES,
+    AUTO_REFRESH_DURATION,
     HIGHLIGHTS_LIST,
     RETRO_FEEDBACK_GOAL_TYPES,
     RETRO_FEEDBACK_TYPES,
@@ -48,7 +49,7 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
 
     ngOnInit() {
         this.getSprintHighlightsTab(false);
-        Observable.interval(5000)
+        Observable.interval(AUTO_REFRESH_DURATION)
             .takeUntil(this.destroy$)
             .subscribe(() => {
                 if (this.autoRefreshCurrentState && this.isTabActive) {

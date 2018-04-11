@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { ICellEditorParams } from 'ag-grid';
 import { ICellEditorAngularComp } from 'ag-grid-angular';
+import { MatSelect } from '@angular/material';
 
 @Component({
     selector: 'app-select-cell-editor',
@@ -12,7 +13,8 @@ export class SelectCellEditorComponent implements ICellEditorAngularComp, AfterV
     selectOptions: any = [];
 
     private params: ICellEditorParams;
-    @ViewChild('select', {read: ViewContainerRef}) private select;
+    @ViewChild('container', {read: ViewContainerRef}) private container;
+    @ViewChild('select', {read: MatSelect}) private select: MatSelect;
 
     constructor() {
     }
@@ -25,7 +27,8 @@ export class SelectCellEditorComponent implements ICellEditorAngularComp, AfterV
 
     ngAfterViewInit() {
         setTimeout(() => {
-            this.select.element.nativeElement.focus();
+            this.container.element.nativeElement.focus();
+            this.select.open();
         });
     }
 
