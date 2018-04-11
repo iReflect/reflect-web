@@ -14,6 +14,7 @@
                 class="ag-theme-material custom-ag-grid"
                 [gridOptions]="gridOptions"
                 [stopEditingWhenGridLosesFocus]="true"
+                [suppressScrollOnNewData]="true"
                 (gridReady)="onGridReady($event)"
                 (cellEditingStarted)="onCellEditingStarted()"
                 (cellEditingStopped)="onCellEditingStopped()"></ag-grid-angular>

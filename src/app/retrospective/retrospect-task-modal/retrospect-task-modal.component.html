@@ -50,6 +50,7 @@
             [stopEditingWhenGridLosesFocus]="true"
             [overlayLoadingTemplate]="overlayLoadingTemplate"
             [overlayNoRowsTemplate]="overlayNoRowsTemplate"
+            [suppressScrollOnNewData]="true"
             (gridReady)="onGridReady($event)"
             (cellEditingStarted)="onCellEditingStarted()"
             (cellEditingStopped)="onCellEditingStopped()">
