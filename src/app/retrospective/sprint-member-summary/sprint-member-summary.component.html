@@ -17,14 +17,7 @@
     <div class="ag-grid-container dynamic-grid-height -adjust-tabs">
         <ag-grid-angular
             class="ag-theme-material custom-ag-grid"
-            [gridOptions]="gridOptions"
-            [stopEditingWhenGridLosesFocus]="true"
-            [overlayLoadingTemplate]="overlayLoadingTemplate"
-            [overlayNoRowsTemplate]="overlayNoRowsTemplate"
-            [suppressScrollOnNewData]="true"
-            (gridReady)="onGridReady($event)"
-            (cellEditingStarted)="onCellEditingStarted()"
-            (cellEditingStopped)="onCellEditingStopped()">
+            [gridOptions]="gridOptions">
         </ag-grid-angular>
     </div>
 </mat-card>

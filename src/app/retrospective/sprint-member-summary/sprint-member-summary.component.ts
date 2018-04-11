@@ -125,14 +125,21 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             defaultColDef: {
                 width: 100,
             },
-            rowHeight: 48,
-            singleClickEdit: true,
             frameworkComponents: {
                 'ratingEditor': SelectCellEditorComponent,
                 'ratingRenderer': RatingRendererComponent,
                 'deleteButtonRenderer': ClickableButtonRendererComponent,
                 'numericEditor': NumericCellEditorComponent
-            }
+            },
+            onCellEditingStarted: () => this.onCellEditingStarted(),
+            onCellEditingStopped: () => this.onCellEditingStopped(),
+            onGridReady: event => this.onGridReady(event),
+            overlayLoadingTemplate: this.overlayLoadingTemplate,
+            overlayNoRowsTemplate: this.overlayNoRowsTemplate,
+            rowHeight: 48,
+            singleClickEdit: true,
+            suppressScrollOnNewData: true,
+            stopEditingWhenGridLosesFocus: true
         };
     }
 

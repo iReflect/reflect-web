@@ -67,11 +67,13 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         let refreshData = true;
         if (changes.isTabActive) {
             this.isTabActive = changes.isTabActive.currentValue;
-        } else if (changes.enableRefresh) {
+        }
+        if (changes.enableRefresh) {
             this.enableRefresh = changes.enableRefresh.currentValue;
             this.autoRefreshCurrentState = this.enableRefresh;
             refreshData = this.enableRefresh;
-        } else if (changes.sprintStatus && this.gridApi) {
+        }
+        if (changes.sprintStatus && this.gridApi) {
             this.columnDefs = this.createColumnDefs(changes.sprintStatus.currentValue);
             this.gridApi.setColumnDefs(this.columnDefs);
         }
@@ -98,17 +100,22 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             defaultColDef: {
                 width: 100,
             },
-            rowHeight: 48,
+            enableFilter: true,
+            enableSorting: true,
             frameworkComponents: {
                 'clickableButtonRenderer': ClickableButtonRendererComponent
             },
-            enableFilter: true,
-            enableSorting: true,
             rowClassRules: {
                 'invalid-ag-grid-row': (params) => {
                     return params.data.IsInvalid;
                 }
-            }
+            },
+            onGridReady: event => this.onGridReady(event),
+            overlayLoadingTemplate: this.overlayLoadingTemplate,
+            overlayNoRowsTemplate: this.overlayNoRowsTemplate,
+            rowHeight: 48,
+            suppressScrollOnNewData: true,
+            stopEditingWhenGridLosesFocus: true
         };
     }
 

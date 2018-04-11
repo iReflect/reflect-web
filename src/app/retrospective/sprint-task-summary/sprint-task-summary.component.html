@@ -6,12 +6,7 @@
     <div class="ag-grid-container dynamic-grid-height -adjust-tabs">
         <ag-grid-angular
             class="ag-theme-material custom-ag-grid"
-            [stopEditingWhenGridLosesFocus]="true"
-            [gridOptions]="gridOptions"
-            [overlayLoadingTemplate]="overlayLoadingTemplate"
-            [overlayNoRowsTemplate]="overlayNoRowsTemplate"
-            [suppressScrollOnNewData]="true"
-            (gridReady)="onGridReady($event)">
+            [gridOptions]="gridOptions">
         </ag-grid-angular>
     </div>
 </div>
