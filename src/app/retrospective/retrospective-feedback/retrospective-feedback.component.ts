@@ -50,9 +50,12 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
 
     @HostListener('window:resize')
     onResize() {
-        if (this.gridApi) {
-            this.resizeAgGrid();
-        }
+        this.resizeAgGrid();
+    }
+
+    @HostListener('window:scroll', [])
+    onWindowScroll() {
+        this.resizeAgGrid();
     }
 
     onCellEditingStarted() {
@@ -76,28 +79,21 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
     ngOnChanges(changes: SimpleChanges): void {
         if (this.gridApi) {
             if (changes.sprintStatus || changes.teamMembers) {
-                this.teamMembers = (changes.teamMembers && changes.teamMembers.currentValue)
-                    || this.teamMembers;
-                this.sprintStatus = (changes.sprintStatus && changes.sprintStatus.currentValue)
-                    || this.sprintStatus;
                 this.columnDefs = this.createColumnDefs(this.sprintStatus, this.teamMembers);
                 this.gridApi.setColumnDefs(this.columnDefs);
-                if (this.isTabActive) {
-                    this.gridApi.sizeColumnsToFit();
-                }
             }
             if (changes.data) {
                 const data = changes.data.currentValue || [];
-                if (this.isTabActive) {
-                    this.gridApi.sizeColumnsToFit();
-                }
                 this.gridApi.setRowData(data.filter((feedback) => (this.feedbackType === RETRO_FEEDBACK_TYPES.GOAL) ||
                     feedback.SubType === this.feedbackSubType));
             }
+            if (this.isTabActive && !changes.isTabActive) {
+                this.gridApi.sizeColumnsToFit();
+            }
+            // we do this separately because we need to wait
+            // at the least one tick when this tab is made active
             if (changes.isTabActive && changes.isTabActive.currentValue) {
-                setTimeout(() => {
-                    this.gridApi.sizeColumnsToFit();
-                });
+                this.resizeAgGrid();
             }
         }
     }
@@ -275,9 +271,11 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
     }
 
     private resizeAgGrid() {
-        setTimeout(() => {
-            this.gridApi.sizeColumnsToFit();
-        });
+        if (this.gridApi && this.isTabActive) {
+            setTimeout(() => {
+                this.gridApi.sizeColumnsToFit();
+            });
+        }
     }
 
     private createColumnDefs(sprintStatus, teamMembers) {

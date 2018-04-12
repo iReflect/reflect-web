@@ -51,7 +51,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     }
 
     @HostListener('window:resize') onResize() {
-        if (this.gridApi) {
+        if (this.gridApi && this.isTabActive) {
             setTimeout(() => {
                 this.gridApi.sizeColumnsToFit();
             });
@@ -65,30 +65,31 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        let refreshData = true;
-        if (changes.isTabActive) {
-            this.isTabActive = changes.isTabActive.currentValue;
-        }
         if (changes.enableRefresh) {
-            this.enableRefresh = changes.enableRefresh.currentValue;
-            this.autoRefreshCurrentState = this.enableRefresh;
-            refreshData = this.enableRefresh;
+            this.autoRefreshCurrentState = changes.enableRefresh.currentValue;
         }
-        if (changes.sprintStatus && this.gridApi) {
+        if (changes.sprintStatus) {
             this.columnDefs = this.createColumnDefs(changes.sprintStatus.currentValue);
-            this.gridApi.setColumnDefs(this.columnDefs);
+            if (this.gridApi) {
+                this.gridApi.setColumnDefs(this.columnDefs);
+            }
         }
-        if (changes.isSprintEditable) {
-            this.isSprintEditable = changes.isSprintEditable.currentValue;
-        }
-        // this if block also executes when this.refreshOnChange toggles
-        if (this.gridApi && this.isTabActive) {
-            setTimeout(() => {
+        if (this.gridApi) {
+            // this if block also executes when changes.refreshOnChange toggles
+            if (this.isTabActive && !changes.isTabActive) {
                 this.gridApi.sizeColumnsToFit();
-                if (refreshData) {
+            }
+            if (this.autoRefreshCurrentState) {
+                this.getSprintTaskSummary(true);
+            }
+            // we do this separately because we need to wait
+            // at the least one tick when this tab is made active
+            if (changes.isTabActive && changes.isTabActive.currentValue) {
+                setTimeout(() => {
                     this.getSprintTaskSummary(true);
-                }
-            });
+                    this.gridApi.sizeColumnsToFit();
+                });
+            }
         }
     }
 
@@ -128,6 +129,9 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         this.gridApi = params.api;
         this.columnApi = params.columnApi;
         this.getSprintTaskSummary(false);
+        if (this.isTabActive) {
+            this.gridApi.sizeColumnsToFit();
+        }
         Observable.interval(AUTO_REFRESH_DURATION)
             .takeUntil(this.destroy$)
             .subscribe(() => {
