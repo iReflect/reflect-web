@@ -34,7 +34,7 @@
             <mat-icon>refresh</mat-icon>
             Refresh
         </button>
-        <div class="add-member layout-side-margin" *ngIf="data.sprintStatus !== sprintStates.FROZEN">
+        <div class="add-member layout-side-margin" *ngIf="data.sprintStatus !== sprintStates.FROZEN && data.isSprintEditable">
             <mat-select class="tabbar-mat-select" placeholder="Select a Member" [(ngModel)]="selectedMemberID">
                 <mat-option *ngFor="let member of sprintMembers" [value]="member.ID">
                     {{(member.FirstName + ' ' + member.LastName).trim()}}

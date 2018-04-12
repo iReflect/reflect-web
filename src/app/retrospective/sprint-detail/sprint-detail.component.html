@@ -22,10 +22,11 @@
         </div>
         <span class="fill-remaining-space"></span>
         <button mat-raised-button color="primary" class="layout-side-margin" (click)="resyncSprintDetails()"
-                *ngIf="sprintDetails && [syncStates.SYNCING, syncStates.QUEUED].indexOf(sprintDetails.SyncStatus) == -1">
+                *ngIf="sprintDetails && (sprintStatus !== sprintStates.DRAFT || sprintDetails.Editable)
+                && [syncStates.SYNCING, syncStates.QUEUED].indexOf(sprintDetails.SyncStatus) == -1">
             Re-Sync Sprint
         </button>
-        <button mat-raised-button class="layout-side-margin" color="primary" *ngIf="sprintStatus === sprintStates.DRAFT"
+        <button mat-raised-button class="layout-side-margin" color="primary" *ngIf="sprintStatus === sprintStates.DRAFT && sprintDetails.Editable"
                 (click)="activateSprint()">{{sprintActionsLabel[sprintActions.ACTIVATE]}}
         </button>
         <button mat-raised-button class="layout-side-margin" color="primary"
@@ -33,7 +34,7 @@
             {{sprintActionsLabel[sprintActions.FREEZE]}}
         </button>
         <button mat-raised-button class="layout-side-margin" color="primary"
-                *ngIf="sprintStatus !== sprintStates.FROZEN" (click)="discardSprint()">
+                *ngIf="sprintStatus !== sprintStates.FROZEN && sprintDetails.Editable" (click)="discardSprint()">
             {{sprintActionsLabel[sprintActions.DISCARD]}}
         </button>
         <button mat-raised-button color="primary" (click)="getSprintDetails(true)">
@@ -164,6 +165,7 @@
                                     [sprintStatus]="sprintStatus"
                                     [retrospectiveID]="retrospectiveID"
                                     [sprintID]="sprintID"
+                                    [isSprintEditable]="sprintDetails.Editable"
                                     [refreshOnChange]="toggleToTriggerRefresh"
                                     [enableRefresh]="enableRefresh">
                                 </app-sprint-task-summary>
@@ -177,6 +179,7 @@
                                     [sprintStatus]="sprintStatus"
                                     [retrospectiveID]="retrospectiveID"
                                     [sprintID]="sprintID"
+                                    [isSprintEditable]="sprintDetails.Editable"
                                     [refreshOnChange]="toggleToTriggerRefresh"
                                     [enableRefresh]="enableRefresh">
                                 </app-sprint-member-summary>

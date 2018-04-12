@@ -43,6 +43,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     @Input() retrospectiveID;
     @Input() sprintID;
     @Input() sprintStatus;
+    @Input() isSprintEditable: boolean;
     @Input() sprintDays: any;
     @Input() isTabActive: boolean;
     @Input() enableRefresh: boolean;
@@ -72,7 +73,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     ngOnInit() {
         this.autoRefreshCurrentState = this.enableRefresh;
         this.getRetroMembers();
-        this.columnDefs = this.createColumnDefs(this.sprintStatus);
+        this.columnDefs = this.createColumnDefs(this.sprintStatus, this.isSprintEditable);
         this.setGridOptions();
     }
 
@@ -80,8 +81,14 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         if (changes.isTabActive) {
             this.isTabActive = changes.isTabActive.currentValue;
         }
-        if (this.gridApi && changes.sprintStatus && changes.sprintStatus.currentValue === this.sprintStates.FROZEN) {
-            this.columnDefs = this.createColumnDefs(changes.sprintStatus.currentValue);
+        if (changes.sprintStatus && this.gridApi) {
+            this.sprintStatus = changes.sprintStatus.currentValue;
+            this.columnDefs = this.createColumnDefs(this.sprintStatus, this.isSprintEditable);
+            this.gridApi.setColumnDefs(this.columnDefs);
+        }
+        if (changes.isSprintEditable && this.gridApi) {
+            this.isSprintEditable = changes.isSprintEditable.currentValue;
+            this.columnDefs = this.createColumnDefs(this.sprintStatus, this.isSprintEditable);
             this.gridApi.setColumnDefs(this.columnDefs);
         }
         // this if block also executes when this.refreshOnChange toggles
@@ -272,12 +279,24 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         });
     }
 
-    private createColumnDefs(sprintStatus) {
+    private createColumnDefs(sprintStatus, isSprintEditable) {
         let editable = true;
-        if (sprintStatus === this.sprintStates.FROZEN) {
+        let deleteButtonColumnDef: any = {};
+        if (sprintStatus === this.sprintStates.FROZEN || !isSprintEditable) {
             editable = false;
+        } else {
+            deleteButtonColumnDef = {
+                cellRenderer: 'deleteButtonRenderer',
+                cellRendererParams: {
+                    useIcon: true,
+                    icon: 'delete',
+                    onClick: this.deleteSprintMember.bind(this)
+                },
+                minWidth: 100,
+                cellClass: 'delete-column'
+            };
         }
-        const columnDefs = [
+        return [
             {
                 headerName: 'Name',
                 colId: 'Name',
@@ -423,18 +442,8 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                 },
                 suppressKeyboardEvent: (event) => this.utils.isAgGridEditingEvent(event)
             },
-            {
-                cellRenderer: 'deleteButtonRenderer',
-                cellRendererParams: {
-                    useIcon: true,
-                    icon: 'delete',
-                    onClick: this.deleteSprintMember.bind(this)
-                },
-                minWidth: 100,
-                cellClass: 'delete-column'
-            }
+            ...deleteButtonColumnDef,
         ];
-        return columnDefs;
     }
 
     getDisplayedRowCount() {

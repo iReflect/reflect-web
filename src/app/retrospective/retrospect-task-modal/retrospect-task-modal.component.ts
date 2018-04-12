@@ -63,7 +63,7 @@ export class RetrospectTaskModalComponent implements OnDestroy {
             this.taskDetails.Estimate = 0;
         }
         this.getSprintMembers();
-        this.columnDefs = this.createColumnDefs(data.sprintStatus);
+        this.columnDefs = this.createColumnDefs(data.sprintStatus, data.isSprintEditable);
         this.setGridOptions();
     }
 
@@ -230,9 +230,9 @@ export class RetrospectTaskModalComponent implements OnDestroy {
         this.dialogRef.close(result);
     }
 
-    private createColumnDefs(sprintStatus) {
+    private createColumnDefs(sprintStatus, isSprintEditable) {
         let editable = true;
-        if (sprintStatus === this.sprintStates.FROZEN) {
+        if (sprintStatus === this.sprintStates.FROZEN || !isSprintEditable) {
             editable = false;
         }
         const columnDefs = [
