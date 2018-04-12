@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
-    ACTIONABLE_SPRINT_STATES,
     API_RESPONSE_MESSAGES,
     APP_ROUTE_URLS,
     AUTO_REFRESH_DURATION,
@@ -29,7 +28,6 @@ import { Subject } from 'rxjs/Subject';
 export class SprintDetailComponent implements OnInit, OnDestroy  {
     sprintDays: number;
     sprintStatus: number;
-    selectedValue: number;
     sprintID: any;
     retrospectiveID: any;
     sprintDetails: any;
@@ -99,17 +97,14 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
             response => {
                 this.sprintDetails = response.data;
                 this.sprintStatus = response.data.Status;
-                this.selectedValue = ACTIONABLE_SPRINT_STATES[this.sprintStatus];
                 this.sprintDays = this.utils.workdayCount(response.data.StartDate, response.data.EndDate);
                 if ([this.syncStates.SYNCING, this.syncStates.QUEUED].indexOf(this.sprintDetails.SyncStatus) !== -1
                     && !this.enableRefresh) {
                     this.refresh$.next(AUTO_REFRESH_DURATION);
                 }
-                if (this.sprintStatus === SPRINT_STATES.DRAFT) {
-                    // Since we are hiding the "Highlights" and "Notes" tab for draft sprints,
-                    // we need to make sure that the summary tabs are following the correct order.
-                    this.tabIndexMapping = {taskSummary: 0, memberSummary: 1};
-                }
+                // Since we are hiding the "Highlights" and "Notes" tab for draft sprints,
+                // we need to make sure that the summary tabs are following the correct order.
+                this.tabIndexMapping = this.getTabIndexMapping(this.sprintStatus);
             },
             err => {
                 if (!isRefresh) {
@@ -126,6 +121,13 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
         );
     }
 
+    getTabIndexMapping(sprintStatus) {
+        if (sprintStatus === SPRINT_STATES.DRAFT) {
+            return {taskSummary: 0, memberSummary: 1};
+        }
+        return {highlights: 0, taskSummary: 1, memberSummary: 2, notes: 3};
+    }
+
     navigateToRetrospectiveDashboard() {
         this.router.navigateByUrl(APP_ROUTE_URLS.retrospectiveDashboard.replace(':retrospectiveID', this.retrospectiveID));
     }
@@ -134,7 +136,6 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
         if (errorMessage) {
             this.snackBar.open(errorMessage, '', {duration: SNACKBAR_DURATION});
         }
-        this.selectedValue = undefined;
     }
 
     activateSprint() {
@@ -152,6 +153,7 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
                 this.retrospectiveService.activateSprint(this.retrospectiveID, this.sprintID).subscribe(
                     () => {
                         this.sprintStatus = this.sprintStates.ACTIVE;
+                        // this is used to preserve the current tab when activating a draft sprint
                         this.selectedTabIndex += 1;
                         this.snackBar.open(
                             API_RESPONSE_MESSAGES.sprintActivated,

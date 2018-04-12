@@ -75,26 +75,28 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (changes.isTabActive) {
-            this.isTabActive = changes.isTabActive.currentValue;
-        }
-        if (changes.isSprintEditable && this.gridApi) {
-            this.isSprintEditable = changes.isSprintEditable.currentValue;
-            this.columnDefs = this.createColumnDefs(this.isSprintEditable);
-            this.gridApi.setColumnDefs(this.columnDefs);
-        }
-        // this if block also executes when this.refreshOnChange toggles
-        if (this.gridApi && this.isTabActive) {
-            setTimeout(() => {
-                this.gridApi.sizeColumnsToFit();
-                this.getSprintMemberSummary(true);
-            });
-        }
         if (changes.enableRefresh) {
-            this.enableRefresh = changes.enableRefresh.currentValue;
             this.autoRefreshCurrentState = changes.enableRefresh.currentValue;
-            if (this.autoRefreshCurrentState && this.isTabActive && this.gridApi) {
+        }
+        if (this.gridApi) {
+            if (changes.isSprintEditable) {
+                this.columnDefs = this.createColumnDefs(changes.isSprintEditable.currentValue);
+                this.gridApi.setColumnDefs(this.columnDefs);
+            }
+            // this if block also executes when changes.refreshOnChange toggles
+            if (this.isTabActive && !changes.isTabActive) {
+                this.gridApi.sizeColumnsToFit();
+            }
+            if (this.autoRefreshCurrentState) {
                 this.getSprintMemberSummary(true);
+            }
+            // we do this separately because we need to wait
+            // at the least one tick when this tab is made active
+            if (changes.isTabActive && changes.isTabActive.currentValue) {
+                setTimeout(() => {
+                    this.getSprintMemberSummary(true);
+                    this.gridApi.sizeColumnsToFit();
+                });
             }
         }
     }
@@ -147,6 +149,9 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         this.gridApi = params.api;
         this.columnApi = params.columnApi;
         this.getSprintMemberSummary(false);
+        if (this.isTabActive) {
+            this.gridApi.sizeColumnsToFit();
+        }
         Observable.interval(AUTO_REFRESH_DURATION)
             .takeUntil(this.destroy$)
             .subscribe(() => {
@@ -285,7 +290,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                 cellClass: 'delete-column'
             };
         }
-        return [
+        const columnDefs = [
             {
                 headerName: 'Name',
                 colId: 'Name',
@@ -430,9 +435,12 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                     }
                 },
                 suppressKeyboardEvent: (event) => this.utils.isAgGridEditingEvent(event)
-            },
-            ...deleteButtonColumnDef,
+            }
         ];
+        if (!_.isEmpty(deleteButtonColumnDef)) {
+            columnDefs.push(deleteButtonColumnDef);
+        }
+        return columnDefs;
     }
 
     getDisplayedRowCount() {
