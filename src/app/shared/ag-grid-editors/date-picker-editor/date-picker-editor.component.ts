@@ -10,7 +10,8 @@ import * as _ from 'lodash';
     styleUrls: ['./date-picker-editor.component.scss']
 })
 export class DatePickerEditorComponent implements ICellEditorAngularComp, AfterViewInit {
-    params: ICellEditorParams;
+    params: any;
+    minValue: Date;
     value: Date;
     @ViewChild('input', {read: ViewContainerRef}) private input;
     @ViewChild('picker', {read: MatDatepicker}) private picker;
@@ -33,6 +34,7 @@ export class DatePickerEditorComponent implements ICellEditorAngularComp, AfterV
 
     agInit(params: any): void {
         this.params = params;
+        this.minValue = params.minValue;
         this.value = params.value;
     }
 

@@ -33,6 +33,7 @@ mat-row {
 
     .ag-cell.ag-cell-not-inline-editing {
         line-height: 48px !important;
+
         &.ag-cell-last-left-pinned.ag-cell-focus {
             border-color: #3f51b5 !important;
         }

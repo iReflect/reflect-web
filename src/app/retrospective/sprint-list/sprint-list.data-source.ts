@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 
 export class SprintListDataSource extends DataSource<any> {
-    private dataChange: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+    public dataChange: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
 
     constructor(
         private retrospectiveService: RetrospectiveService,

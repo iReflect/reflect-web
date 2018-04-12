@@ -6,12 +6,13 @@
         "ng": "ng",
         "start": "ng serve",
         "build": "ng build",
+        "prod-build": "npm run prebuild && ng build -prod",
         "test": "ng test",
         "lint": "npm run tslint && npm run stylelint",
         "tslint": "ng lint",
         "stylelint": "stylelint '**/*.scss' --syntax scss",
         "e2e": "ng e2e",
-        "prebuild": "npm run lint"
+        "prebuild": "npm i && npm run lint"
     },
     "private": true,
     "dependencies": {
