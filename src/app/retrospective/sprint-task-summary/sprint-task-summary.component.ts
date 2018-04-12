@@ -35,6 +35,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     @Input() isTabActive: boolean;
     @Input() enableRefresh: boolean;
     @Input() refreshOnChange: boolean;
+    @Input() isSprintEditable: boolean;
 
     private params: any;
     private columnDefs: any;
@@ -76,6 +77,9 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         if (changes.sprintStatus && this.gridApi) {
             this.columnDefs = this.createColumnDefs(changes.sprintStatus.currentValue);
             this.gridApi.setColumnDefs(this.columnDefs);
+        }
+        if (changes.isSprintEditable) {
+            this.isSprintEditable = changes.isSprintEditable.currentValue;
         }
         // this if block also executes when this.refreshOnChange toggles
         if (this.gridApi && this.isTabActive) {
@@ -169,7 +173,8 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 sprintID: this.sprintID,
                 retrospectiveID: this.retrospectiveID,
                 sprintStatus: this.sprintStatus,
-                enableRefresh: this.enableRefresh
+                enableRefresh: this.enableRefresh,
+                isSprintEditable: this.isSprintEditable,
             },
         });
         dialogRef.afterClosed().subscribe(() => {
@@ -180,7 +185,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
 
     private createColumnDefs(sprintStatus) {
         let markedDoneColumns = [];
-        if (sprintStatus !== SPRINT_STATES.DRAFT && sprintStatus !== SPRINT_STATES.FROZEN) {
+        if ([SPRINT_STATES.DRAFT, SPRINT_STATES.FROZEN].indexOf(sprintStatus) === -1) {
             markedDoneColumns = [
                 {
                     colId: 'markDone',
