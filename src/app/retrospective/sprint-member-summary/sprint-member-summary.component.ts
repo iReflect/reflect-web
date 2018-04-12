@@ -12,8 +12,7 @@ import {
     AUTO_REFRESH_DURATION,
     RATING_STATES,
     RATING_STATES_LABEL,
-    SNACKBAR_DURATION,
-    SPRINT_STATES
+    SNACKBAR_DURATION
 } from '../../../constants/app-constants';
 import { NumericCellEditorComponent } from '../../shared/ag-grid-editors/numeric-cell-editor/numeric-cell-editor.component';
 import { SelectCellEditorComponent } from '../../shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
@@ -34,7 +33,6 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     selectedMemberID: any;
     autoRefreshCurrentState: boolean;
     gridOptions: GridOptions;
-    sprintStates = SPRINT_STATES;
     ratingStates = RATING_STATES;
     destroy$: Subject<boolean> = new Subject<boolean>();
     overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the members are loading!</span>';
@@ -42,7 +40,6 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
 
     @Input() retrospectiveID;
     @Input() sprintID;
-    @Input() sprintStatus;
     @Input() isSprintEditable: boolean;
     @Input() sprintDays: any;
     @Input() isTabActive: boolean;
@@ -73,7 +70,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     ngOnInit() {
         this.autoRefreshCurrentState = this.enableRefresh;
         this.getRetroMembers();
-        this.columnDefs = this.createColumnDefs(this.sprintStatus, this.isSprintEditable);
+        this.columnDefs = this.createColumnDefs(this.isSprintEditable);
         this.setGridOptions();
     }
 
@@ -81,14 +78,9 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         if (changes.isTabActive) {
             this.isTabActive = changes.isTabActive.currentValue;
         }
-        if (changes.sprintStatus && this.gridApi) {
-            this.sprintStatus = changes.sprintStatus.currentValue;
-            this.columnDefs = this.createColumnDefs(this.sprintStatus, this.isSprintEditable);
-            this.gridApi.setColumnDefs(this.columnDefs);
-        }
         if (changes.isSprintEditable && this.gridApi) {
             this.isSprintEditable = changes.isSprintEditable.currentValue;
-            this.columnDefs = this.createColumnDefs(this.sprintStatus, this.isSprintEditable);
+            this.columnDefs = this.createColumnDefs(this.isSprintEditable);
             this.gridApi.setColumnDefs(this.columnDefs);
         }
         // this if block also executes when this.refreshOnChange toggles
@@ -279,12 +271,9 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         });
     }
 
-    private createColumnDefs(sprintStatus, isSprintEditable) {
-        let editable = true;
+    private createColumnDefs(isSprintEditable) {
         let deleteButtonColumnDef: any = {};
-        if (sprintStatus === this.sprintStates.FROZEN || !isSprintEditable) {
-            editable = false;
-        } else {
+        if (isSprintEditable) {
             deleteButtonColumnDef = {
                 cellRenderer: 'deleteButtonRenderer',
                 cellRendererParams: {
@@ -310,7 +299,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             {
                 headerName: 'Allocation',
                 field: 'AllocationPercent',
-                editable: editable,
+                editable: isSprintEditable,
                 minWidth: 125,
                 valueParser: 'Number(newValue)',
                 cellEditor: 'numericEditor',
@@ -335,7 +324,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             {
                 headerName: 'Expectation',
                 field: 'ExpectationPercent',
-                editable: editable,
+                editable: isSprintEditable,
                 minWidth: 130,
                 valueParser: 'Number(newValue)',
                 cellEditor: 'numericEditor',
@@ -360,7 +349,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             {
                 headerName: 'Vacations',
                 field: 'Vacations',
-                editable: editable,
+                editable: isSprintEditable,
                 minWidth: 125,
                 valueParser: 'Number(newValue)',
                 cellEditor: 'numericEditor',
@@ -410,7 +399,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                 headerName: 'Rating',
                 field: 'Rating',
                 minWidth: 150,
-                editable: editable,
+                editable: isSprintEditable,
                 cellEditor: 'ratingEditor',
                 cellEditorParams: {
                     selectOptions: _.map(RATING_STATES_LABEL, (value, key) => {
@@ -434,7 +423,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                 minWidth: 300,
                 cellEditor: 'agLargeTextCellEditor',
                 tooltipField: 'Comment',
-                editable: editable,
+                editable: isSprintEditable,
                 onCellValueChanged: (cellParams) => {
                     if (cellParams.newValue !== cellParams.oldValue) {
                         this.updateSprintMember(cellParams);

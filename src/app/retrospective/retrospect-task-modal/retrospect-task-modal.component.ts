@@ -13,8 +13,7 @@ import {
     MEMBER_TASK_ROLES_LABEL,
     RATING_STATES,
     RATING_STATES_LABEL,
-    SNACKBAR_DURATION,
-    SPRINT_STATES
+    SNACKBAR_DURATION
 } from '../../../constants/app-constants';
 import { NumericCellEditorComponent } from '../../shared/ag-grid-editors/numeric-cell-editor/numeric-cell-editor.component';
 import { SelectCellEditorComponent } from '../../shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
@@ -36,7 +35,6 @@ export class RetrospectTaskModalComponent implements OnDestroy {
     gridOptions: GridOptions;
     enableRefresh: boolean;
     autoRefreshCurrentState: boolean;
-    sprintStates = SPRINT_STATES;
     ratingStates = RATING_STATES;
     destroy$: Subject<boolean> = new Subject<boolean>();
     overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the members are loading!</span>';
@@ -63,7 +61,7 @@ export class RetrospectTaskModalComponent implements OnDestroy {
             this.taskDetails.Estimate = 0;
         }
         this.getSprintMembers();
-        this.columnDefs = this.createColumnDefs(data.sprintStatus, data.isSprintEditable);
+        this.columnDefs = this.createColumnDefs(data.isSprintEditable);
         this.setGridOptions();
     }
 
@@ -230,12 +228,8 @@ export class RetrospectTaskModalComponent implements OnDestroy {
         this.dialogRef.close(result);
     }
 
-    private createColumnDefs(sprintStatus, isSprintEditable) {
-        let editable = true;
-        if (sprintStatus === this.sprintStates.FROZEN || !isSprintEditable) {
-            editable = false;
-        }
-        const columnDefs = [
+    private createColumnDefs(isSprintEditable) {
+        return [
             {
                 headerName: 'Name',
                 colId: 'Name',
@@ -252,7 +246,7 @@ export class RetrospectTaskModalComponent implements OnDestroy {
                 valueFormatter: (cellParams) => {
                     return MEMBER_TASK_ROLES_LABEL[cellParams.value];
                 },
-                editable: editable,
+                editable: isSprintEditable,
                 cellEditor: 'selectEditor',
                 cellEditorParams: {
                     selectOptions: _.map(MEMBER_TASK_ROLES_LABEL, (value, key) => {
@@ -284,7 +278,7 @@ export class RetrospectTaskModalComponent implements OnDestroy {
             {
                 headerName: 'Sprint Story Points',
                 field: 'SprintPoints',
-                editable: editable,
+                editable: isSprintEditable,
                 minWidth: 185,
                 valueParser: 'Number(newValue)',
                 cellEditor: 'numericEditor',
@@ -327,7 +321,7 @@ export class RetrospectTaskModalComponent implements OnDestroy {
                 headerName: 'Rating',
                 field: 'Rating',
                 minWidth: 150,
-                editable: editable,
+                editable: isSprintEditable,
                 cellEditor: 'selectEditor',
                 cellEditorParams: {
                     selectOptions: _.map(RATING_STATES_LABEL, (value, key) => {
@@ -351,7 +345,7 @@ export class RetrospectTaskModalComponent implements OnDestroy {
                 minWidth: 300,
                 tooltipField: 'Comment',
                 cellEditor: 'agLargeTextCellEditor',
-                editable: editable,
+                editable: isSprintEditable,
                 onCellValueChanged: (cellParams) => {
                     if (cellParams.newValue !== cellParams.oldValue) {
                         this.updateSprintTaskMember(cellParams);
@@ -360,7 +354,6 @@ export class RetrospectTaskModalComponent implements OnDestroy {
                 suppressKeyboardEvent: (event) => this.utils.isAgGridEditingEvent(event)
             }
         ];
-        return columnDefs;
     }
 
     getDisplayedRowCount() {
