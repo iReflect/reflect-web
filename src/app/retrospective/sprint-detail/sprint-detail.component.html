@@ -57,14 +57,13 @@
                     <div class="info-box-content">
                         <div class="info-left">
                             <p>
-                                <b>{{ sprintDetails.Summary.MemberCount }}</b> Members, <b>{{
-                                sprintDetails.Summary.TotalAllocation / 100 | number:decimalFormat }}</b> Allocation
+                                Members: <b>{{ sprintDetails.Summary.MemberCount }}</b>
                             </p>
                             <p>
                                 Expected Points: <b>{{ sprintDetails.Summary.TargetSP | number:decimalFormat }}</b>
                             </p>
                             <p>
-                                Assigned Points: <b>{{ getSprintAssignedPoints() | number:decimalFormat }}</b>
+                                Total Points: <b>{{ getSprintAssignedPoints() | number:decimalFormat }}</b>
                             </p>
                             <p>
                                 Vacations: <b>{{ sprintDetails.Summary.TotalVacations | number:decimalFormat }}</b>
@@ -84,10 +83,10 @@
                     <div class="info-box-content">
                         <div class="info-left">
                             <p>
-                                Tickets Delivered: <b>{{ sprintDetails.Summary.TaskSummary.BugTypes.Count }}</b>
+                                Done: <b>{{ sprintDetails.Summary.TaskSummary.BugTypes.Count }}</b>
                             </p>
                             <p>
-                                Points Delivered: <b>{{ sprintDetails.Summary.TaskSummary.BugTypes.TotalPointsEarned
+                                Sprint Points: <b>{{ sprintDetails.Summary.TaskSummary.BugTypes.TotalPointsEarned
                                 | number:decimalFormat }}</b>
                             </p>
                         </div>
@@ -102,10 +101,10 @@
                     <div class="info-box-content">
                         <div class="info-left">
                             <p>
-                                Tickets Delivered: <b>{{ sprintDetails.Summary.TaskSummary.FeatureTypes.Count }}</b>
+                                Done: <b>{{ sprintDetails.Summary.TaskSummary.FeatureTypes.Count }}</b>
                             </p>
                             <p>
-                                Points Delivered: <b>{{
+                                Sprint Points: <b>{{
                                 sprintDetails.Summary.TaskSummary.FeatureTypes.TotalPointsEarned |
                                 number:decimalFormat }}</b>
                             </p>
@@ -124,10 +123,10 @@
                     <div class="info-box-content">
                         <div class="info-left">
                             <p>
-                                Tickets Delivered: <b>{{ sprintDetails.Summary.TaskSummary.TaskTypes.Count }}</b>
+                                Done: <b>{{ sprintDetails.Summary.TaskSummary.TaskTypes.Count }}</b>
                             </p>
                             <p>
-                                Points Delivered: <b>{{
+                                Sprint Points: <b>{{
                                 sprintDetails.Summary.TaskSummary.TaskTypes.TotalPointsEarned | number:decimalFormat
                                 }}</b>
                             </p>
@@ -158,7 +157,7 @@
                                 </app-sprint-highlights>
                             </div>
                         </mat-tab>
-                        <mat-tab label="Task Summary">
+                        <mat-tab label="Summary">
                             <div *ngIf="sprintDetails.LastSyncedAt && [syncStates.SYNCING, syncStates.QUEUED].indexOf(sprintDetails.SyncStatus) === -1; else not_synced">
                                 <app-sprint-task-summary
                                     [isTabActive]="selectedTabIndex === tabIndexMapping.taskSummary"
