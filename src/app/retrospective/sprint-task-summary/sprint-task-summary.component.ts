@@ -9,11 +9,12 @@ import { Subject } from 'rxjs/Subject';
 import {
     API_RESPONSE_MESSAGES,
     AUTO_REFRESH_DURATION,
-    MARK_DONE_LABELS,
     SNACKBAR_DURATION,
     SPRINT_STATES
 } from '../../../constants/app-constants';
-import { ClickableButtonRendererComponent } from '../../shared/ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
+import {
+    ClickableButtonRendererComponent
+} from '../../shared/ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { RetrospectTaskModalComponent } from '../retrospect-task-modal/retrospect-task-modal.component';
 import { UtilsService } from '../../shared/utils/utils.service';
@@ -197,14 +198,18 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         if ([SPRINT_STATES.DRAFT, SPRINT_STATES.FROZEN].indexOf(sprintStatus) === -1) {
             markedDoneColumns = [
                 {
+                    headerName: 'Done',
                     colId: 'markDone',
                     cellRenderer: 'clickableButtonRenderer',
                     cellRendererParams: (params) => {
                         return {
-                            label: params.data.DoneAt ? MARK_DONE_LABELS.UNDONE : MARK_DONE_LABELS.DONE,
+                            useIcon: true,
+                            color: 'primary',
+                            icon: params.data.DoneAt ? 'check_box' : 'check_box_outline_blank',
                             onClick: this.markDoneUnDone.bind(this),
                         };
                     },
+                    pinned: true,
                     minWidth: 130,
                     suppressSorting: true,
                     suppressFilter: true,
@@ -212,6 +217,21 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             ];
         }
         return [
+            ...markedDoneColumns,
+            {
+                headerName: 'Retrospect',
+                cellRenderer: 'clickableButtonRenderer',
+                cellRendererParams: {
+                    useIcon: true,
+                    color: 'primary',
+                    icon: 'rate_review',
+                    onClick: this.retrospectSprint.bind(this)
+                },
+                pinned: true,
+                minWidth: 130,
+                suppressSorting: true,
+                suppressFilter: true,
+            },
             {
                 headerName: 'ID',
                 field: 'Key',
@@ -230,39 +250,8 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 suppressFilter: true,
             },
             {
-                headerName: 'Assignee',
-                field: 'Assignee',
-                minWidth: 160,
-                suppressSorting: true,
-                suppressFilter: true,
-            },
-            {
-                headerName: 'Estimated Points',
-                field: 'Estimate',
-                minWidth: 120,
-                suppressSorting: true,
-                suppressFilter: true,
-                valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value)
-            },
-            {
-                headerName: 'Status',
-                field: 'Status',
-                minWidth: 140,
-                suppressSorting: true,
-                suppressFilter: true,
-            },
-            {
-                headerName: 'Sprint Hours',
-                field: 'SprintTime',
-                valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value / 60),
-                minWidth: 140,
-                suppressSorting: true,
-                suppressFilter: true,
-            },
-            {
-                headerName: 'Total Time Spent',
-                field: 'TotalTime',
-                valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value / 60),
+                headerName: 'Owner',
+                field: 'Owner',
                 minWidth: 160,
                 suppressSorting: true,
                 suppressFilter: true,
@@ -279,6 +268,45 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 }
             },
             {
+                headerName: 'Status',
+                field: 'Status',
+                minWidth: 140,
+                suppressSorting: true,
+                suppressFilter: true,
+            },
+            {
+                headerName: 'Estimated Points',
+                field: 'Estimate',
+                minWidth: 120,
+                suppressSorting: true,
+                suppressFilter: true,
+                valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value)
+            },
+            {
+                headerName: 'Total Hours',
+                field: 'TotalTime',
+                valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value / 60),
+                minWidth: 160,
+                suppressSorting: true,
+                suppressFilter: true,
+            },
+            {
+                headerName: 'Sprint Points',
+                field: 'PointsEarned',
+                valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value),
+                minWidth: 140,
+                suppressSorting: true,
+                suppressFilter: true,
+            },
+            {
+                headerName: 'Sprint Hours',
+                field: 'SprintTime',
+                valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value / 60),
+                minWidth: 140,
+                suppressSorting: true,
+                suppressFilter: true,
+            },
+            {
                 headerName: 'Done At',
                 field: 'DoneAt',
                 minWidth: 170,
@@ -286,18 +314,6 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 suppressSorting: true,
                 suppressFilter: true,
             },
-            ...markedDoneColumns,
-            {
-                headerName: 'Retrospect',
-                cellRenderer: 'clickableButtonRenderer',
-                cellRendererParams: {
-                    label: 'Retrospect',
-                    onClick: this.retrospectSprint.bind(this)
-                },
-                minWidth: 130,
-                suppressSorting: true,
-                suppressFilter: true,
-            }
         ];
     }
 
