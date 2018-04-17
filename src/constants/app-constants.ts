@@ -194,15 +194,13 @@ export const RATING_COLORS = {
 };
 
 export const MEMBER_TASK_ROLES = {
-    IMPLEMENTOR: 0,
-    REVIEWER: 1,
-    VALIDATOR: 2
+    DEVELOPER: 0,
+    REVIEWER: 1
 };
 
 export const MEMBER_TASK_ROLES_LABEL = {
-    [MEMBER_TASK_ROLES.IMPLEMENTOR]: 'Implementor',
-    [MEMBER_TASK_ROLES.REVIEWER]: 'Reviewer',
-    [MEMBER_TASK_ROLES.VALIDATOR]: 'Validator'
+    [MEMBER_TASK_ROLES.DEVELOPER]: 'Developer',
+    [MEMBER_TASK_ROLES.REVIEWER]: 'Reviewer'
 };
 
 export const SPRINT_SYNC_STATES = {

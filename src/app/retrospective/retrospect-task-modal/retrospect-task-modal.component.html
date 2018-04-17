@@ -9,16 +9,19 @@
         <div class="information-box mat-elevation-z1">
             <div class="box-header">
                 <h4 class="title">
-                    Assignee: {{taskDetails.Assignee}}
+                    Owner: {{taskDetails.Owner}}
                 </h4>
                 <h6 class="subtitle">
-                    Type: {{taskDetails.Type}}
+                    Assignee: {{taskDetails.Assignee}}
                 </h6>
             </div>
             <div class="info-box-content">
                 <div class="info-left">
                     <p>
-                        Estimates: {{taskDetails.Estimate}}
+                        Type: {{taskDetails.Type}}
+                    </p>
+                    <p>
+                        Estimated Points: {{taskDetails.Estimate}}
                     </p>
                     <p>
                         Status: {{taskDetails.Status}}
