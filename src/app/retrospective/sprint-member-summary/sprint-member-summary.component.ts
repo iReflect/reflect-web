@@ -383,21 +383,21 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                 suppressKeyboardEvent: (event) => this.utils.isAgGridEditingEvent(event)
             },
             {
-                headerName: 'Expected SP',
+                headerName: 'Expected Points',
                 field: 'ExpectedStoryPoint',
-                minWidth: 150,
+                minWidth: 155,
                 valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value)
             },
             {
-                headerName: 'Actual SP',
+                headerName: 'Actual Points',
                 field: 'ActualStoryPoint',
-                minWidth: 130,
+                minWidth: 140,
                 valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value)
             },
             {
-                headerName: 'Total Sprint Time',
+                headerName: 'Sprint Hours',
                 field: 'TotalTimeSpentInMin',
-                minWidth: 180,
+                minWidth: 135,
                 valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value / 60),
             },
             {
