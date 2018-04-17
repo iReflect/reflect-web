@@ -208,7 +208,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         }
         return [
             {
-                headerName: 'Task ID',
+                headerName: 'ID',
                 field: 'Key',
                 minWidth: 110,
                 pinned: true,
@@ -216,7 +216,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 suppressFilter: true,
             },
             {
-                headerName: 'Task Summary',
+                headerName: 'Summary',
                 field: 'Summary',
                 minWidth: 300,
                 tooltipField: 'Summary',
@@ -232,7 +232,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 suppressFilter: true,
             },
             {
-                headerName: 'Estimates',
+                headerName: 'Estimated Points',
                 field: 'Estimate',
                 minWidth: 120,
                 suppressSorting: true,
@@ -263,7 +263,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 suppressFilter: true,
             },
             {
-                headerName: 'Story Type',
+                headerName: 'Type',
                 field: 'Type',
                 minWidth: 150,
                 filter: 'agTextColumnFilter',
