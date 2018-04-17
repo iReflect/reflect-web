@@ -5,7 +5,7 @@
     <button mat-icon-button class="close-icon" tabindex="-1" (click)="closeDialog()">
         <mat-icon>clear</mat-icon>
     </button>
-    <div class="modal-header-sticky-box">
+    <div *ngIf="taskDetails.isTrackerTicket" class="modal-header-sticky-box">
         <div class="information-box mat-elevation-z1">
             <div class="box-header">
                 <h4 class="title">
