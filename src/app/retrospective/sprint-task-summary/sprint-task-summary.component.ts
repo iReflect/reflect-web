@@ -1,5 +1,6 @@
 import { Component, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialogRef } from '@angular/material/dialog/typings/dialog-ref';
 import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
 import 'rxjs/add/observable/interval';
 import 'rxjs/add/operator/takeUntil';
@@ -24,6 +25,7 @@ import { UtilsService } from '../../shared/utils/utils.service';
 })
 export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy {
     gridOptions: GridOptions;
+    dialogRef: MatDialogRef<any>;
     autoRefreshCurrentState: boolean;
     destroy$: Subject<boolean> = new Subject<boolean>();
     overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the tasks are loading!</span>';
@@ -97,6 +99,9 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         this.autoRefreshCurrentState = false;
         this.destroy$.next(true);
         this.destroy$.unsubscribe();
+        if (this.dialogRef) {
+            this.dialogRef.close();
+        }
     }
 
     setGridOptions() {
@@ -170,7 +175,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     retrospectSprint(params) {
         const sprintTaskSummaryData = params.data;
         this.autoRefreshCurrentState = false;
-        const dialogRef = this.dialog.open(RetrospectTaskModalComponent, {
+        this.dialogRef = this.dialog.open(RetrospectTaskModalComponent, {
             width: '90%',
             data: {
                 taskDetails: sprintTaskSummaryData,
@@ -181,7 +186,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 isSprintEditable: this.isSprintEditable,
             },
         });
-        dialogRef.afterClosed().subscribe(() => {
+        this.dialogRef.afterClosed().subscribe(() => {
             this.getSprintTaskSummary(true);
             this.autoRefreshCurrentState = this.enableRefresh;
         });

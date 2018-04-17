@@ -258,25 +258,13 @@ export class RetrospectTaskModalComponent implements OnDestroy {
                 },
                 onCellValueChanged: (cellParams) => {
                     if ((cellParams.newValue !== cellParams.oldValue) &&
-                        (cellParams.newValue >= MEMBER_TASK_ROLES.IMPLEMENTOR && cellParams.newValue <= MEMBER_TASK_ROLES.VALIDATOR)) {
+                        (cellParams.newValue >= MEMBER_TASK_ROLES.DEVELOPER && cellParams.newValue <= MEMBER_TASK_ROLES.REVIEWER)) {
                         this.updateSprintTaskMember(cellParams);
                     }
                 }
             },
             {
-                headerName: 'Sprint Hours',
-                field: 'SprintTime',
-                valueFormatter: (params) => this.utils.formatFloat(params.value / 60),
-                minWidth: 150
-            },
-            {
-                headerName: 'Total Time',
-                field: 'TotalTime',
-                valueFormatter: (params) => this.utils.formatFloat(params.value / 60),
-                minWidth: 140
-            },
-            {
-                headerName: 'Sprint Story Points',
+                headerName: 'Sprint Points',
                 field: 'SprintPoints',
                 editable: isSprintEditable,
                 minWidth: 185,
@@ -312,10 +300,22 @@ export class RetrospectTaskModalComponent implements OnDestroy {
                 suppressKeyboardEvent: (event) => this.utils.isAgGridEditingEvent(event)
             },
             {
-                headerName: 'Total Story Points',
+                headerName: 'Sprint Hours',
+                field: 'SprintTime',
+                valueFormatter: (params) => this.utils.formatFloat(params.value / 60),
+                minWidth: 150
+            },
+            {
+                headerName: 'Total Points',
                 field: 'TotalPoints',
                 minWidth: 180,
                 valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value)
+            },
+            {
+                headerName: 'Total Hours',
+                field: 'TotalTime',
+                valueFormatter: (params) => this.utils.formatFloat(params.value / 60),
+                minWidth: 140
             },
             {
                 headerName: 'Rating',
