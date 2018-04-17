@@ -65,11 +65,8 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
         if (changes.enableRefresh) {
             this.enableRefresh = changes.enableRefresh.currentValue;
             this.autoRefreshCurrentState = changes.enableRefresh.currentValue;
-            if (this.autoRefreshCurrentState) {
-                this.getSprintHighlightsTab();
-            }
         }
-        if (changes.refreshOnChange && this.isTabActive) {
+        if (this.isTabActive && (this.autoRefreshCurrentState || changes.refreshOnChange)) {
             this.getSprintHighlightsTab();
         }
     }
