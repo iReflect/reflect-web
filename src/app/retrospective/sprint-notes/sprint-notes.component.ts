@@ -64,11 +64,8 @@ export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
         if (changes.enableRefresh) {
             this.enableRefresh = changes.enableRefresh.currentValue;
             this.autoRefreshCurrentState = changes.enableRefresh.currentValue;
-            if (this.autoRefreshCurrentState) {
-                this.getSprintNotesTab();
-            }
         }
-        if (changes.refreshOnChange && this.isTabActive) {
+        if (this.isTabActive && (this.autoRefreshCurrentState || changes.refreshOnChange)) {
             this.getSprintNotesTab();
         }
     }
