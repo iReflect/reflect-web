@@ -87,7 +87,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             if (this.isTabActive && !changes.isTabActive) {
                 this.gridApi.sizeColumnsToFit();
             }
-            if (this.autoRefreshCurrentState) {
+            if (this.isTabActive && (this.autoRefreshCurrentState || changes.refreshOnChange)) {
                 this.getSprintMemberSummary(true);
             }
             // we do this separately because we need to wait

@@ -79,7 +79,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             if (this.isTabActive && !changes.isTabActive) {
                 this.gridApi.sizeColumnsToFit();
             }
-            if (this.autoRefreshCurrentState) {
+            if (this.isTabActive && (this.autoRefreshCurrentState || changes.refreshOnChange)) {
                 this.getSprintTaskSummary(true);
             }
             // we do this separately because we need to wait
