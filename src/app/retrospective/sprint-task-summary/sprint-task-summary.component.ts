@@ -328,7 +328,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 response => {
                     const sprintTaskSummary = response.data;
                     params.node.setData(sprintTaskSummary);
-                    // Refresh the Mark Done/Undone cell to reflect the change in button label
+                    // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
                     params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
                     this.snackBar.open(API_RESPONSE_MESSAGES.getSprintTaskMarkUnDoneSuccess, '', {duration: SNACKBAR_DURATION});
                 },
@@ -342,7 +342,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 response => {
                     const sprintTaskSummary = response.data;
                     params.node.setData(sprintTaskSummary);
-                    // Refresh the Mark Done/Undone cell to reflect the change in button label
+                    // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
                     params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
                     this.snackBar.open(API_RESPONSE_MESSAGES.getSprintTaskMarkDoneSuccess, '', {duration: SNACKBAR_DURATION});
                 },

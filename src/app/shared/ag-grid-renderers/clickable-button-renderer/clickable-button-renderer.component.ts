@@ -15,7 +15,7 @@ export class ClickableButtonRendererComponent implements ICellRendererAngularCom
     color: string;
     private params: any;
 
-    setRendererParams(params) {
+    private setComponentParams(params) {
         this.label = params.label;
         this.isIcon = params.useIcon;
         if (this.isIcon) {
@@ -26,13 +26,13 @@ export class ClickableButtonRendererComponent implements ICellRendererAngularCom
 
     agInit(params: any): void {
         this.params = params;
-        this.setRendererParams(params);
+        this.setComponentParams(params);
     }
 
     refresh(params: ICellRendererParams): boolean {
         const cellRendererParams = params.colDef.cellRendererParams;
-        const cellParams = _.isFunction(cellRendererParams) ? cellRendererParams(params): cellRendererParams;
-        this.setRendererParams(cellParams);
+        const cellParams = _.isFunction(cellRendererParams) ? cellRendererParams(params) : cellRendererParams;
+        this.setComponentParams(cellParams);
         this.params = {...params, ...cellParams};
         return true;
     }
