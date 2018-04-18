@@ -1,45 +1,45 @@
-<div class="table-box">
-    <app-retrospective-feedback
-        title="Accomplished Goals"
-        (resumeRefresh)="resumeRefresh()"
-        (pauseRefresh)="pauseRefresh()"
-        [feedbackType]="retroFeedbackTypes.GOAL"
-        [feedbackSubType]="goalTypes.COMPLETED"
-        [data]="accomplishedGoals"
-        [teamMembers]="teamMembers"
-        [isTabActive]="isTabActive"
-        [sprintStatus]="sprintStatus"
-        [sprintEndDate]="sprintEndDate"
-        [retrospectiveID]="retrospectiveID"
-        [sprintID]="sprintID"></app-retrospective-feedback>
-</div>
-<div *ngFor="let highlight of highlightsList" class="table-box">
-    <app-retrospective-feedback
-        [title]="highlight.LABEL"
-        (resumeRefresh)="resumeRefresh()"
-        (pauseRefresh)="pauseRefresh()"
-        [feedbackType]="retroFeedbackTypes.HIGHLIGHT"
-        [feedbackSubType]="highlight.KEY"
-        [sprintStatus]="sprintStatus"
-        [sprintEndDate]="sprintEndDate"
-        [retrospectiveID]="retrospectiveID"
-        [sprintID]="sprintID"
-        [isTabActive]="isTabActive"
-        [teamMembers]="teamMembers"
-        [data]="sprintHighlights"></app-retrospective-feedback>
-</div>
-<div class="table-box">
-    <app-retrospective-feedback
-        title="Pending Goals"
-        (resumeRefresh)="resumeRefresh()"
-        (pauseRefresh)="pauseRefresh()"
-        [feedbackType]="retroFeedbackTypes.GOAL"
-        [feedbackSubType]="goalTypes.PENDING"
-        [data]="pendingGoals"
-        [teamMembers]="teamMembers"
-        [isTabActive]="isTabActive"
-        [sprintStatus]="sprintStatus"
-        [sprintEndDate]="sprintEndDate"
-        [retrospectiveID]="retrospectiveID"
-        [sprintID]="sprintID"></app-retrospective-feedback>
+<div class="sprint-highlights">
+    <mat-accordion>
+        <app-retrospective-feedback
+            title="Accomplished Goals"
+            (resumeRefresh)="resumeRefresh()"
+            (pauseRefresh)="pauseRefresh()"
+            [feedbackType]="retroFeedbackTypes.GOAL"
+            [feedbackSubType]="goalTypes.COMPLETED"
+            [data]="accomplishedGoals"
+            [teamMembers]="teamMembers"
+            [isTabActive]="isTabActive"
+            [sprintStatus]="sprintStatus"
+            [sprintEndDate]="sprintEndDate"
+            [retrospectiveID]="retrospectiveID"
+            [sprintID]="sprintID"></app-retrospective-feedback>
+        <div *ngFor="let highlight of highlightsList">
+            <app-retrospective-feedback
+                [title]="highlight.LABEL"
+                (resumeRefresh)="resumeRefresh()"
+                (pauseRefresh)="pauseRefresh()"
+                [feedbackType]="retroFeedbackTypes.HIGHLIGHT"
+                [feedbackSubType]="highlight.KEY"
+                [sprintStatus]="sprintStatus"
+                [sprintEndDate]="sprintEndDate"
+                [retrospectiveID]="retrospectiveID"
+                [sprintID]="sprintID"
+                [isTabActive]="isTabActive"
+                [teamMembers]="teamMembers"
+                [data]="sprintHighlights"></app-retrospective-feedback>
+        </div>
+        <app-retrospective-feedback
+            title="Pending Goals"
+            (resumeRefresh)="resumeRefresh()"
+            (pauseRefresh)="pauseRefresh()"
+            [feedbackType]="retroFeedbackTypes.GOAL"
+            [feedbackSubType]="goalTypes.PENDING"
+            [data]="pendingGoals"
+            [teamMembers]="teamMembers"
+            [isTabActive]="isTabActive"
+            [sprintStatus]="sprintStatus"
+            [sprintEndDate]="sprintEndDate"
+            [retrospectiveID]="retrospectiveID"
+            [sprintID]="sprintID"></app-retrospective-feedback>
+    </mat-accordion>
 </div>
