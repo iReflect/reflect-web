@@ -1,7 +1,7 @@
 <div>
     <mat-card class="no-padding-container">
         <mat-toolbar class="small-toolbar" color="primary">
-            <span class="retrospective-feedback-title"><b>{{title}}</b></span>&nbsp;&nbsp;({{ getDisplayedRowCount() }})
+            <span class="retrospective-feedback-title"><b>{{title}}</b></span>&nbsp;({{ getDisplayedRowCount() }})
             <span class="fill-remaining-space"></span>
             <button mat-button (click)="addMoreRow()"
                     *ngIf="feedbackSubType !== goalTypes.COMPLETED && feedbackSubType !== goalTypes.PENDING && sprintStatus !== sprintStates.FROZEN">

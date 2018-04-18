@@ -263,11 +263,6 @@ export const HIGHLIGHTS_LIST = [
     }
 ];
 
-export const MARK_DONE_LABELS = {
-    DONE: 'Mark Done',
-    UNDONE: 'Mark Undone',
-};
-
 export const TRACKER_TICKET_TYPE_MAP = {
     FEATURE: 'FeatureTypes',
     TASK: 'TaskTypes',

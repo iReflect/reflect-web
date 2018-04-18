@@ -12,28 +12,27 @@ export class ClickableButtonRendererComponent implements ICellRendererAngularCom
     label: string;
     isIcon = false;
     icon: string;
+    color: string;
     private params: any;
+
+    private setComponentParams(params) {
+        this.label = params.label;
+        this.isIcon = params.useIcon;
+        if (this.isIcon) {
+            this.icon = params.icon;
+            this.color = params.color;
+        }
+    }
 
     agInit(params: any): void {
         this.params = params;
-        this.label = params.label;
-        if (params.useIcon) {
-            this.isIcon = true;
-            this.icon = params.icon;
-        }
+        this.setComponentParams(params);
     }
 
     refresh(params: ICellRendererParams): boolean {
         const cellRendererParams = params.colDef.cellRendererParams;
-        let cellParams;
-        if (_.isFunction(cellRendererParams)) {
-            cellParams = cellRendererParams(params);
-        } else {
-            cellParams = cellRendererParams;
-        }
-        this.label = cellParams.label;
-        this.isIcon = cellParams.useIcon;
-        this.icon = cellParams.icon;
+        const cellParams = _.isFunction(cellRendererParams) ? cellRendererParams(params) : cellRendererParams;
+        this.setComponentParams(cellParams);
         this.params = {...params, ...cellParams};
         return true;
     }
