@@ -29,6 +29,9 @@ mat-row {
     .ag-header-cell {
         color: #000;
         font-weight: bold;
+        line-height: 16px !important;
+        padding: 12px;
+        margin: 3px 0 0 -3px;
     }
 
     .ag-cell.ag-cell-not-inline-editing {
@@ -87,4 +90,10 @@ mat-row {
     &.ag-row-hover {
         background-color: rgba(255, 2, 2, 0.54) !important;
     }
+}
+
+.ag-header-cell-text {
+    text-overflow: clip;
+    overflow: visible;
+    white-space: normal !important;
 }
