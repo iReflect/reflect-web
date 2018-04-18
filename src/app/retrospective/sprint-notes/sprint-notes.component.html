@@ -1,5 +1,5 @@
-<div>
-    <div *ngFor="let noteSection of notesSectionsList" class="table-box">
+<mat-accordion>
+    <div *ngFor="let noteSection of notesSectionsList">
         <app-retrospective-feedback
             [title]="noteSection.LABEL"
             (resumeRefresh)="resumeRefresh()"
@@ -14,19 +14,17 @@
             [teamMembers]="teamMembers"
             [data]="sprintNotes"></app-retrospective-feedback>
     </div>
-    <div class="table-box">
-        <app-retrospective-feedback
-            title="Things To Be Improved"
-            (resumeRefresh)="resumeRefresh()"
-            (pauseRefresh)="pauseRefresh()"
-            [feedbackType]="retroFeedbackTypes.GOAL"
-            [data]="sprintGoals"
-            [teamMembers]="teamMembers"
-            [sprintStatus]="sprintStatus"
-            [sprintEndDate]="sprintEndDate"
-            [retrospectiveID]="retrospectiveID"
-            [isTabActive]="isTabActive"
-            [sprintID]="sprintID"
-            [feedbackSubType]="goalTypes.ADDED"></app-retrospective-feedback>
-    </div>
-</div>
+    <app-retrospective-feedback
+        title="Things To Be Improved"
+        (resumeRefresh)="resumeRefresh()"
+        (pauseRefresh)="pauseRefresh()"
+        [feedbackType]="retroFeedbackTypes.GOAL"
+        [data]="sprintGoals"
+        [teamMembers]="teamMembers"
+        [sprintStatus]="sprintStatus"
+        [sprintEndDate]="sprintEndDate"
+        [retrospectiveID]="retrospectiveID"
+        [isTabActive]="isTabActive"
+        [sprintID]="sprintID"
+        [feedbackSubType]="goalTypes.ADDED"></app-retrospective-feedback>
+</mat-accordion>

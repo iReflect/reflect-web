@@ -1,19 +1,22 @@
-<div>
-    <mat-card class="no-padding-container">
-        <mat-toolbar class="small-toolbar" color="primary">
-            <span class="retrospective-feedback-title"><b>{{title}}</b></span>&nbsp;({{ getDisplayedRowCount() }})
-            <span class="fill-remaining-space"></span>
-            <button mat-button (click)="addMoreRow()"
-                    *ngIf="feedbackSubType !== goalTypes.COMPLETED && feedbackSubType !== goalTypes.PENDING && sprintStatus !== sprintStates.FROZEN">
-                <mat-icon>add</mat-icon>
-                <span>Add New</span>
-            </button>
-        </mat-toolbar>
-        <div class="ag-grid-container -small-height">
-            <ag-grid-angular
-                class="ag-theme-material custom-ag-grid"
-                [gridOptions]="gridOptions">
-            </ag-grid-angular>
-        </div>
-    </mat-card>
-</div>
+<mat-expansion-panel class="mat-expansion-ag-grid">
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            <span class="retrospective-feedback-title"><b>{{title}}</b></span>
+            <span>&nbsp;({{ getDisplayedRowCount() }}) </span>
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <div class="ag-grid-container -small-height">
+        <ag-grid-angular
+            class="ag-theme-material custom-ag-grid"
+            [gridOptions]="gridOptions">
+        </ag-grid-angular>
+    </div>
+
+    <mat-action-row *ngIf="[goalTypes.COMPLETED, goalTypes.PENDING].indexOf(feedbackSubType) === -1 && sprintStatus !== sprintStates.FROZEN">
+        <button mat-button (click)="addMoreRow()">
+            <mat-icon>add</mat-icon>
+            <span>Add New</span>
+        </button>
+    </mat-action-row>
+</mat-expansion-panel>

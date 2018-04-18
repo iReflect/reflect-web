@@ -1,4 +1,4 @@
-<div class="table-box">
+<mat-accordion>
     <app-retrospective-feedback
         title="Accomplished Goals"
         (resumeRefresh)="resumeRefresh()"
@@ -12,23 +12,21 @@
         [sprintEndDate]="sprintEndDate"
         [retrospectiveID]="retrospectiveID"
         [sprintID]="sprintID"></app-retrospective-feedback>
-</div>
-<div *ngFor="let highlight of highlightsList" class="table-box">
-    <app-retrospective-feedback
-        [title]="highlight.LABEL"
-        (resumeRefresh)="resumeRefresh()"
-        (pauseRefresh)="pauseRefresh()"
-        [feedbackType]="retroFeedbackTypes.HIGHLIGHT"
-        [feedbackSubType]="highlight.KEY"
-        [sprintStatus]="sprintStatus"
-        [sprintEndDate]="sprintEndDate"
-        [retrospectiveID]="retrospectiveID"
-        [sprintID]="sprintID"
-        [isTabActive]="isTabActive"
-        [teamMembers]="teamMembers"
-        [data]="sprintHighlights"></app-retrospective-feedback>
-</div>
-<div class="table-box">
+    <div *ngFor="let highlight of highlightsList">
+        <app-retrospective-feedback
+            [title]="highlight.LABEL"
+            (resumeRefresh)="resumeRefresh()"
+            (pauseRefresh)="pauseRefresh()"
+            [feedbackType]="retroFeedbackTypes.HIGHLIGHT"
+            [feedbackSubType]="highlight.KEY"
+            [sprintStatus]="sprintStatus"
+            [sprintEndDate]="sprintEndDate"
+            [retrospectiveID]="retrospectiveID"
+            [sprintID]="sprintID"
+            [isTabActive]="isTabActive"
+            [teamMembers]="teamMembers"
+            [data]="sprintHighlights"></app-retrospective-feedback>
+    </div>
     <app-retrospective-feedback
         title="Pending Goals"
         (resumeRefresh)="resumeRefresh()"
@@ -42,4 +40,4 @@
         [sprintEndDate]="sprintEndDate"
         [retrospectiveID]="retrospectiveID"
         [sprintID]="sprintID"></app-retrospective-feedback>
-</div>
+</mat-accordion>
