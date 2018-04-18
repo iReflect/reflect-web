@@ -1,8 +1,8 @@
-<mat-expansion-panel class="mat-expansion-ag-grid">
+<mat-expansion-panel (opened)="resizeAgGrid()" class="collapsible-retrospective-feedback">
     <mat-expansion-panel-header>
         <mat-panel-title>
             <span class="retrospective-feedback-title"><b>{{title}}</b></span>
-            <span>&nbsp;({{ getDisplayedRowCount() }}) </span>
+            <span>&nbsp;({{ getDisplayedRowCount() }})</span>
         </mat-panel-title>
     </mat-expansion-panel-header>
 

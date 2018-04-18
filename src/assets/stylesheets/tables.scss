@@ -88,28 +88,3 @@ mat-row {
         background-color: rgba(255, 2, 2, 0.54) !important;
     }
 }
-
-.mat-expansion-ag-grid {
-    .mat-expansion-panel-header.mat-expanded,
-    .mat-expansion-panel-header.mat-expanded:focus {
-        background-color: #2196f3 !important;
-
-        .mat-expansion-panel-header-title,
-        .mat-expansion-indicator::after {
-            color: #fff !important;
-        }
-    }
-
-    .mat-expansion-panel-header {
-        height: 48px;
-    }
-
-    .mat-expansion-panel-body {
-        padding: 0 !important;
-    }
-
-    .mat-expansion-panel-content:not(.mat-expanded) {
-        height: 0 !important;
-        visibility: hidden !important;
-    }
-}

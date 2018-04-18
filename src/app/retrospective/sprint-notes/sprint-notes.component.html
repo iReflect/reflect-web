@@ -1,30 +1,32 @@
-<mat-accordion>
-    <div *ngFor="let noteSection of notesSectionsList">
+<div class="sprint-notes">
+    <mat-accordion>
+        <div *ngFor="let noteSection of notesSectionsList">
+            <app-retrospective-feedback
+                [title]="noteSection.LABEL"
+                (resumeRefresh)="resumeRefresh()"
+                (pauseRefresh)="pauseRefresh()"
+                [feedbackType]="retroFeedbackTypes.NOTE"
+                [feedbackSubType]="noteSection.KEY"
+                [sprintStatus]="sprintStatus"
+                [sprintEndDate]="sprintEndDate"
+                [retrospectiveID]="retrospectiveID"
+                [isTabActive]="isTabActive"
+                [sprintID]="sprintID"
+                [teamMembers]="teamMembers"
+                [data]="sprintNotes"></app-retrospective-feedback>
+        </div>
         <app-retrospective-feedback
-            [title]="noteSection.LABEL"
+            title="Things To Be Improved"
             (resumeRefresh)="resumeRefresh()"
             (pauseRefresh)="pauseRefresh()"
-            [feedbackType]="retroFeedbackTypes.NOTE"
-            [feedbackSubType]="noteSection.KEY"
+            [feedbackType]="retroFeedbackTypes.GOAL"
+            [data]="sprintGoals"
+            [teamMembers]="teamMembers"
             [sprintStatus]="sprintStatus"
             [sprintEndDate]="sprintEndDate"
             [retrospectiveID]="retrospectiveID"
             [isTabActive]="isTabActive"
             [sprintID]="sprintID"
-            [teamMembers]="teamMembers"
-            [data]="sprintNotes"></app-retrospective-feedback>
-    </div>
-    <app-retrospective-feedback
-        title="Things To Be Improved"
-        (resumeRefresh)="resumeRefresh()"
-        (pauseRefresh)="pauseRefresh()"
-        [feedbackType]="retroFeedbackTypes.GOAL"
-        [data]="sprintGoals"
-        [teamMembers]="teamMembers"
-        [sprintStatus]="sprintStatus"
-        [sprintEndDate]="sprintEndDate"
-        [retrospectiveID]="retrospectiveID"
-        [isTabActive]="isTabActive"
-        [sprintID]="sprintID"
-        [feedbackSubType]="goalTypes.ADDED"></app-retrospective-feedback>
-</mat-accordion>
+            [feedbackSubType]="goalTypes.ADDED"></app-retrospective-feedback>
+    </mat-accordion>
+</div>
