@@ -238,7 +238,8 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 headerName: 'ID',
                 headerClass: 'custom-ag-grid-header task-summary-id-header',
                 field: 'Key',
-                minWidth: 80,
+                tooltipField: 'Key',
+                minWidth: 130,
                 pinned: true,
                 suppressSorting: true,
                 suppressFilter: true,
@@ -256,6 +257,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             {
                 headerName: 'Owner',
                 field: 'Owner',
+                tooltipField: 'Owner',
                 minWidth: 160,
                 suppressSorting: true,
                 suppressFilter: true,
@@ -280,20 +282,12 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 suppressFilter: true,
             },
             {
-                headerName: 'Estimated Points',
+                headerName: 'Points',
                 field: 'Estimate',
                 minWidth: 120,
                 suppressSorting: true,
                 suppressFilter: true,
                 valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value)
-            },
-            {
-                headerName: 'Total Hours',
-                field: 'TotalTime',
-                valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value / 60),
-                minWidth: 100,
-                suppressSorting: true,
-                suppressFilter: true,
             },
             {
                 headerName: 'Sprint Points',
@@ -306,6 +300,14 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             {
                 headerName: 'Sprint Hours',
                 field: 'SprintTime',
+                valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value / 60),
+                minWidth: 100,
+                suppressSorting: true,
+                suppressFilter: true,
+            },
+            {
+                headerName: 'Total Hours',
+                field: 'TotalTime',
                 valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value / 60),
                 minWidth: 100,
                 suppressSorting: true,
