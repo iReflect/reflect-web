@@ -1,7 +1,7 @@
 import { Component, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { MatDialogRef } from '@angular/material/dialog/typings/dialog-ref';
-import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
+import { ColumnApi, ColumnController, GridApi, GridOptions } from 'ag-grid';
 import 'rxjs/add/observable/interval';
 import 'rxjs/add/operator/takeUntil';
 import { Observable } from 'rxjs/Observable';
@@ -18,6 +18,7 @@ import {
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { RetrospectTaskModalComponent } from '../retrospect-task-modal/retrospect-task-modal.component';
 import { UtilsService } from '../../shared/utils/utils.service';
+import { ColumnEventType } from 'ag-grid/dist/lib/events';
 
 @Component({
     selector: 'app-sprint-task-summary',
@@ -29,8 +30,9 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     dialogRef: MatDialogRef<any>;
     autoRefreshCurrentState: boolean;
     destroy$: Subject<boolean> = new Subject<boolean>();
-    overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the tasks are loading!</span>';
-    overlayNoRowsTemplate = '<span>No Tasks in this sprint!</span>';
+    overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the Issues are loading!</span>';
+    overlayNoRowsTemplate = '<span>No Issues in this sprint!</span>';
+    columnsToFit: any = ['ID', 'Estimate', 'PointsEarned', 'SprintTime', 'TotalTime'];
 
     @Input() retrospectiveID;
     @Input() sprintID;
@@ -44,6 +46,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     private columnDefs: any;
     private gridApi: GridApi;
     private columnApi: ColumnApi;
+    private columnCtrl: ColumnController;
 
     constructor(
         private snackBar: MatSnackBar,
@@ -54,8 +57,9 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     }
 
     @HostListener('window:resize') onResize() {
-        if (this.gridApi && this.isTabActive) {
+        if (this.gridApi && this.columnCtrl && this.isTabActive) {
             setTimeout(() => {
+                this.columnCtrl.autoSizeColumns(this.columnsToFit, <ColumnEventType>'autosizecolumn');
                 this.gridApi.sizeColumnsToFit();
             });
         }
@@ -79,11 +83,11 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         }
         if (this.gridApi) {
             // this if block also executes when changes.refreshOnChange toggles
-            if (this.isTabActive && !changes.isTabActive) {
-                this.gridApi.sizeColumnsToFit();
-            }
             if (this.isTabActive && (this.autoRefreshCurrentState || changes.refreshOnChange)) {
                 this.getSprintTaskSummary(true);
+            }
+            if (this.isTabActive && !changes.isTabActive) {
+                this.gridApi.sizeColumnsToFit();
             }
             // we do this separately because we need to wait
             // at the least one tick when this tab is made active
@@ -93,6 +97,9 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     this.gridApi.sizeColumnsToFit();
                 });
             }
+        }
+        if (this.columnApi && this.isTabActive) {
+            this.columnApi.autoSizeColumns(this.columnsToFit);
         }
     }
 
@@ -126,7 +133,13 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             overlayNoRowsTemplate: this.overlayNoRowsTemplate,
             rowHeight: 48,
             suppressScrollOnNewData: true,
-            stopEditingWhenGridLosesFocus: true
+            stopEditingWhenGridLosesFocus: true,
+            onDragStopped: () => {
+                if (this.gridApi && this.columnCtrl) {
+                    this.columnCtrl.autoSizeColumns(this.columnsToFit, <ColumnEventType>'autosizeColumns');
+                    this.gridApi.sizeColumnsToFit();
+                }
+            }
         };
     }
 
@@ -134,6 +147,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         this.params = params;
         this.gridApi = params.api;
         this.columnApi = params.columnApi;
+        this.columnCtrl = params.columnController;
         this.getSprintTaskSummary(false);
         if (this.isTabActive) {
             this.gridApi.sizeColumnsToFit();
@@ -152,6 +166,9 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             .subscribe(
                 response => {
                     this.gridApi.setRowData(response.data.Tasks);
+                    if (this.columnApi) {
+                        this.columnApi.autoSizeColumns(this.columnsToFit);
+                    }
                     if (!isRefresh && this.isTabActive) {
                         setTimeout(() => {
                             this.gridApi.sizeColumnsToFit();
@@ -161,12 +178,12 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 err => {
                     if (isRefresh) {
                         this.snackBar.open(
-                            API_RESPONSE_MESSAGES.taskSummaryRefreshFailure,
+                            API_RESPONSE_MESSAGES.issueSummaryRefreshFailure,
                             '', {duration: SNACKBAR_DURATION});
                     } else {
                         this.snackBar.open(
                             this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES
-                                .getSprintTaskSummaryError,
+                                .getSprintIssueSummaryError,
                             '', {duration: SNACKBAR_DURATION});
                     }
                 }
@@ -211,7 +228,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                         };
                     },
                     pinned: true,
-                    minWidth: 85,
+                    minWidth: 90,
                     suppressSorting: true,
                     suppressFilter: true,
                 }
@@ -236,9 +253,9 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             },
             {
                 headerName: 'ID',
+                colId: 'ID',
                 headerClass: 'custom-ag-grid-header task-summary-id-header',
                 field: 'Key',
-                minWidth: 80,
                 pinned: true,
                 suppressSorting: true,
                 suppressFilter: true,
@@ -256,6 +273,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             {
                 headerName: 'Owner',
                 field: 'Owner',
+                tooltipField: 'Owner',
                 minWidth: 160,
                 suppressSorting: true,
                 suppressFilter: true,
@@ -280,24 +298,18 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 suppressFilter: true,
             },
             {
-                headerName: 'Estimated Points',
+                headerName: 'Points',
                 field: 'Estimate',
+                colId: 'Estimate',
                 minWidth: 120,
                 suppressSorting: true,
                 suppressFilter: true,
                 valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value)
             },
             {
-                headerName: 'Total Hours',
-                field: 'TotalTime',
-                valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value / 60),
-                minWidth: 100,
-                suppressSorting: true,
-                suppressFilter: true,
-            },
-            {
                 headerName: 'Sprint Points',
                 field: 'PointsEarned',
+                colId: 'PointsEarned',
                 valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value),
                 minWidth: 100,
                 suppressSorting: true,
@@ -306,6 +318,16 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             {
                 headerName: 'Sprint Hours',
                 field: 'SprintTime',
+                colId: 'SprintTime',
+                valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value / 60),
+                minWidth: 100,
+                suppressSorting: true,
+                suppressFilter: true,
+            },
+            {
+                headerName: 'Total Hours',
+                field: 'TotalTime',
+                colId: 'TotalTime',
                 valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value / 60),
                 minWidth: 100,
                 suppressSorting: true,
@@ -335,7 +357,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     params.node.setData(sprintTaskSummary);
                     // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
                     params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
-                    this.snackBar.open(API_RESPONSE_MESSAGES.getSprintTaskMarkUnDoneSuccess, '', {duration: SNACKBAR_DURATION});
+                    this.snackBar.open(API_RESPONSE_MESSAGES.getSprintIssueMarkedUndoneSuccess, '', {duration: SNACKBAR_DURATION});
                 },
                 err => {
                     this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.error,
@@ -349,7 +371,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     params.node.setData(sprintTaskSummary);
                     // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
                     params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
-                    this.snackBar.open(API_RESPONSE_MESSAGES.getSprintTaskMarkDoneSuccess, '', {duration: SNACKBAR_DURATION});
+                    this.snackBar.open(API_RESPONSE_MESSAGES.getSprintIssueMarkedDoneSuccess, '', {duration: SNACKBAR_DURATION});
                 },
                 err => {
                     this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.error,

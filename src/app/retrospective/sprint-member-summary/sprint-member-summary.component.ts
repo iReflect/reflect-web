@@ -1,5 +1,5 @@
 import { Component, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
+import { ColumnApi, ColumnController, GridApi, GridOptions } from 'ag-grid';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import * as _ from 'lodash';
 import { Observable } from 'rxjs/Observable';
@@ -21,6 +21,7 @@ import { RatingRendererComponent } from '../../shared/ag-grid-renderers/rating-r
 import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.component';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { UtilsService } from '../../shared/utils/utils.service';
+import { ColumnEventType } from 'ag-grid/dist/lib/events';
 
 @Component({
     selector: 'app-sprint-member-summary',
@@ -50,6 +51,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     private params: any;
     private gridApi: GridApi;
     private columnApi: ColumnApi;
+    private columnCtrl: ColumnController;
 
     constructor(
         private retrospectiveService: RetrospectiveService,
@@ -60,9 +62,10 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     }
 
     @HostListener('window:resize') onResize() {
-        if (this.gridApi && this.isTabActive) {
+        if (this.gridApi && this.columnCtrl && this.isTabActive) {
             setTimeout(() => {
                 this.gridApi.sizeColumnsToFit();
+                this.columnCtrl.autoSizeAllColumns(<ColumnEventType>'autosizeColumns');
             });
         }
     }
@@ -98,6 +101,9 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                     this.gridApi.sizeColumnsToFit();
                 });
             }
+        }
+        if (this.columnApi && this.isTabActive) {
+            this.columnApi.autoSizeAllColumns();
         }
     }
 
@@ -137,7 +143,13 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             rowHeight: 48,
             singleClickEdit: true,
             suppressScrollOnNewData: true,
-            stopEditingWhenGridLosesFocus: true
+            stopEditingWhenGridLosesFocus: true,
+            onDragStopped: () => {
+                if (this.gridApi && this.columnCtrl) {
+                    this.columnCtrl.autoSizeAllColumns(<ColumnEventType>'autosizeColumns');
+                    this.gridApi.sizeColumnsToFit();
+                }
+            }
         };
     }
 
@@ -145,6 +157,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         this.params = params;
         this.gridApi = params.api;
         this.columnApi = params.columnApi;
+        this.columnCtrl = params.columnController;
         this.getSprintMemberSummary(false);
         if (this.isTabActive) {
             this.gridApi.sizeColumnsToFit();

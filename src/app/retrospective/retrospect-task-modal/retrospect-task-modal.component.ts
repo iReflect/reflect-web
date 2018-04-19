@@ -1,6 +1,6 @@
 import { Component, HostListener, Inject, OnDestroy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
-import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
+import { ColumnApi, ColumnController, GridApi, GridOptions } from 'ag-grid';
 import * as _ from 'lodash';
 import 'rxjs/add/observable/interval';
 import 'rxjs/add/operator/takeUntil';
@@ -21,6 +21,7 @@ import { RatingRendererComponent } from '../../shared/ag-grid-renderers/rating-r
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { RetrospectiveCreateComponent } from '../retrospective-create/retrospective-create.component';
 import { UtilsService } from '../../shared/utils/utils.service';
+import { ColumnEventType } from 'ag-grid/dist/lib/events';
 
 @Component({
     selector: 'app-retrospect-task-modal',
@@ -37,8 +38,8 @@ export class RetrospectTaskModalComponent implements OnDestroy {
     autoRefreshCurrentState: boolean;
     ratingStates = RATING_STATES;
     destroy$: Subject<boolean> = new Subject<boolean>();
-    overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the members are loading!</span>';
-    overlayNoRowsTemplate = '<span>No Members for this Task!</span>';
+    overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the Issue Members are loading!</span>';
+    overlayNoRowsTemplate = '<span>No Members for this Issue!</span>';
 
 
     private totalTaskPoints;
@@ -46,6 +47,7 @@ export class RetrospectTaskModalComponent implements OnDestroy {
     private columnDefs: any;
     private gridApi: GridApi;
     private columnApi: ColumnApi;
+    private columnCtrl: ColumnController;
 
     constructor(
         private retrospectiveService: RetrospectiveService,
@@ -66,9 +68,10 @@ export class RetrospectTaskModalComponent implements OnDestroy {
     }
 
     @HostListener('window:resize') onResize() {
-        if (this.gridApi) {
+        if (this.gridApi && this.columnCtrl) {
             setTimeout(() => {
                 this.gridApi.sizeColumnsToFit();
+                this.columnCtrl.autoSizeAllColumns(<ColumnEventType>'autosizeColumns');
             });
         }
     }
@@ -116,7 +119,13 @@ export class RetrospectTaskModalComponent implements OnDestroy {
             rowHeight: 48,
             singleClickEdit: true,
             stopEditingWhenGridLosesFocus: true,
-            suppressScrollOnNewData: true
+            suppressScrollOnNewData: true,
+            onDragStopped: () => {
+                if (this.gridApi && this.columnCtrl) {
+                    this.columnCtrl.autoSizeAllColumns(<ColumnEventType>'autosizeColumns');
+                    this.gridApi.sizeColumnsToFit();
+                }
+            }
         };
     }
 
@@ -125,6 +134,7 @@ export class RetrospectTaskModalComponent implements OnDestroy {
         this.gridApi = params.api;
         this.columnApi = params.columnApi;
         this.getSprintTaskMemberSummary(false);
+        this.columnCtrl = params.columnController;
         Observable.interval(AUTO_REFRESH_DURATION)
             .takeUntil(this.destroy$)
             .subscribe(() => {
@@ -150,6 +160,9 @@ export class RetrospectTaskModalComponent implements OnDestroy {
                         minValue: 0,
                         baseMaxValue: this.taskDetails.Estimate - this.totalTaskPoints
                     };
+                    if (this.columnApi) {
+                        this.columnApi.autoSizeAllColumns();
+                    }
                     if (!isRefresh) {
                         this.gridApi.sizeColumnsToFit();
                     }
@@ -162,7 +175,7 @@ export class RetrospectTaskModalComponent implements OnDestroy {
                     } else {
                         this.snackBar.open(
                             this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES
-                                .getSprintTaskMemberSummaryError,
+                                .getSprintIssueMemberSummaryError,
                             '', {duration: SNACKBAR_DURATION});
                         this.dialogRef.close();
                     }
@@ -189,7 +202,7 @@ export class RetrospectTaskModalComponent implements OnDestroy {
                 },
                 err => {
                     this.snackBar.open(
-                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.addSprintTaskMemberError,
+                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.addSprintIssueMemberError,
                         '', {duration: SNACKBAR_DURATION});
                 }
             );
@@ -277,12 +290,12 @@ export class RetrospectTaskModalComponent implements OnDestroy {
                     if (cellParams.newValue !== cellParams.oldValue) {
                         if (newStoryPoints > this.taskDetails.Estimate) {
                             this.snackBar.open(
-                                API_RESPONSE_MESSAGES.taskStoryPointsEstimatesError,
+                                API_RESPONSE_MESSAGES.issueStoryPointsEstimatesError,
                                 '', {duration: SNACKBAR_DURATION});
                             this.revertCellValue(cellParams);
                         } else if (cellParams.newValue < 0) {
                             this.snackBar.open(
-                                API_RESPONSE_MESSAGES.taskStoryPointsNegativeError,
+                                API_RESPONSE_MESSAGES.issueStoryPointsNegativeError,
                                 '', {duration: SNACKBAR_DURATION});
                             this.revertCellValue(cellParams);
                         } else {
