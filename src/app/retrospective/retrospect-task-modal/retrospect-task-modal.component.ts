@@ -37,8 +37,8 @@ export class RetrospectTaskModalComponent implements OnDestroy {
     autoRefreshCurrentState: boolean;
     ratingStates = RATING_STATES;
     destroy$: Subject<boolean> = new Subject<boolean>();
-    overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the members are loading!</span>';
-    overlayNoRowsTemplate = '<span>No Members for this Task!</span>';
+    overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the Issue Members are loading!</span>';
+    overlayNoRowsTemplate = '<span>No Members for this Issue!</span>';
 
 
     private totalTaskPoints;
@@ -162,7 +162,7 @@ export class RetrospectTaskModalComponent implements OnDestroy {
                     } else {
                         this.snackBar.open(
                             this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES
-                                .getSprintTaskMemberSummaryError,
+                                .getSprintIssueMemberSummaryError,
                             '', {duration: SNACKBAR_DURATION});
                         this.dialogRef.close();
                     }
@@ -189,7 +189,7 @@ export class RetrospectTaskModalComponent implements OnDestroy {
                 },
                 err => {
                     this.snackBar.open(
-                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.addSprintTaskMemberError,
+                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.addSprintIssueMemberError,
                         '', {duration: SNACKBAR_DURATION});
                 }
             );
@@ -277,12 +277,12 @@ export class RetrospectTaskModalComponent implements OnDestroy {
                     if (cellParams.newValue !== cellParams.oldValue) {
                         if (newStoryPoints > this.taskDetails.Estimate) {
                             this.snackBar.open(
-                                API_RESPONSE_MESSAGES.taskStoryPointsEstimatesError,
+                                API_RESPONSE_MESSAGES.issueStoryPointsEstimatesError,
                                 '', {duration: SNACKBAR_DURATION});
                             this.revertCellValue(cellParams);
                         } else if (cellParams.newValue < 0) {
                             this.snackBar.open(
-                                API_RESPONSE_MESSAGES.taskStoryPointsNegativeError,
+                                API_RESPONSE_MESSAGES.issueStoryPointsNegativeError,
                                 '', {duration: SNACKBAR_DURATION});
                             this.revertCellValue(cellParams);
                         } else {
