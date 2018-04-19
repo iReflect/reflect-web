@@ -242,7 +242,7 @@ export class RetrospectTaskModalComponent implements OnDestroy {
             {
                 headerName: 'Role',
                 field: 'Role',
-                minWidth: 150,
+                minWidth: 110,
                 valueFormatter: (cellParams) => {
                     return MEMBER_TASK_ROLES_LABEL[cellParams.value];
                 },
@@ -267,7 +267,7 @@ export class RetrospectTaskModalComponent implements OnDestroy {
                 headerName: 'Sprint Points',
                 field: 'SprintPoints',
                 editable: isSprintEditable,
-                minWidth: 185,
+                minWidth: 100,
                 valueParser: 'Number(newValue)',
                 cellEditor: 'numericEditor',
                 valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value),
@@ -303,24 +303,24 @@ export class RetrospectTaskModalComponent implements OnDestroy {
                 headerName: 'Sprint Hours',
                 field: 'SprintTime',
                 valueFormatter: (params) => this.utils.formatFloat(params.value / 60),
-                minWidth: 150
+                minWidth: 100
             },
             {
                 headerName: 'Total Points',
                 field: 'TotalPoints',
-                minWidth: 180,
+                minWidth: 100,
                 valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value)
             },
             {
                 headerName: 'Total Hours',
                 field: 'TotalTime',
                 valueFormatter: (params) => this.utils.formatFloat(params.value / 60),
-                minWidth: 140
+                minWidth: 100
             },
             {
                 headerName: 'Rating',
                 field: 'Rating',
-                minWidth: 150,
+                minWidth: 110,
                 editable: isSprintEditable,
                 cellEditor: 'selectEditor',
                 cellEditorParams: {

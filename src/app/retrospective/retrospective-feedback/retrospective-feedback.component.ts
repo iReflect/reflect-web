@@ -290,7 +290,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                 headerName: 'Text',
                 field: 'Text',
                 tooltipField: 'Text',
-                minWidth: 160,
+                minWidth: 150,
                 editable: editable,
                 onCellValueChanged: (cellParams) => {
                     if (cellParams.newValue !== cellParams.oldValue) {
@@ -301,7 +301,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
             {
                 headerName: 'Scope',
                 field: 'Scope',
-                minWidth: 160,
+                minWidth: 120,
                 editable: editable,
                 valueFormatter: (cellParams) => RETRO_FEEDBACK_SCOPE_LABELS[cellParams.value],
                 cellEditor: 'selectEditor',
@@ -344,7 +344,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
             {
                 headerName: 'Added At',
                 field: 'AddedAt',
-                minWidth: 160,
+                minWidth: 150,
                 valueFormatter: (cellParams) => this.utils.getDateFromString(cellParams.value || '')
             },
             {
@@ -360,7 +360,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                 {
                     headerName: 'Expected At',
                     field: 'ExpectedAt',
-                    minWidth: 160,
+                    minWidth: 150,
                     editable: editable,
                     cellEditor: 'datePicker',
                     cellEditorParams: {
@@ -378,7 +378,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
             const pendingGoalColumn = [
                 {
                     headerName: 'Mark Resolved',
-                    minWidth: 160,
+                    minWidth: 140,
                     cellRenderer: 'clickableButtonRenderer',
                     cellRendererParams: {
                         label: 'Mark Resolved',
@@ -390,7 +390,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                 {
                     headerName: 'Resolved At',
                     field: 'ResolvedAt',
-                    minWidth: 160,
+                    minWidth: 150,
                     valueFormatter: (cellParams) => this.utils.getDateFromString(cellParams.value || '')
                 },
                 {

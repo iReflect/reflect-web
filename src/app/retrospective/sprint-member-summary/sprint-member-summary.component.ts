@@ -123,9 +123,6 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     setGridOptions() {
         this.gridOptions = <GridOptions>{
             columnDefs: this.columnDefs,
-            defaultColDef: {
-                width: 100,
-            },
             frameworkComponents: {
                 'ratingEditor': SelectCellEditorComponent,
                 'ratingRenderer': RatingRendererComponent,
@@ -250,7 +247,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         const member = params.data;
         const dialogRef = this.dialog.open(BasicModalComponent, {
             data: {
-                content: 'Are you sure you want to delete ' + (member.FirstName + ' ' + member.LastName).trim() + '?',
+                content: 'Are you sure you want to remove ' + (member.FirstName + ' ' + member.LastName).trim() + '?',
                 confirmBtn: 'Yes',
                 cancelBtn: 'Cancel'
             },
@@ -305,7 +302,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                 headerName: 'Allocation',
                 field: 'AllocationPercent',
                 editable: isSprintEditable,
-                minWidth: 125,
+                minWidth: 120,
                 valueParser: 'Number(newValue)',
                 cellEditor: 'numericEditor',
                 cellEditorParams: {
@@ -355,7 +352,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                 headerName: 'Vacations',
                 field: 'Vacations',
                 editable: isSprintEditable,
-                minWidth: 125,
+                minWidth: 120,
                 valueParser: 'Number(newValue)',
                 cellEditor: 'numericEditor',
                 cellEditorParams: {
@@ -385,25 +382,25 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             {
                 headerName: 'Expected Points',
                 field: 'ExpectedStoryPoint',
-                minWidth: 155,
+                minWidth: 130,
                 valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value)
             },
             {
                 headerName: 'Actual Points',
                 field: 'ActualStoryPoint',
-                minWidth: 140,
+                minWidth: 120,
                 valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value)
             },
             {
                 headerName: 'Sprint Hours',
                 field: 'TotalTimeSpentInMin',
-                minWidth: 135,
+                minWidth: 100,
                 valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value / 60),
             },
             {
                 headerName: 'Rating',
                 field: 'Rating',
-                minWidth: 150,
+                minWidth: 120,
                 editable: isSprintEditable,
                 cellEditor: 'ratingEditor',
                 cellEditorParams: {
