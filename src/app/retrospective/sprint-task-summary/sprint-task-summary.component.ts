@@ -1,7 +1,7 @@
 import { Component, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { MatDialogRef } from '@angular/material/dialog/typings/dialog-ref';
-import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
+import { ColumnApi, ColumnController, GridApi, GridOptions } from 'ag-grid';
 import 'rxjs/add/observable/interval';
 import 'rxjs/add/operator/takeUntil';
 import { Observable } from 'rxjs/Observable';
@@ -18,6 +18,7 @@ import {
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { RetrospectTaskModalComponent } from '../retrospect-task-modal/retrospect-task-modal.component';
 import { UtilsService } from '../../shared/utils/utils.service';
+import { ColumnEventType } from 'ag-grid/dist/lib/events';
 
 @Component({
     selector: 'app-sprint-task-summary',
@@ -45,6 +46,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     private columnDefs: any;
     private gridApi: GridApi;
     private columnApi: ColumnApi;
+    private columnCtrl: ColumnController;
 
     constructor(
         private snackBar: MatSnackBar,
@@ -55,9 +57,9 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     }
 
     @HostListener('window:resize') onResize() {
-        if (this.gridApi && this.columnApi && this.isTabActive) {
+        if (this.gridApi && this.columnCtrl && this.isTabActive) {
             setTimeout(() => {
-                this.columnApi.autoSizeColumns(this.columnsToFit);
+                this.columnCtrl.autoSizeColumns(this.columnsToFit, <ColumnEventType>'autosizecolumn');
                 this.gridApi.sizeColumnsToFit();
             });
         }
@@ -133,8 +135,8 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             suppressScrollOnNewData: true,
             stopEditingWhenGridLosesFocus: true,
             onDragStopped: () => {
-                if (this.gridApi && this.columnApi) {
-                    this.columnApi.autoSizeColumns(this.columnsToFit);
+                if (this.gridApi && this.columnCtrl) {
+                    this.columnCtrl.autoSizeColumns(this.columnsToFit, <ColumnEventType>'autosizeColumns');
                     this.gridApi.sizeColumnsToFit();
                 }
             }
@@ -145,6 +147,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         this.params = params;
         this.gridApi = params.api;
         this.columnApi = params.columnApi;
+        this.columnCtrl = params.columnController;
         this.getSprintTaskSummary(false);
         if (this.isTabActive) {
             this.gridApi.sizeColumnsToFit();

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
-import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
+import { ColumnApi, ColumnController, GridApi, GridOptions } from 'ag-grid';
 import * as _ from 'lodash';
 
 import {
@@ -16,6 +16,7 @@ import { DatePickerEditorComponent } from '../../shared/ag-grid-editors/date-pic
 import { ClickableButtonRendererComponent } from '../../shared/ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { UtilsService } from '../../shared/utils/utils.service';
+import { ColumnEventType } from 'ag-grid/dist/lib/events';
 
 @Component({
     selector: 'app-retrospective-feedback',
@@ -46,7 +47,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
     private params: any;
     private gridApi: GridApi;
     private columnApi: ColumnApi;
-
+    private columnCtrl: ColumnController;
 
     @HostListener('window:resize')
     onResize() {
@@ -117,8 +118,8 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
             stopEditingWhenGridLosesFocus: true,
             suppressScrollOnNewData: true,
             onDragStopped: () => {
-                if (this.gridApi && this.columnApi) {
-                    this.columnApi.autoSizeAllColumns();
+                if (this.gridApi && this.columnCtrl) {
+                    this.columnCtrl.autoSizeAllColumns(<ColumnEventType>'autosizeColumns');
                     this.gridApi.sizeColumnsToFit();
                 }
             }
@@ -129,6 +130,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
         this.params = params;
         this.gridApi = params.api;
         this.columnApi = params.columnApi;
+        this.columnCtrl = params.columnController;
         setTimeout(() => {
             if (this.data) {
                 this.gridApi.setRowData(
@@ -280,10 +282,10 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
     }
 
     resizeAgGrid() {
-        if (this.gridApi && this.columnApi && this.isTabActive) {
+        if (this.gridApi && this.columnCtrl && this.isTabActive) {
             setTimeout(() => {
                 this.gridApi.sizeColumnsToFit();
-                this.columnApi.autoSizeAllColumns();
+                this.columnCtrl.autoSizeAllColumns(<ColumnEventType>'autosizeColumns');
             });
         }
     }

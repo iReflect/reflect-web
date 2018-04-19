@@ -1,6 +1,6 @@
 import { Component, HostListener, Inject, OnDestroy } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
-import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
+import { ColumnApi, ColumnController, GridApi, GridOptions } from 'ag-grid';
 import * as _ from 'lodash';
 import 'rxjs/add/observable/interval';
 import 'rxjs/add/operator/takeUntil';
@@ -21,6 +21,7 @@ import { RatingRendererComponent } from '../../shared/ag-grid-renderers/rating-r
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { RetrospectiveCreateComponent } from '../retrospective-create/retrospective-create.component';
 import { UtilsService } from '../../shared/utils/utils.service';
+import { ColumnEventType } from 'ag-grid/dist/lib/events';
 
 @Component({
     selector: 'app-retrospect-task-modal',
@@ -46,6 +47,7 @@ export class RetrospectTaskModalComponent implements OnDestroy {
     private columnDefs: any;
     private gridApi: GridApi;
     private columnApi: ColumnApi;
+    private columnCtrl: ColumnController;
 
     constructor(
         private retrospectiveService: RetrospectiveService,
@@ -66,10 +68,10 @@ export class RetrospectTaskModalComponent implements OnDestroy {
     }
 
     @HostListener('window:resize') onResize() {
-        if (this.gridApi && this.columnApi) {
+        if (this.gridApi && this.columnCtrl) {
             setTimeout(() => {
                 this.gridApi.sizeColumnsToFit();
-                this.columnApi.autoSizeAllColumns();
+                this.columnCtrl.autoSizeAllColumns(<ColumnEventType>'autosizeColumns');
             });
         }
     }
@@ -119,8 +121,8 @@ export class RetrospectTaskModalComponent implements OnDestroy {
             stopEditingWhenGridLosesFocus: true,
             suppressScrollOnNewData: true,
             onDragStopped: () => {
-                if (this.gridApi && this.columnApi) {
-                    this.columnApi.autoSizeAllColumns();
+                if (this.gridApi && this.columnCtrl) {
+                    this.columnCtrl.autoSizeAllColumns(<ColumnEventType>'autosizeColumns');
                     this.gridApi.sizeColumnsToFit();
                 }
             }
@@ -132,6 +134,7 @@ export class RetrospectTaskModalComponent implements OnDestroy {
         this.gridApi = params.api;
         this.columnApi = params.columnApi;
         this.getSprintTaskMemberSummary(false);
+        this.columnCtrl = params.columnController;
         Observable.interval(AUTO_REFRESH_DURATION)
             .takeUntil(this.destroy$)
             .subscribe(() => {
