@@ -270,7 +270,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
         return (this.gridApi && this.gridApi.getDisplayedRowCount()) || 0;
     }
 
-    private resizeAgGrid() {
+    resizeAgGrid() {
         if (this.gridApi && this.isTabActive) {
             setTimeout(() => {
                 this.gridApi.sizeColumnsToFit();
