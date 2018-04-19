@@ -93,29 +93,33 @@ mat-row {
 }
 
 .ag-header-cell-text {
-    width: 100%!important;
+    width: 100% !important;
     text-overflow: clip;
     overflow: visible;
     white-space: normal !important;
 }
 
-.ag-header-cell-menu-button .ag-icon-menu, .ag-icon-asc, .ag-icon-desc, .ag-icon-filter {
+.ag-header-cell-menu-button .ag-icon-menu,
+.ag-icon-asc,
+.ag-icon-desc,
+.ag-icon-filter {
     height: 10px !important;
     padding-top: 5px;
 }
 
 .custom-ag-grid-header {
-    padding-right: 0!important;
+    padding-right: 0 !important;
 
     &.task-summary-retrospect-icon-header {
-        padding-left: 10px!important;
+        padding-left: 10px !important;
     }
-    &.task-summary-done-icon-header {
-        padding-left: 25px!important;
 
+    &.task-summary-done-icon-header {
+        padding-left: 25px !important;
     }
+
     &.task-summary-id-header {
-        padding-left: 15px!important;
-        left: 190px!important;
+        padding-left: 15px !important;
+        left: 190px !important;
     }
 }
