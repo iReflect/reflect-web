@@ -199,6 +199,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             markedDoneColumns = [
                 {
                     headerName: 'Done',
+                    headerClass: 'custom-ag-grid-header task-summary-done-icon-header',
                     colId: 'markDone',
                     cellRenderer: 'clickableButtonRenderer',
                     cellRendererParams: (params) => {
@@ -210,7 +211,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                         };
                     },
                     pinned: true,
-                    minWidth: 130,
+                    minWidth: 85,
                     suppressSorting: true,
                     suppressFilter: true,
                 }
@@ -220,6 +221,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             ...markedDoneColumns,
             {
                 headerName: 'Retrospect',
+                headerClass: 'custom-ag-grid-header task-summary-retrospect-icon-header',
                 cellRenderer: 'clickableButtonRenderer',
                 cellRendererParams: {
                     useIcon: true,
@@ -228,12 +230,13 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     onClick: this.retrospectSprint.bind(this)
                 },
                 pinned: true,
-                minWidth: 130,
+                minWidth: 90,
                 suppressSorting: true,
                 suppressFilter: true,
             },
             {
                 headerName: 'ID',
+                headerClass: 'custom-ag-grid-header task-summary-id-header',
                 field: 'Key',
                 minWidth: 80,
                 pinned: true,
@@ -242,7 +245,9 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             },
             {
                 headerName: 'Summary',
+                headerClass: 'custom-ag-grid-header',
                 field: 'Summary',
+                pinned: true,
                 minWidth: 300,
                 tooltipField: 'Summary',
                 suppressSorting: true,
@@ -257,8 +262,9 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             },
             {
                 headerName: 'Type',
+                headerClass: 'custom-ag-grid-header',
                 field: 'Type',
-                minWidth: 180,
+                minWidth: 120,
                 filter: 'agTextColumnFilter',
                 filterParams: {
                     debounceMs: 500,
@@ -285,7 +291,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 headerName: 'Total Hours',
                 field: 'TotalTime',
                 valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value / 60),
-                minWidth: 120,
+                minWidth: 100,
                 suppressSorting: true,
                 suppressFilter: true,
             },

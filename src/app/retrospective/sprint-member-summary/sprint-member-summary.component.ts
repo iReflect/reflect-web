@@ -123,9 +123,6 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     setGridOptions() {
         this.gridOptions = <GridOptions>{
             columnDefs: this.columnDefs,
-            defaultColDef: {
-                width: 100,
-            },
             frameworkComponents: {
                 'ratingEditor': SelectCellEditorComponent,
                 'ratingRenderer': RatingRendererComponent,
@@ -250,7 +247,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         const member = params.data;
         const dialogRef = this.dialog.open(BasicModalComponent, {
             data: {
-                content: 'Are you sure you want to delete ' + (member.FirstName + ' ' + member.LastName).trim() + '?',
+                content: 'Are you sure you want to remove ' + (member.FirstName + ' ' + member.LastName).trim() + '?',
                 confirmBtn: 'Yes',
                 cancelBtn: 'Cancel'
             },
@@ -397,7 +394,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             {
                 headerName: 'Sprint Hours',
                 field: 'TotalTimeSpentInMin',
-                minWidth: 120,
+                minWidth: 100,
                 valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value / 60),
             },
             {
