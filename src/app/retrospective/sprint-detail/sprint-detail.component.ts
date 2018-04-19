@@ -31,12 +31,13 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
     sprintID: any;
     retrospectiveID: any;
     sprintDetails: any;
+    sprintBugs: any;
+    sprintFeatures: any;
+    sprintTasks: any;
+
     selectedTabIndex = 0;
     enableRefresh = true;
     toggleToTriggerRefresh = false;
-
-    refresh$: Subject<number> = new Subject<number>();
-    destroy$: Subject<boolean> = new Subject<boolean>();
     dateFormat = DATE_FORMAT;
     decimalFormat = '1.0-2';
     sprintStates = SPRINT_STATES;
@@ -45,6 +46,9 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
     sprintActionsLabel = SPRINT_ACTIONS_LABEL;
     syncStates = SPRINT_SYNC_STATES;
     tabIndexMapping: any = {highlights: 0, taskSummary: 1, memberSummary: 2, notes: 3};
+
+    refresh$: Subject<number> = new Subject<number>();
+    destroy$: Subject<boolean> = new Subject<boolean>();
 
     constructor(
         private retrospectiveService: RetrospectiveService,
@@ -97,11 +101,18 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
             response => {
                 this.sprintDetails = response.data;
                 this.sprintStatus = response.data.Status;
+
+                const sprintTaskSummary = this.sprintDetails.Summary.TaskSummary;
+                this.sprintBugs = sprintTaskSummary.BugTypes;
+                this.sprintFeatures = sprintTaskSummary.FeatureTypes;
+                this.sprintTasks = sprintTaskSummary.TaskTypes;
+
                 this.sprintDays = this.utils.workdayCount(response.data.StartDate, response.data.EndDate);
                 if ([this.syncStates.SYNCING, this.syncStates.QUEUED].indexOf(this.sprintDetails.SyncStatus) !== -1
                     && !this.enableRefresh) {
                     this.refresh$.next(AUTO_REFRESH_DURATION);
                 }
+
                 // Since we are hiding the "Highlights" and "Notes" tab for draft sprints,
                 // we need to make sure that the summary tabs are following the correct order.
                 this.tabIndexMapping = this.getTabIndexMapping(this.sprintStatus);

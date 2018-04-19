@@ -77,17 +77,16 @@
                 <div class="information-box mat-elevation-z1 flex layout-side-margin">
                     <div class="box-header">
                         <h4 class="title">
-                            Bugs
+                            Bugs ({{sprintBugs.TotalCount}})
                         </h4>
                     </div>
                     <div class="info-box-content">
                         <div class="info-left">
                             <p>
-                                Done: <b>{{ sprintDetails.Summary.TaskSummary.BugTypes.Count }}</b>
+                                Done: <b>{{ sprintBugs.Count }}</b>
                             </p>
                             <p>
-                                Sprint Points: <b>{{ sprintDetails.Summary.TaskSummary.BugTypes.TotalPointsEarned
-                                | number:decimalFormat }}</b>
+                                Sprint Points: <b>{{ sprintBugs.TotalPointsEarned | number:decimalFormat }}</b>
                             </p>
                         </div>
                     </div>
@@ -95,18 +94,16 @@
                 <div class="information-box mat-elevation-z1 flex layout-side-margin">
                     <div class="box-header">
                         <h4 class="title">
-                            Features
+                            Features ({{sprintFeatures.TotalCount}})
                         </h4>
                     </div>
                     <div class="info-box-content">
                         <div class="info-left">
                             <p>
-                                Done: <b>{{ sprintDetails.Summary.TaskSummary.FeatureTypes.Count }}</b>
+                                Done: <b>{{ sprintFeatures.Count }}</b>
                             </p>
                             <p>
-                                Sprint Points: <b>{{
-                                sprintDetails.Summary.TaskSummary.FeatureTypes.TotalPointsEarned |
-                                number:decimalFormat }}</b>
+                                Sprint Points: <b>{{ sprintFeatures.TotalPointsEarned | number:decimalFormat }}</b>
                             </p>
                         </div>
                         <span class="fill-remaining-space"></span>
@@ -117,18 +114,16 @@
                 <div class="information-box mat-elevation-z1 flex layout-side-margin">
                     <div class="box-header">
                         <h4 class="title">
-                            Tasks
+                            Tasks ({{sprintTasks.TotalCount}})
                         </h4>
                     </div>
                     <div class="info-box-content">
                         <div class="info-left">
                             <p>
-                                Done: <b>{{ sprintDetails.Summary.TaskSummary.TaskTypes.Count }}</b>
+                                Done: <b>{{ sprintTasks.Count }}</b>
                             </p>
                             <p>
-                                Sprint Points: <b>{{
-                                sprintDetails.Summary.TaskSummary.TaskTypes.TotalPointsEarned | number:decimalFormat
-                                }}</b>
+                                Sprint Points: <b>{{ sprintTasks.TotalPointsEarned | number:decimalFormat }}</b>
                             </p>
                         </div>
                         <span class="fill-remaining-space"></span>
