@@ -60,9 +60,10 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     }
 
     @HostListener('window:resize') onResize() {
-        if (this.gridApi && this.isTabActive) {
+        if (this.gridApi && this.columnApi && this.isTabActive) {
             setTimeout(() => {
                 this.gridApi.sizeColumnsToFit();
+                this.columnApi.autoSizeAllColumns();
             });
         }
     }
@@ -98,6 +99,9 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                     this.gridApi.sizeColumnsToFit();
                 });
             }
+        }
+        if (this.columnApi && this.isTabActive) {
+            this.columnApi.autoSizeAllColumns();
         }
     }
 
@@ -137,7 +141,13 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             rowHeight: 48,
             singleClickEdit: true,
             suppressScrollOnNewData: true,
-            stopEditingWhenGridLosesFocus: true
+            stopEditingWhenGridLosesFocus: true,
+            onDragStopped: () => {
+                if (this.gridApi && this.columnApi) {
+                    this.columnApi.autoSizeAllColumns();
+                    this.gridApi.sizeColumnsToFit();
+                }
+            }
         };
     }
 

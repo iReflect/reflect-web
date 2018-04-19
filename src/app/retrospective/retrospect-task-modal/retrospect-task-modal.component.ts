@@ -66,9 +66,10 @@ export class RetrospectTaskModalComponent implements OnDestroy {
     }
 
     @HostListener('window:resize') onResize() {
-        if (this.gridApi) {
+        if (this.gridApi && this.columnApi) {
             setTimeout(() => {
                 this.gridApi.sizeColumnsToFit();
+                this.columnApi.autoSizeAllColumns();
             });
         }
     }
@@ -116,7 +117,13 @@ export class RetrospectTaskModalComponent implements OnDestroy {
             rowHeight: 48,
             singleClickEdit: true,
             stopEditingWhenGridLosesFocus: true,
-            suppressScrollOnNewData: true
+            suppressScrollOnNewData: true,
+            onDragStopped: () => {
+                if (this.gridApi && this.columnApi) {
+                    this.columnApi.autoSizeAllColumns();
+                    this.gridApi.sizeColumnsToFit();
+                }
+            }
         };
     }
 
@@ -150,6 +157,9 @@ export class RetrospectTaskModalComponent implements OnDestroy {
                         minValue: 0,
                         baseMaxValue: this.taskDetails.Estimate - this.totalTaskPoints
                     };
+                    if (this.columnApi) {
+                        this.columnApi.autoSizeAllColumns();
+                    }
                     if (!isRefresh) {
                         this.gridApi.sizeColumnsToFit();
                     }

@@ -96,6 +96,9 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                 this.resizeAgGrid();
             }
         }
+        if (this.columnApi && this.isTabActive) {
+            this.columnApi.autoSizeAllColumns();
+        }
     }
 
     setGridOptions() {
@@ -112,7 +115,13 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
             rowHeight: 48,
             singleClickEdit: true,
             stopEditingWhenGridLosesFocus: true,
-            suppressScrollOnNewData: true
+            suppressScrollOnNewData: true,
+            onDragStopped: () => {
+                if (this.gridApi && this.columnApi) {
+                    this.columnApi.autoSizeAllColumns();
+                    this.gridApi.sizeColumnsToFit();
+                }
+            }
         };
     }
 
@@ -271,9 +280,10 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
     }
 
     resizeAgGrid() {
-        if (this.gridApi && this.isTabActive) {
+        if (this.gridApi && this.columnApi && this.isTabActive) {
             setTimeout(() => {
                 this.gridApi.sizeColumnsToFit();
+                this.columnApi.autoSizeAllColumns();
             });
         }
     }

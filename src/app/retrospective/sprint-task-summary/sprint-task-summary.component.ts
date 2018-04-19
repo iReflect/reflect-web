@@ -31,6 +31,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     destroy$: Subject<boolean> = new Subject<boolean>();
     overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the Issues are loading!</span>';
     overlayNoRowsTemplate = '<span>No Issues in this sprint!</span>';
+    columnsToFit: any = ['ID', 'Estimate', 'PointsEarned', 'SprintTime', 'TotalTime'];
 
     @Input() retrospectiveID;
     @Input() sprintID;
@@ -54,8 +55,9 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     }
 
     @HostListener('window:resize') onResize() {
-        if (this.gridApi && this.isTabActive) {
+        if (this.gridApi && this.columnApi && this.isTabActive) {
             setTimeout(() => {
+                this.columnApi.autoSizeColumns(this.columnsToFit);
                 this.gridApi.sizeColumnsToFit();
             });
         }
@@ -79,11 +81,11 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         }
         if (this.gridApi) {
             // this if block also executes when changes.refreshOnChange toggles
-            if (this.isTabActive && !changes.isTabActive) {
-                this.gridApi.sizeColumnsToFit();
-            }
             if (this.isTabActive && (this.autoRefreshCurrentState || changes.refreshOnChange)) {
                 this.getSprintTaskSummary(true);
+            }
+            if (this.isTabActive && !changes.isTabActive) {
+                this.gridApi.sizeColumnsToFit();
             }
             // we do this separately because we need to wait
             // at the least one tick when this tab is made active
@@ -93,6 +95,9 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     this.gridApi.sizeColumnsToFit();
                 });
             }
+        }
+        if (this.columnApi && this.isTabActive) {
+            this.columnApi.autoSizeColumns(this.columnsToFit);
         }
     }
 
@@ -126,7 +131,13 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             overlayNoRowsTemplate: this.overlayNoRowsTemplate,
             rowHeight: 48,
             suppressScrollOnNewData: true,
-            stopEditingWhenGridLosesFocus: true
+            stopEditingWhenGridLosesFocus: true,
+            onDragStopped: () => {
+                if (this.gridApi && this.columnApi) {
+                    this.columnApi.autoSizeColumns(this.columnsToFit);
+                    this.gridApi.sizeColumnsToFit();
+                }
+            }
         };
     }
 
@@ -152,6 +163,9 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             .subscribe(
                 response => {
                     this.gridApi.setRowData(response.data.Tasks);
+                    if (this.columnApi) {
+                        this.columnApi.autoSizeColumns(this.columnsToFit);
+                    }
                     if (!isRefresh && this.isTabActive) {
                         setTimeout(() => {
                             this.gridApi.sizeColumnsToFit();
@@ -236,9 +250,9 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             },
             {
                 headerName: 'ID',
+                colId: 'ID',
                 headerClass: 'custom-ag-grid-header task-summary-id-header',
                 field: 'Key',
-                minWidth: 80,
                 pinned: true,
                 suppressSorting: true,
                 suppressFilter: true,
@@ -256,6 +270,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             {
                 headerName: 'Owner',
                 field: 'Owner',
+                tooltipField: 'Owner',
                 minWidth: 160,
                 suppressSorting: true,
                 suppressFilter: true,
@@ -280,24 +295,18 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 suppressFilter: true,
             },
             {
-                headerName: 'Estimated Points',
+                headerName: 'Points',
                 field: 'Estimate',
+                colId: 'Estimate',
                 minWidth: 120,
                 suppressSorting: true,
                 suppressFilter: true,
                 valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value)
             },
             {
-                headerName: 'Total Hours',
-                field: 'TotalTime',
-                valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value / 60),
-                minWidth: 100,
-                suppressSorting: true,
-                suppressFilter: true,
-            },
-            {
                 headerName: 'Sprint Points',
                 field: 'PointsEarned',
+                colId: 'PointsEarned',
                 valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value),
                 minWidth: 100,
                 suppressSorting: true,
@@ -306,6 +315,16 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             {
                 headerName: 'Sprint Hours',
                 field: 'SprintTime',
+                colId: 'SprintTime',
+                valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value / 60),
+                minWidth: 100,
+                suppressSorting: true,
+                suppressFilter: true,
+            },
+            {
+                headerName: 'Total Hours',
+                field: 'TotalTime',
+                colId: 'TotalTime',
                 valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value / 60),
                 minWidth: 100,
                 suppressSorting: true,
