@@ -29,8 +29,8 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     dialogRef: MatDialogRef<any>;
     autoRefreshCurrentState: boolean;
     destroy$: Subject<boolean> = new Subject<boolean>();
-    overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the tasks are loading!</span>';
-    overlayNoRowsTemplate = '<span>No Tasks in this sprint!</span>';
+    overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the Issues are loading!</span>';
+    overlayNoRowsTemplate = '<span>No Issues in this sprint!</span>';
 
     @Input() retrospectiveID;
     @Input() sprintID;
@@ -161,12 +161,12 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 err => {
                     if (isRefresh) {
                         this.snackBar.open(
-                            API_RESPONSE_MESSAGES.taskSummaryRefreshFailure,
+                            API_RESPONSE_MESSAGES.issueSummaryRefreshFailure,
                             '', {duration: SNACKBAR_DURATION});
                     } else {
                         this.snackBar.open(
                             this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES
-                                .getSprintTaskSummaryError,
+                                .getSprintIssueSummaryError,
                             '', {duration: SNACKBAR_DURATION});
                     }
                 }
@@ -211,7 +211,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                         };
                     },
                     pinned: true,
-                    minWidth: 85,
+                    minWidth: 90,
                     suppressSorting: true,
                     suppressFilter: true,
                 }
@@ -335,7 +335,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     params.node.setData(sprintTaskSummary);
                     // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
                     params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
-                    this.snackBar.open(API_RESPONSE_MESSAGES.getSprintTaskMarkUnDoneSuccess, '', {duration: SNACKBAR_DURATION});
+                    this.snackBar.open(API_RESPONSE_MESSAGES.getSprintIssueMarkedUndoneSuccess, '', {duration: SNACKBAR_DURATION});
                 },
                 err => {
                     this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.error,
@@ -349,7 +349,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     params.node.setData(sprintTaskSummary);
                     // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
                     params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
-                    this.snackBar.open(API_RESPONSE_MESSAGES.getSprintTaskMarkDoneSuccess, '', {duration: SNACKBAR_DURATION});
+                    this.snackBar.open(API_RESPONSE_MESSAGES.getSprintIssueMarkedDoneSuccess, '', {duration: SNACKBAR_DURATION});
                 },
                 err => {
                     this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.error,
