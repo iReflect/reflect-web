@@ -94,8 +94,8 @@ mat-row {
 
 .ag-header-cell-text {
     width: 100% !important;
-    text-overflow: clip;
-    overflow: visible;
+    text-overflow: clip !important;
+    overflow: visible !important;
     white-space: normal !important;
 }
 
@@ -119,7 +119,6 @@ mat-row {
     }
 
     &.task-summary-id-header {
-        padding-left: 15px !important;
-        left: 190px !important;
+        padding-left: 30px !important;
     }
 }
