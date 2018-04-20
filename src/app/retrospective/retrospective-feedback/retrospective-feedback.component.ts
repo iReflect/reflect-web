@@ -112,6 +112,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
             rowHeight: 48,
             singleClickEdit: true,
             stopEditingWhenGridLosesFocus: true,
+            suppressDragLeaveHidesColumns: true,
             suppressScrollOnNewData: true
         };
     }

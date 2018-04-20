@@ -125,6 +125,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             overlayLoadingTemplate: this.overlayLoadingTemplate,
             overlayNoRowsTemplate: this.overlayNoRowsTemplate,
             rowHeight: 48,
+            suppressDragLeaveHidesColumns: true,
             suppressScrollOnNewData: true,
             stopEditingWhenGridLosesFocus: true
         };
@@ -211,7 +212,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                         };
                     },
                     pinned: true,
-                    minWidth: 90,
+                    minWidth: 100,
                     suppressSorting: true,
                     suppressFilter: true,
                 }
@@ -230,7 +231,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     onClick: this.retrospectSprint.bind(this)
                 },
                 pinned: true,
-                minWidth: 90,
+                minWidth: 100,
                 suppressSorting: true,
                 suppressFilter: true,
             },
@@ -293,7 +294,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 headerName: 'Sprint Points',
                 field: 'PointsEarned',
                 valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value),
-                minWidth: 100,
+                minWidth: 120,
                 suppressSorting: true,
                 suppressFilter: true,
             },
@@ -301,7 +302,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 headerName: 'Sprint Hours',
                 field: 'SprintTime',
                 valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value / 60),
-                minWidth: 100,
+                minWidth: 120,
                 suppressSorting: true,
                 suppressFilter: true,
             },
@@ -309,7 +310,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 headerName: 'Total Hours',
                 field: 'TotalTime',
                 valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value / 60),
-                minWidth: 100,
+                minWidth: 120,
                 suppressSorting: true,
                 suppressFilter: true,
             },

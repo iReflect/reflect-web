@@ -136,6 +136,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             overlayNoRowsTemplate: this.overlayNoRowsTemplate,
             rowHeight: 48,
             singleClickEdit: true,
+            suppressDragLeaveHidesColumns: true,
             suppressScrollOnNewData: true,
             stopEditingWhenGridLosesFocus: true
         };
@@ -302,7 +303,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                 headerName: 'Allocation',
                 field: 'AllocationPercent',
                 editable: isSprintEditable,
-                minWidth: 120,
+                minWidth: 130,
                 valueParser: 'Number(newValue)',
                 cellEditor: 'numericEditor',
                 cellEditorParams: {
@@ -327,7 +328,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                 headerName: 'Expectation',
                 field: 'ExpectationPercent',
                 editable: isSprintEditable,
-                minWidth: 130,
+                minWidth: 140,
                 valueParser: 'Number(newValue)',
                 cellEditor: 'numericEditor',
                 cellEditorParams: {
@@ -352,7 +353,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                 headerName: 'Vacations',
                 field: 'Vacations',
                 editable: isSprintEditable,
-                minWidth: 120,
+                minWidth: 130,
                 valueParser: 'Number(newValue)',
                 cellEditor: 'numericEditor',
                 cellEditorParams: {
@@ -394,7 +395,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             {
                 headerName: 'Sprint Hours',
                 field: 'TotalTimeSpentInMin',
-                minWidth: 100,
+                minWidth: 120,
                 valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value / 60),
             },
             {

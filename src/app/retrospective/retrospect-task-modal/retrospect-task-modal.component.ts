@@ -116,6 +116,7 @@ export class RetrospectTaskModalComponent implements OnDestroy {
             rowHeight: 48,
             singleClickEdit: true,
             stopEditingWhenGridLosesFocus: true,
+            suppressDragLeaveHidesColumns: true,
             suppressScrollOnNewData: true
         };
     }
