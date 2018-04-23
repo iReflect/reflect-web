@@ -345,8 +345,11 @@ export class RetrospectTaskModalComponent implements OnDestroy {
                 field: 'Comment',
                 minWidth: 300,
                 tooltipField: 'Comment',
-                cellEditor: 'agLargeTextCellEditor',
                 editable: isSprintEditable,
+                cellEditor: 'agLargeTextCellEditor',
+                cellEditorParams: {
+                    maxLength: 1000
+                },
                 onCellValueChanged: (cellParams) => {
                     if (cellParams.newValue !== cellParams.oldValue) {
                         this.updateSprintTaskMember(cellParams);
