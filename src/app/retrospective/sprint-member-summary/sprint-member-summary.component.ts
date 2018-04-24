@@ -146,8 +146,8 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         this.params = params;
         this.gridApi = params.api;
         this.columnApi = params.columnApi;
-        this.getSprintMemberSummary(false);
         if (this.isTabActive) {
+            this.getSprintMemberSummary(false);
             this.gridApi.sizeColumnsToFit();
         }
         Observable.interval(AUTO_REFRESH_DURATION)

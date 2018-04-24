@@ -135,8 +135,8 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         this.params = params;
         this.gridApi = params.api;
         this.columnApi = params.columnApi;
-        this.getSprintTaskSummary(false);
         if (this.isTabActive) {
+            this.getSprintTaskSummary(false);
             this.gridApi.sizeColumnsToFit();
         }
         Observable.interval(AUTO_REFRESH_DURATION)
