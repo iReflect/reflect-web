@@ -1,20 +1,18 @@
 <div class="sprint-notes">
     <mat-accordion>
-        <div *ngFor="let noteSection of notesSectionsList">
-            <app-retrospective-feedback
-                [title]="noteSection.LABEL"
-                (resumeRefresh)="resumeRefresh()"
-                (pauseRefresh)="pauseRefresh()"
-                [feedbackType]="retroFeedbackTypes.NOTE"
-                [feedbackSubType]="noteSection.KEY"
-                [sprintStatus]="sprintStatus"
-                [sprintEndDate]="sprintEndDate"
-                [retrospectiveID]="retrospectiveID"
-                [isTabActive]="isTabActive"
-                [sprintID]="sprintID"
-                [teamMembers]="teamMembers"
-                [data]="sprintNotes"></app-retrospective-feedback>
-        </div>
+        <app-retrospective-feedback *ngFor="let noteSection of notesSectionsList"
+            [title]="noteSection.LABEL"
+            (resumeRefresh)="resumeRefresh()"
+            (pauseRefresh)="pauseRefresh()"
+            [feedbackType]="retroFeedbackTypes.NOTE"
+            [feedbackSubType]="noteSection.KEY"
+            [sprintStatus]="sprintStatus"
+            [sprintEndDate]="sprintEndDate"
+            [retrospectiveID]="retrospectiveID"
+            [isTabActive]="isTabActive"
+            [sprintID]="sprintID"
+            [teamMembers]="teamMembers"
+            [data]="sprintNotes"></app-retrospective-feedback>
         <app-retrospective-feedback
             title="Things To Be Improved"
             (resumeRefresh)="resumeRefresh()"
