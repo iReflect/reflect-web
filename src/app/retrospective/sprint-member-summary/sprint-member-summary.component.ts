@@ -423,10 +423,13 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             {
                 headerName: 'Comments',
                 field: 'Comment',
-                minWidth: 300,
-                cellEditor: 'agLargeTextCellEditor',
                 tooltipField: 'Comment',
+                minWidth: 300,
                 editable: isSprintEditable,
+                cellEditor: 'agLargeTextCellEditor',
+                cellEditorParams: {
+                    maxLength: 1000
+                },
                 onCellValueChanged: (cellParams) => {
                     if (cellParams.newValue !== cellParams.oldValue) {
                         this.updateSprintMember(cellParams);
