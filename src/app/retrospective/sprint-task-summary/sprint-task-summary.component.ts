@@ -18,6 +18,7 @@ import {
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { RetrospectTaskModalComponent } from '../retrospect-task-modal/retrospect-task-modal.component';
 import { UtilsService } from '../../shared/utils/utils.service';
+import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.component';
 
 @Component({
     selector: 'app-sprint-task-summary',
@@ -332,19 +333,31 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     markDoneUnDone(params) {
         const sprintTaskSummaryData = params.data;
         if (sprintTaskSummaryData.DoneAt) {
-            this.retrospectiveService.markSprintTaskUnDone(this.retrospectiveID, this.sprintID, sprintTaskSummaryData.ID).subscribe(
-                response => {
-                    const sprintTaskSummary = response.data;
-                    params.node.setData(sprintTaskSummary);
-                    // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
-                    params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
-                    this.snackBar.open(API_RESPONSE_MESSAGES.getSprintIssueMarkedUndoneSuccess, '', {duration: SNACKBAR_DURATION});
+            const dialogRef = this.dialog.open(BasicModalComponent, {
+                data: {
+                    content: 'Are you sure you want to mark this task as Undone?',
+                    confirmBtn: 'Yes',
+                    cancelBtn: 'Cancel'
                 },
-                err => {
-                    this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.error,
-                        '', {duration: SNACKBAR_DURATION});
+                disableClose: true
+            });
+
+            dialogRef.afterClosed().subscribe(result => {
+                if (result) {
+                    this.retrospectiveService.markSprintTaskUnDone(this.retrospectiveID, this.sprintID, sprintTaskSummaryData.ID).subscribe(
+                        response => {
+                            const sprintTaskSummary = response.data;
+                            params.node.setData(sprintTaskSummary);
+                            // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
+                            params.refreshCell({suppressFlash: false, newData: false, forceRefresh: true});
+                            this.snackBar.open(API_RESPONSE_MESSAGES.getSprintIssueMarkedUndoneSuccess, '', {duration: SNACKBAR_DURATION});
+                        },
+                        err => {
+                            this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.error,
+                                '', {duration: SNACKBAR_DURATION});
+                        });
                 }
-            );
+            });
         } else {
             this.retrospectiveService.markSprintTaskDone(this.retrospectiveID, this.sprintID, sprintTaskSummaryData.ID).subscribe(
                 response => {
