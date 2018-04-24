@@ -1,18 +1,22 @@
-import { AfterViewInit, Component, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDatepicker } from '@angular/material';
-import { ICellEditorParams } from 'ag-grid';
 import { ICellEditorAngularComp } from 'ag-grid-angular';
 import * as _ from 'lodash';
+import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/operator/takeUntil';
 
 @Component({
     selector: 'app-date-picker-editor',
     templateUrl: './date-picker-editor.component.html',
     styleUrls: ['./date-picker-editor.component.scss']
 })
-export class DatePickerEditorComponent implements ICellEditorAngularComp, AfterViewInit {
+export class DatePickerEditorComponent implements ICellEditorAngularComp, AfterViewInit, OnDestroy {
     params: any;
     minValue: Date;
     value: Date;
+
+    private destroy$: Subject<boolean> = new Subject<boolean>();
+
     @ViewChild('input', {read: ViewContainerRef}) private input;
     @ViewChild('picker', {read: MatDatepicker}) private picker;
 
@@ -52,8 +56,13 @@ export class DatePickerEditorComponent implements ICellEditorAngularComp, AfterV
                 });
             });
         });
-        this.picker.closedStream.subscribe(() => {
+        this.picker.closedStream.takeUntil(this.destroy$).subscribe(() => {
             this.params.stopEditing();
         });
+    }
+
+    ngOnDestroy() {
+        this.destroy$.next(true);
+        this.destroy$.unsubscribe();
     }
 }

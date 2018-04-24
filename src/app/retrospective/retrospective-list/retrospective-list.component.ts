@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { RetrospectiveListDataSource } from './retrospective-list.data-source';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { Router } from '@angular/router';
@@ -6,15 +6,18 @@ import { API_RESPONSE_MESSAGES, APP_ROUTE_URLS, SNACKBAR_DURATION } from '../../
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { RetrospectiveCreateComponent } from '../retrospective-create/retrospective-create.component';
 import { UtilsService } from '../../shared/utils/utils.service';
+import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/operator/takeUntil';
 
 @Component({
     selector: 'app-retrospective-list',
     templateUrl: './retrospective-list.component.html',
     styleUrls: ['./retrospective-list.component.scss']
 })
-export class RetrospectiveListComponent implements OnInit {
+export class RetrospectiveListComponent implements OnInit, OnDestroy {
     dataSource: RetrospectiveListDataSource;
     displayedColumns = ['team', 'created_at', 'latest_sprint'];
+    private destroy$: Subject<boolean> = new Subject<boolean>();
 
     constructor(
         private retrospectiveService: RetrospectiveService,
@@ -26,8 +29,21 @@ export class RetrospectiveListComponent implements OnInit {
     ) {
     }
 
+    ngOnInit() {
+        this.initializeDataSource();
+    }
+
+    ngOnDestroy() {
+        this.destroy$.next(true);
+        this.destroy$.unsubscribe();
+        this.dataSource = null;
+    }
+
     initializeDataSource() {
-        this.dataSource = new RetrospectiveListDataSource(this.retrospectiveService, this.showCannotGetRetrospectivesError.bind(this));
+        this.dataSource = new RetrospectiveListDataSource(
+            this.retrospectiveService,
+            this.showCannotGetRetrospectivesError.bind(this)
+        );
     }
 
     showCannotGetRetrospectivesError(err) {
@@ -47,7 +63,7 @@ export class RetrospectiveListComponent implements OnInit {
             maxWidth: 950
         });
 
-        dialogRef.afterClosed().subscribe(result => {
+        dialogRef.afterClosed().takeUntil(this.destroy$).subscribe(result => {
             if (result) {
                 this.initializeDataSource();
                 this.changeDetectorRefs.detectChanges();
@@ -56,24 +72,22 @@ export class RetrospectiveListComponent implements OnInit {
     }
 
     navigateToLatestSprint(row) {
-        this.retrospectiveService.getRetrospectiveLatestSprint(row.ID).subscribe(
-            response => {
-                this.router.navigateByUrl(APP_ROUTE_URLS.sprintDetails
-                    .replace(':retrospectiveID', row.ID)
-                    .replace(':sprintID', response.data.ID));
-            },
-            err => {
-                this.snackBar.open(
-                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.noSprintsError,
-                    '', {duration: SNACKBAR_DURATION});
-                this.router.navigateByUrl(APP_ROUTE_URLS.retrospectiveDashboard
-                    .replace(':retrospectiveID', row.ID));
-            }
-        );
-    }
-
-    ngOnInit() {
-        this.initializeDataSource();
+        this.retrospectiveService.getRetrospectiveLatestSprint(row.ID)
+            .takeUntil(this.destroy$)
+            .subscribe(
+                response => {
+                    this.router.navigateByUrl(APP_ROUTE_URLS.sprintDetails
+                        .replace(':retrospectiveID', row.ID)
+                        .replace(':sprintID', response.data.ID));
+                },
+                err => {
+                    this.snackBar.open(
+                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.noSprintsError,
+                        '', {duration: SNACKBAR_DURATION});
+                    this.router.navigateByUrl(APP_ROUTE_URLS.retrospectiveDashboard
+                        .replace(':retrospectiveID', row.ID));
+                }
+            );
     }
 
     parseToDate(value) {
