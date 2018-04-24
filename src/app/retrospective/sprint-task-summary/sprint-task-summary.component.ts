@@ -335,7 +335,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         if (sprintTaskSummaryData.DoneAt) {
             const dialogRef = this.dialog.open(BasicModalComponent, {
                 data: {
-                    content: 'Are you sure you want to mark this task as Undone?',
+                    content: 'Are you sure you want to mark this issue as Undone?',
                     confirmBtn: 'Yes',
                     cancelBtn: 'Cancel'
                 },
