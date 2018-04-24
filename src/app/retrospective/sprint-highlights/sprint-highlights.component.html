@@ -13,21 +13,19 @@
             [sprintEndDate]="sprintEndDate"
             [retrospectiveID]="retrospectiveID"
             [sprintID]="sprintID"></app-retrospective-feedback>
-        <div *ngFor="let highlight of highlightsList">
-            <app-retrospective-feedback
-                [title]="highlight.LABEL"
-                (resumeRefresh)="resumeRefresh()"
-                (pauseRefresh)="pauseRefresh()"
-                [feedbackType]="retroFeedbackTypes.HIGHLIGHT"
-                [feedbackSubType]="highlight.KEY"
-                [sprintStatus]="sprintStatus"
-                [sprintEndDate]="sprintEndDate"
-                [retrospectiveID]="retrospectiveID"
-                [sprintID]="sprintID"
-                [isTabActive]="isTabActive"
-                [teamMembers]="teamMembers"
-                [data]="sprintHighlights"></app-retrospective-feedback>
-        </div>
+        <app-retrospective-feedback *ngFor="let highlight of highlightsList"
+            [title]="highlight.LABEL"
+            (resumeRefresh)="resumeRefresh()"
+            (pauseRefresh)="pauseRefresh()"
+            [feedbackType]="retroFeedbackTypes.HIGHLIGHT"
+            [feedbackSubType]="highlight.KEY"
+            [sprintStatus]="sprintStatus"
+            [sprintEndDate]="sprintEndDate"
+            [retrospectiveID]="retrospectiveID"
+            [sprintID]="sprintID"
+            [isTabActive]="isTabActive"
+            [teamMembers]="teamMembers"
+            [data]="sprintHighlights"></app-retrospective-feedback>
         <app-retrospective-feedback
             title="Pending Goals"
             (resumeRefresh)="resumeRefresh()"
