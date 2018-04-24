@@ -47,7 +47,6 @@ export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     ngOnInit() {
-        this.getSprintNotesTab(false);
         Observable.interval(AUTO_REFRESH_DURATION)
             .takeUntil(this.destroy$)
             .subscribe(() => {

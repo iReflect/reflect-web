@@ -52,7 +52,7 @@ export const APP_ROUTE_URLS = {
     retrospectiveDetail: 'retrospectives/:retrospectiveID',
     retrospectiveDashboard: 'retrospectives/:retrospectiveID/dashboard',
 
-    sprintDetails: 'retrospectives/:retrospectiveID/sprint/:sprintID',
+    sprintDetails: 'retrospectives/:retrospectiveID/sprints/:sprintID',
 };
 
 export const API_RESPONSE_MESSAGES = {
