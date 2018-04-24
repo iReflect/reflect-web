@@ -291,7 +291,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                 headerName: 'Text',
                 field: 'Text',
                 tooltipField: 'Text',
-                minWidth: 300,
+                minWidth: 500,
                 editable: editable,
                 cellEditor: 'agLargeTextCellEditor',
                 cellEditorParams: {
