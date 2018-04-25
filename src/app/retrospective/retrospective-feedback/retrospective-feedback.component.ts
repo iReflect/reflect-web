@@ -361,7 +361,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
         ];
 
         if (this.feedbackType === RETRO_FEEDBACK_TYPES.GOAL) {
-            const goalSpecificColumns = [
+            const goalSpecificColumn = [
                 {
                     headerName: 'Expected At',
                     field: 'ExpectedAt',
@@ -380,7 +380,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                 },
             ];
 
-            const pendingGoalColumn = [
+            const activeSprintAddedOrPendingGoalColumn = [
                 {
                     headerName: 'Mark Resolved',
                     minWidth: 140,
@@ -391,13 +391,17 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                     },
                 }
             ];
+
             const accomplishedGoalColumn = [
                 {
                     headerName: 'Resolved At',
                     field: 'ResolvedAt',
                     minWidth: 150,
                     valueFormatter: (cellParams) => this.utils.getDateFromString(cellParams.value || '')
-                },
+                }
+            ];
+
+            const activeSprintAccomplishedGoalColumn = [
                 {
                     headerName: 'Mark Unresolved',
                     minWidth: 160,
@@ -409,11 +413,17 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                 }
             ];
 
-            columnDefs = [...columnDefs, ...goalSpecificColumns];
+
+            columnDefs = [...columnDefs, ...goalSpecificColumn];
             if (this.feedbackSubType === this.goalTypes.COMPLETED) {
                 columnDefs = [...columnDefs, ...accomplishedGoalColumn];
-            } else {
-                columnDefs = [...columnDefs, ...pendingGoalColumn];
+            }
+            if (sprintStatus !== SPRINT_STATES.FROZEN) {
+                if (this.feedbackSubType === this.goalTypes.COMPLETED) {
+                    columnDefs = [...columnDefs, ...activeSprintAccomplishedGoalColumn];
+                } else {
+                    columnDefs = [...columnDefs, ...activeSprintAddedOrPendingGoalColumn];
+                }
             }
         }
         return columnDefs;
