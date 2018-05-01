@@ -8,26 +8,43 @@ import 'rxjs/add/operator/takeUntil';
 export class SprintListDataSource extends DataSource<any> {
     public dataChange: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
     private destroy$: Subject<boolean> = new Subject<boolean>();
+    isSprintsLoading = false;
+    allSprintsLoaded = false;
+    lastSprintLoaded: any;
 
     constructor(
         private retrospectiveService: RetrospectiveService,
         private retrospectiveID: any,
+        private rowsToLoad: number,
         private errorCallback: any
     ) {
         super();
     }
 
     connect(): Observable<any[]> {
-        this.retrospectiveService.listSprintsByRetrospectiveID(this.retrospectiveID)
-            .takeUntil(this.destroy$)
-            .subscribe(
+        if (!this.allSprintsLoaded && !this.isSprintsLoading) {
+            const query: any = { count: this.rowsToLoad };
+            if (this.lastSprintLoaded) {
+                query.after = encodeURIComponent(this.lastSprintLoaded.EndDate);
+            }
+            this.isSprintsLoading = true;
+            this.retrospectiveService.listSprintsByRetrospectiveID(this.retrospectiveID, query).subscribe(
                 response => {
-                    this.dataChange.next(response.data.Sprints);
+                    const sprints = response.data.Sprints;
+                    this.dataChange.next([...this.dataChange.value, ...sprints]);
+                    this.lastSprintLoaded = this.dataChange.value[this.dataChange.value.length - 1];
+                    if (sprints.length < this.rowsToLoad) {
+                        this.allSprintsLoaded = true;
+                    }
                 },
                 err => {
                     this.errorCallback(err);
+                },
+                () => {
+                    this.isSprintsLoading = false;
                 }
             );
+        }
         return this.dataChange.asObservable();
     }
 
