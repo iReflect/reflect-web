@@ -1,3 +1,13 @@
 .mat-header-cell {
     font-size: 13px;
 }
+
+.sprints-list-loading-spinner {
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    background: #fff;
+    width: 100%;
+}

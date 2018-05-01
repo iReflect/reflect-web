@@ -60,6 +60,9 @@
                     No Sprints Found.
                 </h3>
             </div>
+            <div class="sprints-list-loading-spinner" *ngIf="dataSource.isSprintsLoading">
+                <mat-spinner diameter="48"></mat-spinner>
+            </div>
         </div>
     </div>
 </ng-container>

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
 
@@ -22,14 +22,28 @@ export class SprintListComponent implements OnInit {
     dataSource: SprintListDataSource;
     sprintStates = SPRINT_STATES_LABEL;
     dateFormat = DATE_FORMAT;
+    lastScrollTop: number;
 
-    constructor(
-        private retrospectiveService: RetrospectiveService,
-        private snackBar: MatSnackBar,
-        private router: Router,
-        private utils: UtilsService,
-        private changeDetectorRefs: ChangeDetectorRef
-    ) {
+    @HostListener('window:scroll', [])
+    onWindowScroll() {
+        const buffer = 200;
+        const limit = window.innerHeight + window.scrollY + buffer;
+
+        // If the user has scrolled within 200px of the bottom and is scrolling down, add more data
+        if (limit > document.body.offsetHeight && window.pageYOffset > this.lastScrollTop) {
+            this.dataSource.connect();
+
+            // Calling detectChanges here to refresh the value of isSprintsLoading.
+            this.changeDetectorRefs.detectChanges();
+        }
+        this.lastScrollTop = window.pageYOffset;
+    }
+
+    constructor(private retrospectiveService: RetrospectiveService,
+                private snackBar: MatSnackBar,
+                private router: Router,
+                private utils: UtilsService,
+                private changeDetectorRefs: ChangeDetectorRef) {
     }
 
     showCannotGetSprintsError(err) {
@@ -38,15 +52,26 @@ export class SprintListComponent implements OnInit {
 
     refresh() {
         this.initializeDataSource();
-        this.changeDetectorRefs.detectChanges();
     }
 
     initializeDataSource() {
+        const documentBody = document.body, documentElement = document.documentElement;
+        // Taking the maximum value for the height of the page as it is
+        // calculated differently by different Browsers.
+        const pageHeight = Math.max( documentBody.scrollHeight, documentBody.offsetHeight,
+            documentElement.clientHeight, documentElement.scrollHeight, documentElement.offsetHeight );
+
+        // Passing height/48 as rowsToLoad as min-height of
+        // mat-row is set to 48 by default.
         this.dataSource = new SprintListDataSource(
             this.retrospectiveService,
             this.retrospectiveID,
+            Math.ceil(pageHeight / 48),
             this.showCannotGetSprintsError.bind(this)
         );
+
+        // Calling detectChanges here to refresh the value of isSprintsLoading.
+        this.changeDetectorRefs.detectChanges();
     }
 
     navigateToSprint(row) {
