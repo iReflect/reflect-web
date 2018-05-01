@@ -222,20 +222,24 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     }
 
     updateSprintMember(params) {
-        const memberData = params.data;
-        this.retrospectiveService.updateSprintMember(this.retrospectiveID, this.sprintID, memberData).subscribe(
-            response => {
-                params.node.setData(response.data);
-                this.snackBar.open(
-                    API_RESPONSE_MESSAGES.memberUpdated,
-                    '', {duration: SNACKBAR_DURATION});
-            },
-            err => {
-                this.snackBar.open(
-                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.updateSprintMemberError,
-                    '', {duration: SNACKBAR_DURATION});
-                this.revertCellValue(params);
-            });
+        const updatedSprintMemberData = {
+            [params.colDef.field]: params.newValue
+        };
+        this.retrospectiveService.updateSprintMember(this.retrospectiveID, this.sprintID, params.data.ID, updatedSprintMemberData)
+            .subscribe(
+                response => {
+                    params.node.setData(response.data);
+                    this.snackBar.open(
+                        API_RESPONSE_MESSAGES.memberUpdated,
+                        '', {duration: SNACKBAR_DURATION});
+                },
+                err => {
+                    this.snackBar.open(
+                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.updateSprintMemberError,
+                        '', {duration: SNACKBAR_DURATION});
+                    this.revertCellValue(params);
+                }
+            );
     }
 
     revertCellValue(params) {

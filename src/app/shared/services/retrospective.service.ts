@@ -188,38 +188,38 @@ export class RetrospectiveService {
             .get();
     }
 
-    updateSprintMember(retrospectiveID, sprintID, updatedMemberData): Observable<any> {
+    updateSprintMember(retrospectiveID, sprintID, updatedMemberID, updatedMemberData): Observable<any> {
         return this.restangular
             .one(
                 API_URLS.sprintMember
                     .replace(':retrospectiveID', retrospectiveID)
                     .replace(':sprintID', sprintID)
-                    .replace(':memberID', updatedMemberData.ID)
+                    .replace(':memberID', updatedMemberID)
             )
-            .customPUT(updatedMemberData);
+            .customPATCH(updatedMemberData);
     }
 
-    updateSprintTask(retrospectiveID, sprintID, taskID, updatedTaskData): Observable<any> {
+    updateSprintTask(retrospectiveID, sprintID, sprintTaskID, updatedTaskData): Observable<any> {
         return this.restangular
             .one(
                 API_URLS.sprintTaskDetails
                     .replace(':retrospectiveID', retrospectiveID)
                     .replace(':sprintID', sprintID)
-                    .replace(':taskID', taskID)
+                    .replace(':taskID', sprintTaskID)
             )
             .customPATCH(updatedTaskData);
     }
 
-    updateSprintTaskMember(retrospectiveID, sprintID, taskID, updatedMemberData): Observable<any> {
+    updateSprintTaskMember(retrospectiveID, sprintID, taskID, updatedMemberID, updatedTaskMemberData): Observable<any> {
         return this.restangular
             .one(
                 API_URLS.sprintTaskMember
                     .replace(':retrospectiveID', retrospectiveID)
                     .replace(':sprintID', sprintID)
                     .replace(':taskID', taskID)
-                    .replace(':memberID', updatedMemberData.ID)
+                    .replace(':memberID', updatedMemberID)
             )
-            .customPUT(updatedMemberData);
+            .customPATCH(updatedTaskMemberData);
     }
 
     getSprintMembers(retrospectiveID, sprintID): Observable<any> {
@@ -289,15 +289,15 @@ export class RetrospectiveService {
             .post('', highlightData);
     }
 
-    updateSprintHighlight(retrospectiveID, sprintID, highlightData): Observable<any> {
+    updateSprintHighlight(retrospectiveID, sprintID, updatedHighlightID, updatedHighlightData): Observable<any> {
         return this.restangular
             .one(
                 API_URLS.sprintHighlight
                     .replace(':retrospectiveID', retrospectiveID)
                     .replace(':sprintID', sprintID)
-                    .replace(':highlightID', highlightData.ID)
+                    .replace(':highlightID', updatedHighlightID)
             )
-            .customPUT(highlightData);
+            .customPATCH(updatedHighlightData);
     }
 
     getSprintGoals(retrospectiveID, sprintID, goalType): Observable<any> {
@@ -345,15 +345,15 @@ export class RetrospectiveService {
             .post('', data);
     }
 
-    updateRetroGoal(retrospectiveID, sprintID, goalData): Observable<any> {
+    updateRetroGoal(retrospectiveID, sprintID, updatedGoalID, updatedGoalData): Observable<any> {
         return this.restangular
             .one(
                 API_URLS.sprintGoal
                     .replace(':retrospectiveID', retrospectiveID)
                     .replace(':sprintID', sprintID)
-                    .replace(':goalID', goalData.ID)
+                    .replace(':goalID', updatedGoalID)
             )
-            .customPUT(goalData);
+            .customPATCH(updatedGoalData);
     }
 
     getSprintNotes(retrospectiveID, sprintID): Observable<any> {
@@ -379,15 +379,15 @@ export class RetrospectiveService {
             .post('', noteData);
     }
 
-    updateRetroNote(retrospectiveID, sprintID, noteData): Observable<any> {
+    updateRetroNote(retrospectiveID, sprintID, updatedNoteID, updatedNoteData): Observable<any> {
         return this.restangular
             .one(
                 API_URLS.sprintNote
                     .replace(':retrospectiveID', retrospectiveID)
                     .replace(':sprintID', sprintID)
-                    .replace(':noteID', noteData.ID)
+                    .replace(':noteID', updatedNoteID)
             )
-            .customPUT(noteData);
+            .customPATCH(updatedNoteData);
     }
 
     markSprintTaskDone(retrospectiveID, sprintID, taskID): Observable<any> {
