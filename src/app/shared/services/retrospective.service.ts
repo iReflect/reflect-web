@@ -188,13 +188,13 @@ export class RetrospectiveService {
             .get();
     }
 
-    updateSprintMember(retrospectiveID, sprintID, updatedMemberID, updatedMemberData): Observable<any> {
+    updateSprintMember(retrospectiveID, sprintID, sprintMemberID, updatedMemberData): Observable<any> {
         return this.restangular
             .one(
                 API_URLS.sprintMember
                     .replace(':retrospectiveID', retrospectiveID)
                     .replace(':sprintID', sprintID)
-                    .replace(':memberID', updatedMemberID)
+                    .replace(':memberID', sprintMemberID)
             )
             .customPATCH(updatedMemberData);
     }
@@ -210,14 +210,14 @@ export class RetrospectiveService {
             .customPATCH(updatedTaskData);
     }
 
-    updateSprintTaskMember(retrospectiveID, sprintID, taskID, updatedMemberID, updatedTaskMemberData): Observable<any> {
+    updateSprintTaskMember(retrospectiveID, sprintID, taskID, sprintTaskMemberID, updatedTaskMemberData): Observable<any> {
         return this.restangular
             .one(
                 API_URLS.sprintTaskMember
                     .replace(':retrospectiveID', retrospectiveID)
                     .replace(':sprintID', sprintID)
                     .replace(':taskID', taskID)
-                    .replace(':memberID', updatedMemberID)
+                    .replace(':memberID', sprintTaskMemberID)
             )
             .customPATCH(updatedTaskMemberData);
     }
@@ -289,13 +289,13 @@ export class RetrospectiveService {
             .post('', highlightData);
     }
 
-    updateSprintHighlight(retrospectiveID, sprintID, updatedHighlightID, updatedHighlightData): Observable<any> {
+    updateSprintHighlight(retrospectiveID, sprintID, sprintHighlightID, updatedHighlightData): Observable<any> {
         return this.restangular
             .one(
                 API_URLS.sprintHighlight
                     .replace(':retrospectiveID', retrospectiveID)
                     .replace(':sprintID', sprintID)
-                    .replace(':highlightID', updatedHighlightID)
+                    .replace(':highlightID', sprintHighlightID)
             )
             .customPATCH(updatedHighlightData);
     }
@@ -345,13 +345,13 @@ export class RetrospectiveService {
             .post('', data);
     }
 
-    updateRetroGoal(retrospectiveID, sprintID, updatedGoalID, updatedGoalData): Observable<any> {
+    updateRetroGoal(retrospectiveID, sprintID, sprintGoalID, updatedGoalData): Observable<any> {
         return this.restangular
             .one(
                 API_URLS.sprintGoal
                     .replace(':retrospectiveID', retrospectiveID)
                     .replace(':sprintID', sprintID)
-                    .replace(':goalID', updatedGoalID)
+                    .replace(':goalID', sprintGoalID)
             )
             .customPATCH(updatedGoalData);
     }
@@ -379,13 +379,13 @@ export class RetrospectiveService {
             .post('', noteData);
     }
 
-    updateRetroNote(retrospectiveID, sprintID, updatedNoteID, updatedNoteData): Observable<any> {
+    updateRetroNote(retrospectiveID, sprintID, sprintNoteID, updatedNoteData): Observable<any> {
         return this.restangular
             .one(
                 API_URLS.sprintNote
                     .replace(':retrospectiveID', retrospectiveID)
                     .replace(':sprintID', sprintID)
-                    .replace(':noteID', updatedNoteID)
+                    .replace(':noteID', sprintNoteID)
             )
             .customPATCH(updatedNoteData);
     }
