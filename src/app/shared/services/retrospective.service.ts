@@ -199,6 +199,17 @@ export class RetrospectiveService {
             .customPUT(updatedMemberData);
     }
 
+    updateSprintTask(retrospectiveID, sprintID, taskID, updatedTaskData): Observable<any> {
+        return this.restangular
+            .one(
+                API_URLS.sprintTaskDetails
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+                    .replace(':taskID', taskID)
+            )
+            .customPATCH(updatedTaskData);
+    }
+
     updateSprintTaskMember(retrospectiveID, sprintID, taskID, updatedMemberData): Observable<any> {
         return this.restangular
             .one(
