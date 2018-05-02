@@ -221,7 +221,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 response => {
                     params.node.setData(response.data);
                     this.snackBar.open(
-                        API_RESPONSE_MESSAGES.memberUpdated,
+                        API_RESPONSE_MESSAGES.issueUpdated,
                         '', {duration: SNACKBAR_DURATION});
                 },
                 err => {

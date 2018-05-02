@@ -66,6 +66,7 @@ export const API_RESPONSE_MESSAGES = {
     invalidRetroAccessError: 'You do not have access to this retro!',
     sprintComputationInitiated: 'Sprint Computation Initiated Successfully!',
     memberUpdated: 'Member Updated Successfully!',
+    issueUpdated: 'Issue Updated Successfully!',
     sprintCreated: 'Sprint Created Successfully!',
     sprintUpdated: 'Sprint Updated Successfully!',
     invalidOption: 'Please select a valid option!',
