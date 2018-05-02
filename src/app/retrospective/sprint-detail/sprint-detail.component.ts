@@ -5,6 +5,7 @@ import {
     API_RESPONSE_MESSAGES,
     APP_ROUTE_URLS,
     AUTO_REFRESH_DURATION,
+    AUTO_REFRESH_TOKEN_KEY,
     DATE_FORMAT,
     RESYNC_REFRESH_DURATION,
     SNACKBAR_DURATION,
@@ -62,6 +63,12 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
 
     ngOnInit() {
         const params = this.activatedRoute.snapshot.params;
+        const autoRefreshState = JSON.parse(localStorage.getItem(AUTO_REFRESH_TOKEN_KEY));
+        if (autoRefreshState !== null) {
+            this.enableRefresh = autoRefreshState;
+        } else {
+            localStorage.setItem(AUTO_REFRESH_TOKEN_KEY, JSON.stringify(this.enableRefresh));
+        }
         this.retrospectiveID = params['retrospectiveID'];
         this.sprintID = params['sprintID'];
         this.refresh$
@@ -247,5 +254,6 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
 
     toggleAutoRefresh() {
         this.enableRefresh = !this.enableRefresh;
+        localStorage.setItem(AUTO_REFRESH_TOKEN_KEY, JSON.stringify(this.enableRefresh));
     }
 }
