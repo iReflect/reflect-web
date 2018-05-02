@@ -38,7 +38,9 @@
                 *ngIf="sprintStatus !== sprintStates.FROZEN && sprintDetails.Editable" (click)="discardSprint()">
             {{sprintActionsLabel[sprintActions.DISCARD]}}
         </button>
-        <button mat-raised-button color="primary" (click)="getSprintDetails(true)">
+        <button mat-raised-button color="primary"
+                [disabled]="!sprintDetailsRefreshComplete || !activeChildTabRefreshComplete"
+                (click)="refreshSprintDetails()">
             <mat-icon>refresh</mat-icon> Refresh
         </button>
         <mat-slide-toggle labelPosition="before" (change)="toggleAutoRefresh()" [checked]="enableRefresh"
@@ -149,7 +151,9 @@
                                     [sprintStatus]="sprintStatus"
                                     [sprintEndDate]="sprintDetails.EndDate"
                                     [retrospectiveID]="retrospectiveID"
-                                    [sprintID]="sprintID">
+                                    [sprintID]="sprintID"
+                                    (onRefreshStart)="onChildRefreshStart($event)"
+                                    (onRefreshEnd)="onChildRefreshEnd($event)">
                                 </app-sprint-highlights>
                             </div>
                         </mat-tab>
@@ -162,7 +166,9 @@
                                     [sprintID]="sprintID"
                                     [isSprintEditable]="sprintDetails.Editable"
                                     [refreshOnChange]="toggleToTriggerRefresh"
-                                    [enableRefresh]="enableRefresh">
+                                    [enableRefresh]="enableRefresh"
+                                    (onRefreshStart)="onChildRefreshStart($event)"
+                                    (onRefreshEnd)="onChildRefreshEnd($event)">
                                 </app-sprint-task-summary>
                             </div>
                         </mat-tab>
@@ -175,7 +181,9 @@
                                     [sprintID]="sprintID"
                                     [isSprintEditable]="sprintDetails.Editable"
                                     [refreshOnChange]="toggleToTriggerRefresh"
-                                    [enableRefresh]="enableRefresh">
+                                    [enableRefresh]="enableRefresh"
+                                    (onRefreshStart)="onChildRefreshStart($event)"
+                                    (onRefreshEnd)="onChildRefreshEnd($event)">
                                 </app-sprint-member-summary>
                             </div>
                         </mat-tab>
@@ -188,7 +196,9 @@
                                     [sprintStatus]="sprintStatus"
                                     [sprintEndDate]="sprintDetails.EndDate"
                                     [retrospectiveID]="retrospectiveID"
-                                    [sprintID]="sprintID">
+                                    [sprintID]="sprintID"
+                                    (onRefreshStart)="onChildRefreshStart($event)"
+                                    (onRefreshEnd)="onChildRefreshEnd($event)">
                                 </app-sprint-notes>
                             </div>
                         </mat-tab>

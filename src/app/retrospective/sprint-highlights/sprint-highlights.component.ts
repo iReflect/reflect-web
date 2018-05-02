@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 
 import {
@@ -15,6 +15,7 @@ import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/observable/interval';
 import { UtilsService } from '../../shared/utils/utils.service';
+import { forkJoin } from 'rxjs/observable/forkJoin';
 
 @Component({
     selector: 'app-sprint-highlights',
@@ -40,6 +41,9 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
     @Input() isTabActive: boolean;
     @Input() refreshOnChange: boolean;
 
+    @Output() onRefreshStart = new EventEmitter<boolean>();
+    @Output() onRefreshEnd = new EventEmitter<boolean>();
+
     constructor(
         private retrospectiveService: RetrospectiveService,
         private snackBar: MatSnackBar,
@@ -62,11 +66,13 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
             this.getSprintHighlightsTab();
         }
         if (changes.enableRefresh) {
-            this.enableRefresh = changes.enableRefresh.currentValue;
             this.autoRefreshCurrentState = changes.enableRefresh.currentValue;
+            if (this.isTabActive && !changes.isTabActive && this.autoRefreshCurrentState) {
+                this.getSprintHighlightsTab();
+            }
         }
-        if (this.isTabActive && (this.autoRefreshCurrentState || changes.refreshOnChange)) {
-            this.getSprintHighlightsTab();
+        if (this.isTabActive && !changes.isTabActive && changes.refreshOnChange) {
+            this.getSprintHighlightsTab(true, true);
         }
     }
 
@@ -76,11 +82,20 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
         this.destroy$.complete();
     }
 
-    getSprintHighlightsTab(isRefresh = true) {
-        this.getTeamMembers(isRefresh);
-        this.getSprintHighlights(isRefresh);
-        this.getPendingGoals(isRefresh);
-        this.getAccomplishedGoals(isRefresh);
+    getSprintHighlightsTab(isRefresh = true, isManualRefresh = false) {
+        if (isManualRefresh) {
+            this.onRefreshStart.emit(true);
+        }
+        const highlightsArray$ = [];
+        highlightsArray$.push(this.getTeamMembers(isRefresh));
+        highlightsArray$.push(this.getSprintHighlights(isRefresh));
+        highlightsArray$.push(this.getPendingGoals(isRefresh));
+        highlightsArray$.push(this.getAccomplishedGoals(isRefresh));
+        forkJoin(...highlightsArray$).subscribe(() => {}, () => {}, () => {
+            if (isManualRefresh) {
+                this.onRefreshEnd.emit(true);
+            }
+        });
     }
 
     pauseRefresh() {
@@ -92,82 +107,86 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     getPendingGoals(isRefresh = false) {
-        this.retrospectiveService.getSprintGoals(this.retrospectiveID, this.sprintID, 'pending')
-            .takeUntil(this.destroy$)
-            .subscribe(
-                response => {
-                    this.pendingGoals = response.data.Feedbacks;
-                },
-                err => {
-                    if (isRefresh) {
-                        this.snackBar.open(
-                            API_RESPONSE_MESSAGES.sprintHighlightsTabRefreshFailure,
-                            '', {duration: SNACKBAR_DURATION});
-                    } else {
-                        this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintPendingGoalsGetError,
-                            '', {duration: SNACKBAR_DURATION});
-                    }
+        const getPendingGoals$ = this.retrospectiveService.getSprintGoals(this.retrospectiveID, this.sprintID, 'pending')
+            .takeUntil(this.destroy$);
+        getPendingGoals$.subscribe(
+            response => {
+                this.pendingGoals = response.data.Feedbacks;
+            },
+            err => {
+                if (isRefresh) {
+                    this.snackBar.open(
+                        API_RESPONSE_MESSAGES.sprintHighlightsTabRefreshFailure,
+                        '', {duration: SNACKBAR_DURATION});
+                } else {
+                    this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintPendingGoalsGetError,
+                        '', {duration: SNACKBAR_DURATION});
                 }
-            );
+            }
+        );
+        return getPendingGoals$;
     }
 
     getAccomplishedGoals(isRefresh = false) {
-        this.retrospectiveService.getSprintGoals(this.retrospectiveID, this.sprintID, 'completed')
-            .takeUntil(this.destroy$)
-            .subscribe(
-                response => {
-                    this.accomplishedGoals = response.data.Feedbacks;
-                },
-                err => {
-                    if (isRefresh) {
-                        this.snackBar.open(
-                            API_RESPONSE_MESSAGES.sprintHighlightsTabRefreshFailure,
-                            '', {duration: SNACKBAR_DURATION});
-                    } else {
-                        this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintAccomplishedGoalsGetError,
-                            '', {duration: SNACKBAR_DURATION});
-                    }
+        const getAccomplishedGoals$ = this.retrospectiveService.getSprintGoals(this.retrospectiveID, this.sprintID, 'completed')
+            .takeUntil(this.destroy$);
+        getAccomplishedGoals$.subscribe(
+            response => {
+                this.accomplishedGoals = response.data.Feedbacks;
+            },
+            err => {
+                if (isRefresh) {
+                    this.snackBar.open(
+                        API_RESPONSE_MESSAGES.sprintHighlightsTabRefreshFailure,
+                        '', {duration: SNACKBAR_DURATION});
+                } else {
+                    this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintAccomplishedGoalsGetError,
+                        '', {duration: SNACKBAR_DURATION});
                 }
-            );
+            }
+        );
+        return getAccomplishedGoals$;
     }
 
     getSprintHighlights(isRefresh = false) {
-        this.retrospectiveService.getSprintHighlights(this.retrospectiveID, this.sprintID)
-            .takeUntil(this.destroy$)
-            .subscribe(
-                response => {
-                    this.sprintHighlights = response.data.Feedbacks;
-                },
-                err => {
-                    if (isRefresh) {
-                        this.snackBar.open(
-                            API_RESPONSE_MESSAGES.sprintHighlightsTabRefreshFailure,
-                            '', {duration: SNACKBAR_DURATION});
-                    } else {
-                        this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintHighlightsGetError,
-                            '', {duration: SNACKBAR_DURATION});
-                    }
+        const getHighlights$ = this.retrospectiveService.getSprintHighlights(this.retrospectiveID, this.sprintID)
+            .takeUntil(this.destroy$);
+        getHighlights$.subscribe(
+            response => {
+                this.sprintHighlights = response.data.Feedbacks;
+            },
+            err => {
+                if (isRefresh) {
+                    this.snackBar.open(
+                        API_RESPONSE_MESSAGES.sprintHighlightsTabRefreshFailure,
+                        '', {duration: SNACKBAR_DURATION});
+                } else {
+                    this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintHighlightsGetError,
+                        '', {duration: SNACKBAR_DURATION});
                 }
-            );
+            }
+        );
+        return getHighlights$;
     }
 
     getTeamMembers(isRefresh = false) {
-        this.retrospectiveService.getRetroMembers(this.retrospectiveID)
-            .takeUntil(this.destroy$)
-            .subscribe(
-                response => {
-                    this.teamMembers = response.data.Members;
-                },
-                err => {
-                    if (isRefresh) {
-                        this.snackBar.open(
-                            API_RESPONSE_MESSAGES.sprintHighlightsTabRefreshFailure,
-                            '', {duration: SNACKBAR_DURATION});
-                    } else {
-                        this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getRetrospectiveMembersError,
-                            '', {duration: SNACKBAR_DURATION});
-                    }
+        const getTeamMember$ = this.retrospectiveService.getRetroMembers(this.retrospectiveID)
+            .takeUntil(this.destroy$);
+        getTeamMember$.subscribe(
+            response => {
+                this.teamMembers = response.data.Members;
+            },
+            err => {
+                if (isRefresh) {
+                    this.snackBar.open(
+                        API_RESPONSE_MESSAGES.sprintHighlightsTabRefreshFailure,
+                        '', {duration: SNACKBAR_DURATION});
+                } else {
+                    this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getRetrospectiveMembersError,
+                        '', {duration: SNACKBAR_DURATION});
                 }
-            );
+            }
+        );
+        return getTeamMember$;
     }
 }

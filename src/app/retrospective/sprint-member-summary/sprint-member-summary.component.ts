@@ -1,4 +1,4 @@
-import { Component, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import * as _ from 'lodash';
@@ -45,6 +45,9 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     @Input() enableRefresh: boolean;
     @Input() refreshOnChange: boolean;
 
+    @Output() onRefreshStart = new EventEmitter<boolean>();
+    @Output() onRefreshEnd = new EventEmitter<boolean>();
+
     private columnDefs: any;
     private params: any;
     private gridApi: GridApi;
@@ -85,16 +88,19 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             }
             // this if block also executes when changes.refreshOnChange toggles
             if (this.isTabActive && !changes.isTabActive) {
+                if (this.autoRefreshCurrentState) {
+                    this.refreshSprintMemberSummary();
+                }
+                if (changes.refreshOnChange) {
+                    this.refreshSprintMemberSummary(true);
+                }
                 this.gridApi.sizeColumnsToFit();
-            }
-            if (this.isTabActive && (this.autoRefreshCurrentState || changes.refreshOnChange)) {
-                this.getSprintMemberSummary(true);
             }
             // we do this separately because we need to wait
             // at the least one tick when this tab is made active
             if (changes.isTabActive && changes.isTabActive.currentValue) {
                 setTimeout(() => {
-                    this.getSprintMemberSummary(true);
+                    this.refreshSprintMemberSummary();
                     this.gridApi.sizeColumnsToFit();
                 });
             }
@@ -156,7 +162,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             .takeUntil(this.destroy$)
             .subscribe(() => {
                 if (this.autoRefreshCurrentState && this.isTabActive) {
-                    this.getSprintMemberSummary(true);
+                    this.refreshSprintMemberSummary();
                 }
             });
     }
@@ -169,34 +175,47 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         this.autoRefreshCurrentState = this.enableRefresh;
     }
 
+    refreshSprintMemberSummary(isManualRefresh = false) {
+        if (isManualRefresh) {
+            this.onRefreshStart.emit(true);
+        }
+        const getMemberSummary$ = this.getSprintMemberSummary(true);
+        getMemberSummary$.subscribe(() => {}, () => {}, () => {
+            if (isManualRefresh) {
+                this.onRefreshEnd.emit(true);
+            }
+        });
+    }
+
     getSprintMemberSummary(isRefresh) {
-        this.retrospectiveService.getSprintMemberSummary(this.retrospectiveID, this.sprintID)
-            .takeUntil(this.destroy$)
-            .subscribe(
-                response => {
-                    const members = response.data.Members;
-                    this.gridApi.setRowData(members);
-                    this.memberIDs = [];
-                    members.forEach(member => {
-                        this.memberIDs.push(member.ID);
-                    });
-                    if (!isRefresh && this.isTabActive) {
-                        this.gridApi.sizeColumnsToFit();
-                    }
-                },
-                err => {
-                    if (isRefresh) {
-                        this.snackBar.open(
-                            API_RESPONSE_MESSAGES.memberSummaryRefreshFailure,
-                            '', {duration: SNACKBAR_DURATION});
-                    } else {
-                        this.snackBar.open(
-                            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES
-                                .getSprintMemberSummaryError,
-                            '', {duration: SNACKBAR_DURATION});
-                    }
+        const getMemberSummary$ = this.retrospectiveService.getSprintMemberSummary(this.retrospectiveID, this.sprintID)
+            .takeUntil(this.destroy$);
+        getMemberSummary$.subscribe(
+            response => {
+                const members = response.data.Members;
+                this.gridApi.setRowData(members);
+                this.memberIDs = [];
+                members.forEach(member => {
+                    this.memberIDs.push(member.ID);
+                });
+                if (!isRefresh && this.isTabActive) {
+                    this.gridApi.sizeColumnsToFit();
                 }
-            );
+            },
+            err => {
+                if (isRefresh) {
+                    this.snackBar.open(
+                        API_RESPONSE_MESSAGES.memberSummaryRefreshFailure,
+                        '', {duration: SNACKBAR_DURATION});
+                } else {
+                    this.snackBar.open(
+                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES
+                            .getSprintMemberSummaryError,
+                        '', {duration: SNACKBAR_DURATION});
+                }
+            }
+        );
+        return getMemberSummary$;
     }
 
     addSprintMember() {

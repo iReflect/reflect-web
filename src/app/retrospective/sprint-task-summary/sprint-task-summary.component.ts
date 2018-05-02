@@ -1,4 +1,4 @@
-import { Component, HostListener, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { MatDialogRef } from '@angular/material/dialog/typings/dialog-ref';
 import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
@@ -46,6 +46,9 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     @Input() refreshOnChange: boolean;
     @Input() isSprintEditable: boolean;
 
+    @Output() onRefreshStart = new EventEmitter<boolean>();
+    @Output() onRefreshEnd = new EventEmitter<boolean>();
+
     private params: any;
     private columnDefs: any;
     private gridApi: GridApi;
@@ -87,16 +90,19 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         if (this.gridApi) {
             // this if block also executes when changes.refreshOnChange toggles
             if (this.isTabActive && !changes.isTabActive) {
+                if (this.autoRefreshCurrentState) {
+                    this.refreshSprintTaskSummary();
+                }
+                if (changes.refreshOnChange) {
+                    this.refreshSprintTaskSummary(true);
+                }
                 this.gridApi.sizeColumnsToFit();
-            }
-            if (this.isTabActive && (this.autoRefreshCurrentState || changes.refreshOnChange)) {
-                this.getSprintTaskSummary(true);
             }
             // we do this separately because we need to wait
             // at the least one tick when this tab is made active
             if (changes.isTabActive && changes.isTabActive.currentValue) {
                 setTimeout(() => {
-                    this.getSprintTaskSummary(true);
+                    this.refreshSprintTaskSummary();
                     this.gridApi.sizeColumnsToFit();
                 });
             }
@@ -158,39 +164,52 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             .takeUntil(this.destroy$)
             .subscribe(() => {
                 if (this.isTabActive && this.autoRefreshCurrentState) {
-                    this.getSprintTaskSummary(true);
+                    this.refreshSprintTaskSummary();
                 }
             });
     }
 
+    refreshSprintTaskSummary(isManualRefresh = false) {
+        if (isManualRefresh) {
+            this.onRefreshEnd.emit(true);
+        }
+        const getTaskSummary$ = this.getSprintTaskSummary(true);
+        getTaskSummary$.subscribe(() => {}, () => {}, () => {
+            if (isManualRefresh) {
+                this.onRefreshEnd.emit(true);
+            }
+        });
+    }
+
     getSprintTaskSummary(isRefresh) {
-        this.retrospectiveService.getSprintTaskSummary(this.retrospectiveID, this.sprintID)
-            .takeUntil(this.destroy$)
-            .subscribe(
-                response => {
-                    this.gridApi.setRowData(response.data.Tasks);
-                    if (!isRefresh && this.isTabActive) {
-                        setTimeout(() => {
-                            this.gridApi.sizeColumnsToFit();
-                        });
-                    }
-                },
-                err => {
-                    if (isRefresh) {
-                        this.snackBar.open(
-                            API_RESPONSE_MESSAGES.issueSummaryRefreshFailure,
-                            '', {duration: SNACKBAR_DURATION});
-                    } else {
-                        this.snackBar.open(
-                            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES
-                                .getSprintIssueSummaryError,
-                            '', {duration: SNACKBAR_DURATION});
-                    }
-                },
-                () => {
-                    this.autoRefreshCurrentState = this.enableRefresh;
+        const getTaskSummary$ = this.retrospectiveService.getSprintTaskSummary(this.retrospectiveID, this.sprintID)
+            .takeUntil(this.destroy$);
+        getTaskSummary$.subscribe(
+            response => {
+                this.gridApi.setRowData(response.data.Tasks);
+                if (!isRefresh && this.isTabActive) {
+                    setTimeout(() => {
+                        this.gridApi.sizeColumnsToFit();
+                    });
                 }
-            );
+            },
+            err => {
+                if (isRefresh) {
+                    this.snackBar.open(
+                        API_RESPONSE_MESSAGES.issueSummaryRefreshFailure,
+                        '', {duration: SNACKBAR_DURATION});
+                } else {
+                    this.snackBar.open(
+                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES
+                            .getSprintIssueSummaryError,
+                        '', {duration: SNACKBAR_DURATION});
+                }
+            },
+            () => {
+                this.autoRefreshCurrentState = this.enableRefresh;
+            }
+        );
+        return getTaskSummary$;
     }
 
     retrospectSprint(params) {
@@ -208,7 +227,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             },
         });
         this.dialogRef.afterClosed().takeUntil(this.destroy$).subscribe(() => {
-            this.getSprintTaskSummary(true);
+            this.refreshSprintTaskSummary();
             this.autoRefreshCurrentState = this.enableRefresh;
         });
     }
