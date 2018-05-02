@@ -89,6 +89,7 @@ export const API_RESPONSE_MESSAGES = {
     addSprintIssueMemberError: 'Cannot add the member to Issue!',
     updateSprintError: 'Cannot update sprint details!',
     updateSprintMemberError: 'Cannot update sprint member details!',
+    updateSprintTaskError: 'Cannot update Issue!',
     deleteSprintMemberError: 'Cannot delete sprint member!',
     sprintCreateError: 'Cannot create sprint!',
     getTeamListError: 'Cannot get teams list!',
