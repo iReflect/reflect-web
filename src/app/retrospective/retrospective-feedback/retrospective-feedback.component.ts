@@ -166,43 +166,51 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
     }
 
     updateRetroFeedback(params: any) {
+        const updatedRetroFeedbackData = {
+            [params.colDef.field]: params.newValue
+        };
         if (this.feedbackType === RETRO_FEEDBACK_TYPES.HIGHLIGHT) {
-            this.retrospectiveService.updateSprintHighlight(this.retrospectiveID, this.sprintID, params.data).subscribe(
-                response => {
-                    params.node.setData(response.data);
-                    this.snackBar.open(API_RESPONSE_MESSAGES.sprintHighlightsUpdateSuccess, '', {duration: SNACKBAR_DURATION});
-                },
-                err => {
-                    this.snackBar.open(
-                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintHighlightsUpdateError,
-                        '', {duration: SNACKBAR_DURATION});
-                    this.revertCellValue(params);
-                }
-            );
+            this.retrospectiveService.updateSprintHighlight(this.retrospectiveID, this.sprintID, params.data.ID, updatedRetroFeedbackData)
+                .subscribe(
+                    response => {
+                        params.node.setData(response.data);
+                        this.snackBar.open(API_RESPONSE_MESSAGES.sprintHighlightsUpdateSuccess, '', {duration: SNACKBAR_DURATION});
+                    },
+                    err => {
+                        this.snackBar.open(
+                            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintHighlightsUpdateError,
+                            '', {duration: SNACKBAR_DURATION});
+                        this.revertCellValue(params);
+                    }
+                );
         } else if (this.feedbackType === RETRO_FEEDBACK_TYPES.NOTE) {
-            this.retrospectiveService.updateRetroNote(this.retrospectiveID, this.sprintID, params.data).subscribe(
-                response => {
-                    params.node.setData(response.data);
-                    this.snackBar.open(API_RESPONSE_MESSAGES.sprintNotesUpdateSuccess, '', {duration: SNACKBAR_DURATION});
-                },
-                err => {
-                    this.snackBar.open(
-                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintNotesUpdateError,
-                        '', {duration: SNACKBAR_DURATION});
-                    this.revertCellValue(params);
-                });
+            this.retrospectiveService.updateRetroNote(this.retrospectiveID, this.sprintID, params.data.ID, updatedRetroFeedbackData)
+                .subscribe(
+                    response => {
+                        params.node.setData(response.data);
+                        this.snackBar.open(API_RESPONSE_MESSAGES.sprintNotesUpdateSuccess, '', {duration: SNACKBAR_DURATION});
+                    },
+                    err => {
+                        this.snackBar.open(
+                            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintNotesUpdateError,
+                            '', {duration: SNACKBAR_DURATION});
+                        this.revertCellValue(params);
+                    }
+                );
         } else if (this.feedbackType === RETRO_FEEDBACK_TYPES.GOAL) {
-            this.retrospectiveService.updateRetroGoal(this.retrospectiveID, this.sprintID, params.data).subscribe(
-                response => {
-                    params.node.setData(response.data);
-                    this.snackBar.open(API_RESPONSE_MESSAGES.sprintGoalsUpdateSuccess, '', {duration: SNACKBAR_DURATION});
-                },
-                err => {
-                    this.snackBar.open(
-                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintGoalsUpdateError,
-                        '', {duration: SNACKBAR_DURATION});
-                    this.revertCellValue(params);
-                });
+            this.retrospectiveService.updateRetroGoal(this.retrospectiveID, this.sprintID, params.data.ID, updatedRetroFeedbackData)
+                .subscribe(
+                    response => {
+                        params.node.setData(response.data);
+                        this.snackBar.open(API_RESPONSE_MESSAGES.sprintGoalsUpdateSuccess, '', {duration: SNACKBAR_DURATION});
+                    },
+                    err => {
+                        this.snackBar.open(
+                            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintGoalsUpdateError,
+                            '', {duration: SNACKBAR_DURATION});
+                        this.revertCellValue(params);
+                    }
+                );
         }
     }
 
