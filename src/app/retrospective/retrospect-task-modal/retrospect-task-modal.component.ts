@@ -21,6 +21,7 @@ import { RatingRendererComponent } from '../../shared/ag-grid-renderers/rating-r
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { RetrospectiveCreateComponent } from '../retrospective-create/retrospective-create.component';
 import { UtilsService } from '../../shared/utils/utils.service';
+import { IsColumnFuncParams } from 'ag-grid/src/ts/entities/colDef';
 import { AfterViewChecked } from '@angular/core/src/metadata/lifecycle_hooks';
 
 @Component({
@@ -134,6 +135,11 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
             overlayLoadingTemplate: this.overlayLoadingTemplate,
             overlayNoRowsTemplate: this.overlayNoRowsTemplate,
             rowHeight: 48,
+            rowClassRules: {
+                'disabled-ag-grid-row': (params) => {
+                    return !params.data.Editable;
+                }
+            },
             singleClickEdit: true,
             stopEditingWhenGridLosesFocus: true,
             suppressDragLeaveHidesColumns: true,
@@ -156,7 +162,13 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
     }
 
     getSprintTaskMemberSummary(isRefresh) {
-        this.retrospectiveService.getSprintTaskMemberSummary(this.data.retrospectiveID, this.data.sprintID, this.taskDetails.ID)
+        const getTaskMemberSummary$ = this.retrospectiveService
+            .getSprintTaskMemberSummary(
+                this.data.retrospectiveID,
+                this.data.sprintID,
+                this.taskDetails.ID
+            );
+        getTaskMemberSummary$
             .takeUntil(this.destroy$)
             .subscribe(
                 response => {
@@ -190,7 +202,24 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                     }
                 }
             );
+        return getTaskMemberSummary$;
     }
+
+    refreshIssueMemberSummaryAgGrid() {
+        this.gridApi.showLoadingOverlay();
+        // To clear the current content of the grid
+        this.gridApi.setRowData(null);
+        const getTaskMemberSummary$ = this.getSprintTaskMemberSummary(true);
+        getTaskMemberSummary$.subscribe(
+            () => {
+                this.gridApi.hideOverlay();
+            },
+            () => {
+                this.gridApi.hideOverlay();
+            },
+        );
+    }
+
 
     addNewSprintTaskMember() {
         if (this.selectedMemberID === undefined) {
@@ -206,8 +235,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                 this.data.retrospectiveID, this.data.sprintID, this.taskDetails.ID, this.selectedMemberID
             ).takeUntil(this.destroy$).subscribe(
                 response => {
-                    this.gridApi.updateRowData({add: [response.data]});
-                    this.memberIDs.push(this.selectedMemberID);
+                    this.refreshIssueMemberSummaryAgGrid();
                 },
                 err => {
                     this.snackBar.open(
@@ -276,7 +304,9 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                 valueFormatter: (cellParams) => {
                     return MEMBER_TASK_ROLES_LABEL[cellParams.value];
                 },
-                editable: isSprintEditable,
+                editable: (params: IsColumnFuncParams) => {
+                    return isSprintEditable && params.data.Editable;
+                },
                 cellEditor: 'selectEditor',
                 cellEditorParams: {
                     selectOptions: _.map(MEMBER_TASK_ROLES_LABEL, (value, key) => {
@@ -296,7 +326,9 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
             {
                 headerName: 'Sprint Points',
                 field: 'SprintPoints',
-                editable: isSprintEditable,
+                editable: (params) => {
+                    return isSprintEditable && params.data.Editable;
+                },
                 minWidth: 100,
                 valueParser: 'Number(newValue)',
                 cellEditor: 'numericEditor',
@@ -351,7 +383,9 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                 headerName: 'Rating',
                 field: 'Rating',
                 minWidth: 110,
-                editable: isSprintEditable,
+                editable: (params) => {
+                    return isSprintEditable && params.data.Editable;
+                },
                 cellEditor: 'selectEditor',
                 cellEditorParams: {
                     selectOptions: _.map(RATING_STATES_LABEL, (value, key) => {
@@ -374,7 +408,9 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                 field: 'Comment',
                 minWidth: 300,
                 tooltipField: 'Comment',
-                editable: isSprintEditable,
+                editable: (params) => {
+                    return isSprintEditable && params.data.Editable;
+                },
                 cellEditor: 'agLargeTextCellEditor',
                 cellEditorParams: {
                     maxLength: 1000

@@ -91,6 +91,14 @@ mat-row {
     }
 }
 
+.disabled-ag-grid-row {
+    background-color: rgba(0, 0, 0, 0.2);
+
+    &.ag-row-hover {
+        background-color: rgba(0, 0, 0, 0.2) !important;
+    }
+}
+
 .ag-header-cell-text {
     width: 100% !important;
     text-overflow: clip !important;
