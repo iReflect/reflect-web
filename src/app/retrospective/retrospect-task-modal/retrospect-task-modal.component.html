@@ -30,9 +30,9 @@
                         Description: &nbsp;<span id="issue-description" class="issue-description"
                                                  [ngClass]="{'show-more': !showingMoreDesc}"
                                                  [innerHTML]="issueDescriptionHTML"></span>
-                        <a *ngIf="showMoreLessBtn" class="show-more-btn" (click)="toggleshowingMoreDesc()">
-                            <span *ngIf="!showingMoreDesc; else elseBlock">Show More</span>
-                            <ng-template #elseBlock><span>Show Less</span></ng-template>
+                        <a *ngIf="showMoreLessBtn" class="show-more-btn" (click)="toggleShowingMoreDesc()">
+                            <span *ngIf="!showingMoreDesc; else showLessDesc">Show More</span>
+                            <ng-template #showLessDesc><span>Show Less</span></ng-template>
                         </a>
                     </p>
                 </div>

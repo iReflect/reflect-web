@@ -389,7 +389,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
         return (this.gridApi && this.gridApi.getDisplayedRowCount()) || 0;
     }
 
-    toggleshowingMoreDesc() {
+    toggleShowingMoreDesc() {
         this.showingMoreDesc = !this.showingMoreDesc;
     }
 }
