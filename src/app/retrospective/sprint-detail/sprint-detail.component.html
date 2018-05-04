@@ -1,9 +1,10 @@
 <div *ngIf="sprintDetails" class="container-with-view-height -colored -fixed-nav-toolbar">
     <mat-toolbar class="nav-toolbar -fixed">
-        <button mat-icon-button matTooltip="Retrospective dashboard"
-                matTooltipPosition="before" (click)="navigateToRetrospectiveDashboard()">
-            <mat-icon>arrow_back</mat-icon>
-        </button>
+        <!--
+        We cannot provide a properly escaped URL path to routerLink attribute. Refer: https://github.com/angular/angular/issues/19247
+        TODO: use variables instead of string segments once the issue is resolved (similarly for other places in the app).
+        -->
+        <a class="back-arrow" [routerLink]="['/retrospectives', retrospectiveID, 'dashboard']"><mat-icon>arrow_back</mat-icon></a>
         <div class="paddling-left toolbar-title">
             {{sprintDetails.Title}}
             <i class="divider">|</i>

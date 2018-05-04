@@ -1,3 +1,17 @@
+@import "../../core/colors";
+
 .mat-header-cell {
     font-size: 13px;
+}
+
+a.sprint-dashboard-link {
+    color: $primary;
+    display: block;
+    text-decoration: none;
+
+    &:hover,
+    &:active,
+    &:focus {
+        text-decoration: underline;
+    }
 }

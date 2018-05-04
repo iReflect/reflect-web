@@ -1,3 +1,5 @@
+@import "colors";
+
 .layout-container {
     padding: 24px;
 
@@ -137,5 +139,19 @@
     .mat-expansion-panel-content:not(.mat-expanded) {
         height: 0 !important;
         visibility: hidden !important;
+    }
+}
+
+.back-arrow {
+    color: black;
+
+    &:hover,
+    &:active,
+    &:focus {
+        color: $primary;
+    }
+
+    mat-icon {
+        vertical-align: middle;
     }
 }
