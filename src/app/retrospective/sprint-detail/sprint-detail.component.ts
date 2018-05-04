@@ -5,6 +5,7 @@ import {
     API_RESPONSE_MESSAGES,
     APP_ROUTE_URLS,
     AUTO_REFRESH_DURATION,
+    AUTO_REFRESH_KEY,
     DATE_FORMAT,
     RESYNC_REFRESH_DURATION,
     SNACKBAR_DURATION,
@@ -34,9 +35,9 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
     sprintBugs: any;
     sprintFeatures: any;
     sprintTasks: any;
+    enableRefresh: boolean;
 
     selectedTabIndex = 0;
-    enableRefresh = true;
     toggleToTriggerRefresh = false;
     dateFormat = DATE_FORMAT;
     decimalFormat = '1.0-2';
@@ -62,6 +63,13 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
 
     ngOnInit() {
         const params = this.activatedRoute.snapshot.params;
+        const autoRefreshSavedState = JSON.parse(localStorage.getItem(AUTO_REFRESH_KEY));
+        if (autoRefreshSavedState !== null) {
+            this.enableRefresh = autoRefreshSavedState;
+        } else {
+            this.enableRefresh = true;
+            localStorage.setItem(AUTO_REFRESH_KEY, JSON.stringify(this.enableRefresh));
+        }
         this.retrospectiveID = params['retrospectiveID'];
         this.sprintID = params['sprintID'];
         this.refresh$
@@ -247,5 +255,6 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
 
     toggleAutoRefresh() {
         this.enableRefresh = !this.enableRefresh;
+        localStorage.setItem(AUTO_REFRESH_KEY, JSON.stringify(this.enableRefresh));
     }
 }
