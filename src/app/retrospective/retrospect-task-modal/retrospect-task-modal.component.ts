@@ -21,25 +21,30 @@ import { RatingRendererComponent } from '../../shared/ag-grid-renderers/rating-r
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { RetrospectiveCreateComponent } from '../retrospective-create/retrospective-create.component';
 import { UtilsService } from '../../shared/utils/utils.service';
+import { AfterViewChecked } from '@angular/core/src/metadata/lifecycle_hooks';
 
 @Component({
     selector: 'app-retrospect-task-modal',
     templateUrl: './retrospect-task-modal.component.html',
     styleUrls: ['./retrospect-task-modal.component.scss']
 })
-export class RetrospectTaskModalComponent implements OnDestroy {
-    memberIDs = [];
+export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked {
     sprintMembers: any;
     taskDetails: any;
     selectedMemberID: number;
     gridOptions: GridOptions;
     enableRefresh: boolean;
     autoRefreshCurrentState: boolean;
+    issueDescriptionHTML: string;
+
+    memberIDs = [];
     ratingStates = RATING_STATES;
     destroy$: Subject<boolean> = new Subject<boolean>();
     overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the Issue Members are loading!</span>';
     overlayNoRowsTemplate = '<span>No Members for this Issue!</span>';
-
+    showingMoreDesc = false;
+    showMoreLessBtn = true;
+    descMaxHeight = 90;
 
     private totalTaskPoints;
     private params: any;
@@ -57,6 +62,7 @@ export class RetrospectTaskModalComponent implements OnDestroy {
         this.enableRefresh = data.enableRefresh;
         this.autoRefreshCurrentState = data.enableRefresh;
         this.taskDetails = data.taskDetails;
+        this.issueDescriptionHTML = this.data.taskDetails.Description.replace(/\r\n|↵|\n/g, '<br>');
         if (!this.taskDetails.Estimate) {
             this.taskDetails.Estimate = 0;
         }
@@ -69,6 +75,17 @@ export class RetrospectTaskModalComponent implements OnDestroy {
         if (this.gridApi) {
             setTimeout(() => {
                 this.gridApi.sizeColumnsToFit();
+            });
+        }
+    }
+
+    ngAfterViewChecked() {
+        const issueDescElement = document.getElementById('issue-description');
+        // If the height of the description section is not more than 90px (since 90 is the max-height for description section,
+        // we won't show "Show More" and/or "Show Less" buttons.
+        if (issueDescElement && issueDescElement.offsetHeight < this.descMaxHeight) {
+            setTimeout(() => {
+                this.showMoreLessBtn = false;
             });
         }
     }
@@ -370,5 +387,9 @@ export class RetrospectTaskModalComponent implements OnDestroy {
 
     getDisplayedRowCount() {
         return (this.gridApi && this.gridApi.getDisplayedRowCount()) || 0;
+    }
+
+    toggleshowingMoreDesc() {
+        this.showingMoreDesc = !this.showingMoreDesc;
     }
 }
