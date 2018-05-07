@@ -146,8 +146,8 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         this.params = params;
         this.gridApi = params.api;
         this.columnApi = params.columnApi;
-        this.getSprintMemberSummary(false);
         if (this.isTabActive) {
+            this.getSprintMemberSummary(false);
             this.gridApi.sizeColumnsToFit();
         }
         Observable.interval(AUTO_REFRESH_DURATION)
@@ -222,20 +222,24 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     }
 
     updateSprintMember(params) {
-        const memberData = params.data;
-        this.retrospectiveService.updateSprintMember(this.retrospectiveID, this.sprintID, memberData).subscribe(
-            response => {
-                params.node.setData(response.data);
-                this.snackBar.open(
-                    API_RESPONSE_MESSAGES.memberUpdated,
-                    '', {duration: SNACKBAR_DURATION});
-            },
-            err => {
-                this.snackBar.open(
-                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.updateSprintMemberError,
-                    '', {duration: SNACKBAR_DURATION});
-                this.revertCellValue(params);
-            });
+        const updatedSprintMemberData = {
+            [params.colDef.field]: params.newValue
+        };
+        this.retrospectiveService.updateSprintMember(this.retrospectiveID, this.sprintID, params.data.ID, updatedSprintMemberData)
+            .subscribe(
+                response => {
+                    params.node.setData(response.data);
+                    this.snackBar.open(
+                        API_RESPONSE_MESSAGES.memberUpdated,
+                        '', {duration: SNACKBAR_DURATION});
+                },
+                err => {
+                    this.snackBar.open(
+                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.updateSprintMemberError,
+                        '', {duration: SNACKBAR_DURATION});
+                    this.revertCellValue(params);
+                }
+            );
     }
 
     revertCellValue(params) {
@@ -423,10 +427,13 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             {
                 headerName: 'Comments',
                 field: 'Comment',
-                minWidth: 300,
-                cellEditor: 'agLargeTextCellEditor',
                 tooltipField: 'Comment',
+                minWidth: 300,
                 editable: isSprintEditable,
+                cellEditor: 'agLargeTextCellEditor',
+                cellEditorParams: {
+                    maxLength: 1000
+                },
                 onCellValueChanged: (cellParams) => {
                     if (cellParams.newValue !== cellParams.oldValue) {
                         this.updateSprintMember(cellParams);

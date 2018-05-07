@@ -48,7 +48,6 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     ngOnInit() {
-        this.getSprintHighlightsTab(false);
         Observable.interval(AUTO_REFRESH_DURATION)
             .takeUntil(this.destroy$)
             .subscribe(() => {

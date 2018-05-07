@@ -64,12 +64,16 @@ export class RetrospectiveDashboardComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             if (result) {
-                this.sprintList.refresh();
+                this.refreshSprintsList();
             }
         });
     }
 
     ngOnInit() {
         this.getRetrospective();
+    }
+
+    refreshSprintsList() {
+        this.sprintList.refresh();
     }
 }

@@ -198,24 +198,32 @@ export class RetrospectTaskModalComponent implements OnDestroy {
     }
 
     updateSprintTaskMember(params, onSuccessCallback?) {
-        this.retrospectiveService.updateSprintTaskMember(this.data.retrospectiveID, this.data.sprintID, this.taskDetails.ID, params.data)
-            .subscribe(
-                response => {
-                    if (onSuccessCallback && _.isFunction(onSuccessCallback)) {
-                        onSuccessCallback(response);
-                    }
-                    params.node.setData(response.data);
-                    this.snackBar.open(
-                        API_RESPONSE_MESSAGES.memberUpdated,
-                        '', {duration: SNACKBAR_DURATION});
-                },
-                err => {
-                    this.snackBar.open(
-                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.updateSprintMemberError,
-                        '', {duration: SNACKBAR_DURATION});
-                    this.revertCellValue(params);
+        const updatedSprintTaskMemberData = {
+            [params.colDef.field]: params.newValue
+        };
+        this.retrospectiveService.updateSprintTaskMember(
+            this.data.retrospectiveID,
+            this.data.sprintID,
+            this.taskDetails.ID,
+            params.data.ID,
+            updatedSprintTaskMemberData
+        ).subscribe(
+            response => {
+                if (onSuccessCallback && _.isFunction(onSuccessCallback)) {
+                    onSuccessCallback(response);
                 }
-            );
+                params.node.setData(response.data);
+                this.snackBar.open(
+                    API_RESPONSE_MESSAGES.memberUpdated,
+                    '', {duration: SNACKBAR_DURATION});
+            },
+            err => {
+                this.snackBar.open(
+                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.updateSprintMemberError,
+                    '', {duration: SNACKBAR_DURATION});
+                this.revertCellValue(params);
+            }
+        );
     }
 
     revertCellValue(params) {
@@ -345,8 +353,11 @@ export class RetrospectTaskModalComponent implements OnDestroy {
                 field: 'Comment',
                 minWidth: 300,
                 tooltipField: 'Comment',
-                cellEditor: 'agLargeTextCellEditor',
                 editable: isSprintEditable,
+                cellEditor: 'agLargeTextCellEditor',
+                cellEditorParams: {
+                    maxLength: 1000
+                },
                 onCellValueChanged: (cellParams) => {
                     if (cellParams.newValue !== cellParams.oldValue) {
                         this.updateSprintTaskMember(cellParams);

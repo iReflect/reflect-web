@@ -166,43 +166,51 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
     }
 
     updateRetroFeedback(params: any) {
+        const updatedRetroFeedbackData = {
+            [params.colDef.field]: params.newValue
+        };
         if (this.feedbackType === RETRO_FEEDBACK_TYPES.HIGHLIGHT) {
-            this.retrospectiveService.updateSprintHighlight(this.retrospectiveID, this.sprintID, params.data).subscribe(
-                response => {
-                    params.node.setData(response.data);
-                    this.snackBar.open(API_RESPONSE_MESSAGES.sprintHighlightsUpdateSuccess, '', {duration: SNACKBAR_DURATION});
-                },
-                err => {
-                    this.snackBar.open(
-                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintHighlightsUpdateError,
-                        '', {duration: SNACKBAR_DURATION});
-                    this.revertCellValue(params);
-                }
-            );
+            this.retrospectiveService.updateSprintHighlight(this.retrospectiveID, this.sprintID, params.data.ID, updatedRetroFeedbackData)
+                .subscribe(
+                    response => {
+                        params.node.setData(response.data);
+                        this.snackBar.open(API_RESPONSE_MESSAGES.sprintHighlightsUpdateSuccess, '', {duration: SNACKBAR_DURATION});
+                    },
+                    err => {
+                        this.snackBar.open(
+                            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintHighlightsUpdateError,
+                            '', {duration: SNACKBAR_DURATION});
+                        this.revertCellValue(params);
+                    }
+                );
         } else if (this.feedbackType === RETRO_FEEDBACK_TYPES.NOTE) {
-            this.retrospectiveService.updateRetroNote(this.retrospectiveID, this.sprintID, params.data).subscribe(
-                response => {
-                    params.node.setData(response.data);
-                    this.snackBar.open(API_RESPONSE_MESSAGES.sprintNotesUpdateSuccess, '', {duration: SNACKBAR_DURATION});
-                },
-                err => {
-                    this.snackBar.open(
-                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintNotesUpdateError,
-                        '', {duration: SNACKBAR_DURATION});
-                    this.revertCellValue(params);
-                });
+            this.retrospectiveService.updateRetroNote(this.retrospectiveID, this.sprintID, params.data.ID, updatedRetroFeedbackData)
+                .subscribe(
+                    response => {
+                        params.node.setData(response.data);
+                        this.snackBar.open(API_RESPONSE_MESSAGES.sprintNotesUpdateSuccess, '', {duration: SNACKBAR_DURATION});
+                    },
+                    err => {
+                        this.snackBar.open(
+                            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintNotesUpdateError,
+                            '', {duration: SNACKBAR_DURATION});
+                        this.revertCellValue(params);
+                    }
+                );
         } else if (this.feedbackType === RETRO_FEEDBACK_TYPES.GOAL) {
-            this.retrospectiveService.updateRetroGoal(this.retrospectiveID, this.sprintID, params.data).subscribe(
-                response => {
-                    params.node.setData(response.data);
-                    this.snackBar.open(API_RESPONSE_MESSAGES.sprintGoalsUpdateSuccess, '', {duration: SNACKBAR_DURATION});
-                },
-                err => {
-                    this.snackBar.open(
-                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintGoalsUpdateError,
-                        '', {duration: SNACKBAR_DURATION});
-                    this.revertCellValue(params);
-                });
+            this.retrospectiveService.updateRetroGoal(this.retrospectiveID, this.sprintID, params.data.ID, updatedRetroFeedbackData)
+                .subscribe(
+                    response => {
+                        params.node.setData(response.data);
+                        this.snackBar.open(API_RESPONSE_MESSAGES.sprintGoalsUpdateSuccess, '', {duration: SNACKBAR_DURATION});
+                    },
+                    err => {
+                        this.snackBar.open(
+                            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintGoalsUpdateError,
+                            '', {duration: SNACKBAR_DURATION});
+                        this.revertCellValue(params);
+                    }
+                );
         }
     }
 
@@ -291,8 +299,12 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                 headerName: 'Text',
                 field: 'Text',
                 tooltipField: 'Text',
-                minWidth: 150,
+                minWidth: 500,
                 editable: editable,
+                cellEditor: 'agLargeTextCellEditor',
+                cellEditorParams: {
+                    maxLength: 1000
+                },
                 onCellValueChanged: (cellParams) => {
                     if (cellParams.newValue !== cellParams.oldValue) {
                         this.updateRetroFeedback(cellParams);
@@ -302,7 +314,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
             {
                 headerName: 'Scope',
                 field: 'Scope',
-                minWidth: 120,
+                minWidth: 110,
                 editable: editable,
                 valueFormatter: (cellParams) => RETRO_FEEDBACK_SCOPE_LABELS[cellParams.value],
                 cellEditor: 'selectEditor',
@@ -345,7 +357,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
             {
                 headerName: 'Added At',
                 field: 'AddedAt',
-                minWidth: 150,
+                minWidth: 160,
                 valueFormatter: (cellParams) => this.utils.getDateFromString(cellParams.value || '')
             },
             {
@@ -357,11 +369,11 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
         ];
 
         if (this.feedbackType === RETRO_FEEDBACK_TYPES.GOAL) {
-            const goalSpecificColumns = [
+            const goalSpecificColumn = [
                 {
                     headerName: 'Expected At',
                     field: 'ExpectedAt',
-                    minWidth: 150,
+                    minWidth: 160,
                     editable: editable,
                     cellEditor: 'datePicker',
                     cellEditorParams: {
@@ -376,7 +388,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                 },
             ];
 
-            const pendingGoalColumn = [
+            const activeSprintAddedOrPendingGoalColumn = [
                 {
                     headerName: 'Mark Resolved',
                     minWidth: 140,
@@ -387,13 +399,17 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                     },
                 }
             ];
+
             const accomplishedGoalColumn = [
                 {
                     headerName: 'Resolved At',
                     field: 'ResolvedAt',
                     minWidth: 150,
                     valueFormatter: (cellParams) => this.utils.getDateFromString(cellParams.value || '')
-                },
+                }
+            ];
+
+            const activeSprintAccomplishedGoalColumn = [
                 {
                     headerName: 'Mark Unresolved',
                     minWidth: 160,
@@ -405,11 +421,17 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges {
                 }
             ];
 
-            columnDefs = [...columnDefs, ...goalSpecificColumns];
+
+            columnDefs = [...columnDefs, ...goalSpecificColumn];
             if (this.feedbackSubType === this.goalTypes.COMPLETED) {
                 columnDefs = [...columnDefs, ...accomplishedGoalColumn];
-            } else {
-                columnDefs = [...columnDefs, ...pendingGoalColumn];
+            }
+            if (sprintStatus !== SPRINT_STATES.FROZEN) {
+                if (this.feedbackSubType === this.goalTypes.COMPLETED) {
+                    columnDefs = [...columnDefs, ...activeSprintAccomplishedGoalColumn];
+                } else {
+                    columnDefs = [...columnDefs, ...activeSprintAddedOrPendingGoalColumn];
+                }
             }
         }
         return columnDefs;

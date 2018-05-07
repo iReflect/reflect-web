@@ -9,6 +9,8 @@ import { Subject } from 'rxjs/Subject';
 import {
     API_RESPONSE_MESSAGES,
     AUTO_REFRESH_DURATION,
+    RATING_STATES,
+    RATING_STATES_LABEL,
     SNACKBAR_DURATION,
     SPRINT_STATES
 } from '../../../constants/app-constants';
@@ -18,6 +20,10 @@ import {
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { RetrospectTaskModalComponent } from '../retrospect-task-modal/retrospect-task-modal.component';
 import { UtilsService } from '../../shared/utils/utils.service';
+import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.component';
+import * as _ from 'lodash';
+import { SelectCellEditorComponent } from '../../shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
+import { RatingRendererComponent } from '../../shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
 
 @Component({
     selector: 'app-sprint-task-summary',
@@ -28,6 +34,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     gridOptions: GridOptions;
     dialogRef: MatDialogRef<any>;
     autoRefreshCurrentState: boolean;
+    ratingStates = RATING_STATES;
     destroy$: Subject<boolean> = new Subject<boolean>();
     overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the Issues are loading!</span>';
     overlayNoRowsTemplate = '<span>No Issues in this sprint!</span>';
@@ -62,7 +69,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     }
 
     ngOnInit(): void {
-        this.columnDefs = this.createColumnDefs(this.sprintStatus);
+        this.columnDefs = this.createColumnDefs(this.sprintStatus, this.isSprintEditable);
         this.setGridOptions();
         this.autoRefreshCurrentState = this.enableRefresh;
     }
@@ -72,7 +79,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             this.autoRefreshCurrentState = changes.enableRefresh.currentValue;
         }
         if (changes.sprintStatus) {
-            this.columnDefs = this.createColumnDefs(changes.sprintStatus.currentValue);
+            this.columnDefs = this.createColumnDefs(changes.sprintStatus.currentValue, this.isSprintEditable);
             if (this.gridApi) {
                 this.gridApi.setColumnDefs(this.columnDefs);
             }
@@ -105,6 +112,10 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         }
     }
 
+    onCellEditingStarted() {
+        this.autoRefreshCurrentState = false;
+    }
+
     setGridOptions() {
         this.gridOptions = <GridOptions>{
             columnDefs: this.columnDefs,
@@ -114,17 +125,21 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             enableFilter: true,
             enableSorting: true,
             frameworkComponents: {
+                'ratingEditor': SelectCellEditorComponent,
+                'ratingRenderer': RatingRendererComponent,
                 'clickableButtonRenderer': ClickableButtonRendererComponent
             },
+            onCellEditingStarted: () => this.onCellEditingStarted(),
+            onGridReady: event => this.onGridReady(event),
+            overlayLoadingTemplate: this.overlayLoadingTemplate,
+            overlayNoRowsTemplate: this.overlayNoRowsTemplate,
             rowClassRules: {
                 'invalid-ag-grid-row': (params) => {
                     return params.data.IsInvalid;
                 }
             },
-            onGridReady: event => this.onGridReady(event),
-            overlayLoadingTemplate: this.overlayLoadingTemplate,
-            overlayNoRowsTemplate: this.overlayNoRowsTemplate,
             rowHeight: 48,
+            singleClickEdit: true,
             suppressDragLeaveHidesColumns: true,
             suppressScrollOnNewData: true,
             stopEditingWhenGridLosesFocus: true
@@ -135,8 +150,8 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         this.params = params;
         this.gridApi = params.api;
         this.columnApi = params.columnApi;
-        this.getSprintTaskSummary(false);
         if (this.isTabActive) {
+            this.getSprintTaskSummary(false);
             this.gridApi.sizeColumnsToFit();
         }
         Observable.interval(AUTO_REFRESH_DURATION)
@@ -170,6 +185,9 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                                 .getSprintIssueSummaryError,
                             '', {duration: SNACKBAR_DURATION});
                     }
+                },
+                () => {
+                    this.autoRefreshCurrentState = this.enableRefresh;
                 }
             );
     }
@@ -194,7 +212,34 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         });
     }
 
-    private createColumnDefs(sprintStatus) {
+    updateSprintTask(params) {
+        const updatedSprintTaskData = {
+            [params.colDef.field]: params.newValue
+        };
+        this.retrospectiveService.updateSprintTask(this.retrospectiveID, this.sprintID, params.data.ID, updatedSprintTaskData)
+            .subscribe(
+                response => {
+                    params.node.setData(response.data);
+                    this.snackBar.open(
+                        API_RESPONSE_MESSAGES.issueUpdated,
+                        '', {duration: SNACKBAR_DURATION});
+                },
+                err => {
+                    this.snackBar.open(
+                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.updateSprintTaskError,
+                        '', {duration: SNACKBAR_DURATION});
+                    this.revertCellValue(params);
+                }
+            );
+    }
+
+    revertCellValue(params) {
+        const rowData = params.data;
+        rowData[params.colDef.field] = params.oldValue;
+        this.gridApi.updateRowData({update: [rowData]});
+    }
+
+    private createColumnDefs(sprintStatus, isSprintEditable) {
         let markedDoneColumns = [];
         if ([SPRINT_STATES.DRAFT, SPRINT_STATES.FROZEN].indexOf(sprintStatus) === -1) {
             markedDoneColumns = [
@@ -283,6 +328,28 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 suppressFilter: true,
             },
             {
+                headerName: 'Rating',
+                field: 'Rating',
+                minWidth: 120,
+                editable: isSprintEditable,
+                cellEditor: 'ratingEditor',
+                cellEditorParams: {
+                    selectOptions: _.map(RATING_STATES_LABEL, (value, key) => {
+                        return {
+                            id: _.parseInt(key),
+                            value: value
+                        };
+                    }).reverse(),
+                },
+                cellRenderer: 'ratingRenderer',
+                onCellValueChanged: (cellParams) => {
+                    if ((cellParams.newValue !== cellParams.oldValue) &&
+                        (cellParams.newValue >= this.ratingStates.RED && cellParams.newValue <= this.ratingStates.NOTABLE)) {
+                        this.updateSprintTask(cellParams);
+                    }
+                }
+            },
+            {
                 headerName: 'Points',
                 field: 'Estimate',
                 minWidth: 120,
@@ -332,19 +399,31 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     markDoneUnDone(params) {
         const sprintTaskSummaryData = params.data;
         if (sprintTaskSummaryData.DoneAt) {
-            this.retrospectiveService.markSprintTaskUnDone(this.retrospectiveID, this.sprintID, sprintTaskSummaryData.ID).subscribe(
-                response => {
-                    const sprintTaskSummary = response.data;
-                    params.node.setData(sprintTaskSummary);
-                    // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
-                    params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
-                    this.snackBar.open(API_RESPONSE_MESSAGES.getSprintIssueMarkedUndoneSuccess, '', {duration: SNACKBAR_DURATION});
+            const dialogRef = this.dialog.open(BasicModalComponent, {
+                data: {
+                    content: 'Are you sure you want to mark this issue as Undone?',
+                    confirmBtn: 'Yes',
+                    cancelBtn: 'Cancel'
                 },
-                err => {
-                    this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.error,
-                        '', {duration: SNACKBAR_DURATION});
+                disableClose: true
+            });
+
+            dialogRef.afterClosed().subscribe(result => {
+                if (result) {
+                    this.retrospectiveService.markSprintTaskUnDone(this.retrospectiveID, this.sprintID, sprintTaskSummaryData.ID).subscribe(
+                        response => {
+                            const sprintTaskSummary = response.data;
+                            params.node.setData(sprintTaskSummary);
+                            // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
+                            params.refreshCell({suppressFlash: false, newData: false, forceRefresh: true});
+                            this.snackBar.open(API_RESPONSE_MESSAGES.getSprintIssueMarkedUndoneSuccess, '', {duration: SNACKBAR_DURATION});
+                        },
+                        err => {
+                            this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.error,
+                                '', {duration: SNACKBAR_DURATION});
+                        });
                 }
-            );
+            });
         } else {
             this.retrospectiveService.markSprintTaskDone(this.retrospectiveID, this.sprintID, sprintTaskSummaryData.ID).subscribe(
                 response => {

@@ -1,5 +1,7 @@
 export const USER_AUTH_TOKEN_KEY = 'user_auth_token';
 
+export const AUTO_REFRESH_KEY = 'auto_refresh_saved_state';
+
 export const FEEDBACK_STATES = {
     NEW: 0,
     IN_PROGRESS: 1,
@@ -52,7 +54,7 @@ export const APP_ROUTE_URLS = {
     retrospectiveDetail: 'retrospectives/:retrospectiveID',
     retrospectiveDashboard: 'retrospectives/:retrospectiveID/dashboard',
 
-    sprintDetails: 'retrospectives/:retrospectiveID/sprint/:sprintID',
+    sprintDetails: 'retrospectives/:retrospectiveID/sprints/:sprintID',
 };
 
 export const API_RESPONSE_MESSAGES = {
@@ -66,6 +68,7 @@ export const API_RESPONSE_MESSAGES = {
     invalidRetroAccessError: 'You do not have access to this retro!',
     sprintComputationInitiated: 'Sprint Computation Initiated Successfully!',
     memberUpdated: 'Member Updated Successfully!',
+    issueUpdated: 'Issue Updated Successfully!',
     sprintCreated: 'Sprint Created Successfully!',
     sprintUpdated: 'Sprint Updated Successfully!',
     invalidOption: 'Please select a valid option!',
@@ -89,6 +92,7 @@ export const API_RESPONSE_MESSAGES = {
     addSprintIssueMemberError: 'Cannot add the member to Issue!',
     updateSprintError: 'Cannot update sprint details!',
     updateSprintMemberError: 'Cannot update sprint member details!',
+    updateSprintTaskError: 'Cannot update Issue!',
     deleteSprintMemberError: 'Cannot delete sprint member!',
     sprintCreateError: 'Cannot create sprint!',
     getTeamListError: 'Cannot get teams list!',
