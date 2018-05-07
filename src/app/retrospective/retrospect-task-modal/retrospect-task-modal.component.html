@@ -26,6 +26,15 @@
                     <p>
                         Status: {{taskDetails.Status}}
                     </p>
+                    <p>
+                        Description: &nbsp;<span id="issue-description" class="issue-description"
+                                                 [class.show-more]="expandedDescHidden"
+                                                 [innerHTML]="issueDescriptionHTML"></span>
+                        <a *ngIf="allowDescViewToggle" class="show-more-btn" (click)="toggleDescriptionView()">
+                            <span *ngIf="expandedDescHidden; else expandedDescVisible">Show More</span>
+                            <ng-template #expandedDescVisible><span>Show Less</span></ng-template>
+                        </a>
+                    </p>
                 </div>
             </div>
         </div>
