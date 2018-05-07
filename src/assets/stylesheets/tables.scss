@@ -68,7 +68,6 @@ mat-row {
     &.-row-clickable {
         mat-row {
             &:hover {
-                cursor: pointer;
                 background-color: rgba(161, 194, 250, 0.16);
 
                 mat-cell {
