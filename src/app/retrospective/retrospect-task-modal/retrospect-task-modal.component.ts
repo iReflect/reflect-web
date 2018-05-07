@@ -42,8 +42,8 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
     destroy$: Subject<boolean> = new Subject<boolean>();
     overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the Issue Members are loading!</span>';
     overlayNoRowsTemplate = '<span>No Members for this Issue!</span>';
-    showingMoreDesc = false;
-    showMoreLessBtn = true;
+    expandedDescHidden = true;
+    allowDescViewToggle = true;
     descMaxHeight = 90;
 
     private totalTaskPoints;
@@ -62,6 +62,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
         this.enableRefresh = data.enableRefresh;
         this.autoRefreshCurrentState = data.enableRefresh;
         this.taskDetails = data.taskDetails;
+        // TODO: Check for better ways of handling new lines, carriage returns in angular
         this.issueDescriptionHTML = this.data.taskDetails.Description.replace(/\r\n|↵|\n/g, '<br>');
         if (!this.taskDetails.Estimate) {
             this.taskDetails.Estimate = 0;
@@ -85,7 +86,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
         // we won't show "Show More" and/or "Show Less" buttons.
         if (issueDescElement && issueDescElement.offsetHeight < this.descMaxHeight) {
             setTimeout(() => {
-                this.showMoreLessBtn = false;
+                this.allowDescViewToggle = false;
             });
         }
     }
@@ -389,7 +390,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
         return (this.gridApi && this.gridApi.getDisplayedRowCount()) || 0;
     }
 
-    toggleShowingMoreDesc() {
-        this.showingMoreDesc = !this.showingMoreDesc;
+    toggleDescriptionView() {
+        this.expandedDescHidden = !this.expandedDescHidden;
     }
 }

@@ -28,11 +28,11 @@
                     </p>
                     <p>
                         Description: &nbsp;<span id="issue-description" class="issue-description"
-                                                 [ngClass]="{'show-more': !showingMoreDesc}"
+                                                 [class.show-more]="expandedDescHidden"
                                                  [innerHTML]="issueDescriptionHTML"></span>
-                        <a *ngIf="showMoreLessBtn" class="show-more-btn" (click)="toggleShowingMoreDesc()">
-                            <span *ngIf="!showingMoreDesc; else showLessDesc">Show More</span>
-                            <ng-template #showLessDesc><span>Show Less</span></ng-template>
+                        <a *ngIf="allowDescViewToggle" class="show-more-btn" (click)="toggleDescriptionView()">
+                            <span *ngIf="expandedDescHidden; else expandedDescVisible">Show More</span>
+                            <ng-template #expandedDescVisible><span>Show Less</span></ng-template>
                         </a>
                     </p>
                 </div>
