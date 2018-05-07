@@ -19,16 +19,6 @@ import { SharedModule } from './shared/shared.module';
 import { SideNavComponent } from './sidenav/sidenav.component';
 import { RetrospectiveModule } from './retrospective/retrospective.module';
 
-export function RestangularConfigFactory(RestangularProvider) {
-    RestangularProvider.setDefaultHeaders({
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-    });
-    RestangularProvider.setRequestSuffix('/');
-    RestangularProvider.setDefaultHttpFields({withCredentials: true});
-    RestangularProvider.setFullResponse(true);
-}
-
 const routes: Routes = [
     { // Route to redirect to Home page if no url matches
         path: '**',
@@ -53,7 +43,6 @@ const routes: Routes = [
         ReactiveFormsModule,
         CookieModule.forRoot(),
         RouterModule.forRoot(routes, {useHash: false}),
-        RestangularModule.forRoot(RestangularConfigFactory),
         CustomMaterialModule,
         CoreModule,
         SharedModule,

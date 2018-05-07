@@ -14,9 +14,35 @@ import { throwIfAlreadyLoaded } from './module-import-guard';
 import { AnonymousRequiredGuard } from './route-guards/anonymous-required.service';
 // Import Custom Services
 import { LoginRequiredGuard } from './route-guards/login-required.service';
+import { LoaderComponent } from './loader/loader.component';
+import { LoaderService } from './loader/loader.service';
+import { RestangularModule } from 'ngx-restangular';
+
+export function RestangularConfigFactory(RestangularProvider, loaderSrevice) {
+    RestangularProvider.setDefaultHeaders({
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    });
+    RestangularProvider.setRequestSuffix('/');
+    RestangularProvider.setDefaultHttpFields({withCredentials: true});
+    RestangularProvider.setFullResponse(true);
+
+    RestangularProvider.addFullRequestInterceptor(() => {
+        loaderSrevice.show();
+    });
+    RestangularProvider.addResponseInterceptor(data => {
+        loaderSrevice.hide();
+        return data;
+    });
+    RestangularProvider.addErrorInterceptor(data => {
+        loaderSrevice.hide();
+        return data;
+    });
+}
 
 @NgModule({
     imports: [
+        RestangularModule.forRoot([LoaderService], RestangularConfigFactory),
         CommonModule,
         HttpClientModule,
         FormsModule,
@@ -24,13 +50,17 @@ import { LoginRequiredGuard } from './route-guards/login-required.service';
         CustomMaterialModule,
     ],
     declarations: [
-        HeaderComponent
+        HeaderComponent,
+        LoaderComponent
     ],
     exports: [
+        RestangularModule,
         HeaderComponent,
-        CustomMaterialModule
+        CustomMaterialModule,
+        LoaderComponent
     ],
     providers: [
+        LoaderService,
         LoggerService,
         LoginRequiredGuard,
         AnonymousRequiredGuard,
