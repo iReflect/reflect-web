@@ -11,7 +11,6 @@ import {
     MatInputModule,
     MatListModule,
     MatMenuModule,
-    MatProgressBarModule,
     MatProgressSpinnerModule,
     MatRadioModule,
     MatSelectModule,
@@ -46,8 +45,7 @@ import {
         MatDialogModule,
         MatDatepickerModule,
         MatProgressSpinnerModule,
-        MatSlideToggleModule,
-        MatProgressBarModule
+        MatSlideToggleModule
     ],
     exports: [
         MatButtonModule,
@@ -70,8 +68,7 @@ import {
         MatDialogModule,
         MatDatepickerModule,
         MatProgressSpinnerModule,
-        MatSlideToggleModule,
-        MatProgressBarModule
+        MatSlideToggleModule
     ],
 })
 export class CustomMaterialModule {
