@@ -104,7 +104,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     ngOnDestroy() {
         this.autoRefreshCurrentState = false;
         this.destroy$.next(true);
-        this.destroy$.unsubscribe();
+        this.destroy$.complete();
     }
 
     getRetroMembers() {

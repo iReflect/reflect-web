@@ -97,7 +97,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
 
     ngOnDestroy() {
         this.destroy$.next(true);
-        this.destroy$.unsubscribe();
+        this.destroy$.complete();
     }
 
     onCellEditingStarted() {

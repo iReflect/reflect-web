@@ -33,7 +33,7 @@ export class SprintCreateComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.destroy$.next(true);
-        this.destroy$.unsubscribe();
+        this.destroy$.complete();
     }
 
     get titleControl() {

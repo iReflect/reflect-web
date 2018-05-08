@@ -72,7 +72,7 @@ export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
     ngOnDestroy() {
         this.autoRefreshCurrentState = false;
         this.destroy$.next(true);
-        this.destroy$.unsubscribe();
+        this.destroy$.complete();
     }
 
     getSprintNotesTab(isRefresh = true) {

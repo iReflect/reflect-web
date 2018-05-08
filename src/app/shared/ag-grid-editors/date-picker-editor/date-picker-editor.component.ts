@@ -63,6 +63,6 @@ export class DatePickerEditorComponent implements ICellEditorAngularComp, AfterV
 
     ngOnDestroy() {
         this.destroy$.next(true);
-        this.destroy$.unsubscribe();
+        this.destroy$.complete();
     }
 }

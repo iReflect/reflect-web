@@ -33,6 +33,6 @@ export class SprintListDataSource extends DataSource<any> {
 
     disconnect() {
         this.destroy$.next(true);
-        this.destroy$.unsubscribe();
+        this.destroy$.complete();
     }
 }

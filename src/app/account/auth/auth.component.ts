@@ -30,7 +30,7 @@ export class AuthComponent implements AfterViewInit, OnDestroy {
 
     ngOnDestroy() {
         this.destroy$.next(true);
-        this.destroy$.unsubscribe();
+        this.destroy$.complete();
     }
 
     authorize() {
