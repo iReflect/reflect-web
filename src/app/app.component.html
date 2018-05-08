@@ -1,5 +1,5 @@
 <ng-container>
-    <app-loader></app-loader>
+    <ngx-loading-bar color="red" [includeSpinner]="false"></ngx-loading-bar>
     <div class="app-root" [ngClass]="{'logged-in': userLoggedIn}">
         <div *ngIf="userLoggedIn; then loggedIn else notLoggedIn"></div>
         <ng-template #loggedIn>

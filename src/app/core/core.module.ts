@@ -14,11 +14,12 @@ import { throwIfAlreadyLoaded } from './module-import-guard';
 import { AnonymousRequiredGuard } from './route-guards/anonymous-required.service';
 // Import Custom Services
 import { LoginRequiredGuard } from './route-guards/login-required.service';
-import { LoaderComponent } from './loader/loader.component';
-import { LoaderService } from './loader/loader.service';
 import { RestangularModule } from 'ngx-restangular';
 
-export function RestangularConfigFactory(RestangularProvider, loaderSrevice) {
+// Import LoadingBarModule:
+import { LoadingBarModule, LoadingBarService } from '@ngx-loading-bar/core';
+
+export function RestangularConfigFactory(RestangularProvider, loaderService) {
     RestangularProvider.setDefaultHeaders({
         'Content-Type': 'application/json',
         'Accept': 'application/json'
@@ -26,41 +27,39 @@ export function RestangularConfigFactory(RestangularProvider, loaderSrevice) {
     RestangularProvider.setRequestSuffix('/');
     RestangularProvider.setDefaultHttpFields({withCredentials: true});
     RestangularProvider.setFullResponse(true);
-
     RestangularProvider.addFullRequestInterceptor(() => {
-        loaderSrevice.show();
+        loaderService.start();
     });
     RestangularProvider.addResponseInterceptor(data => {
-        loaderSrevice.hide();
+        loaderService.complete();
         return data;
     });
     RestangularProvider.addErrorInterceptor(data => {
-        loaderSrevice.hide();
+        loaderService.complete();
         return data;
     });
 }
 
 @NgModule({
     imports: [
-        RestangularModule.forRoot([LoaderService], RestangularConfigFactory),
+        RestangularModule.forRoot([LoadingBarService], RestangularConfigFactory),
         CommonModule,
         HttpClientModule,
         FormsModule,
         SharedModule,
         CustomMaterialModule,
+        LoadingBarModule.forRoot()
     ],
     declarations: [
-        HeaderComponent,
-        LoaderComponent
+        HeaderComponent
     ],
     exports: [
         RestangularModule,
         HeaderComponent,
         CustomMaterialModule,
-        LoaderComponent
+        LoadingBarModule
     ],
     providers: [
-        LoaderService,
         LoggerService,
         LoginRequiredGuard,
         AnonymousRequiredGuard,
