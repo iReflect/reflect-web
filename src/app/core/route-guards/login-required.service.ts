@@ -25,7 +25,7 @@ export class LoginRequiredGuard implements CanActivate {
             this.userStoreService.userData$.subscribe(
                 user => {
                     if (_.isEmpty(user)) {
-                        this.router.navigateByUrl(APP_ROUTE_URLS.login);
+                        this.router.navigate([APP_ROUTE_URLS.login], {queryParams: {returnUrl: state.url}});
                         return false;
                     }
                 }
@@ -33,7 +33,13 @@ export class LoginRequiredGuard implements CanActivate {
             return true;
         }
         // not logged in so redirect to login page with the return url and return false
-        this.router.navigateByUrl(APP_ROUTE_URLS.login, {queryParams: {returnUrl: state.url}});
+        this.router.navigate([APP_ROUTE_URLS.login],
+            {
+                queryParams: {
+                    returnUrl: state.url
+                },
+                // queryParamsHandling: 'preserve'
+            });
         return false;
     }
 }
