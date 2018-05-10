@@ -137,7 +137,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
             rowHeight: 48,
             rowClassRules: {
                 'disabled-ag-grid-row': (params) => {
-                    return !params.data.Editable;
+                    return !params.data.Current;
                 }
             },
             singleClickEdit: true,
