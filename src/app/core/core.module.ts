@@ -27,7 +27,7 @@ export function RestangularConfigFactory(RestangularProvider, loaderService) {
     RestangularProvider.setRequestSuffix('/');
     RestangularProvider.setDefaultHttpFields({withCredentials: true});
     RestangularProvider.setFullResponse(true);
-    RestangularProvider.addFullRequestInterceptor(() => {
+    RestangularProvider.addRequestInterceptor(() => {
         loaderService.start();
     });
     RestangularProvider.addResponseInterceptor(data => {
