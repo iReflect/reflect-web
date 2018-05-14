@@ -302,10 +302,13 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                 field: 'Role',
                 minWidth: 110,
                 valueFormatter: (cellParams) => {
+                    if (!cellParams.data.Current) {
+                        return '';
+                    }
                     return MEMBER_TASK_ROLES_LABEL[cellParams.value];
                 },
                 editable: (params: IsColumnFuncParams) => {
-                    return isSprintEditable && params.data.Editable;
+                    return isSprintEditable && params.data.Current;
                 },
                 cellEditor: 'selectEditor',
                 cellEditorParams: {
@@ -327,12 +330,17 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                 headerName: 'Sprint Points',
                 field: 'SprintPoints',
                 editable: (params: IsColumnFuncParams) => {
-                    return isSprintEditable && params.data.Editable;
+                    return isSprintEditable && params.data.Current;
                 },
                 minWidth: 100,
                 valueParser: 'Number(newValue)',
                 cellEditor: 'numericEditor',
-                valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value),
+                valueFormatter: (cellParams) => {
+                    if (!cellParams.data.Current) {
+                        return 0;
+                    }
+                    return this.utils.formatFloat(cellParams.value);
+                },
                 onCellValueChanged: (cellParams: NewValueParams) => {
                     const valueChange = cellParams.newValue - cellParams.oldValue;
                     const newStoryPoints = this.totalTaskPoints + valueChange;
@@ -364,7 +372,12 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
             {
                 headerName: 'Sprint Hours',
                 field: 'SprintTime',
-                valueFormatter: (params) => this.utils.formatFloat(params.value / 60),
+                valueFormatter: (cellParams) => {
+                    if (!cellParams.data.Current) {
+                        return 0;
+                    }
+                    return this.utils.formatFloat(cellParams.value / 60);
+                },
                 minWidth: 100
             },
             {
@@ -384,7 +397,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                 field: 'Rating',
                 minWidth: 110,
                 editable: (params: IsColumnFuncParams) => {
-                    return isSprintEditable && params.data.Editable;
+                    return isSprintEditable && params.data.Current;
                 },
                 cellEditor: 'selectEditor',
                 cellEditorParams: {
@@ -396,6 +409,12 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                     }).reverse(),
                 },
                 cellRenderer: 'ratingRenderer',
+                cellRendererParams: (cellParams) => {
+                    if (!cellParams.data.Current) {
+                        cellParams.value = -1;
+                    }
+                    return cellParams;
+                },
                 onCellValueChanged: (cellParams: NewValueParams) => {
                     if ((cellParams.newValue !== cellParams.oldValue) &&
                         (cellParams.newValue >= this.ratingStates.RED && cellParams.newValue <= this.ratingStates.NOTABLE)) {
@@ -409,11 +428,17 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                 minWidth: 300,
                 tooltipField: 'Comment',
                 editable: (params: IsColumnFuncParams) => {
-                    return isSprintEditable && params.data.Editable;
+                    return isSprintEditable && params.data.Current;
                 },
                 cellEditor: 'agLargeTextCellEditor',
                 cellEditorParams: {
                     maxLength: 1000
+                },
+                cellRendererParams: (cellParams) => {
+                    if (!cellParams.data.Current) {
+                        cellParams.value = '';
+                    }
+                    return cellParams;
                 },
                 onCellValueChanged: (cellParams: NewValueParams) => {
                     if (cellParams.newValue !== cellParams.oldValue) {
