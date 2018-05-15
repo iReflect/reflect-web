@@ -199,7 +199,7 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
             disableClose: true
         });
 
-        dialogRef.afterClosed().takeUntil(this.destroy$).takeUntil(this.destroy$).subscribe(result => {
+        dialogRef.afterClosed().takeUntil(this.destroy$).subscribe(result => {
             if (result) {
                 this.retrospectiveService.freezeSprint(this.retrospectiveID, this.sprintID).subscribe(
                     () => {
