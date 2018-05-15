@@ -17,8 +17,11 @@
                             <ng-container matColumnDef="team">
                                 <mat-header-cell *matHeaderCellDef>Team</mat-header-cell>
                                 <mat-cell *matCellDef="let element">
-                  <span matTooltip="Link to the Retrospective Dashboard"
-                        class="retro-dashboard-link">{{element.Title}}</span>
+                                    <a class="retro-dashboard-link"
+                                       matTooltip="Link to the Retrospective Dashboard"
+                                       [routerLink]="['/retrospectives', element.ID, 'dashboard']">
+                                        {{element.Title}}
+                                    </a>
                                 </mat-cell>
                             </ng-container>
 
@@ -32,14 +35,21 @@
                             <ng-container matColumnDef="latest_sprint">
                                 <mat-header-cell *matHeaderCellDef>Latest Sprint</mat-header-cell>
                                 <mat-cell *matCellDef="let element" (click)="navigateToLatestSprint(element)">
-                  <span matTooltip="Link to the Latest Active or Frozen Sprint Retrospective"
-                        class="latest-sprint-link">Latest Sprint</span>
+                                    <span matTooltip="Link to the Latest Active or Frozen Sprint Retrospective"
+                                          class="latest-sprint-link">
+                                        Latest Sprint
+                                    </span>
                                 </mat-cell>
                             </ng-container>
 
                             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-                            <mat-row *matRowDef="let row; columns: displayedColumns;"
-                                     (click)="navigateToRetrospectiveDetail(row)"></mat-row>
+                            <!--
+                            As of now mat-table cannot have a complete row as an anchor.
+                            Refer: https://github.com/angular/material2/issues/7333
+                            There is a work-around for this (mentioned in the link above) but it is not a good way to achieve this.
+                            TODO: Update if mat-table allows anchors for a row in future (similarly for other places).
+                            -->
+                            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
                         </mat-table>
                     </div>
                 </div>

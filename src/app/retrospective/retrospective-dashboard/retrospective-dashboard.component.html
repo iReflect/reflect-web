@@ -1,10 +1,7 @@
 <ng-container>
     <div *ngIf="isDataLoaded" class="container-with-view-height -colored -fixed-nav-toolbar">
         <mat-toolbar class="nav-toolbar -fixed">
-            <button mat-icon-button matTooltip="Retrospective dashboard"
-                    matTooltipPosition="before" (click)="navigateToRetrospectives()">
-                <mat-icon>arrow_back</mat-icon>
-            </button>
+            <a class="back-arrow" [routerLink]="['/retrospectives']"><mat-icon>arrow_back</mat-icon></a>
             <span class="paddling-left">Team:  <b>{{ retrospectiveData.Team.Name }}</b></span>
             <span class="fill-remaining-space"></span>
             <div class="action-buttons">

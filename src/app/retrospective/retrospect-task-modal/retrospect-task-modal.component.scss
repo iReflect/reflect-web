@@ -13,3 +13,20 @@
         max-width: 200px;
     }
 }
+
+.issue-description {
+    float: right;
+    margin-bottom: 5px;
+
+    &.show-more {
+        max-height: 90px;
+        overflow: hidden;
+    }
+}
+
+.show-more-btn {
+    color: #2196f3;
+    cursor: pointer;
+    float: left;
+    clear: both;
+}

@@ -6,7 +6,11 @@
                 <ng-container matColumnDef="title">
                     <mat-header-cell *matHeaderCellDef>Title</mat-header-cell>
                     <mat-cell *matCellDef="let element">
-                        <span class="link-type-cell" matTooltip="Link to Sprint Dashboard">{{element.Title}}</span>
+                        <a class="sprint-dashboard-link"
+                           matTooltip="Link to the Sprint Dashboard"
+                           [routerLink]="['/retrospectives', retrospectiveID, 'sprints', element.ID]">
+                            {{element.Title}}
+                        </a>
                     </mat-cell>
                 </ng-container>
 
@@ -51,8 +55,7 @@
                 </ng-container>
 
                 <mat-header-row *matHeaderRowDef="displayedSprintColumns"></mat-header-row>
-                <mat-row *matRowDef="let row; columns: displayedSprintColumns;"
-                         (click)="navigateToSprint(row)"></mat-row>
+                <mat-row *matRowDef="let row; columns: displayedSprintColumns;"></mat-row>
             </mat-table>
             <div class="empty-message-container" *ngIf="dataSource.dataChange.value.length == 0">
                 <!--Empty table-->
