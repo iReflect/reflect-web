@@ -34,7 +34,6 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     autoRefreshCurrentState: boolean;
     gridOptions: GridOptions;
     ratingStates = RATING_STATES;
-    destroy$: Subject<boolean> = new Subject<boolean>();
     overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the members are loading!</span>';
     overlayNoRowsTemplate = '<span>No Members for this sprint!</span>';
 
@@ -50,6 +49,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     private params: any;
     private gridApi: GridApi;
     private columnApi: ColumnApi;
+    private destroy$: Subject<boolean> = new Subject<boolean>();
 
     constructor(
         private retrospectiveService: RetrospectiveService,
@@ -104,20 +104,22 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     ngOnDestroy() {
         this.autoRefreshCurrentState = false;
         this.destroy$.next(true);
-        this.destroy$.unsubscribe();
+        this.destroy$.complete();
     }
 
     getRetroMembers() {
-        this.retrospectiveService.getRetroMembers(this.retrospectiveID).subscribe(
-            response => {
-                this.retroMembers = response.data.Members;
-            },
-            err => {
-                this.snackBar.open(
-                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getRetrospectiveMembersError,
-                    '', {duration: SNACKBAR_DURATION});
-            }
-        );
+        this.retrospectiveService.getRetroMembers(this.retrospectiveID)
+            .takeUntil(this.destroy$)
+            .subscribe(
+                response => {
+                    this.retroMembers = response.data.Members;
+                },
+                err => {
+                    this.snackBar.open(
+                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getRetrospectiveMembersError,
+                        '', {duration: SNACKBAR_DURATION});
+                }
+            );
     }
 
     setGridOptions() {
@@ -169,6 +171,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
 
     getSprintMemberSummary(isRefresh) {
         this.retrospectiveService.getSprintMemberSummary(this.retrospectiveID, this.sprintID)
+            .takeUntil(this.destroy$)
             .subscribe(
                 response => {
                     const members = response.data.Members;
@@ -207,6 +210,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                 '', {duration: SNACKBAR_DURATION});
         } else {
             this.retrospectiveService.addSprintMember(this.retrospectiveID, this.sprintID, this.selectedMemberID)
+                .takeUntil(this.destroy$)
                 .subscribe(
                     response => {
                         this.gridApi.updateRowData({add: [response.data]});
@@ -226,6 +230,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             [params.colDef.field]: params.newValue
         };
         this.retrospectiveService.updateSprintMember(this.retrospectiveID, this.sprintID, params.data.ID, updatedSprintMemberData)
+            .takeUntil(this.destroy$)
             .subscribe(
                 response => {
                     params.node.setData(response.data);
@@ -259,9 +264,10 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             disableClose: true
         });
 
-        dialogRef.afterClosed().subscribe(result => {
+        dialogRef.afterClosed().takeUntil(this.destroy$).subscribe(result => {
             if (result) {
                 this.retrospectiveService.deleteSprintMember(this.retrospectiveID, this.sprintID, member.ID)
+                    .takeUntil(this.destroy$)
                     .subscribe(
                         () => {
                             this.gridApi.updateRowData({remove: [member]});

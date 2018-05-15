@@ -1,18 +1,19 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { API_RESPONSE_MESSAGES, SNACKBAR_DURATION, TRACKER_TICKET_TYPE_MAP } from '../../../constants/app-constants';
 import * as _ from 'lodash';
 import { UtilsService } from '../../shared/utils/utils.service';
+import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/operator/takeUntil';
 
 @Component({
     selector: 'app-retrospective-create',
     templateUrl: './retrospective-create.component.html',
     styleUrls: ['./retrospective-create.component.scss']
 })
-export class RetrospectiveCreateComponent implements OnInit {
-
+export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
     retroFormGroup: FormGroup;
     isTeamOptionsLoaded = false;
     isProviderOptionsLoaded = false;
@@ -31,6 +32,8 @@ export class RetrospectiveCreateComponent implements OnInit {
     // Keys used for form controls and provider lookups
     taskProviderKey = 'taskProvider';
 
+    private destroy$: Subject<boolean> = new Subject<boolean>();
+
     constructor(
         private retrospectiveService: RetrospectiveService,
         private snackBar: MatSnackBar,
@@ -47,41 +50,50 @@ export class RetrospectiveCreateComponent implements OnInit {
         this.addTaskProvider();
     }
 
+    ngOnDestroy() {
+        this.destroy$.next(true);
+        this.destroy$.complete();
+    }
+
     getTeamList() {
-        this.retrospectiveService.getTeamList().subscribe(
-            response => {
-                if (_.isEmpty(response.data.Teams)) {
+        this.retrospectiveService.getTeamList()
+            .takeUntil(this.destroy$)
+            .subscribe(
+                response => {
+                    if (_.isEmpty(response.data.Teams)) {
+                        this.snackBar.open(
+                            API_RESPONSE_MESSAGES.noTeamsError,
+                            '', {duration: SNACKBAR_DURATION});
+                        this.dialogRef.close();
+                    } else {
+                        this.teamOptions = response.data.Teams;
+                        this.isTeamOptionsLoaded = true;
+                    }
+                },
+                err => {
                     this.snackBar.open(
-                        API_RESPONSE_MESSAGES.noTeamsError,
+                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getTeamListError,
                         '', {duration: SNACKBAR_DURATION});
                     this.dialogRef.close();
-                } else {
-                    this.teamOptions = response.data.Teams;
-                    this.isTeamOptionsLoaded = true;
                 }
-            },
-            err => {
-                this.snackBar.open(
-                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getTeamListError,
-                    '', {duration: SNACKBAR_DURATION});
-                this.dialogRef.close();
-            }
-        );
+            );
     }
 
     getTaskProviders() {
-        this.retrospectiveService.getTaskProvidersList().subscribe(
-            response => {
-                this.taskProviderOptions = response.data.TaskProviders;
-                this.isProviderOptionsLoaded = true;
-            },
-            err => {
-                this.snackBar.open(
-                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getTeamProviderOptionsError,
-                    '', {duration: SNACKBAR_DURATION});
-                this.dialogRef.close();
-            }
-        );
+        this.retrospectiveService.getTaskProvidersList()
+            .takeUntil(this.destroy$)
+            .subscribe(
+                response => {
+                    this.taskProviderOptions = response.data.TaskProviders;
+                    this.isProviderOptionsLoaded = true;
+                },
+                err => {
+                    this.snackBar.open(
+                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getTeamProviderOptionsError,
+                        '', {duration: SNACKBAR_DURATION});
+                    this.dialogRef.close();
+                }
+            );
     }
 
     taskProviderInitialized(index) {
@@ -142,21 +154,23 @@ export class RetrospectiveCreateComponent implements OnInit {
             })
         };
 
-        this.retrospectiveService.createRetro(requestBody).subscribe(
-            () => {
-                this.snackBar.open(
-                    API_RESPONSE_MESSAGES.retroCreated,
-                    '', {duration: SNACKBAR_DURATION});
-                this.dialogRef.close(true);
-                this.disableButton = false;
-            },
-            err => {
-                this.snackBar.open(
-                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.createRetroError,
-                    '', {duration: SNACKBAR_DURATION});
-                this.disableButton = false;
-            }
-        );
+        this.retrospectiveService.createRetro(requestBody)
+            .takeUntil(this.destroy$)
+            .subscribe(
+                () => {
+                    this.snackBar.open(
+                        API_RESPONSE_MESSAGES.retroCreated,
+                        '', {duration: SNACKBAR_DURATION});
+                    this.dialogRef.close(true);
+                    this.disableButton = false;
+                },
+                err => {
+                    this.snackBar.open(
+                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.createRetroError,
+                        '', {duration: SNACKBAR_DURATION});
+                    this.disableButton = false;
+                }
+            );
     }
 
     closeDialog(result = false) {

@@ -39,7 +39,6 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
 
     memberIDs = [];
     ratingStates = RATING_STATES;
-    destroy$: Subject<boolean> = new Subject<boolean>();
     overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the Issue Members are loading!</span>';
     overlayNoRowsTemplate = '<span>No Members for this Issue!</span>';
     expandedDescHidden = true;
@@ -51,6 +50,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
     private columnDefs: any;
     private gridApi: GridApi;
     private columnApi: ColumnApi;
+    private destroy$: Subject<boolean> = new Subject<boolean>();
 
     constructor(
         private retrospectiveService: RetrospectiveService,
@@ -94,7 +94,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
     ngOnDestroy() {
         this.autoRefreshCurrentState = false;
         this.destroy$.next(true);
-        this.destroy$.unsubscribe();
+        this.destroy$.complete();
     }
 
     onCellEditingStarted() {
@@ -106,16 +106,18 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
     }
 
     getSprintMembers() {
-        this.retrospectiveService.getSprintMembers(this.data.retrospectiveID, this.data.sprintID).subscribe(
-            response => {
-                this.sprintMembers = response.data.Members;
-            },
-            err => {
-                this.snackBar.open(
-                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getSprintMembersError,
-                    '', {duration: SNACKBAR_DURATION});
-            }
-        );
+        this.retrospectiveService.getSprintMembers(this.data.retrospectiveID, this.data.sprintID)
+            .takeUntil(this.destroy$)
+            .subscribe(
+                response => {
+                    this.sprintMembers = response.data.Members;
+                },
+                err => {
+                    this.snackBar.open(
+                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getSprintMembersError,
+                        '', {duration: SNACKBAR_DURATION});
+                }
+            );
     }
 
     setGridOptions() {
@@ -155,6 +157,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
 
     getSprintTaskMemberSummary(isRefresh) {
         this.retrospectiveService.getSprintTaskMemberSummary(this.data.retrospectiveID, this.data.sprintID, this.taskDetails.ID)
+            .takeUntil(this.destroy$)
             .subscribe(
                 response => {
                     this.gridApi.setRowData(response.data.Members);
@@ -201,7 +204,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
         } else {
             this.retrospectiveService.addTaskMember(
                 this.data.retrospectiveID, this.data.sprintID, this.taskDetails.ID, this.selectedMemberID
-            ).subscribe(
+            ).takeUntil(this.destroy$).subscribe(
                 response => {
                     this.gridApi.updateRowData({add: [response.data]});
                     this.memberIDs.push(this.selectedMemberID);
@@ -225,7 +228,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
             this.taskDetails.ID,
             params.data.ID,
             updatedSprintTaskMemberData
-        ).subscribe(
+        ).takeUntil(this.destroy$).subscribe(
             response => {
                 if (onSuccessCallback && _.isFunction(onSuccessCallback)) {
                     onSuccessCallback(response);

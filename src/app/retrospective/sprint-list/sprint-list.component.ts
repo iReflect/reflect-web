@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
 
@@ -15,13 +15,14 @@ import { UtilsService } from '../../shared/utils/utils.service';
     templateUrl: './sprint-list.component.html',
     styleUrls: ['./sprint-list.component.scss']
 })
-export class SprintListComponent implements OnInit {
-    @Input() retrospectiveID: any;
-    displayedSprintColumns = ['title', 'start_date', 'end_date', 'status', 'created_by', 'last_synced_at'];
-
+export class SprintListComponent implements OnInit, OnDestroy {
     dataSource: SprintListDataSource;
+
+    displayedSprintColumns = ['title', 'start_date', 'end_date', 'status', 'created_by', 'last_synced_at'];
     sprintStates = SPRINT_STATES_LABEL;
     dateFormat = DATE_FORMAT;
+
+    @Input() retrospectiveID: any;
 
     constructor(
         private retrospectiveService: RetrospectiveService,
@@ -32,13 +33,21 @@ export class SprintListComponent implements OnInit {
     ) {
     }
 
-    showCannotGetSprintsError(err) {
-        this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getSprintsError, '', {duration: SNACKBAR_DURATION});
+    ngOnInit() {
+        this.initializeDataSource();
+    }
+
+    ngOnDestroy() {
+        this.dataSource = null;
     }
 
     refresh() {
         this.initializeDataSource();
         this.changeDetectorRefs.detectChanges();
+    }
+
+    showCannotGetSprintsError(err) {
+        this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getSprintsError, '', {duration: SNACKBAR_DURATION});
     }
 
     initializeDataSource() {
@@ -53,9 +62,5 @@ export class SprintListComponent implements OnInit {
         this.router.navigateByUrl(
             APP_ROUTE_URLS.sprintDetails.replace(':retrospectiveID', this.retrospectiveID).replace(':sprintID', row.ID)
         );
-    }
-
-    ngOnInit() {
-        this.initializeDataSource();
     }
 }

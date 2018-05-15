@@ -20,6 +20,7 @@ import { RetrospectiveService } from '../../shared/services/retrospective.servic
 import { UtilsService } from '../../shared/utils/utils.service';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/operator/takeUntil';
 
 @Component({
     selector: 'app-sprint-detail',
@@ -48,8 +49,8 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
     syncStates = SPRINT_SYNC_STATES;
     tabIndexMapping: any = {highlights: 0, taskSummary: 1, memberSummary: 2, notes: 3};
 
-    refresh$: Subject<number> = new Subject<number>();
-    destroy$: Subject<boolean> = new Subject<boolean>();
+    private refresh$: Subject<number> = new Subject<number>();
+    private destroy$: Subject<boolean> = new Subject<boolean>();
 
     constructor(
         private retrospectiveService: RetrospectiveService,
@@ -73,6 +74,7 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
         this.retrospectiveID = params['retrospectiveID'];
         this.sprintID = params['sprintID'];
         this.refresh$
+            .takeUntil(this.destroy$)
             .subscribe((delay = 0) => {
                 setTimeout(() => {
                     this.getSprintDetails();
@@ -89,9 +91,8 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
     }
 
     ngOnDestroy() {
-        this.refresh$.unsubscribe();
         this.destroy$.next(true);
-        this.destroy$.unsubscribe();
+        this.destroy$.complete();
     }
 
     getSprintAssignedPoints() {
@@ -105,39 +106,41 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
         if (isRefresh) {
             this.toggleToTriggerRefresh = !this.toggleToTriggerRefresh;
         }
-        this.retrospectiveService.getSprintDetails(this.retrospectiveID, this.sprintID).subscribe(
-            response => {
-                this.sprintDetails = response.data;
-                this.sprintStatus = response.data.Status;
+        this.retrospectiveService.getSprintDetails(this.retrospectiveID, this.sprintID)
+            .takeUntil(this.destroy$)
+            .subscribe(
+                response => {
+                    this.sprintDetails = response.data;
+                    this.sprintStatus = response.data.Status;
 
-                const sprintTaskSummary = this.sprintDetails.Summary.TaskSummary;
-                this.sprintBugs = sprintTaskSummary.BugTypes;
-                this.sprintFeatures = sprintTaskSummary.FeatureTypes;
-                this.sprintTasks = sprintTaskSummary.TaskTypes;
+                    const sprintTaskSummary = this.sprintDetails.Summary.TaskSummary;
+                    this.sprintBugs = sprintTaskSummary.BugTypes;
+                    this.sprintFeatures = sprintTaskSummary.FeatureTypes;
+                    this.sprintTasks = sprintTaskSummary.TaskTypes;
 
-                this.sprintDays = this.utils.workdayCount(response.data.StartDate, response.data.EndDate);
-                if ([this.syncStates.SYNCING, this.syncStates.QUEUED].indexOf(this.sprintDetails.SyncStatus) !== -1
-                    && !this.enableRefresh) {
-                    this.refresh$.next(AUTO_REFRESH_DURATION);
+                    this.sprintDays = this.utils.workdayCount(response.data.StartDate, response.data.EndDate);
+                    if ([this.syncStates.SYNCING, this.syncStates.QUEUED].indexOf(this.sprintDetails.SyncStatus) !== -1
+                        && !this.enableRefresh) {
+                        this.refresh$.next(AUTO_REFRESH_DURATION);
+                    }
+
+                    // Since we are hiding the "Highlights" and "Notes" tab for draft sprints,
+                    // we need to make sure that the summary tabs are following the correct order.
+                    this.tabIndexMapping = this.getTabIndexMapping(this.sprintStatus);
+                },
+                err => {
+                    if (!isRefresh) {
+                        this.snackBar.open(
+                            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getSprintDetailsError,
+                            '', {duration: SNACKBAR_DURATION});
+                        this.navigateToRetrospectiveDashboard();
+                    } else {
+                        this.snackBar.open(
+                            API_RESPONSE_MESSAGES.sprintDetailsRefreshFailure,
+                            '', {duration: SNACKBAR_DURATION});
+                    }
                 }
-
-                // Since we are hiding the "Highlights" and "Notes" tab for draft sprints,
-                // we need to make sure that the summary tabs are following the correct order.
-                this.tabIndexMapping = this.getTabIndexMapping(this.sprintStatus);
-            },
-            err => {
-                if (!isRefresh) {
-                    this.snackBar.open(
-                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getSprintDetailsError,
-                        '', {duration: SNACKBAR_DURATION});
-                    this.navigateToRetrospectiveDashboard();
-                } else {
-                    this.snackBar.open(
-                        API_RESPONSE_MESSAGES.sprintDetailsRefreshFailure,
-                        '', {duration: SNACKBAR_DURATION});
-                }
-            }
-        );
+            );
     }
 
     getTabIndexMapping(sprintStatus) {
@@ -167,19 +170,21 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
             disableClose: true
         });
 
-        dialogRef.afterClosed().subscribe(result => {
+        dialogRef.afterClosed().takeUntil(this.destroy$).subscribe(result => {
             if (result) {
-                this.retrospectiveService.activateSprint(this.retrospectiveID, this.sprintID).subscribe(
-                    () => {
-                        this.sprintStatus = this.sprintStates.ACTIVE;
-                        // this is used to preserve the current tab when activating a draft sprint
-                        this.selectedTabIndex += 1;
-                        this.snackBar.open(
-                            API_RESPONSE_MESSAGES.sprintActivated,
-                            '', {duration: SNACKBAR_DURATION});
-                    },
-                    err => this.sprintStateChangeError(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintActivateError)
-                );
+                this.retrospectiveService.activateSprint(this.retrospectiveID, this.sprintID)
+                    .takeUntil(this.destroy$)
+                    .subscribe(
+                        () => {
+                            this.sprintStatus = this.sprintStates.ACTIVE;
+                            // this is used to preserve the current tab when activating a draft sprint
+                            this.selectedTabIndex += 1;
+                            this.snackBar.open(
+                                API_RESPONSE_MESSAGES.sprintActivated,
+                                '', {duration: SNACKBAR_DURATION});
+                        },
+                        err => this.sprintStateChangeError(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintActivateError)
+                    );
             }
         });
     }
@@ -194,7 +199,7 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
             disableClose: true
         });
 
-        dialogRef.afterClosed().subscribe(result => {
+        dialogRef.afterClosed().takeUntil(this.destroy$).subscribe(result => {
             if (result) {
                 this.retrospectiveService.freezeSprint(this.retrospectiveID, this.sprintID).subscribe(
                     () => {
@@ -220,37 +225,41 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
             disableClose: true
         });
 
-        dialogRef.afterClosed().subscribe(result => {
+        dialogRef.afterClosed().takeUntil(this.destroy$).subscribe(result => {
             if (result) {
-                this.retrospectiveService.discardSprint(this.retrospectiveID, this.sprintID).subscribe(
-                    () => {
-                        this.snackBar.open(
-                            API_RESPONSE_MESSAGES.sprintDiscarded,
-                            '', {duration: SNACKBAR_DURATION});
-                        this.navigateToRetrospectiveDashboard();
-                    },
-                    err => this.sprintStateChangeError(
-                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintDiscardError)
-                );
-            }
+                this.retrospectiveService.discardSprint(this.retrospectiveID, this.sprintID)
+                    .takeUntil(this.destroy$)
+                    .subscribe(
+                        () => {
+                            this.snackBar.open(
+                                API_RESPONSE_MESSAGES.sprintDiscarded,
+                                '', {duration: SNACKBAR_DURATION});
+                            this.navigateToRetrospectiveDashboard();
+                        },
+                        err => this.sprintStateChangeError(
+                            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintDiscardError)
+                    );
+                }
         });
     }
 
     resyncSprintDetails() {
-        this.retrospectiveService.resyncSprintDetails(this.retrospectiveID, this.sprintID).subscribe(
-            () => {
-                this.sprintDetails.SyncStatus = SPRINT_SYNC_STATES.QUEUED;
-                this.snackBar.open(
-                    API_RESPONSE_MESSAGES.sprintComputationInitiated,
+        this.retrospectiveService.resyncSprintDetails(this.retrospectiveID, this.sprintID)
+            .takeUntil(this.destroy$)
+            .subscribe(
+                () => {
+                    this.sprintDetails.SyncStatus = SPRINT_SYNC_STATES.QUEUED;
+                    this.snackBar.open(
+                        API_RESPONSE_MESSAGES.sprintComputationInitiated,
+                            '', {duration: SNACKBAR_DURATION});
+                    this.refresh$.next(RESYNC_REFRESH_DURATION);
+                },
+                err => {
+                    this.snackBar.open(
+                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.resyncSprintError,
                         '', {duration: SNACKBAR_DURATION});
-                this.refresh$.next(RESYNC_REFRESH_DURATION);
-            },
-            err => {
-                this.snackBar.open(
-                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.resyncSprintError,
-                    '', {duration: SNACKBAR_DURATION});
-            }
-        );
+                }
+            );
     }
 
     toggleAutoRefresh() {

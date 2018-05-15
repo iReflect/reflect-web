@@ -35,7 +35,6 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     dialogRef: MatDialogRef<any>;
     autoRefreshCurrentState: boolean;
     ratingStates = RATING_STATES;
-    destroy$: Subject<boolean> = new Subject<boolean>();
     overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the Issues are loading!</span>';
     overlayNoRowsTemplate = '<span>No Issues in this sprint!</span>';
 
@@ -51,6 +50,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     private columnDefs: any;
     private gridApi: GridApi;
     private columnApi: ColumnApi;
+    private destroy$: Subject<boolean> = new Subject<boolean>();
 
     constructor(
         private snackBar: MatSnackBar,
@@ -106,7 +106,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     ngOnDestroy() {
         this.autoRefreshCurrentState = false;
         this.destroy$.next(true);
-        this.destroy$.unsubscribe();
+        this.destroy$.complete();
         if (this.dialogRef) {
             this.dialogRef.close();
         }
@@ -165,6 +165,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
 
     getSprintTaskSummary(isRefresh) {
         this.retrospectiveService.getSprintTaskSummary(this.retrospectiveID, this.sprintID)
+            .takeUntil(this.destroy$)
             .subscribe(
                 response => {
                     this.gridApi.setRowData(response.data.Tasks);
@@ -206,7 +207,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 isSprintEditable: this.isSprintEditable,
             },
         });
-        this.dialogRef.afterClosed().subscribe(() => {
+        this.dialogRef.afterClosed().takeUntil(this.destroy$).subscribe(() => {
             this.getSprintTaskSummary(true);
             this.autoRefreshCurrentState = this.enableRefresh;
         });
@@ -217,6 +218,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             [params.colDef.field]: params.newValue
         };
         this.retrospectiveService.updateSprintTask(this.retrospectiveID, this.sprintID, params.data.ID, updatedSprintTaskData)
+            .takeUntil(this.destroy$)
             .subscribe(
                 response => {
                     params.node.setData(response.data);
@@ -408,36 +410,42 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 disableClose: true
             });
 
-            dialogRef.afterClosed().subscribe(result => {
+            dialogRef.afterClosed().takeUntil(this.destroy$).subscribe(result => {
                 if (result) {
-                    this.retrospectiveService.markSprintTaskUnDone(this.retrospectiveID, this.sprintID, sprintTaskSummaryData.ID).subscribe(
-                        response => {
-                            const sprintTaskSummary = response.data;
-                            params.node.setData(sprintTaskSummary);
-                            // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
-                            params.refreshCell({suppressFlash: false, newData: false, forceRefresh: true});
-                            this.snackBar.open(API_RESPONSE_MESSAGES.getSprintIssueMarkedUndoneSuccess, '', {duration: SNACKBAR_DURATION});
-                        },
-                        err => {
-                            this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.error,
-                                '', {duration: SNACKBAR_DURATION});
-                        });
+                    this.retrospectiveService.markSprintTaskUnDone(this.retrospectiveID, this.sprintID, sprintTaskSummaryData.ID)
+                        .takeUntil(this.destroy$)
+                        .subscribe(
+                            response => {
+                                const sprintTaskSummary = response.data;
+                                params.node.setData(sprintTaskSummary);
+                                // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
+                                params.refreshCell({suppressFlash: false, newData: false, forceRefresh: true});
+                                this.snackBar.open(API_RESPONSE_MESSAGES.getSprintIssueMarkedUndoneSuccess,
+                                    '', {duration: SNACKBAR_DURATION});
+                            },
+                            err => {
+                                this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.error,
+                                    '', {duration: SNACKBAR_DURATION});
+                            }
+                        );
                 }
             });
         } else {
-            this.retrospectiveService.markSprintTaskDone(this.retrospectiveID, this.sprintID, sprintTaskSummaryData.ID).subscribe(
-                response => {
-                    const sprintTaskSummary = response.data;
-                    params.node.setData(sprintTaskSummary);
-                    // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
-                    params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
-                    this.snackBar.open(API_RESPONSE_MESSAGES.getSprintIssueMarkedDoneSuccess, '', {duration: SNACKBAR_DURATION});
-                },
-                err => {
-                    this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.error,
-                        '', {duration: SNACKBAR_DURATION});
-                }
-            );
+            this.retrospectiveService.markSprintTaskDone(this.retrospectiveID, this.sprintID, sprintTaskSummaryData.ID)
+                .takeUntil(this.destroy$)
+                .subscribe(
+                    response => {
+                        const sprintTaskSummary = response.data;
+                        params.node.setData(sprintTaskSummary);
+                        // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
+                        params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
+                        this.snackBar.open(API_RESPONSE_MESSAGES.getSprintIssueMarkedDoneSuccess, '', {duration: SNACKBAR_DURATION});
+                    },
+                    err => {
+                        this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.error,
+                            '', {duration: SNACKBAR_DURATION});
+                    }
+                );
         }
     }
 }

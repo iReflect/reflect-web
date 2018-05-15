@@ -1,19 +1,22 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
 import { API_RESPONSE_MESSAGES, SNACKBAR_DURATION } from '../../../constants/app-constants';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { UtilsService } from '../../shared/utils/utils.service';
+import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/operator/takeUntil';
 
 @Component({
     selector: 'app-sprint-create',
     templateUrl: './sprint-create.component.html',
     styleUrls: ['./sprint-create.component.scss'],
 })
-export class SprintCreateComponent implements OnInit {
+export class SprintCreateComponent implements OnInit, OnDestroy {
     disableButton = false;
     sprintFormGroup: FormGroup;
     errors: any = {};
+    private destroy$: Subject<boolean> = new Subject<boolean>();
 
     constructor(
         private retrospectiveService: RetrospectiveService,
@@ -22,6 +25,15 @@ export class SprintCreateComponent implements OnInit {
         public dialogRef: MatDialogRef<SprintCreateComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any
     ) {
+    }
+
+    ngOnInit() {
+        this.createSprintFormGroup();
+    }
+
+    ngOnDestroy() {
+        this.destroy$.next(true);
+        this.destroy$.complete();
     }
 
     get titleControl() {
@@ -34,10 +46,6 @@ export class SprintCreateComponent implements OnInit {
 
     get endDateControl() {
         return this.sprintFormGroup.get('endDate');
-    }
-
-    ngOnInit() {
-        this.createSprintFormGroup();
     }
 
     clearValue(control) {
@@ -97,21 +105,23 @@ export class SprintCreateComponent implements OnInit {
         if (!sprintDetails.endDate) {
             sprintDetails.endDate = null;
         }
-        this.retrospectiveService.createSprint(this.data.retrospectiveID, sprintDetails).subscribe(
-            () => {
-                this.snackBar.open(
-                    API_RESPONSE_MESSAGES.sprintCreated,
-                    '', {duration: SNACKBAR_DURATION});
-                this.dialogRef.close(true);
-                this.disableButton = false;
-            },
-            err => {
-                this.snackBar.open(
-                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintCreateError,
-                    '', {duration: SNACKBAR_DURATION});
-                this.disableButton = false;
-            }
-        );
+        this.retrospectiveService.createSprint(this.data.retrospectiveID, sprintDetails)
+            .takeUntil(this.destroy$)
+            .subscribe(
+                () => {
+                    this.snackBar.open(
+                        API_RESPONSE_MESSAGES.sprintCreated,
+                        '', {duration: SNACKBAR_DURATION});
+                    this.dialogRef.close(true);
+                    this.disableButton = false;
+                },
+                err => {
+                    this.snackBar.open(
+                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintCreateError,
+                        '', {duration: SNACKBAR_DURATION});
+                    this.disableButton = false;
+                }
+            );
     }
 
     closeDialog(result = false) {

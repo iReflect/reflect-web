@@ -1,14 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { APP_ROUTE_URLS, LOGIN_ERROR_MESSAGES } from '../../../constants/app-constants';
 import { AuthService } from '../../shared/services/auth.service';
+import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/operator/takeUntil';
 
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
 
     title: String = 'Sign In';
     button_text: String = 'LOGIN WITH GOOGLE';
@@ -17,11 +19,24 @@ export class LoginComponent implements OnInit {
     showError = false;
     errorMessage = '';
 
+    private destroy$: Subject<boolean> = new Subject<boolean>();
+
     constructor(
         private route: ActivatedRoute,
         private router: Router,
         private authService: AuthService
     ) {
+    }
+
+    ngOnInit() {
+        this.setLoginUrl();
+        this.setReturnUrl();
+        this.setErrorIfExist();
+    }
+
+    ngOnDestroy() {
+        this.destroy$.next(true);
+        this.destroy$.complete();
     }
 
     setReturnUrl() {
@@ -37,12 +52,8 @@ export class LoginComponent implements OnInit {
     }
 
     setLoginUrl() {
-        this.authService.login().subscribe(response => this.loginUrl = response.data['LoginURL']);
-    }
-
-    ngOnInit() {
-        this.setLoginUrl();
-        this.setReturnUrl();
-        this.setErrorIfExist();
+        this.authService.login()
+            .takeUntil(this.destroy$)
+            .subscribe(response => this.loginUrl = response.data['LoginURL']);
     }
 }

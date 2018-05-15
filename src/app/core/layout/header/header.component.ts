@@ -1,20 +1,24 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { APP_ROUTE_URLS } from '../../../../constants/app-constants';
 import { AuthService } from '../../../shared/services/auth.service';
 import { UserService } from '../../../shared/services/user.service';
 import { UserStoreService } from '../../../shared/stores/user.store.service';
+import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/operator/takeUntil';
 
 @Component({
     selector: 'app-header',
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
     @Input() userLoggedIn: boolean;
     logoutInProgress = false;
     user: any = {};
     userImage = 'assets/img/user-default.png';
+
+    private destroy$: Subject<boolean> = new Subject<boolean>();
 
     constructor(
         private router: Router,
@@ -24,20 +28,25 @@ export class HeaderComponent implements OnInit {
     ) {
     }
 
-    subscribeUserData() {
-        this.userStoreService.token$.subscribe(
-            token => this.userLoggedIn = Boolean(token)
-        );
-        this.userStoreService.userData$.subscribe(
-            data => this.user = data
-        );
-    }
-
     ngOnInit() {
-        this.userService.getCurrentUser().subscribe(
+        this.userService.getCurrentUser().takeUntil(this.destroy$).subscribe(
             response => this.userStoreService.updateUserData(response.data, false)
         );
         this.subscribeUserData();
+    }
+
+    ngOnDestroy() {
+        this.destroy$.next(true);
+        this.destroy$.complete();
+    }
+
+    subscribeUserData() {
+        this.userStoreService.token$.takeUntil(this.destroy$).subscribe(
+            token => this.userLoggedIn = Boolean(token)
+        );
+        this.userStoreService.userData$.takeUntil(this.destroy$).subscribe(
+            data => this.user = data
+        );
     }
 
     navigateToRoot() {
@@ -47,7 +56,7 @@ export class HeaderComponent implements OnInit {
     logout() {
         if (!this.logoutInProgress) {
             this.logoutInProgress = true;
-            this.authService.logout().subscribe(
+            this.authService.logout().takeUntil(this.destroy$).subscribe(
                 () => {
                     this.userStoreService.clearUserData();
                     this.logoutInProgress = false;

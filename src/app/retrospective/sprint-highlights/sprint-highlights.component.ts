@@ -30,7 +30,7 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
     sprintHighlights: any;
     teamMembers: any;
     autoRefreshCurrentState = true;
-    destroy$: Subject<boolean> = new Subject<boolean>();
+    private destroy$: Subject<boolean> = new Subject<boolean>();
 
     @Input() enableRefresh: boolean;
     @Input() retrospectiveID;
@@ -73,7 +73,7 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
     ngOnDestroy() {
         this.autoRefreshCurrentState = false;
         this.destroy$.next(true);
-        this.destroy$.unsubscribe();
+        this.destroy$.complete();
     }
 
     getSprintHighlightsTab(isRefresh = true) {
@@ -93,6 +93,7 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
 
     getPendingGoals(isRefresh = false) {
         this.retrospectiveService.getSprintGoals(this.retrospectiveID, this.sprintID, 'pending')
+            .takeUntil(this.destroy$)
             .subscribe(
                 response => {
                     this.pendingGoals = response.data.Feedbacks;
@@ -112,6 +113,7 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
 
     getAccomplishedGoals(isRefresh = false) {
         this.retrospectiveService.getSprintGoals(this.retrospectiveID, this.sprintID, 'completed')
+            .takeUntil(this.destroy$)
             .subscribe(
                 response => {
                     this.accomplishedGoals = response.data.Feedbacks;
@@ -131,6 +133,7 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
 
     getSprintHighlights(isRefresh = false) {
         this.retrospectiveService.getSprintHighlights(this.retrospectiveID, this.sprintID)
+            .takeUntil(this.destroy$)
             .subscribe(
                 response => {
                     this.sprintHighlights = response.data.Feedbacks;
@@ -149,20 +152,22 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     getTeamMembers(isRefresh = false) {
-        this.retrospectiveService.getRetroMembers(this.retrospectiveID).subscribe(
-            response => {
-                this.teamMembers = response.data.Members;
-            },
-            err => {
-                if (isRefresh) {
-                    this.snackBar.open(
-                        API_RESPONSE_MESSAGES.sprintHighlightsTabRefreshFailure,
-                        '', {duration: SNACKBAR_DURATION});
-                } else {
-                    this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getRetrospectiveMembersError,
-                        '', {duration: SNACKBAR_DURATION});
+        this.retrospectiveService.getRetroMembers(this.retrospectiveID)
+            .takeUntil(this.destroy$)
+            .subscribe(
+                response => {
+                    this.teamMembers = response.data.Members;
+                },
+                err => {
+                    if (isRefresh) {
+                        this.snackBar.open(
+                            API_RESPONSE_MESSAGES.sprintHighlightsTabRefreshFailure,
+                            '', {duration: SNACKBAR_DURATION});
+                    } else {
+                        this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getRetrospectiveMembersError,
+                            '', {duration: SNACKBAR_DURATION});
+                    }
                 }
-            }
-        );
+            );
     }
 }
