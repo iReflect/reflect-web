@@ -33,13 +33,7 @@ export class LoginRequiredGuard implements CanActivate {
             return true;
         }
         // not logged in so redirect to login page with the return url and return false
-        this.router.navigate([APP_ROUTE_URLS.login],
-            {
-                queryParams: {
-                    returnUrl: state.url
-                },
-                // queryParamsHandling: 'preserve'
-            });
+        this.router.navigate([APP_ROUTE_URLS.login], {queryParams: {returnUrl: state.url}});
         return false;
     }
 }

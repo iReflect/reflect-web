@@ -25,7 +25,7 @@ import { ClickableButtonRendererComponent } from './ag-grid-renderers/clickable-
 import { RatingRendererComponent } from './ag-grid-renderers/rating-renderer/rating-renderer.component';
 import { DatePickerEditorComponent } from './ag-grid-editors/date-picker-editor/date-picker-editor.component';
 import { UtilsService } from './utils/utils.service';
-import { PostMessageService } from './services/post-message.service';
+import { OAuthCallbackService } from './services/o-auth-callback.service';
 
 @NgModule({
     imports: [
@@ -61,7 +61,7 @@ import { PostMessageService } from './services/post-message.service';
     providers: [
         UrlHelperService,
         AuthService,
-        PostMessageService,
+        OAuthCallbackService,
         UserService,
         FeedbackService,
         TeamFeedbackService,

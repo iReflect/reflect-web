@@ -282,3 +282,5 @@ export const TRACKER_TICKET_TYPE_MAP = {
 };
 
 export const COMMA_SEPARATED_STRING_PATTERN = '([a-zA-Z\\s]+,\\s?)*([(a-zA-Z\\s]+)';
+
+export const OAUTH_CALLBACK_EVENT_KEY = 'OAuthCallback';

@@ -4,9 +4,8 @@ import { APP_ROUTE_URLS, LOGIN_ERROR_MESSAGES, LOGIN_ERROR_TYPES, LOGIN_STATES }
 import { AuthService } from '../../shared/services/auth.service';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
-import { PostMessageService } from '../../shared/services/post-message.service';
+import { OAuthCallbackService } from '../../shared/services/o-auth-callback.service';
 import { UserStoreService } from '../../shared/stores/user.store.service';
-import { Location } from '@angular/common';
 import * as _ from 'lodash';
 
 @Component({
@@ -32,11 +31,10 @@ export class LoginComponent implements OnInit, OnDestroy {
         private route: ActivatedRoute,
         private router: Router,
         private authService: AuthService,
-        private postMessageService: PostMessageService,
-        private location: Location,
+        private oAuthCallbackService: OAuthCallbackService,
         private userStoreService: UserStoreService
     ) {
-        this.postMessageService.addPostMessageListener((event) => this.receiveMessage(event));
+        this.oAuthCallbackService.addOAuthEventListener((event) => this.receiveMessage(event));
     }
 
     ngOnInit() {
@@ -48,10 +46,6 @@ export class LoginComponent implements OnInit, OnDestroy {
         this.destroy$.next(true);
         this.destroy$.complete();
     }
-
-    // setReturnUrl() {
-    //     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || APP_ROUTE_URLS.forwardSlash;
-    // }
 
     setErrorIfExist() {
         const error = this.route.snapshot.queryParams['error'] || '';
@@ -88,12 +82,12 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     receiveMessage(event) {
-        if (event.origin === window.location.origin && event.data) {
+        if (event.currentTarget.origin === window.location.origin && event.detail) {
             const authParams = ['code', 'state'];
-            const eventDataParams = Object.keys(event.data).sort();
+            const eventDataParams = Object.keys(event.detail).sort();
             if (_.isEqual(authParams, eventDataParams) && !this.isAuthorizing) {
                 this.isAuthorizing = true;
-                this.authorize(event.data);
+                this.authorize(event.detail);
             }
         }
     }
@@ -111,7 +105,7 @@ export class LoginComponent implements OnInit, OnDestroy {
                 this.userStoreService.updateUserData(response.data);
                 this.router.navigateByUrl(this.returnURL);
                 this.authState = this.loginStates.LOGGED_IN;
-                this.postMessageService.removePostMessageListener((event) => this.receiveMessage(event));
+                this.oAuthCallbackService.removeOAuthEventListener();
             },
             error => {
                 if (error.status === 404) {
@@ -128,7 +122,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     private error(reason) {
         this.errorMessage = LOGIN_ERROR_MESSAGES[reason];
-        this.router.navigate([APP_ROUTE_URLS.login], {queryParams: {error: reason},
-            queryParamsHandling: 'merge'});
+        // We need to retain the return url if there was an error while authenticating the user, therefore using 'merge' strategy.
+        this.router.navigate([APP_ROUTE_URLS.login], {queryParams: {error: reason}, queryParamsHandling: 'merge'});
     }
 }
