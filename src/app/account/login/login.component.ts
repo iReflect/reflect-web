@@ -1,9 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { APP_ROUTE_URLS, LOGIN_ERROR_MESSAGES } from '../../../constants/app-constants';
+import { APP_ROUTE_URLS, LOGIN_ERROR_MESSAGES, LOGIN_ERROR_TYPES, LOGIN_STATES } from '../../../constants/app-constants';
 import { AuthService } from '../../shared/services/auth.service';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
+import { OAuthCallbackService } from '../../shared/services/o-auth-callback.service';
+import { UserStoreService } from '../../shared/stores/user.store.service';
+import * as _ from 'lodash';
 
 @Component({
     selector: 'app-login',
@@ -13,34 +16,35 @@ import 'rxjs/add/operator/takeUntil';
 export class LoginComponent implements OnInit, OnDestroy {
 
     title: String = 'Sign In';
+    authState = LOGIN_STATES.NOT_LOGGED_IN;
     button_text: String = 'LOGIN WITH GOOGLE';
-    returnUrl = '';
+    loginStates = LOGIN_STATES;
     loginUrl = '';
     showError = false;
-    errorMessage = '';
+    _errorMessage = '';
+    isAuthorizing = false;
+    returnURL = APP_ROUTE_URLS.root;
 
     private destroy$: Subject<boolean> = new Subject<boolean>();
 
     constructor(
         private route: ActivatedRoute,
         private router: Router,
-        private authService: AuthService
+        private authService: AuthService,
+        private oAuthCallbackService: OAuthCallbackService,
+        private userStoreService: UserStoreService
     ) {
+        this.oAuthCallbackService.addOAuthEventListener((event) => this.receiveMessage(event));
     }
 
     ngOnInit() {
         this.setLoginUrl();
-        this.setReturnUrl();
         this.setErrorIfExist();
     }
 
     ngOnDestroy() {
         this.destroy$.next(true);
         this.destroy$.complete();
-    }
-
-    setReturnUrl() {
-        this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || APP_ROUTE_URLS.forwardSlash;
     }
 
     setErrorIfExist() {
@@ -51,9 +55,74 @@ export class LoginComponent implements OnInit, OnDestroy {
         }
     }
 
+    get errorMessage() {
+        return this._errorMessage;
+    }
+
+    set errorMessage(message) {
+        this._errorMessage = message;
+        if (this._errorMessage !== '') {
+            this.showError = true;
+            this.authState = this.loginStates.LOGIN_ERROR;
+        } else {
+            this.showError = false;
+        }
+    }
+
     setLoginUrl() {
+        this.returnURL = this.route.snapshot.queryParams['returnUrl'] || APP_ROUTE_URLS.forwardSlash;
         this.authService.login()
             .takeUntil(this.destroy$)
             .subscribe(response => this.loginUrl = response.data['LoginURL']);
+    }
+
+    openLoginModal() {
+        const options = 'left=100,top=10,width=400,height=400';
+        window.open(this.loginUrl, 'loginPopup', options);
+    }
+
+    receiveMessage(event) {
+        if (event.currentTarget.origin === window.location.origin && event.detail) {
+            const authParams = ['code', 'state'];
+            const eventDataParams = Object.keys(event.detail).sort();
+            if (_.isEqual(authParams, eventDataParams) && !this.isAuthorizing) {
+                this.isAuthorizing = true;
+                this.authorize(event.detail);
+            }
+        }
+    }
+
+    private authorize(queryParams) {
+        this.authState = this.loginStates.LOGGING_IN;
+        if (queryParams.state === '' || queryParams.code === '') {
+            this.error(LOGIN_ERROR_TYPES.notFound);
+            return;
+        }
+        this.authService.auth(queryParams)
+            .takeUntil(this.destroy$)
+            .subscribe(
+            response => {
+                this.userStoreService.updateUserData(response.data);
+                this.router.navigateByUrl(this.returnURL);
+                this.authState = this.loginStates.LOGGED_IN;
+                this.oAuthCallbackService.removeOAuthEventListener();
+            },
+            error => {
+                if (error.status === 404) {
+                    this.error(LOGIN_ERROR_TYPES.notFound);
+                } else {
+                    this.error(LOGIN_ERROR_TYPES.internalError);
+                }
+            },
+            () => {
+                this.isAuthorizing = false;
+            }
+        );
+    }
+
+    private error(reason) {
+        this.errorMessage = LOGIN_ERROR_MESSAGES[reason];
+        // We need to retain the return url if there was an error while authenticating the user, therefore using 'merge' strategy.
+        this.router.navigate([APP_ROUTE_URLS.login], {queryParams: {error: reason}, queryParamsHandling: 'merge'});
     }
 }

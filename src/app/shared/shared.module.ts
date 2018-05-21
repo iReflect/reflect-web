@@ -25,6 +25,7 @@ import { ClickableButtonRendererComponent } from './ag-grid-renderers/clickable-
 import { RatingRendererComponent } from './ag-grid-renderers/rating-renderer/rating-renderer.component';
 import { DatePickerEditorComponent } from './ag-grid-editors/date-picker-editor/date-picker-editor.component';
 import { UtilsService } from './utils/utils.service';
+import { OAuthCallbackService } from './services/o-auth-callback.service';
 
 @NgModule({
     imports: [
@@ -60,6 +61,7 @@ import { UtilsService } from './utils/utils.service';
     providers: [
         UrlHelperService,
         AuthService,
+        OAuthCallbackService,
         UserService,
         FeedbackService,
         TeamFeedbackService,

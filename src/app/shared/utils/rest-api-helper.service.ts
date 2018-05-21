@@ -20,7 +20,8 @@ export class RestApiHelperService {
             RestangularProvider.addErrorInterceptor((response) => {
                 if (response.status === 401) {
                     userStoreService.clearUserData();
-                    router.navigateByUrl(`${APP_ROUTE_URLS.login}?error=${LOGIN_ERROR_TYPES.unauthorized}`);
+                    const queryParams = {'error': LOGIN_ERROR_TYPES.unauthorized, 'returnUrl':  window.location.pathname};
+                    router.navigate([APP_ROUTE_URLS.login], {queryParams: queryParams});
                     return false;
                 }
                 return true;

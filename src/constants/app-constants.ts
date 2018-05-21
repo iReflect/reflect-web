@@ -2,11 +2,19 @@ export const USER_AUTH_TOKEN_KEY = 'user_auth_token';
 
 export const AUTO_REFRESH_KEY = 'auto_refresh_saved_state';
 
+export const LOGIN_STATES = {
+    NOT_LOGGED_IN: 0,
+    LOGGING_IN: 1,
+    LOGIN_ERROR: 2,
+    LOGGED_IN: 3
+};
+
 export const FEEDBACK_STATES = {
     NEW: 0,
     IN_PROGRESS: 1,
     SUBMITTED: 2
 };
+
 export const FEEDBACK_STATES_LABEL = {
     [FEEDBACK_STATES.NEW]: 'New',
     [FEEDBACK_STATES.IN_PROGRESS]: 'Draft/In Progress',
@@ -274,3 +282,5 @@ export const TRACKER_TICKET_TYPE_MAP = {
 };
 
 export const COMMA_SEPARATED_STRING_PATTERN = '([a-zA-Z\\s]+,\\s?)*([(a-zA-Z\\s]+)';
+
+export const OAUTH_CALLBACK_EVENT_KEY = 'OAuthCallback';
