@@ -8,15 +8,26 @@
             <mat-card>
                 <mat-card-content>
                     <h2>Welcome to iReflect</h2>
-                    <p>Please Sign In to continue</p>
-                    <p>
-                        <mat-error *ngIf="showError">{{errorMessage}}</mat-error>
-                    </p>
+                    <div *ngIf="[loginStates.NOT_LOGGED_IN, loginStates.LOGIN_ERROR].indexOf(authState) !== -1;then please_login else logging_in"></div>
+                    <ng-template #please_login>
+                        <p>Please Sign In to continue</p>
+                        <p>
+                            <mat-error *ngIf="showError">{{errorMessage}}</mat-error>
+                        </p>
+                    </ng-template>
+                    <ng-template #logging_in>
+                        <p>Signing in....</p>
+                        <div class="layout-row">
+                            <div class="flex text-center">
+                                <mat-spinner diameter="45"></mat-spinner>
+                            </div>
+                        </div>
+                    </ng-template>
                 </mat-card-content>
-                <div>
-                    <a mat-raised-button href="{{ loginUrl }}" color="primary">
+                <div *ngIf="[loginStates.NOT_LOGGED_IN, loginStates.LOGIN_ERROR].indexOf(authState) !== -1">
+                    <button mat-raised-button color="primary" (click)="openLoginModal()">
                         {{ button_text }}
-                    </a>
+                    </button>
                 </div>
             </mat-card>
         </div>

@@ -3,6 +3,7 @@ import { Restangular } from 'ngx-restangular';
 import { Observable } from 'rxjs/Observable';
 import { API_URLS } from '../../../constants/api-urls';
 import { RestApiHelperService } from '../utils/rest-api-helper.service';
+import { APP_ROUTE_URLS } from '../../../constants/app-constants';
 
 
 @Injectable()

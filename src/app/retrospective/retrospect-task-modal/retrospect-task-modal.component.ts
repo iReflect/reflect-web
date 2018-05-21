@@ -21,6 +21,10 @@ import { RatingRendererComponent } from '../../shared/ag-grid-renderers/rating-r
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { RetrospectiveCreateComponent } from '../retrospective-create/retrospective-create.component';
 import { UtilsService } from '../../shared/utils/utils.service';
+import {
+    CellClassParams, IsColumnFuncParams, NewValueParams,
+    SuppressKeyboardEventParams
+} from 'ag-grid/src/ts/entities/colDef';
 import { AfterViewChecked } from '@angular/core/src/metadata/lifecycle_hooks';
 
 @Component({
@@ -134,6 +138,11 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
             overlayLoadingTemplate: this.overlayLoadingTemplate,
             overlayNoRowsTemplate: this.overlayNoRowsTemplate,
             rowHeight: 48,
+            rowClassRules: {
+                'disabled-ag-grid-row': (params: CellClassParams) => {
+                    return !params.data.Current;
+                }
+            },
             singleClickEdit: true,
             stopEditingWhenGridLosesFocus: true,
             suppressDragLeaveHidesColumns: true,
@@ -156,7 +165,13 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
     }
 
     getSprintTaskMemberSummary(isRefresh) {
-        this.retrospectiveService.getSprintTaskMemberSummary(this.data.retrospectiveID, this.data.sprintID, this.taskDetails.ID)
+        const getTaskMemberSummary$ = this.retrospectiveService
+            .getSprintTaskMemberSummary(
+                this.data.retrospectiveID,
+                this.data.sprintID,
+                this.taskDetails.ID
+            );
+        getTaskMemberSummary$
             .takeUntil(this.destroy$)
             .subscribe(
                 response => {
@@ -190,7 +205,21 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                     }
                 }
             );
+        return getTaskMemberSummary$;
     }
+
+    refreshIssueMemberSummaryAgGrid() {
+        this.gridApi.showLoadingOverlay();
+        // To clear the current content of the grid
+        this.gridApi.setRowData(null);
+        const getTaskMemberSummary$ = this.getSprintTaskMemberSummary(true);
+        getTaskMemberSummary$.subscribe(
+            () => {},
+            () => {},
+            () => this.gridApi.hideOverlay()
+        );
+    }
+
 
     addNewSprintTaskMember() {
         if (this.selectedMemberID === undefined) {
@@ -206,8 +235,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                 this.data.retrospectiveID, this.data.sprintID, this.taskDetails.ID, this.selectedMemberID
             ).takeUntil(this.destroy$).subscribe(
                 response => {
-                    this.gridApi.updateRowData({add: [response.data]});
-                    this.memberIDs.push(this.selectedMemberID);
+                    this.refreshIssueMemberSummaryAgGrid();
                 },
                 err => {
                     this.snackBar.open(
@@ -274,9 +302,14 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                 field: 'Role',
                 minWidth: 110,
                 valueFormatter: (cellParams) => {
+                    if (!cellParams.data.Current) {
+                        return '';
+                    }
                     return MEMBER_TASK_ROLES_LABEL[cellParams.value];
                 },
-                editable: isSprintEditable,
+                editable: (params: IsColumnFuncParams) => {
+                    return isSprintEditable && params.data.Current;
+                },
                 cellEditor: 'selectEditor',
                 cellEditorParams: {
                     selectOptions: _.map(MEMBER_TASK_ROLES_LABEL, (value, key) => {
@@ -286,7 +319,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                         };
                     }),
                 },
-                onCellValueChanged: (cellParams) => {
+                onCellValueChanged: (cellParams: NewValueParams) => {
                     if ((cellParams.newValue !== cellParams.oldValue) &&
                         (cellParams.newValue >= MEMBER_TASK_ROLES.DEVELOPER && cellParams.newValue <= MEMBER_TASK_ROLES.REVIEWER)) {
                         this.updateSprintTaskMember(cellParams);
@@ -296,12 +329,19 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
             {
                 headerName: 'Sprint Points',
                 field: 'SprintPoints',
-                editable: isSprintEditable,
+                editable: (params: IsColumnFuncParams) => {
+                    return isSprintEditable && params.data.Current;
+                },
                 minWidth: 100,
                 valueParser: 'Number(newValue)',
                 cellEditor: 'numericEditor',
-                valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value),
-                onCellValueChanged: (cellParams) => {
+                valueFormatter: (cellParams) => {
+                    if (!cellParams.data.Current) {
+                        return 0;
+                    }
+                    return this.utils.formatFloat(cellParams.value);
+                },
+                onCellValueChanged: (cellParams: NewValueParams) => {
                     const valueChange = cellParams.newValue - cellParams.oldValue;
                     const newStoryPoints = this.totalTaskPoints + valueChange;
                     if (cellParams.newValue !== cellParams.oldValue) {
@@ -327,12 +367,17 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                         }
                     }
                 },
-                suppressKeyboardEvent: (event) => this.utils.isAgGridEditingEvent(event)
+                suppressKeyboardEvent: (event: SuppressKeyboardEventParams) => this.utils.isAgGridEditingEvent(event)
             },
             {
                 headerName: 'Sprint Hours',
                 field: 'SprintTime',
-                valueFormatter: (params) => this.utils.formatFloat(params.value / 60),
+                valueFormatter: (cellParams) => {
+                    if (!cellParams.data.Current) {
+                        return 0;
+                    }
+                    return this.utils.formatFloat(cellParams.value / 60);
+                },
                 minWidth: 100
             },
             {
@@ -351,7 +396,9 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                 headerName: 'Rating',
                 field: 'Rating',
                 minWidth: 110,
-                editable: isSprintEditable,
+                editable: (params: IsColumnFuncParams) => {
+                    return isSprintEditable && params.data.Current;
+                },
                 cellEditor: 'selectEditor',
                 cellEditorParams: {
                     selectOptions: _.map(RATING_STATES_LABEL, (value, key) => {
@@ -362,7 +409,13 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                     }).reverse(),
                 },
                 cellRenderer: 'ratingRenderer',
-                onCellValueChanged: (cellParams) => {
+                cellRendererParams: (cellParams) => {
+                    if (!cellParams.data.Current) {
+                        cellParams.value = -1;
+                    }
+                    return cellParams;
+                },
+                onCellValueChanged: (cellParams: NewValueParams) => {
                     if ((cellParams.newValue !== cellParams.oldValue) &&
                         (cellParams.newValue >= this.ratingStates.RED && cellParams.newValue <= this.ratingStates.NOTABLE)) {
                         this.updateSprintTaskMember(cellParams);
@@ -374,17 +427,25 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                 field: 'Comment',
                 minWidth: 300,
                 tooltipField: 'Comment',
-                editable: isSprintEditable,
+                editable: (params: IsColumnFuncParams) => {
+                    return isSprintEditable && params.data.Current;
+                },
                 cellEditor: 'agLargeTextCellEditor',
                 cellEditorParams: {
                     maxLength: 1000
                 },
-                onCellValueChanged: (cellParams) => {
+                cellRendererParams: (cellParams) => {
+                    if (!cellParams.data.Current) {
+                        cellParams.value = '';
+                    }
+                    return cellParams;
+                },
+                onCellValueChanged: (cellParams: NewValueParams) => {
                     if (cellParams.newValue !== cellParams.oldValue) {
                         this.updateSprintTaskMember(cellParams);
                     }
                 },
-                suppressKeyboardEvent: (event) => this.utils.isAgGridEditingEvent(event)
+                suppressKeyboardEvent: (event: SuppressKeyboardEventParams) => this.utils.isAgGridEditingEvent(event)
             }
         ];
     }
