@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 
 import {
@@ -15,6 +15,7 @@ import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/observable/interval';
 import { UtilsService } from '../../shared/utils/utils.service';
+import { forkJoin } from 'rxjs/observable/forkJoin';
 
 @Component({
     selector: 'app-sprint-highlights',
@@ -40,6 +41,9 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
     @Input() isTabActive: boolean;
     @Input() refreshOnChange: boolean;
 
+    @Output() onRefreshStart = new EventEmitter<boolean>();
+    @Output() onRefreshEnd = new EventEmitter<boolean>();
+
     constructor(
         private retrospectiveService: RetrospectiveService,
         private snackBar: MatSnackBar,
@@ -62,11 +66,13 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
             this.getSprintHighlightsTab();
         }
         if (changes.enableRefresh) {
-            this.enableRefresh = changes.enableRefresh.currentValue;
             this.autoRefreshCurrentState = changes.enableRefresh.currentValue;
+            if (this.isTabActive && !changes.isTabActive && this.autoRefreshCurrentState) {
+                this.getSprintHighlightsTab();
+            }
         }
-        if (this.isTabActive && (this.autoRefreshCurrentState || changes.refreshOnChange)) {
-            this.getSprintHighlightsTab();
+        if (this.isTabActive && !changes.isTabActive && changes.refreshOnChange) {
+            this.getSprintHighlightsTab(true, true);
         }
     }
 
@@ -76,11 +82,20 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
         this.destroy$.complete();
     }
 
-    getSprintHighlightsTab(isRefresh = true) {
-        this.getTeamMembers(isRefresh);
-        this.getSprintHighlights(isRefresh);
-        this.getPendingGoals(isRefresh);
-        this.getAccomplishedGoals(isRefresh);
+    getSprintHighlightsTab(isRefresh = true, isManualRefresh = false) {
+        if (isManualRefresh) {
+            this.onRefreshStart.emit(true);
+        }
+        const highlightsArray$ = [];
+        highlightsArray$.push(this.getTeamMembers(isRefresh));
+        highlightsArray$.push(this.getSprintHighlights(isRefresh));
+        highlightsArray$.push(this.getPendingGoals(isRefresh));
+        highlightsArray$.push(this.getAccomplishedGoals(isRefresh));
+        forkJoin(...highlightsArray$).subscribe(() => {}, () => {}, () => {
+            if (isManualRefresh) {
+                this.onRefreshEnd.emit(true);
+            }
+        });
     }
 
     pauseRefresh() {
@@ -92,9 +107,9 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     getPendingGoals(isRefresh = false) {
-        this.retrospectiveService.getSprintGoals(this.retrospectiveID, this.sprintID, 'pending')
+        return this.retrospectiveService.getSprintGoals(this.retrospectiveID, this.sprintID, 'pending')
             .takeUntil(this.destroy$)
-            .subscribe(
+            .do(
                 response => {
                     this.pendingGoals = response.data.Feedbacks;
                 },
@@ -112,9 +127,9 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     getAccomplishedGoals(isRefresh = false) {
-        this.retrospectiveService.getSprintGoals(this.retrospectiveID, this.sprintID, 'completed')
+        return this.retrospectiveService.getSprintGoals(this.retrospectiveID, this.sprintID, 'completed')
             .takeUntil(this.destroy$)
-            .subscribe(
+            .do(
                 response => {
                     this.accomplishedGoals = response.data.Feedbacks;
                 },
@@ -132,9 +147,9 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     getSprintHighlights(isRefresh = false) {
-        this.retrospectiveService.getSprintHighlights(this.retrospectiveID, this.sprintID)
+        return this.retrospectiveService.getSprintHighlights(this.retrospectiveID, this.sprintID)
             .takeUntil(this.destroy$)
-            .subscribe(
+            .do(
                 response => {
                     this.sprintHighlights = response.data.Feedbacks;
                 },
@@ -152,9 +167,9 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     getTeamMembers(isRefresh = false) {
-        this.retrospectiveService.getRetroMembers(this.retrospectiveID)
+        return this.retrospectiveService.getRetroMembers(this.retrospectiveID)
             .takeUntil(this.destroy$)
-            .subscribe(
+            .do(
                 response => {
                     this.teamMembers = response.data.Members;
                 },

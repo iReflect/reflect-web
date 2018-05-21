@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { MatSnackBar } from '@angular/material';
 
 import {
@@ -15,6 +15,7 @@ import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/observable/interval';
 import { UtilsService } from '../../shared/utils/utils.service';
+import { forkJoin } from 'rxjs/observable/forkJoin';
 
 @Component({
     selector: 'app-sprint-notes',
@@ -29,6 +30,9 @@ export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
     @Input() sprintEndDate;
     @Input() isTabActive: boolean;
     @Input() refreshOnChange: boolean;
+
+    @Output() onRefreshStart = new EventEmitter<boolean>();
+    @Output() onRefreshEnd = new EventEmitter<boolean>();
 
     notesSectionsList = SPRINT_NOTES_SECTIONS_LIST;
     retroFeedbackTypes = RETRO_FEEDBACK_TYPES;
@@ -61,11 +65,13 @@ export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
             this.getSprintNotesTab();
         }
         if (changes.enableRefresh) {
-            this.enableRefresh = changes.enableRefresh.currentValue;
             this.autoRefreshCurrentState = changes.enableRefresh.currentValue;
+            if (this.isTabActive && !changes.isTabActive && this.autoRefreshCurrentState) {
+                this.getSprintNotesTab();
+            }
         }
-        if (this.isTabActive && (this.autoRefreshCurrentState || changes.refreshOnChange)) {
-            this.getSprintNotesTab();
+        if (this.isTabActive && !changes.isTabActive && changes.refreshOnChange) {
+            this.getSprintNotesTab(true, true);
         }
     }
 
@@ -75,10 +81,19 @@ export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
         this.destroy$.complete();
     }
 
-    getSprintNotesTab(isRefresh = true) {
-        this.getTeamMembers(isRefresh);
-        this.getSprintGoals(isRefresh);
-        this.getSprintNotes(isRefresh);
+    getSprintNotesTab(isRefresh = true, isManualRefresh = false) {
+        if (isManualRefresh) {
+            this.onRefreshStart.emit(true);
+        }
+        const notesArray$ = [];
+        notesArray$.push(this.getTeamMembers(isRefresh));
+        notesArray$.push(this.getSprintGoals(isRefresh));
+        notesArray$.push(this.getSprintNotes(isRefresh));
+        forkJoin(...notesArray$).subscribe(() => {}, () => {}, () => {
+            if (isManualRefresh) {
+                this.onRefreshEnd.emit(true);
+            }
+        });
     }
 
     pauseRefresh() {
@@ -90,12 +105,9 @@ export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     getSprintGoals(isRefresh = false) {
-        this.retrospectiveService.getSprintGoals(
-            this.retrospectiveID,
-            this.sprintID,
-            'added'
-        ).takeUntil(this.destroy$)
-            .subscribe(
+        return this.retrospectiveService.getSprintGoals(this.retrospectiveID, this.sprintID, 'added')
+            .takeUntil(this.destroy$)
+            .do(
                 response => {
                     this.sprintGoals = response.data.Feedbacks;
                 },
@@ -113,9 +125,9 @@ export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     getSprintNotes(isRefresh = false) {
-        this.retrospectiveService.getSprintNotes(this.retrospectiveID, this.sprintID)
+        return this.retrospectiveService.getSprintNotes(this.retrospectiveID, this.sprintID)
             .takeUntil(this.destroy$)
-            .subscribe(
+            .do(
                 response => {
                     this.sprintNotes = response.data.Feedbacks;
                 },
@@ -133,9 +145,9 @@ export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     getTeamMembers(isRefresh = false) {
-        this.retrospectiveService.getRetroMembers(this.retrospectiveID)
+        return this.retrospectiveService.getRetroMembers(this.retrospectiveID)
             .takeUntil(this.destroy$)
-            .subscribe(
+            .do(
                 response => {
                     this.teamMembers = response.data.Members;
                 },

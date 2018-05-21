@@ -21,6 +21,7 @@ import { UtilsService } from '../../shared/utils/utils.service';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
+import 'rxjs/add/operator/do';
 
 @Component({
     selector: 'app-sprint-detail',
@@ -38,6 +39,8 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
     sprintTasks: any;
     enableRefresh: boolean;
 
+    sprintDetailsRefreshComplete = true;
+    activeChildTabRefreshComplete = true;
     selectedTabIndex = 0;
     toggleToTriggerRefresh = false;
     dateFormat = DATE_FORMAT;
@@ -77,7 +80,7 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
             .takeUntil(this.destroy$)
             .subscribe((delay = 0) => {
                 setTimeout(() => {
-                    this.getSprintDetails();
+                    this.getSprintDetails().subscribe();
                 }, delay);
             });
         this.refresh$.next();
@@ -102,13 +105,19 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
         return (featureType + taskType + bugType);
     }
 
+    refreshSprintDetails() {
+        this.toggleToTriggerRefresh = !this.toggleToTriggerRefresh;
+        this.sprintDetailsRefreshComplete = false;
+        this.getSprintDetails(true).subscribe(() => {}, () => {}, () => {
+                this.sprintDetailsRefreshComplete = true;
+            }
+        );
+    }
+
     getSprintDetails(isRefresh = false) {
-        if (isRefresh) {
-            this.toggleToTriggerRefresh = !this.toggleToTriggerRefresh;
-        }
-        this.retrospectiveService.getSprintDetails(this.retrospectiveID, this.sprintID)
+        return this.retrospectiveService.getSprintDetails(this.retrospectiveID, this.sprintID)
             .takeUntil(this.destroy$)
-            .subscribe(
+            .do(
                 response => {
                     this.sprintDetails = response.data;
                     this.sprintStatus = response.data.Status;
@@ -117,13 +126,11 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
                     this.sprintBugs = sprintTaskSummary.BugTypes;
                     this.sprintFeatures = sprintTaskSummary.FeatureTypes;
                     this.sprintTasks = sprintTaskSummary.TaskTypes;
-
                     this.sprintDays = this.utils.workdayCount(response.data.StartDate, response.data.EndDate);
                     if ([this.syncStates.SYNCING, this.syncStates.QUEUED].indexOf(this.sprintDetails.SyncStatus) !== -1
                         && !this.enableRefresh) {
                         this.refresh$.next(AUTO_REFRESH_DURATION);
                     }
-
                     // Since we are hiding the "Highlights" and "Notes" tab for draft sprints,
                     // we need to make sure that the summary tabs are following the correct order.
                     this.tabIndexMapping = this.getTabIndexMapping(this.sprintStatus);
@@ -265,5 +272,13 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
     toggleAutoRefresh() {
         this.enableRefresh = !this.enableRefresh;
         localStorage.setItem(AUTO_REFRESH_KEY, JSON.stringify(this.enableRefresh));
+    }
+
+    onChildRefreshStart($event) {
+        this.activeChildTabRefreshComplete = false;
+    }
+
+    onChildRefreshEnd($event) {
+        this.activeChildTabRefreshComplete = true;
     }
 }
