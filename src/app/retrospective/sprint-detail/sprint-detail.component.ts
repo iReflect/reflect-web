@@ -134,7 +134,7 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
                     // Since we are hiding the "Highlights" and "Notes" tab for draft sprints,
                     // we need to make sure that the summary tabs are following the correct order.
                     this.tabIndexMapping = this.getTabIndexMapping(this.sprintStatus);
-                    },
+                },
                 err => {
                     if (!isRefresh) {
                         this.snackBar.open(
