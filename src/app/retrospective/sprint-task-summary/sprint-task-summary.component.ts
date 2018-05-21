@@ -157,7 +157,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         this.gridApi = params.api;
         this.columnApi = params.columnApi;
         if (this.isTabActive) {
-            this.getSprintTaskSummary(false);
+            this.getSprintTaskSummary(false).subscribe();
             this.gridApi.sizeColumnsToFit();
         }
         Observable.interval(AUTO_REFRESH_DURATION)
@@ -173,8 +173,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         if (isManualRefresh) {
             this.onRefreshEnd.emit(true);
         }
-        const getTaskSummary$ = this.getSprintTaskSummary(true);
-        getTaskSummary$.subscribe(() => {}, () => {}, () => {
+        this.getSprintTaskSummary(true).subscribe(() => {}, () => {}, () => {
             if (isManualRefresh) {
                 this.onRefreshEnd.emit(true);
             }
@@ -182,34 +181,33 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     }
 
     getSprintTaskSummary(isRefresh) {
-        const getTaskSummary$ = this.retrospectiveService.getSprintTaskSummary(this.retrospectiveID, this.sprintID)
-            .takeUntil(this.destroy$);
-        getTaskSummary$.subscribe(
-            response => {
-                this.gridApi.setRowData(response.data.Tasks);
-                if (!isRefresh && this.isTabActive) {
-                    setTimeout(() => {
-                        this.gridApi.sizeColumnsToFit();
-                    });
+        return this.retrospectiveService.getSprintTaskSummary(this.retrospectiveID, this.sprintID)
+            .takeUntil(this.destroy$)
+            .do(
+                response => {
+                    this.gridApi.setRowData(response.data.Tasks);
+                    if (!isRefresh && this.isTabActive) {
+                        setTimeout(() => {
+                            this.gridApi.sizeColumnsToFit();
+                        });
+                    }
+                },
+                err => {
+                    if (isRefresh) {
+                        this.snackBar.open(
+                            API_RESPONSE_MESSAGES.issueSummaryRefreshFailure,
+                            '', {duration: SNACKBAR_DURATION});
+                    } else {
+                        this.snackBar.open(
+                            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES
+                                .getSprintIssueSummaryError,
+                            '', {duration: SNACKBAR_DURATION});
+                    }
+                },
+                () => {
+                    this.autoRefreshCurrentState = this.enableRefresh;
                 }
-            },
-            err => {
-                if (isRefresh) {
-                    this.snackBar.open(
-                        API_RESPONSE_MESSAGES.issueSummaryRefreshFailure,
-                        '', {duration: SNACKBAR_DURATION});
-                } else {
-                    this.snackBar.open(
-                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES
-                            .getSprintIssueSummaryError,
-                        '', {duration: SNACKBAR_DURATION});
-                }
-            },
-            () => {
-                this.autoRefreshCurrentState = this.enableRefresh;
-            }
-        );
-        return getTaskSummary$;
+            );
     }
 
     retrospectSprint(params) {

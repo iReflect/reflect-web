@@ -155,7 +155,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         this.gridApi = params.api;
         this.columnApi = params.columnApi;
         if (this.isTabActive) {
-            this.getSprintMemberSummary(false);
+            this.getSprintMemberSummary(false).subscribe();
             this.gridApi.sizeColumnsToFit();
         }
         Observable.interval(AUTO_REFRESH_DURATION)
@@ -179,8 +179,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         if (isManualRefresh) {
             this.onRefreshStart.emit(true);
         }
-        const getMemberSummary$ = this.getSprintMemberSummary(true);
-        getMemberSummary$.subscribe(() => {}, () => {}, () => {
+        this.getSprintMemberSummary(true).subscribe(() => {}, () => {}, () => {
             if (isManualRefresh) {
                 this.onRefreshEnd.emit(true);
             }
@@ -188,34 +187,33 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     }
 
     getSprintMemberSummary(isRefresh) {
-        const getMemberSummary$ = this.retrospectiveService.getSprintMemberSummary(this.retrospectiveID, this.sprintID)
-            .takeUntil(this.destroy$);
-        getMemberSummary$.subscribe(
-            response => {
-                const members = response.data.Members;
-                this.gridApi.setRowData(members);
-                this.memberIDs = [];
-                members.forEach(member => {
-                    this.memberIDs.push(member.ID);
-                });
-                if (!isRefresh && this.isTabActive) {
-                    this.gridApi.sizeColumnsToFit();
+        return this.retrospectiveService.getSprintMemberSummary(this.retrospectiveID, this.sprintID)
+            .takeUntil(this.destroy$)
+            .do(
+                response => {
+                    const members = response.data.Members;
+                    this.gridApi.setRowData(members);
+                    this.memberIDs = [];
+                    members.forEach(member => {
+                        this.memberIDs.push(member.ID);
+                    });
+                    if (!isRefresh && this.isTabActive) {
+                        this.gridApi.sizeColumnsToFit();
+                    }
+                },
+                err => {
+                    if (isRefresh) {
+                        this.snackBar.open(
+                            API_RESPONSE_MESSAGES.memberSummaryRefreshFailure,
+                            '', {duration: SNACKBAR_DURATION});
+                    } else {
+                        this.snackBar.open(
+                            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES
+                                .getSprintMemberSummaryError,
+                            '', {duration: SNACKBAR_DURATION});
+                    }
                 }
-            },
-            err => {
-                if (isRefresh) {
-                    this.snackBar.open(
-                        API_RESPONSE_MESSAGES.memberSummaryRefreshFailure,
-                        '', {duration: SNACKBAR_DURATION});
-                } else {
-                    this.snackBar.open(
-                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES
-                            .getSprintMemberSummaryError,
-                        '', {duration: SNACKBAR_DURATION});
-                }
-            }
-        );
-        return getMemberSummary$;
+            );
     }
 
     addSprintMember() {

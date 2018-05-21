@@ -80,7 +80,7 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
             .takeUntil(this.destroy$)
             .subscribe((delay = 0) => {
                 setTimeout(() => {
-                    this.getSprintDetails();
+                    this.getSprintDetails().subscribe();
                 }, delay);
             });
         this.refresh$.next();
@@ -108,52 +108,46 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
     refreshSprintDetails() {
         this.toggleToTriggerRefresh = !this.toggleToTriggerRefresh;
         this.sprintDetailsRefreshComplete = false;
-        const getSprintDetails$ = this.getSprintDetails(true);
-        getSprintDetails$.subscribe(() => {}, () => {}, () => {
+        this.getSprintDetails(true).subscribe(() => {}, () => {}, () => {
                 this.sprintDetailsRefreshComplete = true;
             }
         );
     }
 
     getSprintDetails(isRefresh = false) {
-        if (isRefresh) {
-            this.toggleToTriggerRefresh = !this.toggleToTriggerRefresh;
-        }
-        const getSprintDetails$ = this.retrospectiveService.getSprintDetails(this.retrospectiveID, this.sprintID)
-            .takeUntil(this.destroy$);
-        getSprintDetails$.subscribe(
-            response => {
-                this.sprintDetails = response.data;
-                this.sprintStatus = response.data.Status;
+        return this.retrospectiveService.getSprintDetails(this.retrospectiveID, this.sprintID)
+            .takeUntil(this.destroy$)
+            .do(
+                response => {
+                    this.sprintDetails = response.data;
+                    this.sprintStatus = response.data.Status;
 
-                const sprintTaskSummary = this.sprintDetails.Summary.TaskSummary;
-                this.sprintBugs = sprintTaskSummary.BugTypes;
-                this.sprintFeatures = sprintTaskSummary.FeatureTypes;
-                this.sprintTasks = sprintTaskSummary.TaskTypes;
-
-                this.sprintDays = this.utils.workdayCount(response.data.StartDate, response.data.EndDate);
-                if ([this.syncStates.SYNCING, this.syncStates.QUEUED].indexOf(this.sprintDetails.SyncStatus) !== -1
-                    && !this.enableRefresh) {
-                    this.refresh$.next(AUTO_REFRESH_DURATION);
+                    const sprintTaskSummary = this.sprintDetails.Summary.TaskSummary;
+                    this.sprintBugs = sprintTaskSummary.BugTypes;
+                    this.sprintFeatures = sprintTaskSummary.FeatureTypes;
+                    this.sprintTasks = sprintTaskSummary.TaskTypes;
+                    this.sprintDays = this.utils.workdayCount(response.data.StartDate, response.data.EndDate);
+                    if ([this.syncStates.SYNCING, this.syncStates.QUEUED].indexOf(this.sprintDetails.SyncStatus) !== -1
+                        && !this.enableRefresh) {
+                        this.refresh$.next(AUTO_REFRESH_DURATION);
+                    }
+                    // Since we are hiding the "Highlights" and "Notes" tab for draft sprints,
+                    // we need to make sure that the summary tabs are following the correct order.
+                    this.tabIndexMapping = this.getTabIndexMapping(this.sprintStatus);
+                    },
+                err => {
+                    if (!isRefresh) {
+                        this.snackBar.open(
+                            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getSprintDetailsError,
+                            '', {duration: SNACKBAR_DURATION});
+                        this.navigateToRetrospectiveDashboard();
+                    } else {
+                        this.snackBar.open(
+                            API_RESPONSE_MESSAGES.sprintDetailsRefreshFailure,
+                            '', {duration: SNACKBAR_DURATION});
+                    }
                 }
-                // Since we are hiding the "Highlights" and "Notes" tab for draft sprints,
-                // we need to make sure that the summary tabs are following the correct order.
-                this.tabIndexMapping = this.getTabIndexMapping(this.sprintStatus);
-                },
-            err => {
-                if (!isRefresh) {
-                    this.snackBar.open(
-                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getSprintDetailsError,
-                        '', {duration: SNACKBAR_DURATION});
-                    this.navigateToRetrospectiveDashboard();
-                } else {
-                    this.snackBar.open(
-                        API_RESPONSE_MESSAGES.sprintDetailsRefreshFailure,
-                        '', {duration: SNACKBAR_DURATION});
-                }
-            }
-        );
-        return getSprintDetails$;
+            );
     }
 
     getTabIndexMapping(sprintStatus) {
