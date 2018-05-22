@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
+import 'rxjs/add/operator/finally';
 
 export class SprintListDataSource extends DataSource<any> {
     public dataChange: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
@@ -28,7 +29,10 @@ export class SprintListDataSource extends DataSource<any> {
                 query.after = encodeURIComponent(this.lastSprintLoaded.EndDate);
             }
             this.isSprintsLoading = true;
-            this.retrospectiveService.listSprintsByRetrospectiveID(this.retrospectiveID, query).subscribe(
+            this.retrospectiveService.listSprintsByRetrospectiveID(this.retrospectiveID, query)
+                .takeUntil(this.destroy$)
+                .finally(() => this.isSprintsLoading = false)
+                .subscribe(
                 response => {
                     const sprints = response.data.Sprints;
                     this.dataChange.next([...this.dataChange.value, ...sprints]);
@@ -39,9 +43,6 @@ export class SprintListDataSource extends DataSource<any> {
                 },
                 err => {
                     this.errorCallback(err);
-                },
-                () => {
-                    this.isSprintsLoading = false;
                 }
             );
         }
