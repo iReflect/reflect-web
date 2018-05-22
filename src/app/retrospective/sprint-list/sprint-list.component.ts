@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, Input, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
 
@@ -21,6 +21,10 @@ export class SprintListComponent implements OnInit, OnDestroy {
     displayedSprintColumns = ['title', 'start_date', 'end_date', 'status', 'created_by', 'last_synced_at'];
     sprintStates = SPRINT_STATES_LABEL;
     dateFormat = DATE_FORMAT;
+    scrollDownThreshold = 0.7; // Percentage of the page user must scroll down to load more records
+    minimumRowHeight = 48; // Minimum row height of a mat table (in pixels)
+
+    lastScrollTop: number;
 
     @Input() retrospectiveID: any;
 
@@ -33,6 +37,21 @@ export class SprintListComponent implements OnInit, OnDestroy {
     ) {
     }
 
+    // TODO: Find a package to handle infinite scrolling
+    @HostListener('window:scroll', [])
+    onWindowScroll() {
+        const currentHeight = window.innerHeight + window.scrollY;
+
+        // If the user has scrolled to 70% of the page and is scrolling down, add more data
+        if (currentHeight > (document.body.offsetHeight * this.scrollDownThreshold) && window.pageYOffset > this.lastScrollTop) {
+            this.dataSource.connect();
+
+            // Calling detectChanges here to refresh the value of isSprintsLoading.
+            this.changeDetectorRefs.detectChanges();
+        }
+        this.lastScrollTop = window.pageYOffset;
+    }
+
     ngOnInit() {
         this.initializeDataSource();
     }
@@ -43,7 +62,6 @@ export class SprintListComponent implements OnInit, OnDestroy {
 
     refresh() {
         this.initializeDataSource();
-        this.changeDetectorRefs.detectChanges();
     }
 
     showCannotGetSprintsError(err) {
@@ -51,16 +69,22 @@ export class SprintListComponent implements OnInit, OnDestroy {
     }
 
     initializeDataSource() {
+        const documentBody = document.body, documentElement = document.documentElement;
+        // Taking the maximum value for the height of the page as it is
+        // calculated differently by different Browsers.
+        const pageHeight = Math.max(documentBody.scrollHeight, documentBody.offsetHeight,
+            documentElement.clientHeight, documentElement.scrollHeight, documentElement.offsetHeight);
+
+        // Passing height/48 as rowsToLoad as min-height of
+        // mat-row is set to 48 by default.
         this.dataSource = new SprintListDataSource(
             this.retrospectiveService,
             this.retrospectiveID,
+            Math.ceil(pageHeight / this.minimumRowHeight),
             this.showCannotGetSprintsError.bind(this)
         );
-    }
 
-    navigateToSprint(row) {
-        this.router.navigateByUrl(
-            APP_ROUTE_URLS.sprintDetails.replace(':retrospectiveID', this.retrospectiveID).replace(':sprintID', row.ID)
-        );
+        // Calling detectChanges here to refresh the value of isSprintsLoading.
+        this.changeDetectorRefs.detectChanges();
     }
 }

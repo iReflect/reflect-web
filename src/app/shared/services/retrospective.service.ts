@@ -44,13 +44,13 @@ export class RetrospectiveService {
 
     }
 
-    listSprintsByRetrospectiveID(retrospectiveID): Observable<any> {
+    listSprintsByRetrospectiveID(retrospectiveID, params = {}): Observable<any> {
         return this.restangularWithLoader
             .one(
                 API_URLS.sprintList
                     .replace(':retrospectiveID', retrospectiveID)
             )
-            .get();
+            .get(params);
     }
 
     getTeamList(): any {
