@@ -56,7 +56,7 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
             .takeUntil(this.destroy$)
             .subscribe(() => {
                 if (this.autoRefreshCurrentState && this.isTabActive) {
-                    this.getSprintHighlightsTab();
+                    this.getSprintHighlightsTab(true, true);
                 }
             });
     }
@@ -68,11 +68,11 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
         if (changes.enableRefresh) {
             this.autoRefreshCurrentState = changes.enableRefresh.currentValue;
             if (this.isTabActive && !changes.isTabActive && this.autoRefreshCurrentState) {
-                this.getSprintHighlightsTab();
+                this.getSprintHighlightsTab(true, true);
             }
         }
         if (this.isTabActive && !changes.isTabActive && changes.refreshOnChange) {
-            this.getSprintHighlightsTab(true, true);
+            this.getSprintHighlightsTab(true);
         }
     }
 
@@ -82,17 +82,17 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
         this.destroy$.complete();
     }
 
-    getSprintHighlightsTab(isRefresh = true, isManualRefresh = false) {
-        if (isManualRefresh) {
+    getSprintHighlightsTab(isRefresh = false, isAutoRefresh = false) {
+        if (!isAutoRefresh) {
             this.onRefreshStart.emit(true);
         }
         const highlightsArray$ = [];
-        highlightsArray$.push(this.getTeamMembers(isRefresh));
-        highlightsArray$.push(this.getSprintHighlights(isRefresh));
-        highlightsArray$.push(this.getPendingGoals(isRefresh));
-        highlightsArray$.push(this.getAccomplishedGoals(isRefresh));
+        highlightsArray$.push(this.getTeamMembers(isRefresh, isAutoRefresh));
+        highlightsArray$.push(this.getSprintHighlights(isRefresh, isAutoRefresh));
+        highlightsArray$.push(this.getPendingGoals(isRefresh, isAutoRefresh));
+        highlightsArray$.push(this.getAccomplishedGoals(isRefresh, isAutoRefresh));
         forkJoin(...highlightsArray$).subscribe(() => {}, () => {}, () => {
-            if (isManualRefresh) {
+            if (!isAutoRefresh) {
                 this.onRefreshEnd.emit(true);
             }
         });
@@ -106,8 +106,8 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
         this.autoRefreshCurrentState = this.enableRefresh;
     }
 
-    getPendingGoals(isRefresh = false) {
-        return this.retrospectiveService.getSprintGoals(this.retrospectiveID, this.sprintID, 'pending')
+    getPendingGoals(isRefresh = false, isAutoRefresh = false) {
+        return this.retrospectiveService.getSprintGoals(this.retrospectiveID, this.sprintID, 'pending', isAutoRefresh)
             .takeUntil(this.destroy$)
             .do(
                 response => {
@@ -126,8 +126,8 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
             );
     }
 
-    getAccomplishedGoals(isRefresh = false) {
-        return this.retrospectiveService.getSprintGoals(this.retrospectiveID, this.sprintID, 'completed')
+    getAccomplishedGoals(isRefresh = false, isAutoRefresh = false) {
+        return this.retrospectiveService.getSprintGoals(this.retrospectiveID, this.sprintID, 'completed', isAutoRefresh)
             .takeUntil(this.destroy$)
             .do(
                 response => {
@@ -146,8 +146,8 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
             );
     }
 
-    getSprintHighlights(isRefresh = false) {
-        return this.retrospectiveService.getSprintHighlights(this.retrospectiveID, this.sprintID)
+    getSprintHighlights(isRefresh = false, isAutoRefresh = false) {
+        return this.retrospectiveService.getSprintHighlights(this.retrospectiveID, this.sprintID, isAutoRefresh)
             .takeUntil(this.destroy$)
             .do(
                 response => {
@@ -166,8 +166,8 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
             );
     }
 
-    getTeamMembers(isRefresh = false) {
-        return this.retrospectiveService.getRetroMembers(this.retrospectiveID)
+    getTeamMembers(isRefresh = false, isAutoRefresh = false) {
+        return this.retrospectiveService.getRetroMembers(this.retrospectiveID, isAutoRefresh)
             .takeUntil(this.destroy$)
             .do(
                 response => {

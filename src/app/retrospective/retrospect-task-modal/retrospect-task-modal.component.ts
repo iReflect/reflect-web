@@ -154,22 +154,23 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
         this.params = params;
         this.gridApi = params.api;
         this.columnApi = params.columnApi;
-        this.getSprintTaskMemberSummary(false);
+        this.getSprintTaskMemberSummary();
         Observable.interval(AUTO_REFRESH_DURATION)
             .takeUntil(this.destroy$)
             .subscribe(() => {
                 if (this.autoRefreshCurrentState) {
-                    this.getSprintTaskMemberSummary(true);
+                    this.getSprintTaskMemberSummary(true, true);
                 }
             });
     }
 
-    getSprintTaskMemberSummary(isRefresh) {
+    getSprintTaskMemberSummary(isRefresh = false, isAutoRefresh = false) {
         const getTaskMemberSummary$ = this.retrospectiveService
             .getSprintTaskMemberSummary(
                 this.data.retrospectiveID,
                 this.data.sprintID,
-                this.taskDetails.ID
+                this.taskDetails.ID,
+                isAutoRefresh
             );
         getTaskMemberSummary$
             .takeUntil(this.destroy$)

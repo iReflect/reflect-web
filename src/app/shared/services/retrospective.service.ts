@@ -3,23 +3,30 @@ import { API_URLS } from '../../../constants/api-urls';
 import { RestApiHelperService } from '../utils/rest-api-helper.service';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
+import {Restangular} from 'ngx-restangular';
 
 @Injectable()
 export class RetrospectiveService {
-    private restangular;
+    private restangularWithLoader;
+    private basicRestangular;
 
     constructor(private restApiHelperService: RestApiHelperService) {
-        this.restangular = restApiHelperService.getDataApiHelper();
+        this.basicRestangular = restApiHelperService.getBasicDataApiHelper();
+        this.restangularWithLoader = restApiHelperService.getDataApiHelperWithLoader();
+    }
+
+    getRestAngularService(isAutoRefresh): Restangular {
+        return (isAutoRefresh ? this.basicRestangular : this.restangularWithLoader);
     }
 
     getRetrospectives(): Observable<any> {
-        return this.restangular
+        return this.restangularWithLoader
             .one(API_URLS.retrospectives)
             .get();
     }
 
     getRetrospectiveLatestSprint(retrospectiveID): Observable<any> {
-        return this.restangular
+        return this.restangularWithLoader
             .one(
                 API_URLS.latestSprint
                     .replace(':retrospectiveID', retrospectiveID)
@@ -28,7 +35,7 @@ export class RetrospectiveService {
     }
 
     getRetrospectiveByID(retrospectiveID): Observable<any> {
-        return this.restangular
+        return this.restangularWithLoader
             .one(
                 API_URLS.retroDetails
                     .replace(':retrospectiveID', retrospectiveID)
@@ -38,7 +45,7 @@ export class RetrospectiveService {
     }
 
     listSprintsByRetrospectiveID(retrospectiveID): Observable<any> {
-        return this.restangular
+        return this.restangularWithLoader
             .one(
                 API_URLS.sprintList
                     .replace(':retrospectiveID', retrospectiveID)
@@ -47,25 +54,25 @@ export class RetrospectiveService {
     }
 
     getTeamList(): any {
-        return this.restangular
+        return this.restangularWithLoader
             .one(API_URLS.teamsList)
             .get();
     }
 
     getTaskProvidersList(): any {
-        return this.restangular
+        return this.restangularWithLoader
             .one(API_URLS.taskProviderConfig)
             .get();
     }
 
     createRetro(retroConfig: any): Observable<any> {
-        return this.restangular
+        return this.restangularWithLoader
             .all('retrospectives')
             .post(retroConfig);
     }
 
-    getSprintDetails(retrospectiveID, sprintID): Observable<any> {
-        return this.restangular
+    getSprintDetails(retrospectiveID, sprintID, isAutoRefresh): Observable<any> {
+        return this.getRestAngularService(isAutoRefresh)
             .one(
                 API_URLS.sprintDetails
                     .replace(':retrospectiveID', retrospectiveID)
@@ -75,7 +82,7 @@ export class RetrospectiveService {
     }
 
     activateSprint(retrospectiveID, sprintID): Observable<any> {
-        return this.restangular
+        return this.restangularWithLoader
             .one(
                 API_URLS.sprintDetails
                     .replace(':retrospectiveID', retrospectiveID)
@@ -85,7 +92,7 @@ export class RetrospectiveService {
     }
 
     freezeSprint(retrospectiveID, sprintID): Observable<any> {
-        return this.restangular
+        return this.restangularWithLoader
             .one(
                 API_URLS.sprintDetails
                     .replace(':retrospectiveID', retrospectiveID)
@@ -95,7 +102,7 @@ export class RetrospectiveService {
     }
 
     discardSprint(retrospectiveID, sprintID): Observable<any> {
-        return this.restangular
+        return this.restangularWithLoader
             .one(
                 API_URLS.sprintDetails
                     .replace(':retrospectiveID', retrospectiveID)
@@ -105,7 +112,7 @@ export class RetrospectiveService {
     }
 
     resyncSprintDetails(retrospectiveID, sprintID): Observable<any> {
-        return this.restangular
+        return this.restangularWithLoader
             .one(
                 API_URLS.refreshSprintDetails
                     .replace(':retrospectiveID', retrospectiveID)
@@ -115,7 +122,7 @@ export class RetrospectiveService {
     }
 
     updateSprintDetails(retrospectiveID, sprintID, sprintData): Observable<any> {
-        return this.restangular
+        return this.restangularWithLoader
             .one(
                 API_URLS.sprintDetails
                     .replace(':retrospectiveID', retrospectiveID)
@@ -124,8 +131,8 @@ export class RetrospectiveService {
             .customPUT(sprintData);
     }
 
-    getRetroMembers(retrospectiveID): Observable<any> {
-        return this.restangular
+    getRetroMembers(retrospectiveID, isAutoRefresh = false): Observable<any> {
+        return this.getRestAngularService(isAutoRefresh)
             .one(
                 API_URLS.teamMembers
                     .replace(':retrospectiveID', retrospectiveID)
@@ -137,7 +144,7 @@ export class RetrospectiveService {
         const sprintMember = {
             'memberID': memberID
         };
-        return this.restangular
+        return this.restangularWithLoader
             .one(
                 API_URLS.sprintDetails
                     .replace(':retrospectiveID', retrospectiveID)
@@ -147,7 +154,7 @@ export class RetrospectiveService {
     }
 
     deleteSprintMember(retrospectiveID, sprintID, memberID) {
-        return this.restangular
+        return this.restangularWithLoader
             .one(
                 API_URLS.sprintMember
                     .replace(':retrospectiveID', retrospectiveID)
@@ -157,8 +164,8 @@ export class RetrospectiveService {
             .remove();
     }
 
-    getSprintMemberSummary(retrospectiveID, sprintID): Observable<any> {
-        return this.restangular
+    getSprintMemberSummary(retrospectiveID, sprintID, isAutoRefresh = false): Observable<any> {
+        return this.getRestAngularService(isAutoRefresh)
             .one(
                 API_URLS.sprintMemberSummary
                     .replace(':retrospectiveID', retrospectiveID)
@@ -167,8 +174,8 @@ export class RetrospectiveService {
             .get();
     }
 
-    getSprintTaskMemberSummary(retrospectiveID, sprintID, taskID): Observable<any> {
-        return this.restangular
+    getSprintTaskMemberSummary(retrospectiveID, sprintID, taskID, isAutoRefresh): Observable<any> {
+        return this.getRestAngularService(isAutoRefresh)
             .one(
                 API_URLS.sprintTaskMemberSummary
                     .replace(':retrospectiveID', retrospectiveID)
@@ -178,8 +185,8 @@ export class RetrospectiveService {
             .get();
     }
 
-    getSprintTaskSummary(retrospectiveID, sprintID): Observable<any> {
-        return this.restangular
+    getSprintTaskSummary(retrospectiveID, sprintID, isAutoRefresh = false): Observable<any> {
+        return this.getRestAngularService(isAutoRefresh)
             .one(
                 API_URLS.sprintTaskSummary
                     .replace(':retrospectiveID', retrospectiveID)
@@ -189,7 +196,7 @@ export class RetrospectiveService {
     }
 
     updateSprintMember(retrospectiveID, sprintID, sprintMemberID, updatedMemberData): Observable<any> {
-        return this.restangular
+        return this.restangularWithLoader
             .one(
                 API_URLS.sprintMember
                     .replace(':retrospectiveID', retrospectiveID)
@@ -200,7 +207,7 @@ export class RetrospectiveService {
     }
 
     updateSprintTask(retrospectiveID, sprintID, sprintTaskID, updatedTaskData): Observable<any> {
-        return this.restangular
+        return this.restangularWithLoader
             .one(
                 API_URLS.sprintTaskDetails
                     .replace(':retrospectiveID', retrospectiveID)
@@ -211,7 +218,7 @@ export class RetrospectiveService {
     }
 
     updateSprintTaskMember(retrospectiveID, sprintID, taskID, sprintTaskMemberID, updatedTaskMemberData): Observable<any> {
-        return this.restangular
+        return this.restangularWithLoader
             .one(
                 API_URLS.sprintTaskMember
                     .replace(':retrospectiveID', retrospectiveID)
@@ -223,7 +230,7 @@ export class RetrospectiveService {
     }
 
     getSprintMembers(retrospectiveID, sprintID): Observable<any> {
-        return this.restangular
+        return this.restangularWithLoader
             .one(
                 API_URLS.sprintMembers
                     .replace(':retrospectiveID', retrospectiveID)
@@ -236,7 +243,7 @@ export class RetrospectiveService {
         const sprintTaskMember = {
             'memberID': memberID
         };
-        return this.restangular
+        return this.restangularWithLoader
             .one(
                 API_URLS.sprintTaskDetails
                     .replace(':retrospectiveID', retrospectiveID)
@@ -247,7 +254,7 @@ export class RetrospectiveService {
     }
 
     getTaskDetails(retrospectiveID, sprintID, taskID): Observable<any> {
-        return this.restangular
+        return this.restangularWithLoader
             .one(
                 API_URLS.sprintTaskDetails
                     .replace(':retrospectiveID', retrospectiveID)
@@ -258,7 +265,7 @@ export class RetrospectiveService {
     }
 
     createSprint(retrospectiveID, sprintDetails): Observable<any> {
-        return this.restangular
+        return this.restangularWithLoader
             .one(
                 API_URLS.retroDetails
                     .replace(':retrospectiveID', retrospectiveID)
@@ -266,8 +273,8 @@ export class RetrospectiveService {
             .post('sprints', sprintDetails);
     }
 
-    getSprintHighlights(retrospectiveID, sprintID): Observable<any> {
-        return this.restangular
+    getSprintHighlights(retrospectiveID, sprintID, isAutoRefresh = false): Observable<any> {
+        return this.getRestAngularService(isAutoRefresh)
             .one(
                 API_URLS.sprintHighlights
                     .replace(':retrospectiveID', retrospectiveID)
@@ -280,7 +287,7 @@ export class RetrospectiveService {
         const highlightData = {
             subType: highlightSubType
         };
-        return this.restangular
+        return this.restangularWithLoader
             .one(
                 API_URLS.sprintHighlights
                     .replace(':retrospectiveID', retrospectiveID)
@@ -290,7 +297,7 @@ export class RetrospectiveService {
     }
 
     updateSprintHighlight(retrospectiveID, sprintID, sprintHighlightID, updatedHighlightData): Observable<any> {
-        return this.restangular
+        return this.restangularWithLoader
             .one(
                 API_URLS.sprintHighlight
                     .replace(':retrospectiveID', retrospectiveID)
@@ -300,8 +307,8 @@ export class RetrospectiveService {
             .customPATCH(updatedHighlightData);
     }
 
-    getSprintGoals(retrospectiveID, sprintID, goalType): Observable<any> {
-        return this.restangular
+    getSprintGoals(retrospectiveID, sprintID, goalType, isAutoRefresh = false): Observable<any> {
+        return this.getRestAngularService(isAutoRefresh)
             .one(
                 API_URLS.sprintGoals
                     .replace(':retrospectiveID', retrospectiveID)
@@ -311,7 +318,7 @@ export class RetrospectiveService {
     }
 
     resolveSprintGoal(retrospectiveID, sprintID, goalID) {
-        return this.restangular
+        return this.restangularWithLoader
             .one(
                 API_URLS.resolveSprintGoal
                     .replace(':retrospectiveID', retrospectiveID)
@@ -322,7 +329,7 @@ export class RetrospectiveService {
     }
 
     unresolveSprintGoal(retrospectiveID, sprintID, goalID) {
-        return this.restangular
+        return this.restangularWithLoader
             .one(
                 API_URLS.resolveSprintGoal
                     .replace(':retrospectiveID', retrospectiveID)
@@ -336,7 +343,7 @@ export class RetrospectiveService {
         const data = {
             subType: 'goal'
         };
-        return this.restangular
+        return this.restangularWithLoader
             .one(
                 API_URLS.sprintGoals
                     .replace(':retrospectiveID', retrospectiveID)
@@ -346,7 +353,7 @@ export class RetrospectiveService {
     }
 
     updateRetroGoal(retrospectiveID, sprintID, sprintGoalID, updatedGoalData): Observable<any> {
-        return this.restangular
+        return this.restangularWithLoader
             .one(
                 API_URLS.sprintGoal
                     .replace(':retrospectiveID', retrospectiveID)
@@ -356,8 +363,8 @@ export class RetrospectiveService {
             .customPATCH(updatedGoalData);
     }
 
-    getSprintNotes(retrospectiveID, sprintID): Observable<any> {
-        return this.restangular
+    getSprintNotes(retrospectiveID, sprintID, isAutoRefresh = false): Observable<any> {
+        return this.getRestAngularService(isAutoRefresh)
             .one(
                 API_URLS.sprintNotes
                     .replace(':retrospectiveID', retrospectiveID)
@@ -370,7 +377,7 @@ export class RetrospectiveService {
         const noteData = {
             subType: noteSubType
         };
-        return this.restangular
+        return this.restangularWithLoader
             .one(
                 API_URLS.sprintNotes
                     .replace(':retrospectiveID', retrospectiveID)
@@ -380,7 +387,7 @@ export class RetrospectiveService {
     }
 
     updateRetroNote(retrospectiveID, sprintID, sprintNoteID, updatedNoteData): Observable<any> {
-        return this.restangular
+        return this.restangularWithLoader
             .one(
                 API_URLS.sprintNote
                     .replace(':retrospectiveID', retrospectiveID)
@@ -391,7 +398,7 @@ export class RetrospectiveService {
     }
 
     markSprintTaskDone(retrospectiveID, sprintID, taskID): Observable<any> {
-        return this.restangular
+        return this.restangularWithLoader
             .one(
                 API_URLS.sprintTaskMarkDone
                     .replace(':retrospectiveID', retrospectiveID)
@@ -402,7 +409,7 @@ export class RetrospectiveService {
     }
 
     markSprintTaskUnDone(retrospectiveID, sprintID, taskID): Observable<any> {
-        return this.restangular
+        return this.restangularWithLoader
             .one(
                 API_URLS.sprintTaskMarkDone
                     .replace(':retrospectiveID', retrospectiveID)

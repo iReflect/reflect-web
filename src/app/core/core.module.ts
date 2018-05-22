@@ -14,21 +14,39 @@ import { throwIfAlreadyLoaded } from './module-import-guard';
 import { AnonymousRequiredGuard } from './route-guards/anonymous-required.service';
 // Import Custom Services
 import { LoginRequiredGuard } from './route-guards/login-required.service';
+import { RestangularModule } from 'ngx-restangular';
+
+// Import LoadingBarModule:
+import { LoadingBarModule, LoadingBarService } from '@ngx-loading-bar/core';
+
+export function RestangularConfigFactory(RestangularProvider, loaderService) {
+    RestangularProvider.setDefaultHeaders({
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    });
+    RestangularProvider.setRequestSuffix('/');
+    RestangularProvider.setDefaultHttpFields({withCredentials: true});
+    RestangularProvider.setFullResponse(true);
+}
 
 @NgModule({
     imports: [
+        RestangularModule.forRoot([LoadingBarService], RestangularConfigFactory),
         CommonModule,
         HttpClientModule,
         FormsModule,
         SharedModule,
         CustomMaterialModule,
+        LoadingBarModule.forRoot()
     ],
     declarations: [
         HeaderComponent
     ],
     exports: [
+        RestangularModule,
         HeaderComponent,
-        CustomMaterialModule
+        CustomMaterialModule,
+        LoadingBarModule
     ],
     providers: [
         LoggerService,

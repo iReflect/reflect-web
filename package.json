@@ -30,6 +30,7 @@
         "@angular/platform-browser": "^5.2.8",
         "@angular/platform-browser-dynamic": "^5.2.8",
         "@angular/router": "^5.2.8",
+        "@ngx-loading-bar/core": "^2.0.0",
         "@types/lodash": "^4.14.104",
         "ag-grid": "^17.1.1",
         "ag-grid-angular": "^17.1.0",
