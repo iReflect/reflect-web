@@ -27,17 +27,6 @@ export function RestangularConfigFactory(RestangularProvider, loaderService) {
     RestangularProvider.setRequestSuffix('/');
     RestangularProvider.setDefaultHttpFields({withCredentials: true});
     RestangularProvider.setFullResponse(true);
-    RestangularProvider.addRequestInterceptor(() => {
-        loaderService.start();
-    });
-    RestangularProvider.addResponseInterceptor(data => {
-        loaderService.complete();
-        return data;
-    });
-    RestangularProvider.addErrorInterceptor(data => {
-        loaderService.complete();
-        return data;
-    });
 }
 
 @NgModule({

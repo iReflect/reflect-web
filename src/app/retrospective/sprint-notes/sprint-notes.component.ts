@@ -55,7 +55,7 @@ export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
             .takeUntil(this.destroy$)
             .subscribe(() => {
                 if (this.autoRefreshCurrentState && this.isTabActive) {
-                    this.getSprintNotesTab();
+                    this.getSprintNotesTab(true, true);
                 }
             });
     }
@@ -67,11 +67,11 @@ export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
         if (changes.enableRefresh) {
             this.autoRefreshCurrentState = changes.enableRefresh.currentValue;
             if (this.isTabActive && !changes.isTabActive && this.autoRefreshCurrentState) {
-                this.getSprintNotesTab();
+                this.getSprintNotesTab(true, true);
             }
         }
         if (this.isTabActive && !changes.isTabActive && changes.refreshOnChange) {
-            this.getSprintNotesTab(true, true);
+            this.getSprintNotesTab(true);
         }
     }
 
@@ -81,16 +81,16 @@ export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
         this.destroy$.complete();
     }
 
-    getSprintNotesTab(isRefresh = true, isManualRefresh = false) {
-        if (isManualRefresh) {
+    getSprintNotesTab(isRefresh = false, isAutoRefresh = false) {
+        if (!isAutoRefresh) {
             this.onRefreshStart.emit(true);
         }
         const notesArray$ = [];
-        notesArray$.push(this.getTeamMembers(isRefresh));
-        notesArray$.push(this.getSprintGoals(isRefresh));
-        notesArray$.push(this.getSprintNotes(isRefresh));
+        notesArray$.push(this.getTeamMembers(isRefresh, isAutoRefresh));
+        notesArray$.push(this.getSprintGoals(isRefresh, isAutoRefresh));
+        notesArray$.push(this.getSprintNotes(isRefresh, isAutoRefresh));
         forkJoin(...notesArray$).subscribe(() => {}, () => {}, () => {
-            if (isManualRefresh) {
+            if (!isAutoRefresh) {
                 this.onRefreshEnd.emit(true);
             }
         });
@@ -104,8 +104,8 @@ export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
         this.autoRefreshCurrentState = this.enableRefresh;
     }
 
-    getSprintGoals(isRefresh = false) {
-        return this.retrospectiveService.getSprintGoals(this.retrospectiveID, this.sprintID, 'added')
+    getSprintGoals(isRefresh = false, isAutoRefresh = false) {
+        return this.retrospectiveService.getSprintGoals(this.retrospectiveID, this.sprintID, 'added', isAutoRefresh)
             .takeUntil(this.destroy$)
             .do(
                 response => {
@@ -124,8 +124,8 @@ export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
             );
     }
 
-    getSprintNotes(isRefresh = false) {
-        return this.retrospectiveService.getSprintNotes(this.retrospectiveID, this.sprintID)
+    getSprintNotes(isRefresh = false, isAutoRefresh = false) {
+        return this.retrospectiveService.getSprintNotes(this.retrospectiveID, this.sprintID, isAutoRefresh)
             .takeUntil(this.destroy$)
             .do(
                 response => {
@@ -144,8 +144,8 @@ export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
             );
     }
 
-    getTeamMembers(isRefresh = false) {
-        return this.retrospectiveService.getRetroMembers(this.retrospectiveID)
+    getTeamMembers(isRefresh = false, isAutoRefresh = false) {
+        return this.retrospectiveService.getRetroMembers(this.retrospectiveID, isAutoRefresh)
             .takeUntil(this.destroy$)
             .do(
                 response => {

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -62,6 +62,7 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
         private utils: UtilsService,
         private activatedRoute: ActivatedRoute,
         public dialog: MatDialog,
+        private changeDetectorRefs: ChangeDetectorRef
     ) {
     }
 
@@ -76,20 +77,25 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
         }
         this.retrospectiveID = params['retrospectiveID'];
         this.sprintID = params['sprintID'];
-        this.refresh$
-            .takeUntil(this.destroy$)
-            .subscribe((delay = 0) => {
-                setTimeout(() => {
-                    this.getSprintDetails().subscribe();
-                }, delay);
-            });
-        this.refresh$.next();
+        this.initiateAutoRefresh();
+        // Calling sprint get API for the first time
+        this.getSprintDetails().subscribe();
+    }
+
+    initiateAutoRefresh() {
         Observable.interval(AUTO_REFRESH_DURATION)
             .takeUntil(this.destroy$)
             .subscribe(() => {
                 if (this.enableRefresh) {
                     this.refresh$.next();
                 }
+            });
+        this.refresh$
+            .takeUntil(this.destroy$)
+            .subscribe((delay = 0) => {
+                setTimeout(() => {
+                    this.getSprintDetails(true, true).subscribe();
+                }, delay);
             });
     }
 
@@ -114,8 +120,8 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
         );
     }
 
-    getSprintDetails(isRefresh = false) {
-        return this.retrospectiveService.getSprintDetails(this.retrospectiveID, this.sprintID)
+    getSprintDetails(isRefresh = false, isAutoRefresh = false) {
+        return this.retrospectiveService.getSprintDetails(this.retrospectiveID, this.sprintID, isAutoRefresh)
             .takeUntil(this.destroy$)
             .do(
                 response => {
@@ -276,9 +282,11 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
 
     onChildRefreshStart($event) {
         this.activeChildTabRefreshComplete = false;
+        this.changeDetectorRefs.detectChanges();
     }
 
     onChildRefreshEnd($event) {
         this.activeChildTabRefreshComplete = true;
+        this.changeDetectorRefs.detectChanges();
     }
 }

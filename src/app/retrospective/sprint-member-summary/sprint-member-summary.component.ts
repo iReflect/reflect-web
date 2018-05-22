@@ -89,10 +89,10 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             // this if block also executes when changes.refreshOnChange toggles
             if (this.isTabActive && !changes.isTabActive) {
                 if (this.autoRefreshCurrentState) {
-                    this.refreshSprintMemberSummary();
+                    this.refreshSprintMemberSummary(true);
                 }
                 if (changes.refreshOnChange) {
-                    this.refreshSprintMemberSummary(true);
+                    this.refreshSprintMemberSummary();
                 }
                 this.gridApi.sizeColumnsToFit();
             }
@@ -155,14 +155,14 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         this.gridApi = params.api;
         this.columnApi = params.columnApi;
         if (this.isTabActive) {
-            this.getSprintMemberSummary(false).subscribe();
+            this.getSprintMemberSummary().subscribe();
             this.gridApi.sizeColumnsToFit();
         }
         Observable.interval(AUTO_REFRESH_DURATION)
             .takeUntil(this.destroy$)
             .subscribe(() => {
                 if (this.autoRefreshCurrentState && this.isTabActive) {
-                    this.refreshSprintMemberSummary();
+                    this.refreshSprintMemberSummary(true);
                 }
             });
     }
@@ -175,19 +175,19 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         this.autoRefreshCurrentState = this.enableRefresh;
     }
 
-    refreshSprintMemberSummary(isManualRefresh = false) {
-        if (isManualRefresh) {
+    refreshSprintMemberSummary(isAutoRefresh = false) {
+        if (!isAutoRefresh) {
             this.onRefreshStart.emit(true);
         }
-        this.getSprintMemberSummary(true).subscribe(() => {}, () => {}, () => {
-            if (isManualRefresh) {
+        this.getSprintMemberSummary(true, isAutoRefresh).subscribe(() => {}, () => {}, () => {
+            if (!isAutoRefresh) {
                 this.onRefreshEnd.emit(true);
             }
         });
     }
 
-    getSprintMemberSummary(isRefresh) {
-        return this.retrospectiveService.getSprintMemberSummary(this.retrospectiveID, this.sprintID)
+    getSprintMemberSummary(isRefresh = false, isAutoRefresh = false) {
+        return this.retrospectiveService.getSprintMemberSummary(this.retrospectiveID, this.sprintID, isAutoRefresh)
             .takeUntil(this.destroy$)
             .do(
                 response => {

@@ -10,7 +10,7 @@ export class TeamFeedbackService {
     private restangular;
 
     constructor(private restApiHelperService: RestApiHelperService) {
-        this.restangular = restApiHelperService.getDataApiHelper();
+        this.restangular = restApiHelperService.getDataApiHelperWithLoader();
     }
 
     getFeedBacks(queryParams = {}): Observable<any> {

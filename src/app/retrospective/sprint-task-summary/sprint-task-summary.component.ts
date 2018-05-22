@@ -91,10 +91,10 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             // this if block also executes when changes.refreshOnChange toggles
             if (this.isTabActive && !changes.isTabActive) {
                 if (this.autoRefreshCurrentState) {
-                    this.refreshSprintTaskSummary();
+                    this.refreshSprintTaskSummary(true);
                 }
                 if (changes.refreshOnChange) {
-                    this.refreshSprintTaskSummary(true);
+                    this.refreshSprintTaskSummary();
                 }
                 this.gridApi.sizeColumnsToFit();
             }
@@ -157,31 +157,31 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         this.gridApi = params.api;
         this.columnApi = params.columnApi;
         if (this.isTabActive) {
-            this.getSprintTaskSummary(false).subscribe();
+            this.getSprintTaskSummary().subscribe();
             this.gridApi.sizeColumnsToFit();
         }
         Observable.interval(AUTO_REFRESH_DURATION)
             .takeUntil(this.destroy$)
             .subscribe(() => {
                 if (this.isTabActive && this.autoRefreshCurrentState) {
-                    this.refreshSprintTaskSummary();
+                    this.refreshSprintTaskSummary(true);
                 }
             });
     }
 
-    refreshSprintTaskSummary(isManualRefresh = false) {
-        if (isManualRefresh) {
+    refreshSprintTaskSummary(isAutoRefresh = false) {
+        if (!isAutoRefresh) {
             this.onRefreshEnd.emit(true);
         }
-        this.getSprintTaskSummary(true).subscribe(() => {}, () => {}, () => {
-            if (isManualRefresh) {
+        this.getSprintTaskSummary(true, isAutoRefresh).subscribe(() => {}, () => {}, () => {
+            if (!isAutoRefresh) {
                 this.onRefreshEnd.emit(true);
             }
         });
     }
 
-    getSprintTaskSummary(isRefresh) {
-        return this.retrospectiveService.getSprintTaskSummary(this.retrospectiveID, this.sprintID)
+    getSprintTaskSummary(isRefresh = false, isAutoRefresh = false) {
+        return this.retrospectiveService.getSprintTaskSummary(this.retrospectiveID, this.sprintID, isAutoRefresh)
             .takeUntil(this.destroy$)
             .do(
                 response => {
