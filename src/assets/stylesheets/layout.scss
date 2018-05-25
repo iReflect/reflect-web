@@ -155,3 +155,8 @@
         vertical-align: middle;
     }
 }
+
+// To make new lines visible in mat tooltip
+.mat-tooltip {
+    white-space: pre-line !important;
+}

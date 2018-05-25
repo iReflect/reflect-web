@@ -30,6 +30,15 @@
             <div [formGroupName]="taskProviderConfigKey">
                 <div *ngFor="let field of selectedTaskProviderConfigOptions['fields']" class="layout-row">
                     <mat-form-field class="flex">
+                        <mat-label>
+                            {{ field.FieldDisplayName }}
+                            <span *ngIf="field.Hint"
+                                  class="icon-tooltip"
+                                  matTooltipPosition="right"
+                                  [matTooltip]="field.Hint">
+                                <mat-icon>help</mat-icon>
+                            </span>
+                        </mat-label>
                         <input matInput [placeholder]="field.FieldDisplayName" [formControlName]="field.FieldName"/>
                     </mat-form-field>
                 </div>
