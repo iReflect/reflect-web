@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/observable/interval';
-
+import 'rxjs/add/operator/finally';
 import {
     API_RESPONSE_MESSAGES,
     AUTO_REFRESH_DURATION,
@@ -179,11 +179,13 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         if (!isAutoRefresh) {
             this.onRefreshStart.emit(true);
         }
-        this.getSprintMemberSummary(true, isAutoRefresh).subscribe(() => {}, () => {}, () => {
-            if (!isAutoRefresh) {
-                this.onRefreshEnd.emit(true);
-            }
-        });
+        this.getSprintMemberSummary(true, isAutoRefresh)
+            .finally(() => {
+                if (!isAutoRefresh) {
+                    this.onRefreshEnd.emit(true);
+                }
+            })
+            .subscribe();
     }
 
     getSprintMemberSummary(isRefresh = false, isAutoRefresh = false) {

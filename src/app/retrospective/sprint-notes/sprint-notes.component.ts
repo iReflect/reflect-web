@@ -14,6 +14,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/observable/interval';
+import 'rxjs/add/operator/finally';
 import { UtilsService } from '../../shared/utils/utils.service';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 
@@ -89,11 +90,13 @@ export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
         notesArray$.push(this.getTeamMembers(isRefresh, isAutoRefresh));
         notesArray$.push(this.getSprintGoals(isRefresh, isAutoRefresh));
         notesArray$.push(this.getSprintNotes(isRefresh, isAutoRefresh));
-        forkJoin(...notesArray$).subscribe(() => {}, () => {}, () => {
-            if (!isAutoRefresh) {
-                this.onRefreshEnd.emit(true);
-            }
-        });
+        forkJoin(...notesArray$)
+            .finally(() => {
+                if (!isAutoRefresh) {
+                    this.onRefreshEnd.emit(true);
+                }
+            })
+            .subscribe();
     }
 
     pauseRefresh() {
