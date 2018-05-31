@@ -1,3 +1,25 @@
-.icon-tooltip {
-    pointer-events: auto;
+.field-with-hint {
+    padding-bottom: 30px;
+
+    mat-hint {
+        display: flex;
+    }
+
+    mat-icon {
+        font-size: 24px;
+    }
+
+    span {
+        padding-left: 5px;
+        display: inline-block;
+        line-height: 15px;
+    }
+    /* stylelint-disable */
+    ::ng-deep .mat-form-field-subscript-wrapper {
+        /* stylelint-enable */
+        background-color: #f2f2f2;
+        margin-top: 0;
+        box-sizing: border-box;
+        padding: 7px 5px;
+    }
 }
