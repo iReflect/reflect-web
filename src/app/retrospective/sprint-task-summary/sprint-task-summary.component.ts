@@ -4,6 +4,7 @@ import { MatDialogRef } from '@angular/material/dialog/typings/dialog-ref';
 import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
 import 'rxjs/add/observable/interval';
 import 'rxjs/add/operator/takeUntil';
+import 'rxjs/add/operator/finally';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import {
@@ -171,13 +172,15 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
 
     refreshSprintTaskSummary(isAutoRefresh = false) {
         if (!isAutoRefresh) {
-            this.onRefreshEnd.emit(true);
+            this.onRefreshStart.emit(true);
         }
-        this.getSprintTaskSummary(true, isAutoRefresh).subscribe(() => {}, () => {}, () => {
-            if (!isAutoRefresh) {
-                this.onRefreshEnd.emit(true);
-            }
-        });
+        this.getSprintTaskSummary(true, isAutoRefresh)
+            .finally(() => {
+                if (!isAutoRefresh) {
+                    this.onRefreshEnd.emit(true);
+                }
+            })
+            .subscribe();
     }
 
     getSprintTaskSummary(isRefresh = false, isAutoRefresh = false) {

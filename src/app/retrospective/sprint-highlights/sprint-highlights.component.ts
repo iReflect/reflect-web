@@ -14,6 +14,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/observable/interval';
+import 'rxjs/add/operator/finally';
 import { UtilsService } from '../../shared/utils/utils.service';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 
@@ -91,11 +92,13 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
         highlightsArray$.push(this.getSprintHighlights(isRefresh, isAutoRefresh));
         highlightsArray$.push(this.getPendingGoals(isRefresh, isAutoRefresh));
         highlightsArray$.push(this.getAccomplishedGoals(isRefresh, isAutoRefresh));
-        forkJoin(...highlightsArray$).subscribe(() => {}, () => {}, () => {
-            if (!isAutoRefresh) {
-                this.onRefreshEnd.emit(true);
-            }
-        });
+        forkJoin(...highlightsArray$)
+            .finally(() => {
+                if (!isAutoRefresh) {
+                    this.onRefreshEnd.emit(true);
+                }
+            })
+            .subscribe();
     }
 
     pauseRefresh() {
