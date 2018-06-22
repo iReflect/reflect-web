@@ -13,9 +13,9 @@ jobs:
           command: |
             sudo npm install -g npm
             npm ci    
-      - run:
-          name: Test
-          command: npm test
+      #- run:
+      #    name: Test
+      #    command: npm test
       - run:
           name: Build artifacts
           command: ng build -prod
