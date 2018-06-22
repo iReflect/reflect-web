@@ -10,7 +10,9 @@ jobs:
       - checkout
       - run:
           name: Install dependencies
-          command: npm ci    
+          command: |
+            npm install -g npm
+            npm ci    
       - run:
           name: Test
           command: npm test
