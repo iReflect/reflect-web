@@ -34,6 +34,9 @@ export class SprintCreateComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this.destroy$.next(true);
         this.destroy$.complete();
+        if (this.dialogRef) {
+            this.dialogRef.close();
+        }
     }
 
     get titleControl() {
