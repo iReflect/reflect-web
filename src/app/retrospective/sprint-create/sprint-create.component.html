@@ -16,31 +16,44 @@
             </mat-form-field>
         </div>
         <div class="layout-row">
-            <mat-form-field class="flex">
-                <input matInput (click)="startDatePicker.open()" readonly formControlName="startDate"
-                       [matDatepicker]="startDatePicker" placeholder="Start date">
-                <button matSuffix (click)="clearValue(startDateControl)" mat-icon-button>
-                    <mat-icon>clear</mat-icon>
-                </button>
-                <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
-                <mat-datepicker #startDatePicker></mat-datepicker>
+            <div class="flex">
+                <div class="mat-input-flex mat-form-field-flex">
+                    <md2-datepicker #startDatePicker
+                                    class="sprint-datepicker"
+                                    type="datetime"
+                                    placeholder="Start Date"
+                                    formControlName="startDate"
+                                    [openOnFocus]="true"
+                                    [format]="md2DatePickerFormat"
+                                    mode="portrait">
+                    </md2-datepicker>
+                    <button matSuffix (click)="clearValue(startDateControl)" mat-icon-button>
+                        <mat-icon>clear</mat-icon>
+                    </button>
+                </div>
                 <mat-error *ngIf="startDateControl.invalid && startDateControl.hasError('startDateShouldExist')">
                     Start Date is required when end date is provided.
                 </mat-error>
-            </mat-form-field>
-            <mat-form-field class="flex">
-                <input matInput (click)="endDatePicker.open()" readonly [min]="startDateControl"
-                       formControlName="endDate"
-                       [matDatepicker]="endDatePicker" placeholder="End date">
-                <button matSuffix (click)="clearValue(endDateControl)" mat-icon-button>
-                    <mat-icon>clear</mat-icon>
-                </button>
-                <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
-                <mat-datepicker #endDatePicker></mat-datepicker>
+            </div>
+            <div class="flex">
+                <div class="mat-input-flex mat-form-field-flex">
+                    <md2-datepicker #endDatePicker
+                                    class="sprint-datepicker"
+                                    type="datetime"
+                                    placeholder="End Date"
+                                    formControlName="endDate"
+                                    [openOnFocus]="true"
+                                    [format]="md2DatePickerFormat"
+                                    mode="portrait">
+                    </md2-datepicker>
+                    <button matSuffix (click)="clearValue(endDateControl)" mat-icon-button>
+                        <mat-icon>clear</mat-icon>
+                    </button>
+                </div>
                 <mat-error *ngIf="endDateControl.invalid && endDateControl.hasError('endDateShouldExist')">
                     End date is required when start date is provided.
                 </mat-error>
-            </mat-form-field>
+            </div>
         </div>
         <mat-error *ngIf="errors.atleastOne">
             Atleast one of Start and End dates or Sprint ID fields is required.

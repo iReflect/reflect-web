@@ -16,3 +16,9 @@ mat-form-field {
 .toolbar-mat-select {
     font-size: 14px;
 }
+
+md2-datepicker {
+    .md2-datepicker-arrow {
+        display: none !important; // hide the drop-down icon used to open the date-picker
+    }
+}

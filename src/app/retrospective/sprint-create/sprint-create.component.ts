@@ -16,6 +16,7 @@ export class SprintCreateComponent implements OnInit, OnDestroy {
     disableButton = false;
     sprintFormGroup: FormGroup;
     errors: any = {};
+    md2DatePickerFormat = 'dd/MM/y H:mm A';
     private destroy$: Subject<boolean> = new Subject<boolean>();
 
     constructor(
