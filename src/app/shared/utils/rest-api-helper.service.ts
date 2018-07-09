@@ -20,9 +20,13 @@ export class RestApiHelperService {
         router: Router
     ) {
         this.restangular = restangular.withConfig(function (RestangularProvider) {
-            RestangularProvider.addErrorInterceptor((response) => {
+            RestangularProvider.addErrorInterceptor((response, subject) => {
                 if (response.status === 401) {
                     userStoreService.clearUserData();
+                    // The error interceptor prevents the observable linked to a Restangular request to be
+                    // executed, so we have to call it manually.
+                    // Refer: https://github.com/2muchcoffeecom/ngx-restangular#adderrorinterceptor
+                    subject.error(response);
                     const queryParams = {'error': LOGIN_ERROR_TYPES.unauthorized, 'returnUrl':  window.location.pathname};
                     router.navigate([APP_ROUTE_URLS.login], {queryParams: queryParams});
                     return false;
