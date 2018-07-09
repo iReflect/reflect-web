@@ -34,7 +34,6 @@ export class SprintCreateComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this.destroy$.next(true);
         this.destroy$.complete();
-        this.closeDialog();
     }
 
     get titleControl() {
@@ -117,12 +116,6 @@ export class SprintCreateComponent implements OnInit, OnDestroy {
                     this.disableButton = false;
                 },
                 err => {
-                    // If the user is un-authorized, then only close the modal. In all the other cases,
-                    // show the error message only.
-                    if (err.status === 401) {
-                        this.closeDialog();
-                        return;
-                    }
                     this.snackBar.open(
                         this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintCreateError,
                         '', {duration: SNACKBAR_DURATION});
