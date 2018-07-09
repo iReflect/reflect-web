@@ -292,7 +292,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
             {
                 headerName: 'Name',
                 colId: 'Name',
-                valueGetter: (params) => (params.data.FirstName + ' ' + params.data.LastName).trim(),
+                valueGetter: ({data: user}) => `${user.FirstName} ${user.LastName}`.trim(),
                 minWidth: 160,
                 pinned: true
             },
