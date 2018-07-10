@@ -60,7 +60,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
         private retrospectiveService: RetrospectiveService,
         private snackBar: MatSnackBar,
         private utils: UtilsService,
-        public dialogRef: MatDialogRef<RetrospectiveCreateComponent>,
+        public dialogRef: MatDialogRef<RetrospectTaskModalComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any
     ) {
         this.enableRefresh = data.enableRefresh;

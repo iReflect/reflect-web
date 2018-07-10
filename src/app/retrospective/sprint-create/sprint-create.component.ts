@@ -16,6 +16,7 @@ export class SprintCreateComponent implements OnInit, OnDestroy {
     disableButton = false;
     sprintFormGroup: FormGroup;
     errors: any = {};
+    md2DatePickerFormat = 'dd/MM/y H:mm A';
     private destroy$: Subject<boolean> = new Subject<boolean>();
 
     constructor(
@@ -112,7 +113,7 @@ export class SprintCreateComponent implements OnInit, OnDestroy {
                     this.snackBar.open(
                         API_RESPONSE_MESSAGES.sprintCreated,
                         '', {duration: SNACKBAR_DURATION});
-                    this.dialogRef.close(true);
+                    this.closeDialog(true);
                     this.disableButton = false;
                 },
                 err => {
@@ -125,6 +126,8 @@ export class SprintCreateComponent implements OnInit, OnDestroy {
     }
 
     closeDialog(result = false) {
-        this.dialogRef.close(result);
+        if (this.dialogRef) {
+            this.dialogRef.close(result);
+        }
     }
 }
