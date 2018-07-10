@@ -37,6 +37,7 @@
         "core-js": "^2.5.3",
         "hammerjs": "^2.0.8",
         "lodash": "^4.17.5",
+        "md2": "0.0.29",
         "moment": "^2.21.0",
         "ngx-cookie": "^2.0.1",
         "ngx-restangular": "^2.1.0",
