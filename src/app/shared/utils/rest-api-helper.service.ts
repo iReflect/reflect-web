@@ -4,7 +4,7 @@ import { Restangular } from 'ngx-restangular';
 import { APP_ROUTE_URLS, LOGIN_ERROR_TYPES } from '../../../constants/app-constants';
 import { environment } from '../../../environments/environment';
 import { UserStoreService } from '../stores/user.store.service';
-import {LoadingBarService} from '@ngx-loading-bar/core';
+import { LoadingBarService } from '@ngx-loading-bar/core';
 
 @Injectable()
 export class RestApiHelperService {
@@ -20,7 +20,7 @@ export class RestApiHelperService {
         router: Router
     ) {
         this.restangular = restangular.withConfig(function (RestangularProvider) {
-            RestangularProvider.addErrorInterceptor((response) => {
+            RestangularProvider.addErrorInterceptor(response => {
                 if (response.status === 401) {
                     userStoreService.clearUserData();
                     const queryParams = {'error': LOGIN_ERROR_TYPES.unauthorized, 'returnUrl':  window.location.pathname};
