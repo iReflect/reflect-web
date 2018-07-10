@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 import { SprintCreateComponent } from '../sprint-create/sprint-create.component';
 import { API_RESPONSE_MESSAGES, APP_ROUTE_URLS, DATE_FORMAT, SNACKBAR_DURATION } from '../../../constants/app-constants';
 import { SprintListComponent } from '../sprint-list/sprint-list.component';
@@ -20,6 +20,7 @@ export class RetrospectiveDashboardComponent implements OnInit, OnDestroy {
     dateFormat = DATE_FORMAT;
     isDataLoaded = false;
     private destroy$: Subject<boolean> = new Subject<boolean>();
+    private sprintCreateDialogRef: MatDialogRef<SprintCreateComponent>;
 
     @ViewChild('sprintList') private sprintList: SprintListComponent;
 
@@ -41,6 +42,9 @@ export class RetrospectiveDashboardComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this.destroy$.next(true);
         this.destroy$.complete();
+        if (this.sprintCreateDialogRef) {
+            this.sprintCreateDialogRef.close();
+        }
     }
 
     navigateToRetrospectives() {
@@ -69,7 +73,7 @@ export class RetrospectiveDashboardComponent implements OnInit, OnDestroy {
     }
 
     showNewSprintDialog() {
-        const dialogRef = this.dialog.open(SprintCreateComponent, {
+        this.sprintCreateDialogRef = this.dialog.open(SprintCreateComponent, {
             width: '70%',
             maxWidth: 950,
             data: {
@@ -77,7 +81,7 @@ export class RetrospectiveDashboardComponent implements OnInit, OnDestroy {
             }
         });
 
-        dialogRef.afterClosed().takeUntil(this.destroy$).subscribe(result => {
+        this.sprintCreateDialogRef.afterClosed().takeUntil(this.destroy$).subscribe(result => {
             if (result) {
                 this.refreshSprintsList();
             }
