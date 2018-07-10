@@ -292,9 +292,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
             {
                 headerName: 'Name',
                 colId: 'Name',
-                valueGetter: (params) => {
-                    return (params.data.FirstName + ' ' + params.data.LastName).trim();
-                },
+                valueGetter: ({data: user}) => `${user.FirstName} ${user.LastName}`.trim(),
                 minWidth: 160,
                 pinned: true
             },
@@ -302,15 +300,8 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                 headerName: 'Role',
                 field: 'Role',
                 minWidth: 110,
-                valueFormatter: (cellParams) => {
-                    if (!cellParams.data.Current) {
-                        return '';
-                    }
-                    return MEMBER_TASK_ROLES_LABEL[cellParams.value];
-                },
-                editable: (params: IsColumnFuncParams) => {
-                    return isSprintEditable && params.data.Current;
-                },
+                valueFormatter: (cellParams) => cellParams.data.Current ? MEMBER_TASK_ROLES_LABEL[cellParams.value] : '',
+                editable: (params: IsColumnFuncParams) => isSprintEditable && params.data.Current,
                 cellEditor: 'selectEditor',
                 cellEditorParams: {
                     selectOptions: _.map(MEMBER_TASK_ROLES_LABEL, (value, key) => {
@@ -330,18 +321,11 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
             {
                 headerName: 'Sprint Points',
                 field: 'SprintPoints',
-                editable: (params: IsColumnFuncParams) => {
-                    return isSprintEditable && params.data.Current;
-                },
+                editable: (params: IsColumnFuncParams) => isSprintEditable && params.data.Current,
                 minWidth: 100,
                 valueParser: 'Number(newValue)',
                 cellEditor: 'numericEditor',
-                valueFormatter: (cellParams) => {
-                    if (!cellParams.data.Current) {
-                        return 0;
-                    }
-                    return this.utils.formatFloat(cellParams.value);
-                },
+                valueFormatter: (cellParams) => cellParams.data.Current ? this.utils.formatFloat(cellParams.value) : 0,
                 onCellValueChanged: (cellParams: NewValueParams) => {
                     const valueChange = cellParams.newValue - cellParams.oldValue;
                     const newStoryPoints = this.totalTaskPoints + valueChange;
@@ -373,12 +357,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
             {
                 headerName: 'Sprint Hours',
                 field: 'SprintTime',
-                valueFormatter: (cellParams) => {
-                    if (!cellParams.data.Current) {
-                        return 0;
-                    }
-                    return this.utils.formatFloat(cellParams.value / 60);
-                },
+                valueFormatter: (cellParams) => cellParams.data.Current ? this.utils.formatFloat(cellParams.value / 60) : 0,
                 minWidth: 100
             },
             {
@@ -397,9 +376,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                 headerName: 'Rating',
                 field: 'Rating',
                 minWidth: 110,
-                editable: (params: IsColumnFuncParams) => {
-                    return isSprintEditable && params.data.Current;
-                },
+                editable: (params: IsColumnFuncParams) => isSprintEditable && params.data.Current,
                 cellEditor: 'selectEditor',
                 cellEditorParams: {
                     selectOptions: _.map(RATING_STATES_LABEL, (value, key) => {
@@ -428,19 +405,12 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                 field: 'Comment',
                 minWidth: 300,
                 tooltipField: 'Comment',
-                editable: (params: IsColumnFuncParams) => {
-                    return isSprintEditable && params.data.Current;
-                },
+                editable: (params: IsColumnFuncParams) => isSprintEditable && params.data.Current,
                 cellEditor: 'agLargeTextCellEditor',
                 cellEditorParams: {
                     maxLength: 1000
                 },
-                cellRendererParams: (cellParams) => {
-                    if (!cellParams.data.Current) {
-                        cellParams.value = '';
-                    }
-                    return cellParams;
-                },
+                valueFormatter: (cellParams) => cellParams.data.Current ? cellParams.value : '',
                 onCellValueChanged: (cellParams: NewValueParams) => {
                     if (cellParams.newValue !== cellParams.oldValue) {
                         this.updateSprintTaskMember(cellParams);
