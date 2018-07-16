@@ -4,7 +4,9 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 export const environment = {
-  production: false,
-  apiHostUrl: 'http://localhost:3000/',
-  baseApiUrl: 'api/v1/'
+    production: ${IS_PROD},
+    apiHostUrl: ${API_HOST_URL},
+    baseApiUrl: ${BASE_API_URL},
+    agGridLicenseKey: ${AG_GRID_LICENSE_KEY},
+    useAgGridEnterprise: ${USE_AG_GRID_ENTERPRISE},
 };
