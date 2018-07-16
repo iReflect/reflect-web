@@ -1,8 +1,12 @@
-<mat-expansion-panel (opened)="resizeAgGrid()" class="collapsible-retrospective-feedback">
+<mat-expansion-panel #matExpansionPanel (opened)="resizeAgGrid()" class="collapsible-retrospective-feedback">
     <mat-expansion-panel-header>
         <mat-panel-title>
-            <span class="retrospective-feedback-title"><b>{{title}}</b></span>
-            <span>&nbsp;({{ getDisplayedRowCount() }})</span>
+            <span class="retrospective-feedback-title"><b>{{title}}</b>&nbsp;({{ getDisplayedRowCount() }})</span>
+            <span class="fill-remaining-space"></span>
+            <button class="layout-side-margin" [class.hide-clear-filter]="!matExpansionPanel.expanded" mat-button (click)="clearFilters($event)">
+                <mat-icon>clear</mat-icon>
+                Clear Filters
+            </button>
         </mat-panel-title>
     </mat-expansion-panel-header>
 

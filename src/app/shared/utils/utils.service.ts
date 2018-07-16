@@ -25,10 +25,11 @@ export class UtilsService {
     }
 
     formatFloat(value) {
+        value = Number(value);
         if (!value) {
             return 0;
         }
-        if (value === Math.round(Number(value))) {
+        if (value === Math.round(value)) {
             return value;
         }
         return value.toFixed(2);

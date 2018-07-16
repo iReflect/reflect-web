@@ -25,6 +25,7 @@ import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.compon
 import * as _ from 'lodash';
 import { SelectCellEditorComponent } from '../../shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
 import { RatingRendererComponent } from '../../shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
+import { environment } from '../../../environments/environment';
 
 @Component({
     selector: 'app-sprint-task-summary',
@@ -129,8 +130,6 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             defaultColDef: {
                 width: 10,
             },
-            enableFilter: true,
-            enableSorting: true,
             frameworkComponents: {
                 'ratingEditor': SelectCellEditorComponent,
                 'ratingRenderer': RatingRendererComponent,
@@ -149,8 +148,17 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             singleClickEdit: true,
             suppressDragLeaveHidesColumns: true,
             suppressScrollOnNewData: true,
-            stopEditingWhenGridLosesFocus: true
+            stopEditingWhenGridLosesFocus: true,
+            onColumnVisible: (event) => this.gridApi.sizeColumnsToFit()
         };
+        if (environment.useAgGridEnterpise) {
+            this.gridOptions.enableFilter = true;
+            this.gridOptions.enableSorting = true;
+            this.gridOptions.floatingFilter = true;
+            this.gridOptions.toolPanelSuppressPivotMode = true;
+            this.gridOptions.toolPanelSuppressRowGroups = true;
+            this.gridOptions.toolPanelSuppressValues = true;
+        }
     }
 
     onGridReady(params) {
@@ -280,8 +288,11 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     },
                     pinned: true,
                     minWidth: 100,
-                    suppressSorting: true,
+                    suppressMenu: true,
                     suppressFilter: true,
+                    comparator: (valueA, valueB, nodeA, nodeB, isInverted) => {
+                        return !isInverted;
+                    }
                 }
             ];
         }
@@ -309,8 +320,11 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 tooltipField: 'Key',
                 minWidth: 130,
                 pinned: true,
-                suppressSorting: true,
-                suppressFilter: true,
+                filter: 'agSetColumnFilter',
+                filterParams: {
+                    newRowsAction: 'keep',
+                    clearButton: true,
+                },
             },
             {
                 headerName: 'Summary',
@@ -318,39 +332,50 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 field: 'Summary',
                 pinned: true,
                 minWidth: 300,
+                maxWidth: 500,
                 tooltipField: 'Summary',
-                suppressSorting: true,
-                suppressFilter: true,
+                filter: 'agTextColumnFilter',
+                filterParams: {
+                    newRowsAction: 'keep',
+                    clearButton: true,
+                },
             },
             {
                 headerName: 'Owner',
                 field: 'Owner',
                 tooltipField: 'Owner',
                 minWidth: 160,
-                suppressSorting: true,
-                suppressFilter: true,
+                filter: 'agTextColumnFilter',
+                filterParams: {
+                    newRowsAction: 'keep',
+                    clearButton: true,
+                },
             },
             {
                 headerName: 'Type',
                 headerClass: 'custom-ag-grid-header',
                 field: 'Type',
                 minWidth: 120,
-                filter: 'agTextColumnFilter',
+                filter: 'agSetColumnFilter',
                 filterParams: {
-                    debounceMs: 500,
-                    // To preserve the currently applied filters
-                    newRowsAction: 'keep'
-                }
+                    newRowsAction: 'keep',
+                    clearButton: true,
+                },
             },
             {
                 headerName: 'Status',
+                headerClass: 'custom-ag-grid-header',
                 field: 'Status',
                 minWidth: 110,
-                suppressSorting: true,
-                suppressFilter: true,
+                filter: 'agSetColumnFilter',
+                filterParams: {
+                    newRowsAction: 'keep',
+                    clearButton: true,
+                },
             },
             {
                 headerName: 'Rating',
+                headerClass: 'custom-ag-grid-header',
                 field: 'Rating',
                 minWidth: 120,
                 editable: isSprintEditable,
@@ -369,38 +394,46 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                         (cellParams.newValue >= this.ratingStates.RED && cellParams.newValue <= this.ratingStates.NOTABLE)) {
                         this.updateSprintTask(cellParams);
                     }
-                }
+                },
+                filter: 'agSetColumnFilter',
+                filterParams: {
+                    cellRenderer: 'ratingRenderer',
+                    newRowsAction: 'keep',
+                    suppressMiniFilter: true,
+                    clearButton: true,
+                    values: Object.keys(RATING_STATES_LABEL).sort()
+                },
             },
             {
                 headerName: 'Points',
+                headerClass: 'custom-ag-grid-header',
                 field: 'Estimate',
                 minWidth: 120,
-                suppressSorting: true,
                 suppressFilter: true,
                 valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value)
             },
             {
                 headerName: 'Sprint Points',
+                headerClass: 'custom-ag-grid-header',
                 field: 'PointsEarned',
                 valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value),
                 minWidth: 120,
-                suppressSorting: true,
                 suppressFilter: true,
             },
             {
                 headerName: 'Sprint Hours',
+                headerClass: 'custom-ag-grid-header',
                 field: 'SprintTime',
                 valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value / 60),
                 minWidth: 120,
-                suppressSorting: true,
                 suppressFilter: true,
             },
             {
                 headerName: 'Total Hours',
+                headerClass: 'custom-ag-grid-header',
                 field: 'TotalTime',
                 valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value / 60),
                 minWidth: 120,
-                suppressSorting: true,
                 suppressFilter: true,
             },
             {
@@ -408,8 +441,21 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 field: 'DoneAt',
                 minWidth: 170,
                 valueFormatter: (params) => this.utils.getDateFromString(params.value || ''),
-                suppressSorting: true,
-                suppressFilter: true,
+                filter: 'agDateColumnFilter',
+                filterParams: {
+                    newRowsAction: 'keep',
+                    clearButton: true,
+                    suppressAndOrCondition: true,
+                    comparator: (dateFilterValue, cellValue) => {
+                        const cellDateValue = new Date(cellValue);
+                        if (cellDateValue < dateFilterValue) {
+                            return -1;
+                        } else if (cellDateValue > dateFilterValue) {
+                            return 1;
+                        }
+                        return 0;
+                    },
+                },
             },
         ];
     }
@@ -466,6 +512,13 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                             '', {duration: SNACKBAR_DURATION});
                     }
                 );
+        }
+    }
+
+    clearFilters() {
+        if (this.gridApi) {
+            this.gridApi.setFilterModel(null);
+            this.gridApi.onFilterChanged();
         }
     }
 }

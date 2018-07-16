@@ -42,6 +42,10 @@
     <mat-toolbar class="small-toolbar" color="primary">
         <b>Members&nbsp;({{ getDisplayedRowCount() }})</b>
         <span class="fill-remaining-space"></span>
+        <button class="layout-side-margin" mat-button (click)="clearFilters()">
+            <mat-icon>clear</mat-icon>
+            Clear Filters
+        </button>
         <button mat-button (click)="getSprintTaskMemberSummary(true)" class="layout-side-margin">
             <mat-icon>refresh</mat-icon>
             Refresh

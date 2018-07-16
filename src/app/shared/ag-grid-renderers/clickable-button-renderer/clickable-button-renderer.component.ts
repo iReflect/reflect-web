@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ICellRendererAngularComp } from 'ag-grid-angular';
-import {ICellRendererParams} from 'ag-grid';
+import { ICellRendererParams } from 'ag-grid';
 import * as _ from 'lodash';
 
 @Component({
