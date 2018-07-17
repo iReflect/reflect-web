@@ -402,7 +402,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                 minWidth: 100,
                 valueFormatter: (cellParams) => {
                     if (cellParams.data) {
-                        return cellParams.data.Current ? this.utils.formatFloat(cellParams.value) : 0;
+                        return this.utils.formatFloat(cellParams.value);
                     }
                 },
                 suppressFilter: true,
@@ -412,7 +412,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                 field: 'TotalTime',
                 valueFormatter: (cellParams) => {
                     if (cellParams.data) {
-                        return cellParams.data.Current ? this.utils.formatFloat(cellParams.value / 60) : 0;
+                        return this.utils.formatFloat(cellParams.value / 60);
                     }
                 },
                 minWidth: 100,
