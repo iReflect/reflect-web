@@ -127,7 +127,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
             suppressScrollOnNewData: true,
             onColumnVisible: (event) => this.gridApi.sizeColumnsToFit()
         };
-        if (environment.useAgGridEnterpise) {
+        if (environment.useAgGridEnterprise) {
             this.gridOptions.enableFilter = true;
             this.gridOptions.enableSorting = true;
             this.gridOptions.floatingFilter = true;

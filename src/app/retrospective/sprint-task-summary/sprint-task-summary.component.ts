@@ -151,7 +151,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             stopEditingWhenGridLosesFocus: true,
             onColumnVisible: (event) => this.gridApi.sizeColumnsToFit()
         };
-        if (environment.useAgGridEnterpise) {
+        if (environment.useAgGridEnterprise) {
             this.gridOptions.enableFilter = true;
             this.gridOptions.enableSorting = true;
             this.gridOptions.floatingFilter = true;

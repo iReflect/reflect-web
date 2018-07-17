@@ -149,7 +149,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
             suppressScrollOnNewData: true,
             onColumnVisible: (event) => this.gridApi.sizeColumnsToFit()
         };
-        if (environment.useAgGridEnterpise) {
+        if (environment.useAgGridEnterprise) {
             this.gridOptions.enableFilter = true;
             this.gridOptions.enableSorting = true;
             this.gridOptions.floatingFilter = true;
