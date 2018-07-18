@@ -14,4 +14,6 @@ if (environment.production) {
 platformBrowserDynamic().bootstrapModule(AppModule)
     .catch(err => console.log(err));
 
-LicenseManager.setLicenseKey(environment.agGridLicenseKey);
+if (environment.useAgGridEnterprise) {
+    LicenseManager.setLicenseKey(environment.agGridLicenseKey);
+}
