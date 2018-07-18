@@ -30,8 +30,8 @@ mat-row {
         color: #000;
         font-weight: bold;
         line-height: 16px !important;
-        padding: 12px;
-        margin: 3px 0 0 -3px;
+        padding: 12px !important;
+        margin: 3px 0 0 -3px !important;
     }
 
     .ag-cell.ag-cell-not-inline-editing {

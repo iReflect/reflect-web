@@ -21,6 +21,7 @@ import { RatingRendererComponent } from '../../shared/ag-grid-renderers/rating-r
 import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.component';
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
 import { UtilsService } from '../../shared/utils/utils.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
     selector: 'app-sprint-member-summary',
@@ -146,8 +147,17 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             singleClickEdit: true,
             suppressDragLeaveHidesColumns: true,
             suppressScrollOnNewData: true,
-            stopEditingWhenGridLosesFocus: true
+            stopEditingWhenGridLosesFocus: true,
+            onColumnVisible: (event) => this.gridApi.sizeColumnsToFit()
         };
+        if (environment.useAgGridEnterprise) {
+            this.gridOptions.enableFilter = true;
+            this.gridOptions.enableSorting = true;
+            this.gridOptions.floatingFilter = true;
+            this.gridOptions.toolPanelSuppressPivotMode = true;
+            this.gridOptions.toolPanelSuppressRowGroups = true;
+            this.gridOptions.toolPanelSuppressValues = true;
+        }
     }
 
     onGridReady(params) {
@@ -314,7 +324,10 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                     onClick: this.deleteSprintMember.bind(this)
                 },
                 minWidth: 100,
-                cellClass: 'delete-column'
+                cellClass: 'delete-column',
+                suppressMenu: true,
+                suppressSorting: true,
+                suppressFilter: true,
             };
         }
         const columnDefs = [
@@ -325,14 +338,20 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                     return (cellParams.data.FirstName + ' ' + cellParams.data.LastName).trim();
                 },
                 minWidth: 160,
+                filter: 'agSetColumnFilter',
+                filterParams: {
+                    newRowsAction: 'keep',
+                    clearButton: true,
+                },
                 pinned: true
-
             },
             {
                 headerName: 'Allocation',
+                headerClass: 'custom-ag-grid-header',
                 field: 'AllocationPercent',
                 editable: isSprintEditable,
                 minWidth: 130,
+                suppressFilter: true,
                 valueParser: 'Number(newValue)',
                 cellEditor: 'numericEditor',
                 cellEditorParams: {
@@ -355,9 +374,11 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             },
             {
                 headerName: 'Expectation',
+                headerClass: 'custom-ag-grid-header',
                 field: 'ExpectationPercent',
                 editable: isSprintEditable,
                 minWidth: 140,
+                suppressFilter: true,
                 valueParser: 'Number(newValue)',
                 cellEditor: 'numericEditor',
                 cellEditorParams: {
@@ -380,9 +401,11 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             },
             {
                 headerName: 'Vacations',
+                headerClass: 'custom-ag-grid-header',
                 field: 'Vacations',
                 editable: isSprintEditable,
                 minWidth: 130,
+                suppressFilter: true,
                 valueParser: 'Number(newValue)',
                 cellEditor: 'numericEditor',
                 cellEditorParams: {
@@ -411,24 +434,31 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             },
             {
                 headerName: 'Expected Points',
+                headerClass: 'custom-ag-grid-header',
                 field: 'ExpectedStoryPoint',
                 minWidth: 130,
+                suppressFilter: true,
                 valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value)
             },
             {
                 headerName: 'Actual Points',
+                headerClass: 'custom-ag-grid-header',
                 field: 'ActualStoryPoint',
                 minWidth: 120,
+                suppressFilter: true,
                 valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value)
             },
             {
                 headerName: 'Sprint Hours',
+                headerClass: 'custom-ag-grid-header',
                 field: 'TotalTimeSpentInMin',
                 minWidth: 120,
+                suppressFilter: true,
                 valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value / 60),
             },
             {
                 headerName: 'Rating',
+                headerClass: 'custom-ag-grid-header',
                 field: 'Rating',
                 minWidth: 120,
                 editable: isSprintEditable,
@@ -447,7 +477,15 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                         (cellParams.newValue >= this.ratingStates.RED && cellParams.newValue <= this.ratingStates.NOTABLE)) {
                         this.updateSprintMember(cellParams);
                     }
-                }
+                },
+                filter: 'agSetColumnFilter',
+                filterParams: {
+                    cellRenderer: 'ratingRenderer',
+                    newRowsAction: 'keep',
+                    suppressMiniFilter: true,
+                    clearButton: true,
+                    values: Object.keys(RATING_STATES_LABEL).sort()
+                },
             },
             {
                 headerName: 'Comments',
@@ -458,6 +496,11 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                 cellEditor: 'agLargeTextCellEditor',
                 cellEditorParams: {
                     maxLength: 1000
+                },
+                filter: 'agTextColumnFilter',
+                filterParams: {
+                    newRowsAction: 'keep',
+                    clearButton: true,
                 },
                 onCellValueChanged: (cellParams) => {
                     if (cellParams.newValue !== cellParams.oldValue) {
@@ -475,5 +518,12 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
 
     getDisplayedRowCount() {
         return (this.gridApi && this.gridApi.getDisplayedRowCount()) || 0;
+    }
+
+    clearFilters() {
+        if (this.gridApi) {
+            this.gridApi.setFilterModel(null);
+            this.gridApi.onFilterChanged();
+        }
     }
 }

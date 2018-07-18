@@ -2,6 +2,11 @@
     <mat-toolbar class="small-toolbar" color="primary">
         <span><b>Issues&nbsp;({{ getDisplayedRowCount() }})</b></span>
         <span class="fill-remaining-space"></span>
+        <button class="layout-side-margin" mat-button (click)="clearFilters()">
+            <mat-icon>clear</mat-icon>
+            Clear Filters
+        </button>
+        <span ></span>
     </mat-toolbar>
     <div class="ag-grid-container dynamic-grid-height -adjust-tabs">
         <ag-grid-angular

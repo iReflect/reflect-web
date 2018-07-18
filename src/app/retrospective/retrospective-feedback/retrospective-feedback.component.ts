@@ -21,6 +21,7 @@ import { RetrospectiveService } from '../../shared/services/retrospective.servic
 import { UtilsService } from '../../shared/utils/utils.service';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
+import { environment } from '../../../environments/environment';
 
 @Component({
     selector: 'app-retrospective-feedback',
@@ -123,8 +124,17 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
             singleClickEdit: true,
             stopEditingWhenGridLosesFocus: true,
             suppressDragLeaveHidesColumns: true,
-            suppressScrollOnNewData: true
+            suppressScrollOnNewData: true,
+            onColumnVisible: (event) => this.gridApi.sizeColumnsToFit()
         };
+        if (environment.useAgGridEnterprise) {
+            this.gridOptions.enableFilter = true;
+            this.gridOptions.enableSorting = true;
+            this.gridOptions.floatingFilter = true;
+            this.gridOptions.toolPanelSuppressPivotMode = true;
+            this.gridOptions.toolPanelSuppressRowGroups = true;
+            this.gridOptions.toolPanelSuppressValues = true;
+        }
     }
 
     onGridReady(params) {
@@ -331,10 +341,16 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                     if (cellParams.newValue !== cellParams.oldValue) {
                         this.updateRetroFeedback(cellParams);
                     }
-                }
+                },
+                filter: 'agTextColumnFilter',
+                filterParams: {
+                    newRowsAction: 'keep',
+                    clearButton: true,
+                },
             },
             {
                 headerName: 'Scope',
+                headerClass: 'custom-ag-grid-header',
                 field: 'Scope',
                 minWidth: 110,
                 editable: editable,
@@ -352,7 +368,14 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                     if (cellParams.newValue !== cellParams.oldValue) {
                         this.updateRetroFeedback(cellParams);
                     }
-                }
+                },
+                filter: 'agSetColumnFilter',
+                filterParams: {
+                    suppressMiniFilter: true,
+                    newRowsAction: 'keep',
+                    clearButton: true,
+                    values: Object.keys(RETRO_FEEDBACK_SCOPE_LABELS).sort()
+                },
             },
             {
                 headerName: 'Assignee',
@@ -374,19 +397,46 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                 cellEditor: 'selectEditor',
                 cellEditorParams: {
                     selectOptions: this.getTeamMemberOptions(teamMembers),
-                }
+                },
+                filter: 'agSetColumnFilter',
+                filterParams: {
+                    suppressMiniFilter: true,
+                    newRowsAction: 'keep',
+                    clearButton: true
+                },
             },
             {
                 headerName: 'Added At',
                 field: 'AddedAt',
                 minWidth: 160,
-                valueFormatter: (cellParams) => this.utils.getDateFromString(cellParams.value || '')
+                valueFormatter: (cellParams) => this.utils.getDateFromString(cellParams.value || ''),
+                filter: 'agDateColumnFilter',
+                filterParams: {
+                    suppressMiniFilter: true,
+                    newRowsAction: 'keep',
+                    clearButton: true,
+                    comparator: (dateFilterValue, cellValue) => {
+                        const cellDateValue = new Date(cellValue);
+                        if (cellDateValue < dateFilterValue) {
+                            return -1;
+                        } else if (cellDateValue > dateFilterValue) {
+                            return 1;
+                        }
+                        return 0;
+                    },
+                },
             },
             {
                 headerName: 'Created By',
                 field: 'CreatedBy',
                 minWidth: 160,
-                valueFormatter: (cellParams) => cellParams.value && (cellParams.value.FirstName + ' ' + cellParams.value.LastName).trim()
+                valueFormatter: (cellParams) => cellParams.value && (cellParams.value.FirstName + ' ' + cellParams.value.LastName).trim(),
+                filter: 'agSetColumnFilter',
+                filterParams: {
+                    suppressMiniFilter: true,
+                    newRowsAction: 'keep',
+                    clearButton: true
+                },
             },
         ];
 
@@ -406,7 +456,22 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                         if (!cellParams.newValue || cellParams.newValue !== cellParams.oldValue) {
                             this.updateRetroFeedback(cellParams);
                         }
-                    }
+                    },
+                    filter: 'agDateColumnFilter',
+                    filterParams: {
+                        suppressMiniFilter: true,
+                        newRowsAction: 'keep',
+                        clearButton: true,
+                        comparator: (dateFilterValue, cellValue) => {
+                            const cellDateValue = new Date(cellValue);
+                            if (cellDateValue < dateFilterValue) {
+                                return -1;
+                            } else if (cellDateValue > dateFilterValue) {
+                                return 1;
+                            }
+                            return 0;
+                        },
+                    },
                 },
             ];
 
@@ -419,6 +484,9 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                         label: 'Mark Resolved',
                         onClick: this.resolveSprintGoal.bind(this)
                     },
+                    suppressMenu: true,
+                    suppressSorting: true,
+                    suppressFilter: true,
                 }
             ];
 
@@ -427,8 +495,23 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                     headerName: 'Resolved At',
                     field: 'ResolvedAt',
                     minWidth: 150,
-                    valueFormatter: (cellParams) => this.utils.getDateFromString(cellParams.value || '')
-                }
+                    valueFormatter: (cellParams) => this.utils.getDateFromString(cellParams.value || ''),
+                    filter: 'agDateColumnFilter',
+                    filterParams: {
+                        suppressMiniFilter: true,
+                        newRowsAction: 'keep',
+                        clearButton: true,
+                        comparator: (dateFilterValue, cellValue) => {
+                            const cellDateValue = new Date(cellValue);
+                            if (cellDateValue < dateFilterValue) {
+                                return -1;
+                            } else if (cellDateValue > dateFilterValue) {
+                                return 1;
+                            }
+                            return 0;
+                        },
+                    },
+                },
             ];
 
             const activeSprintAccomplishedGoalColumn = [
@@ -440,9 +523,11 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                         label: 'Mark Unresolved',
                         onClick: this.unresolveSprintGoal.bind(this)
                     },
-                }
+                    suppressMenu: true,
+                    suppressSorting: true,
+                    suppressFilter: true,
+                },
             ];
-
 
             columnDefs = [...columnDefs, ...goalSpecificColumn];
             if (this.feedbackSubType === this.goalTypes.COMPLETED) {
@@ -457,5 +542,13 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
             }
         }
         return columnDefs;
+    }
+
+    clearFilters(event) {
+        if (this.gridApi) {
+            this.gridApi.setFilterModel(null);
+            this.gridApi.onFilterChanged();
+        }
+        event.stopPropagation();
     }
 }
