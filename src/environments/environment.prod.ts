@@ -1,7 +1,7 @@
 export const environment = {
     production: true,
-    apiHostUrl: '',
-    baseApiUrl: '',
+    apiHostUrl: 'https://ireflect-api.jtg.tools',
+    baseApiUrl: '/api/v1/',
     agGridLicenseKey: '',
     useAgGridEnterprise: false,
 };
