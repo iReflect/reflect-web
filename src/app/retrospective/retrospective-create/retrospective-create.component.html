@@ -9,10 +9,17 @@
     </mat-toolbar>
     <div class="table-box padded-container">
         <div class="full-width-form">
-            <mat-form-field>
-                <input matInput type="number" min="0" formControlName="storyPointPerWeek"
-                       placeholder="Expected Points Per Week Per Person">
-            </mat-form-field>
+            <div class="flex">
+                <mat-form-field>
+                    <input matInput formControlName="title" placeholder="Retrospective Title">
+                </mat-form-field>
+            </div>
+            <div class="flex">
+                <mat-form-field>
+                    <input matInput type="number" min="0" formControlName="storyPointPerWeek"
+                           placeholder="Expected Points Per Week Per Person">
+                </mat-form-field>
+            </div>
         </div>
     </div>
     <mat-toolbar class="small-toolbar">
