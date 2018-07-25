@@ -60,3 +60,15 @@ For more information, see [ng test](https://github.com/angular/angular-cli/wiki/
 Run `npm e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
 
 For more information, see [ng e2e](https://github.com/angular/angular-cli/wiki/e2e) command. 
+
+## Contributing
+- Get the package or fork the repo:
+    ```
+    git clone git@github.com:iReflect/reflect-web.git
+    ```
+- Set your fork as a remote:
+    ```
+    git remote add fork git@github.com:GITHUB_USERNAME/reflect-web.git
+    ```
+- Make changes, commit to your fork.
+- Send a pull request with your changes.
