@@ -14,6 +14,7 @@ import { throwIfAlreadyLoaded } from './module-import-guard';
 import { AnonymousRequiredGuard } from './route-guards/anonymous-required.service';
 // Import Custom Services
 import { LoginRequiredGuard } from './route-guards/login-required.service';
+import { IsMaintenanceModeActiveGuard } from './route-guards/is-maintenance-mode-active.service';
 import { RestangularModule } from 'ngx-restangular';
 
 // Import LoadingBarModule:
@@ -52,6 +53,7 @@ export function RestangularConfigFactory(RestangularProvider, loaderService) {
         LoggerService,
         LoginRequiredGuard,
         AnonymousRequiredGuard,
+        IsMaintenanceModeActiveGuard,
         {provide: MAT_DATE_LOCALE, useValue: 'en'},
         {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
         {provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS},

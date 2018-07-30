@@ -25,7 +25,7 @@ import {
     SuppressKeyboardEventParams
 } from 'ag-grid/src/ts/entities/colDef';
 import { AfterViewChecked } from '@angular/core/src/metadata/lifecycle_hooks';
-import { environment } from '../../../environments/environment';
+import { AppConfig } from '../../app.config';
 
 @Component({
     selector: 'app-retrospect-task-modal',
@@ -149,7 +149,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
             suppressScrollOnNewData: true,
             onColumnVisible: (event) => this.gridApi.sizeColumnsToFit()
         };
-        if (environment.useAgGridEnterprise) {
+        if (AppConfig.settings.agGridSettings.useEnterprise) {
             this.gridOptions.enableFilter = true;
             this.gridOptions.enableSorting = true;
             this.gridOptions.floatingFilter = true;

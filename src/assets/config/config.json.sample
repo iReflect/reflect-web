@@ -1,0 +1,13 @@
+{
+    "env": {
+        "name": "<env-name>"
+    },
+    "apiServer": {
+        "hostUrl": "",
+        "baseUrl": ""
+    },
+    "agGridSettings": {
+        "useEnterprise": false,
+        "licenseKey": ""
+    }
+}

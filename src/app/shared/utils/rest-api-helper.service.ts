@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Restangular } from 'ngx-restangular';
-import { APP_ROUTE_URLS, LOGIN_ERROR_TYPES } from '../../../constants/app-constants';
-import { environment } from '../../../environments/environment';
-import { UserStoreService } from '../stores/user.store.service';
+
+import * as _ from 'lodash';
 import { LoadingBarService } from '@ngx-loading-bar/core';
+import { Restangular } from 'ngx-restangular';
+
+import { AppConfig } from '../../app.config';
+import { APP_ROUTE_URLS, LOGIN_ERROR_TYPES } from '../../../constants/app-constants';
+import { UserStoreService } from '../stores/user.store.service';
 
 @Injectable()
 export class RestApiHelperService {
@@ -37,7 +40,9 @@ export class RestApiHelperService {
     public getBasicDataApiHelper() {
         if (!this.dataRestangular) {
             this.dataRestangular = this.restangular.withConfig((RestangularProvider) => {
-                RestangularProvider.setBaseUrl(environment.apiHostUrl + environment.baseApiUrl);
+                if (!_.isEmpty(AppConfig.settings)) {
+                    RestangularProvider.setBaseUrl(`${AppConfig.settings.apiServer.hostUrl}${AppConfig.settings.apiServer.baseUrl}`);
+                }
             });
         }
         return this.dataRestangular;
@@ -46,7 +51,9 @@ export class RestApiHelperService {
     public getDataApiHelperWithLoader() {
         if (!this.dataRestangularWithLoader) {
             this.dataRestangularWithLoader = this.restangular.withConfig((RestangularProvider) => {
-                RestangularProvider.setBaseUrl(environment.apiHostUrl + environment.baseApiUrl);
+                if (!_.isEmpty(AppConfig.settings)) {
+                    RestangularProvider.setBaseUrl(`${AppConfig.settings.apiServer.hostUrl}${AppConfig.settings.apiServer.baseUrl}`);
+                }
                 RestangularProvider.addFullRequestInterceptor((element, operation, path, url, headers, params) => {
                     this.loaderService.start();
                     return {
@@ -71,7 +78,9 @@ export class RestApiHelperService {
     public getAuthApiHelper() {
         if (!this.authRestangular) {
             this.authRestangular = this.restangular.withConfig((RestangularProvider) => {
-                RestangularProvider.setBaseUrl(environment.apiHostUrl);
+                if (!_.isEmpty(AppConfig.settings)) {
+                    RestangularProvider.setBaseUrl(AppConfig.settings.apiServer.hostUrl);
+                }
             });
         }
         return this.authRestangular;

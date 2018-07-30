@@ -21,7 +21,7 @@ import { RetrospectiveService } from '../../shared/services/retrospective.servic
 import { UtilsService } from '../../shared/utils/utils.service';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
-import { environment } from '../../../environments/environment';
+import { AppConfig } from '../../app.config';
 
 @Component({
     selector: 'app-retrospective-feedback',
@@ -127,7 +127,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
             suppressScrollOnNewData: true,
             onColumnVisible: (event) => this.gridApi.sizeColumnsToFit()
         };
-        if (environment.useAgGridEnterprise) {
+        if (AppConfig.settings.agGridSettings.useEnterprise) {
             this.gridOptions.enableFilter = true;
             this.gridOptions.enableSorting = true;
             this.gridOptions.floatingFilter = true;

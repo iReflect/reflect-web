@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { APP_ROUTE_URLS, LOGIN_ERROR_MESSAGES, LOGIN_ERROR_TYPES, LOGIN_STATES } from '../../../constants/app-constants';
 import { AuthService } from '../../shared/services/auth.service';
 import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/operator/finally';
 import 'rxjs/add/operator/takeUntil';
 import { OAuthCallbackService } from '../../shared/services/o-auth-callback.service';
 import { UserStoreService } from '../../shared/stores/user.store.service';
@@ -38,6 +39,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+        this.setReturnURL();
         this.setLoginUrl();
         this.setErrorIfExist();
     }
@@ -69,8 +71,12 @@ export class LoginComponent implements OnInit, OnDestroy {
         }
     }
 
-    setLoginUrl() {
+    setReturnURL() {
         this.returnURL = this.route.snapshot.queryParams['returnUrl'] || APP_ROUTE_URLS.forwardSlash;
+    }
+
+    setLoginUrl() {
+        this.loginUrl = '';
         this.authService.login()
             .takeUntil(this.destroy$)
             .subscribe(response => this.loginUrl = response.data['LoginURL']);
@@ -100,6 +106,9 @@ export class LoginComponent implements OnInit, OnDestroy {
         }
         this.authService.auth(queryParams)
             .takeUntil(this.destroy$)
+            .finally(() => {
+                this.isAuthorizing = false;
+            })
             .subscribe(
             response => {
                 this.userStoreService.updateUserData(response.data);
@@ -113,9 +122,8 @@ export class LoginComponent implements OnInit, OnDestroy {
                 } else {
                     this.error(LOGIN_ERROR_TYPES.internalError);
                 }
-            },
-            () => {
-                this.isAuthorizing = false;
+                // Reset the login URL if the authentication fails, so that user can login again without page refresh.
+                this.setLoginUrl();
             }
         );
     }
