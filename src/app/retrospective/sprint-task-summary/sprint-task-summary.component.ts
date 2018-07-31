@@ -341,6 +341,17 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 },
             },
             {
+                headerName: 'Assignee',
+                field: 'Assignee',
+                tooltipField: 'Assignee',
+                minWidth: 160,
+                filter: 'agTextColumnFilter',
+                filterParams: {
+                    newRowsAction: 'keep',
+                    clearButton: true,
+                },
+            },
+            {
                 headerName: 'Owner',
                 field: 'Owner',
                 tooltipField: 'Owner',
@@ -428,6 +439,14 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 headerName: 'Sprint Points',
                 headerClass: 'custom-ag-grid-header',
                 field: 'PointsEarned',
+                valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value),
+                minWidth: 120,
+                suppressFilter: true,
+            },
+            {
+                headerName: 'Total Points Earned',
+                headerClass: 'custom-ag-grid-header task-summary-long-header',
+                field: 'TotalPointsEarned',
                 valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value),
                 minWidth: 120,
                 suppressFilter: true,

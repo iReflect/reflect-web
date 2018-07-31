@@ -16,7 +16,7 @@ import 'rxjs/add/operator/takeUntil';
 })
 export class RetrospectiveListComponent implements OnInit, OnDestroy {
     dataSource: RetrospectiveListDataSource;
-    displayedColumns = ['team', 'created_at', 'latest_sprint'];
+    displayedColumns = ['title', 'team', 'created_at', 'latest_sprint'];
     private destroy$: Subject<boolean> = new Subject<boolean>();
 
     constructor(
