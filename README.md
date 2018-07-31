@@ -62,13 +62,15 @@ Run `npm e2e` to execute the end-to-end tests via [Protractor](http://www.protra
 For more information, see [ng e2e](https://github.com/angular/angular-cli/wiki/e2e) command. 
 
 ## Contributing
-- Get the package or fork the repo:
+- Fork the repo under your Github account.
+- Get the package:
     ```
-    git clone git@github.com:iReflect/reflect-web.git
+    git clone git@github.com:GITHUB_USERNAME/reflect-web.git
     ```
 - Set your fork as a remote:
     ```
     git remote add fork git@github.com:GITHUB_USERNAME/reflect-web.git
     ```
+- File a ticket in our issue tracker [iReflect-Kanban](https://ireflect.atlassian.net/).
 - Make changes, commit to your fork.
 - Send a pull request with your changes.
