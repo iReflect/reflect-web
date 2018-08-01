@@ -1,6 +1,17 @@
 <div class="retrospect-task app-dialog">
     <h2 mat-dialog-title>
-        {{taskDetails.Key}}<span *ngIf="taskDetails.Summary"> : {{taskDetails.Summary}}</span>
+        <span *ngIf="taskDetails.Url; then taskUrl else taskKey"></span>
+        <ng-template #taskUrl>
+            <a class="task-link"
+               [href]="taskDetails.Url"
+               target="_blank">
+                {{taskDetails.Key}}
+            </a>
+        </ng-template>
+        <ng-template #taskKey>
+            {{taskDetails.Key}}
+        </ng-template>
+        <span *ngIf="taskDetails.Summary"> : {{taskDetails.Summary}}</span>
     </h2>
     <button mat-icon-button class="close-icon" tabindex="-1" (click)="closeDialog()">
         <mat-icon>clear</mat-icon>

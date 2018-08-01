@@ -2,6 +2,7 @@ import { Component, EventEmitter, HostListener, Input, OnChanges, OnDestroy, OnI
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { MatDialogRef } from '@angular/material/dialog/typings/dialog-ref';
 import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
+import { CellClickedEvent } from 'ag-grid/src/ts/events';
 import 'rxjs/add/observable/interval';
 import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/operator/finally';
@@ -226,6 +227,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         this.autoRefreshCurrentState = false;
         this.dialogRef = this.dialog.open(RetrospectTaskModalComponent, {
             width: '90%',
+            autoFocus: false,
             data: {
                 taskDetails: sprintTaskSummaryData,
                 sprintID: this.sprintID,
@@ -316,6 +318,12 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             {
                 headerName: 'ID',
                 headerClass: 'custom-ag-grid-header task-summary-id-header',
+                cellClass: (params) => {
+                    if (!params.data.IsTrackerTask) {
+                        return;
+                    }
+                    return 'custom-ag-grid-anchor-cell';
+                },
                 field: 'Key',
                 tooltipField: 'Key',
                 minWidth: 130,
@@ -325,6 +333,9 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     newRowsAction: 'keep',
                     clearButton: true,
                 },
+                onCellClicked: (event: CellClickedEvent) => {
+                    window.open(event.data.Url);
+                }
             },
             {
                 headerName: 'Summary',

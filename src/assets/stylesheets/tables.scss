@@ -133,3 +133,14 @@ mat-row {
         padding: 4px !important;
     }
 }
+
+.custom-ag-grid-anchor-cell {
+    display: inline-block;
+    text-decoration: none;
+
+    &:hover,
+    &:active {
+        color: $primary;
+        text-decoration: underline;
+    }
+}
