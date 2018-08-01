@@ -341,6 +341,17 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 },
             },
             {
+                headerName: 'Assignee',
+                field: 'Assignee',
+                tooltipField: 'Assignee',
+                minWidth: 160,
+                filter: 'agTextColumnFilter',
+                filterParams: {
+                    newRowsAction: 'keep',
+                    clearButton: true,
+                },
+            },
+            {
                 headerName: 'Owner',
                 field: 'Owner',
                 tooltipField: 'Owner',
