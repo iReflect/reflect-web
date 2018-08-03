@@ -22,6 +22,7 @@ import { UtilsService } from '../../shared/utils/utils.service';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import { AppConfig } from '../../app.config';
+import { SuppressKeyboardEventParams } from 'ag-grid/src/ts/entities/colDef';
 
 @Component({
     selector: 'app-retrospective-feedback',
@@ -342,6 +343,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                         this.updateRetroFeedback(cellParams);
                     }
                 },
+                suppressKeyboardEvent: (event: SuppressKeyboardEventParams) => this.utils.isAgGridEditingEvent(event),
                 filter: 'agTextColumnFilter',
                 filterParams: {
                     newRowsAction: 'keep',
