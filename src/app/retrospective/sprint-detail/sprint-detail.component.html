@@ -35,7 +35,7 @@
             {{sprintActionsLabel[sprintActions.FREEZE]}}
         </button>
         <button mat-raised-button class="layout-side-margin" color="primary"
-                *ngIf="sprintStatus !== sprintStates.FROZEN && sprintDetails.Editable" (click)="discardSprint()">
+                *ngIf="sprintStatus !== sprintStates.FROZEN && sprintDetails.Editable" (click)="discardSprint()" [disabled]="!sprintDetails.Deletable">
             {{sprintActionsLabel[sprintActions.DISCARD]}}
         </button>
         <button mat-raised-button color="primary"
