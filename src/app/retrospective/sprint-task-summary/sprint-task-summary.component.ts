@@ -318,12 +318,6 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             {
                 headerName: 'ID',
                 headerClass: 'custom-ag-grid-header task-summary-id-header',
-                cellClass: (params) => {
-                    if (!params.data.IsTrackerTask) {
-                        return;
-                    }
-                    return 'custom-ag-grid-anchor-cell';
-                },
                 field: 'Key',
                 tooltipField: 'Key',
                 minWidth: 130,
@@ -333,8 +327,11 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     newRowsAction: 'keep',
                     clearButton: true,
                 },
-                onCellClicked: (event: CellClickedEvent) => {
-                    window.open(event.data.Url);
+                cellRenderer: (params) => {
+                    if (!params.data.IsTrackerTask || !params.data.URL) {
+                        return params.data.Key;
+                    }
+                    return `<a class="custom-ag-grid-anchor-cell" target="_blank" href="${params.data.URL}">${params.data.Key}</a>`;
                 }
             },
             {
