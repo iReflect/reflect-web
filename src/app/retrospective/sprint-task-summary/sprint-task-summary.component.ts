@@ -2,7 +2,6 @@ import { Component, EventEmitter, HostListener, Input, OnChanges, OnDestroy, OnI
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { MatDialogRef } from '@angular/material/dialog/typings/dialog-ref';
 import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
-import { CellClickedEvent } from 'ag-grid/src/ts/events';
 import 'rxjs/add/observable/interval';
 import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/operator/finally';

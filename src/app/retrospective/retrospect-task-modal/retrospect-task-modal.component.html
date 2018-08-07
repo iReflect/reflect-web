@@ -1,14 +1,14 @@
 <div class="retrospect-task app-dialog">
     <h2 mat-dialog-title>
-        <span *ngIf="taskDetails.URL; then taskUrl else taskKey"></span>
-        <ng-template #taskUrl>
+        <span *ngIf="taskDetails.URL; then taskUrlView else taskKeyView"></span>
+        <ng-template #taskUrlView>
             <a class="task-link"
                [href]="taskDetails.URL"
                target="_blank">
                 {{taskDetails.Key}}
             </a>
         </ng-template>
-        <ng-template #taskKey>
+        <ng-template #taskKeyView>
             {{taskDetails.Key}}
         </ng-template>
         <span *ngIf="taskDetails.Summary"> : {{taskDetails.Summary}}</span>
