@@ -29,6 +29,9 @@ reflect-web.iml
 # environment
 /src/environments/environment.ts
 
+# config
+/src/assets/config/config.local.json
+
 # misc
 /.sass-cache
 /connect.lock

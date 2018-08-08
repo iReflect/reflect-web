@@ -25,7 +25,7 @@ import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.compon
 import * as _ from 'lodash';
 import { SelectCellEditorComponent } from '../../shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
 import { RatingRendererComponent } from '../../shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
-import { environment } from '../../../environments/environment';
+import { AppConfig } from '../../app.config';
 
 @Component({
     selector: 'app-sprint-task-summary',
@@ -151,7 +151,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             stopEditingWhenGridLosesFocus: true,
             onColumnVisible: (event) => this.gridApi.sizeColumnsToFit()
         };
-        if (environment.useAgGridEnterprise) {
+        if (AppConfig.settings.useAgGridEnterprise) {
             this.gridOptions.enableFilter = true;
             this.gridOptions.enableSorting = true;
             this.gridOptions.floatingFilter = true;

@@ -1,12 +1,13 @@
 <ng-container>
     <ngx-loading-bar color="red" [includeSpinner]="false"></ngx-loading-bar>
-    <div class="app-root" [ngClass]="{'logged-in': userLoggedIn}">
-        <div *ngIf="userLoggedIn; then loggedIn else notLoggedIn"></div>
+    <div class="app-root" [ngClass]="{'logged-in': isAppLoadedAndUserLoggedIn}">
+        <div *ngIf="isAppLoadedAndUserLoggedIn; then loggedIn else appNotLoadedOrUserLoggedOut"></div>
         <ng-template #loggedIn>
             <app-header></app-header>
             <app-sidenav></app-sidenav>
         </ng-template>
-        <ng-template #notLoggedIn>
+        <ng-template #appNotLoadedOrUserLoggedOut>
+            <!-- Render this only if the app is not loaded properly (in maintenance mode) or the user is logged out-->
             <router-outlet></router-outlet>
         </ng-template>
     </div>

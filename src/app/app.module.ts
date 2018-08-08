@@ -1,25 +1,35 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
+
 import { CookieModule } from 'ngx-cookie';
-import { RestangularModule } from 'ngx-restangular';
-import { APP_ROUTE_URLS } from '../constants/app-constants';
+import { LicenseManager } from 'ag-grid-enterprise';
+
 import { AccountModule } from './account/account.module';
 import { AppComponent } from './app.component';
+import { AppConfig } from './app.config';
+import { AppEnvConfig } from './app-config.model';
+import { APP_ROUTE_URLS } from '../constants/app-constants';
 import { CoreModule } from './core/core.module';
 import { CustomMaterialModule } from './core/custom-material/custom-material.module';
+import { IsMaintenanceModeActiveGuard } from './core/route-guards/is-maintenance-mode-active.service';
 import { FeedbackModule } from './feedback/feedback.module';
 import { HomeModule } from './home/home.module';
-
+import { MaintenanceComponent } from './maintenance/maintenance.component';
+import { RetrospectiveModule } from './retrospective/retrospective.module';
 import { SharedModule } from './shared/shared.module';
 import { SideNavComponent } from './sidenav/sidenav.component';
-import { RetrospectiveModule } from './retrospective/retrospective.module';
 
 const routes: Routes = [
+    {
+        path: APP_ROUTE_URLS.maintenance,
+        component: MaintenanceComponent,
+        canActivate: [IsMaintenanceModeActiveGuard]
+    },
     { // Route to redirect to Home page if no url matches
         path: '**',
         // TODO: Enable Feedbacks
@@ -28,11 +38,38 @@ const routes: Routes = [
     }
 ];
 
+// Defines what happens when the app gets initialized
+export function onAppInit(appConfig: AppConfig) {
+    return () => {
+        return new Promise((resolve, reject) => {
+            appConfig.loadAppConfig()
+                .subscribe(
+                    (response: any) => {
+                        AppConfig.settings = new AppEnvConfig(response.data);
+                        if (!AppConfig.settings.isValid()) {
+                            appConfig.router.navigateByUrl(APP_ROUTE_URLS.maintenance);
+                        }
+                        if (AppConfig.settings.useAgGridEnterprise) {
+                            LicenseManager.setLicenseKey(AppConfig.settings.agGridLicenseKey);
+                        }
+                        resolve();
+                    },
+                    (error: any) => {
+                        console.log(error);
+                        // If the config file is not found, then redirect user to the maintenance page
+                        appConfig.router.navigateByUrl(APP_ROUTE_URLS.maintenance);
+                        resolve();
+                    }
+                );
+        });
+    };
+}
 
 @NgModule({
     declarations: [
         AppComponent,
-        SideNavComponent
+        SideNavComponent,
+        MaintenanceComponent
     ],
     imports: [
         CommonModule,
@@ -56,7 +93,15 @@ const routes: Routes = [
         FormsModule,
         ReactiveFormsModule,
     ],
-    providers: [],
+    providers: [
+        AppConfig,
+        {
+            provide: APP_INITIALIZER,
+            useFactory: onAppInit,
+            deps: [AppConfig],
+            multi: true
+        }
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule {

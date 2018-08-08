@@ -21,7 +21,7 @@ import { RetrospectiveService } from '../../shared/services/retrospective.servic
 import { UtilsService } from '../../shared/utils/utils.service';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
-import { environment } from '../../../environments/environment';
+import { AppConfig } from '../../app.config';
 import { SuppressKeyboardEventParams } from 'ag-grid/src/ts/entities/colDef';
 
 @Component({
@@ -128,7 +128,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
             suppressScrollOnNewData: true,
             onColumnVisible: (event) => this.gridApi.sizeColumnsToFit()
         };
-        if (environment.useAgGridEnterprise) {
+        if (AppConfig.settings.useAgGridEnterprise) {
             this.gridOptions.enableFilter = true;
             this.gridOptions.enableSorting = true;
             this.gridOptions.floatingFilter = true;
