@@ -1,17 +1,20 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
-import { UserStoreService } from './shared/stores/user.store.service';
 import { IsMaintenanceModeActiveGuard } from './core/route-guards/is-maintenance-mode-active.service';
+import { UserStoreService } from './shared/stores/user.store.service';
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
     isAppLoadedAndUserLoggedIn = false;
 
     constructor(private userStoreService: UserStoreService) {
+    }
+
+    ngOnInit() {
         this.checkAppLoadedAndUserLoggedIn();
     }
 
