@@ -1,13 +1,6 @@
 {
-    "env": {
-        "name": "<env-name>"
-    },
-    "apiServer": {
-        "hostUrl": "",
-        "baseUrl": ""
-    },
-    "agGridSettings": {
-        "useEnterprise": false,
-        "licenseKey": ""
-    }
+    "apiServerHostURL": "${IREFLECT_API_HOST_URL}",
+    "baseApiURL": "${IREFLECT_API_BASE_URL}",
+    "useAgGridEnterprise": ${IREFLECT_AG_GRID_USE_ENTERPRISE},
+    "agGridLicenseKey": "${IREFLECT_AG_GRID_LICENSE_KEY}"
 }

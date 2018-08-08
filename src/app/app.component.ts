@@ -9,16 +9,18 @@ import { IsMaintenanceModeActiveGuard } from './core/route-guards/is-maintenance
     styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-    userLoggedIn = false;
+    isAppLoadedAndUserLoggedIn = false;
 
     constructor(private userStoreService: UserStoreService) {
-
-        this.userStoreService.token$.subscribe(
-            token => this.userLoggedIn = Boolean(token)
-        );
+        this.checkAppLoadedAndUserLoggedIn();
     }
 
-    isAppLoadedAndUserLoggedIn() {
-        return this.userLoggedIn && !IsMaintenanceModeActiveGuard.isAppUnderMaintenance;
+    checkAppLoadedAndUserLoggedIn() {
+        this.userStoreService.token$.subscribe(
+            token => {
+                const userLoggedIn = Boolean(token);
+                this.isAppLoadedAndUserLoggedIn = userLoggedIn && !IsMaintenanceModeActiveGuard.isAppUnderMaintenance;
+            }
+        );
     }
 }

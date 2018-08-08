@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
-import * as _ from 'lodash';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { Restangular } from 'ngx-restangular';
 
@@ -40,9 +39,7 @@ export class RestApiHelperService {
     public getBasicDataApiHelper() {
         if (!this.dataRestangular) {
             this.dataRestangular = this.restangular.withConfig((RestangularProvider) => {
-                if (!_.isEmpty(AppConfig.settings)) {
-                    RestangularProvider.setBaseUrl(`${AppConfig.settings.apiServer.hostUrl}${AppConfig.settings.apiServer.baseUrl}`);
-                }
+                RestangularProvider.setBaseUrl(`${AppConfig.settings.apiServerHostURL}${AppConfig.settings.baseApiURL}`);
             });
         }
         return this.dataRestangular;
@@ -51,9 +48,7 @@ export class RestApiHelperService {
     public getDataApiHelperWithLoader() {
         if (!this.dataRestangularWithLoader) {
             this.dataRestangularWithLoader = this.restangular.withConfig((RestangularProvider) => {
-                if (!_.isEmpty(AppConfig.settings)) {
-                    RestangularProvider.setBaseUrl(`${AppConfig.settings.apiServer.hostUrl}${AppConfig.settings.apiServer.baseUrl}`);
-                }
+                RestangularProvider.setBaseUrl(`${AppConfig.settings.apiServerHostURL}${AppConfig.settings.baseApiURL}`);
                 RestangularProvider.addFullRequestInterceptor((element, operation, path, url, headers, params) => {
                     this.loaderService.start();
                     return {
@@ -78,9 +73,7 @@ export class RestApiHelperService {
     public getAuthApiHelper() {
         if (!this.authRestangular) {
             this.authRestangular = this.restangular.withConfig((RestangularProvider) => {
-                if (!_.isEmpty(AppConfig.settings)) {
-                    RestangularProvider.setBaseUrl(AppConfig.settings.apiServer.hostUrl);
-                }
+                RestangularProvider.setBaseUrl(AppConfig.settings.apiServerHostURL);
             });
         }
         return this.authRestangular;

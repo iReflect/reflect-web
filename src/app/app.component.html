@@ -1,7 +1,7 @@
 <ng-container>
     <ngx-loading-bar color="red" [includeSpinner]="false"></ngx-loading-bar>
-    <div class="app-root" [ngClass]="{'logged-in': isAppLoadedAndUserLoggedIn()}">
-        <div *ngIf="isAppLoadedAndUserLoggedIn(); then loggedIn else appNotLoadedOrUserLoggedOut"></div>
+    <div class="app-root" [ngClass]="{'logged-in': isAppLoadedAndUserLoggedIn}">
+        <div *ngIf="isAppLoadedAndUserLoggedIn; then loggedIn else appNotLoadedOrUserLoggedOut"></div>
         <ng-template #loggedIn>
             <app-header></app-header>
             <app-sidenav></app-sidenav>

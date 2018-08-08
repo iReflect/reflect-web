@@ -150,7 +150,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             stopEditingWhenGridLosesFocus: true,
             onColumnVisible: (event) => this.gridApi.sizeColumnsToFit()
         };
-        if (AppConfig.settings.agGridSettings.useEnterprise) {
+        if (AppConfig.settings.useAgGridEnterprise) {
             this.gridOptions.enableFilter = true;
             this.gridOptions.enableSorting = true;
             this.gridOptions.floatingFilter = true;

@@ -1,13 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { APP_ROUTE_URLS, LOGIN_ERROR_MESSAGES, LOGIN_ERROR_TYPES, LOGIN_STATES } from '../../../constants/app-constants';
-import { AuthService } from '../../shared/services/auth.service';
-import { Subject } from 'rxjs/Subject';
+
+import * as _ from 'lodash';
 import 'rxjs/add/operator/finally';
 import 'rxjs/add/operator/takeUntil';
+import { Subject } from 'rxjs/Subject';
+
+import { APP_ROUTE_URLS, LOGIN_ERROR_MESSAGES, LOGIN_ERROR_TYPES, LOGIN_STATES } from '../../../constants/app-constants';
+import { AuthService } from '../../shared/services/auth.service';
 import { OAuthCallbackService } from '../../shared/services/o-auth-callback.service';
 import { UserStoreService } from '../../shared/stores/user.store.service';
-import * as _ from 'lodash';
 
 @Component({
     selector: 'app-login',
@@ -110,22 +112,22 @@ export class LoginComponent implements OnInit, OnDestroy {
                 this.isAuthorizing = false;
             })
             .subscribe(
-            response => {
-                this.userStoreService.updateUserData(response.data);
-                this.router.navigateByUrl(this.returnURL);
-                this.authState = this.loginStates.LOGGED_IN;
-                this.oAuthCallbackService.removeOAuthEventListener();
-            },
-            error => {
-                if (error.status === 404) {
-                    this.error(LOGIN_ERROR_TYPES.notFound);
-                } else {
-                    this.error(LOGIN_ERROR_TYPES.internalError);
+                response => {
+                    this.userStoreService.updateUserData(response.data);
+                    this.router.navigateByUrl(this.returnURL);
+                    this.authState = this.loginStates.LOGGED_IN;
+                    this.oAuthCallbackService.removeOAuthEventListener();
+                },
+                error => {
+                    if (error.status === 404) {
+                        this.error(LOGIN_ERROR_TYPES.notFound);
+                    } else {
+                        this.error(LOGIN_ERROR_TYPES.internalError);
+                    }
+                    // Reset the login URL if the authentication fails, so that user can login again without page refresh.
+                    this.setLoginUrl();
                 }
-                // Reset the login URL if the authentication fails, so that user can login again without page refresh.
-                this.setLoginUrl();
-            }
-        );
+            );
     }
 
     private error(reason) {

@@ -1,15 +1,15 @@
-import {Injectable, Injector} from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Restangular } from 'ngx-restangular';
 
-import { IAppConfig } from './app-config.model';
+import { AppEnvConfig } from './app-config.model';
 import { environment } from '../environments/environment';
 
 @Injectable()
 export class AppConfig {
 
-    static settings: IAppConfig;
+    static settings: AppEnvConfig;
 
     constructor(private restangular: Restangular, private injector: Injector) {
     }

@@ -12,7 +12,7 @@ import { LicenseManager } from 'ag-grid-enterprise';
 import { AccountModule } from './account/account.module';
 import { AppComponent } from './app.component';
 import { AppConfig } from './app.config';
-import { IAppConfig } from './app-config.model';
+import { AppEnvConfig } from './app-config.model';
 import { APP_ROUTE_URLS } from '../constants/app-constants';
 import { CoreModule } from './core/core.module';
 import { CustomMaterialModule } from './core/custom-material/custom-material.module';
@@ -45,9 +45,12 @@ export function onAppInit(appConfig: AppConfig) {
             appConfig.loadAppConfig()
                 .subscribe(
                     (response: any) => {
-                        AppConfig.settings = <IAppConfig>response.data;
-                        if (AppConfig.settings.agGridSettings.useEnterprise) {
-                            LicenseManager.setLicenseKey(AppConfig.settings.agGridSettings.licenseKey);
+                        AppConfig.settings = new AppEnvConfig(response.data);
+                        if (!AppConfig.settings.isValid()) {
+                            appConfig.router.navigateByUrl(APP_ROUTE_URLS.maintenance);
+                        }
+                        if (AppConfig.settings.useAgGridEnterprise) {
+                            LicenseManager.setLicenseKey(AppConfig.settings.agGridLicenseKey);
                         }
                         resolve();
                     },
