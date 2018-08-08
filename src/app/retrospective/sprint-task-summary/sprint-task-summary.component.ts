@@ -226,6 +226,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         this.autoRefreshCurrentState = false;
         this.dialogRef = this.dialog.open(RetrospectTaskModalComponent, {
             width: '90%',
+            autoFocus: false,
             data: {
                 taskDetails: sprintTaskSummaryData,
                 sprintID: this.sprintID,
@@ -325,6 +326,12 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     newRowsAction: 'keep',
                     clearButton: true,
                 },
+                cellRenderer: (params) => {
+                    if (!params.data.IsTrackerTask || !params.data.URL) {
+                        return params.data.Key;
+                    }
+                    return `<a class="custom-ag-grid-anchor-cell" target="_blank" href="${params.data.URL}">${params.data.Key}</a>`;
+                }
             },
             {
                 headerName: 'Summary',
