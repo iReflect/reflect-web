@@ -25,7 +25,6 @@ export function RestangularConfigFactory(RestangularProvider, loaderService) {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
     });
-    RestangularProvider.setRequestSuffix('/');
     RestangularProvider.setDefaultHttpFields({withCredentials: true});
     RestangularProvider.setFullResponse(true);
 }

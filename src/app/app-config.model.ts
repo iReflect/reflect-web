@@ -8,7 +8,7 @@ export class AppEnvConfig {
 
     private valid: boolean;
 
-    constructor(config: any) {
+    constructor(config: any = {}) {
         if ('apiServerHostURL' in config) {
             this.apiServerHostURL = config['apiServerHostURL'];
         }

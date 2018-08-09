@@ -55,10 +55,11 @@ export function onAppInit(appConfig: AppConfig) {
                         resolve();
                     },
                     (error: any) => {
-                        console.log(error);
-                        // If the config file is not found, then redirect user to the maintenance page
-                        appConfig.router.navigateByUrl(APP_ROUTE_URLS.maintenance);
                         resolve();
+                        // If the config file is not found, then redirect user to the maintenance page
+                        console.log(error);
+                        AppConfig.settings = new AppEnvConfig();
+                        appConfig.router.navigateByUrl(APP_ROUTE_URLS.maintenance);
                     }
                 );
         });
