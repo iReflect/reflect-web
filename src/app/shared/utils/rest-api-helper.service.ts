@@ -39,6 +39,7 @@ export class RestApiHelperService {
     public getBasicDataApiHelper() {
         if (!this.dataRestangular) {
             this.dataRestangular = this.restangular.withConfig((RestangularProvider) => {
+                RestangularProvider.setRequestSuffix('/');
                 RestangularProvider.setBaseUrl(`${AppConfig.settings.apiServerHostURL}${AppConfig.settings.baseApiURL}`);
             });
         }
@@ -48,6 +49,7 @@ export class RestApiHelperService {
     public getDataApiHelperWithLoader() {
         if (!this.dataRestangularWithLoader) {
             this.dataRestangularWithLoader = this.restangular.withConfig((RestangularProvider) => {
+                RestangularProvider.setRequestSuffix('/');
                 RestangularProvider.setBaseUrl(`${AppConfig.settings.apiServerHostURL}${AppConfig.settings.baseApiURL}`);
                 RestangularProvider.addFullRequestInterceptor((element, operation, path, url, headers, params) => {
                     this.loaderService.start();
@@ -73,6 +75,7 @@ export class RestApiHelperService {
     public getAuthApiHelper() {
         if (!this.authRestangular) {
             this.authRestangular = this.restangular.withConfig((RestangularProvider) => {
+                RestangularProvider.setRequestSuffix('/');
                 RestangularProvider.setBaseUrl(AppConfig.settings.apiServerHostURL);
             });
         }
