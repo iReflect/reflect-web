@@ -1,0 +1,14 @@
+<ng-container>
+    <mat-list class="trails">
+        <mat-list-item *ngFor="let data of responseData;let i = index">
+            <div class="trails-date">
+                <div *ngIf=isDateChange(i)>
+                    {{trailsDate}}
+                </div>
+            </div>
+            <div>
+                {{data['ActionBy']['FirstName'] |titlecase}} {{ data['ActionBy']['LastName']|titlecase }} {{ data['Action'] }}
+            </div>
+        </mat-list-item>
+    </mat-list>
+</ng-container>

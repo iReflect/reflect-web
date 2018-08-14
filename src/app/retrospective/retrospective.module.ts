@@ -20,6 +20,7 @@ import { SprintCreateComponent } from './sprint-create/sprint-create.component';
 import { RetrospectiveFeedbackComponent } from './retrospective-feedback/retrospective-feedback.component';
 import { SprintHighlightsComponent } from './sprint-highlights/sprint-highlights.component';
 import { SprintNotesComponent } from './sprint-notes/sprint-notes.component';
+import { SprintActivityLogComponent } from './sprint-activity-log/sprint-activity-log.component';
 
 
 @NgModule({
@@ -46,6 +47,7 @@ import { SprintNotesComponent } from './sprint-notes/sprint-notes.component';
         RetrospectiveFeedbackComponent,
         SprintHighlightsComponent,
         SprintNotesComponent,
+        SprintActivityLogComponent,
     ],
     exports: [],
     providers: [

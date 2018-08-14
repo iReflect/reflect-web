@@ -195,6 +195,16 @@ export class RetrospectiveService {
             .get();
     }
 
+    getActivityLog(retrospectiveID, sprintID, isAutoRefresh = false): Observable<any> {
+        return this.getRestAngularService(isAutoRefresh)
+            .one(
+                API_URLS.sprintActivityLog
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+            )
+            .get();
+    }
+
     updateSprintMember(retrospectiveID, sprintID, sprintMemberID, updatedMemberData): Observable<any> {
         return this.restangularWithLoader
             .one(

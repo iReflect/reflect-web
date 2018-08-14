@@ -50,7 +50,7 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
     sprintActions = SPRINT_ACTIONS;
     sprintActionsLabel = SPRINT_ACTIONS_LABEL;
     syncStates = SPRINT_SYNC_STATES;
-    tabIndexMapping: any = {highlights: 0, taskSummary: 1, memberSummary: 2, notes: 3};
+    tabIndexMapping: any = {highlights: 0, taskSummary: 1, memberSummary: 2, notes: 3, activityLog: 4};
 
     private refresh$: Subject<number> = new Subject<number>();
     private destroy$: Subject<boolean> = new Subject<boolean>();
@@ -158,9 +158,9 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
 
     getTabIndexMapping(sprintStatus) {
         if (sprintStatus === SPRINT_STATES.DRAFT) {
-            return {taskSummary: 0, memberSummary: 1};
+            return {taskSummary: 0, memberSummary: 1, activityLog: 4};
         }
-        return {highlights: 0, taskSummary: 1, memberSummary: 2, notes: 3};
+        return {highlights: 0, taskSummary: 1, memberSummary: 2, notes: 3, activityLog: 4};
     }
 
     navigateToRetrospectiveDashboard() {
