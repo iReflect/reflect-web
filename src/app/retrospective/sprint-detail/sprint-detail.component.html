@@ -27,7 +27,8 @@
                 && [syncStates.SYNCING, syncStates.QUEUED].indexOf(sprintDetails.SyncStatus) == -1">
             Re-Sync Sprint
         </button>
-        <button mat-raised-button class="layout-side-margin" color="primary" *ngIf="sprintStatus === sprintStates.DRAFT && sprintDetails.Editable" (click)="activateSprint()">{{sprintActionsLabel[sprintActions.ACTIVATE]}}
+        <button mat-raised-button class="layout-side-margin" color="primary" *ngIf="sprintStatus === sprintStates.DRAFT && sprintDetails.Editable" (click)="activateSprint()">
+            {{sprintActionsLabel[sprintActions.ACTIVATE]}}
         </button>
         <button mat-raised-button class="layout-side-margin" color="primary" *ngIf="sprintStatus === sprintStates.ACTIVE" (click)="freezeSprint()">
             {{sprintActionsLabel[sprintActions.FREEZE]}}
