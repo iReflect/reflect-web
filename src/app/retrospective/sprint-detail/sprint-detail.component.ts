@@ -14,10 +14,10 @@ import {
     SPRINT_STATES,
     SPRINT_STATES_LABEL,
     SPRINT_SYNC_STATES
-} from '../../../constants/app-constants';
-import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.component';
-import { RetrospectiveService } from '../../shared/services/retrospective.service';
-import { UtilsService } from '../../shared/utils/utils.service';
+} from '@constants/app-constants';
+import { BasicModalComponent } from 'app/shared/basic-modal/basic-modal.component';
+import { RetrospectiveService } from 'app/shared/services/retrospective.service';
+import { UtilsService } from 'app/shared/utils/utils.service';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';

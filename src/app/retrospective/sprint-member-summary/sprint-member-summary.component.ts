@@ -13,15 +13,15 @@ import {
     RATING_STATES,
     RATING_STATES_LABEL,
     SNACKBAR_DURATION
-} from '../../../constants/app-constants';
-import { NumericCellEditorComponent } from '../../shared/ag-grid-editors/numeric-cell-editor/numeric-cell-editor.component';
-import { SelectCellEditorComponent } from '../../shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
-import { ClickableButtonRendererComponent } from '../../shared/ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
-import { RatingRendererComponent } from '../../shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
-import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.component';
-import { RetrospectiveService } from '../../shared/services/retrospective.service';
-import { UtilsService } from '../../shared/utils/utils.service';
-import { environment } from '../../../environments/environment';
+} from '@constants/app-constants';
+import { NumericCellEditorComponent } from 'app/shared/ag-grid-editors/numeric-cell-editor/numeric-cell-editor.component';
+import { SelectCellEditorComponent } from 'app/shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
+import { ClickableButtonRendererComponent } from 'app/shared/ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
+import { RatingRendererComponent } from 'app/shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
+import { BasicModalComponent } from 'app/shared/basic-modal/basic-modal.component';
+import { RetrospectiveService } from 'app/shared/services/retrospective.service';
+import { UtilsService } from 'app/shared/utils/utils.service';
+import { environment } from '@environments/environment';
 
 @Component({
     selector: 'app-sprint-member-summary',

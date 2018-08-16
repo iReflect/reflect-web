@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SprintMemberSummaryComponent } from './sprint-member-summary.component';
+import { SprintMemberSummaryComponent } from 'app/retrospective/sprint-member-summary/sprint-member-summary.component';
 
 describe('SprintMemberSummaryComponent', () => {
     let component: SprintMemberSummaryComponent;

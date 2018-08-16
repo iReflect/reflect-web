@@ -8,14 +8,14 @@ import {
     RETRO_FEEDBACK_GOAL_TYPES,
     RETRO_FEEDBACK_TYPES,
     SNACKBAR_DURATION
-} from '../../../constants/app-constants';
-import { RetrospectiveService } from '../../shared/services/retrospective.service';
+} from '@constants/app-constants';
+import { RetrospectiveService } from 'app/shared/services/retrospective.service';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/observable/interval';
 import 'rxjs/add/operator/finally';
-import { UtilsService } from '../../shared/utils/utils.service';
+import { UtilsService } from 'app/shared/utils/utils.service';
 import { forkJoin } from 'rxjs/observable/forkJoin';
 
 @Component({

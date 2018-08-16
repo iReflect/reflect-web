@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
-import { API_URLS } from '../../../constants/api-urls';
-import { RestApiHelperService } from '../utils/rest-api-helper.service';
+import { API_URLS } from '@constants/api-urls';
+import { RestApiHelperService } from 'app/shared/utils/rest-api-helper.service';
 
 
 @Injectable()

@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RetrospectiveFeedbackComponent } from './retrospective-feedback.component';
+import { RetrospectiveFeedbackComponent } from 'app/retrospective/retrospective-feedback/retrospective-feedback.component';
 
 describe('RetrospectiveFeedbackComponent', () => {
     let component: RetrospectiveFeedbackComponent;

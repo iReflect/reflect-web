@@ -1,10 +1,10 @@
 import { Component, EventEmitter, OnInit , OnChanges, OnDestroy, Input, Output, SimpleChanges} from '@angular/core';
 
 import { MatSnackBar } from '@angular/material';
-import { API_RESPONSE_MESSAGES, SNACKBAR_DURATION, AUTO_REFRESH_DURATION } from '../../../constants/app-constants';
+import { API_RESPONSE_MESSAGES, SNACKBAR_DURATION, AUTO_REFRESH_DURATION } from '@constants/app-constants';
 import { Subject } from 'rxjs/Subject';
 
-import { RetrospectiveService } from '../../shared/services/retrospective.service';
+import { RetrospectiveService } from 'app/shared/services/retrospective.service';
 import { Observable } from 'rxjs/Observable';
 
 @Component({

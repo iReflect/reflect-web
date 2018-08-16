@@ -2,26 +2,26 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { CustomMaterialModule } from '../core/custom-material/custom-material.module';
+import { CustomMaterialModule } from 'app/core/custom-material/custom-material.module';
 // Services
-import { SharedModule } from '../shared/shared.module';
-import { FeedbackDetailComponent } from './feedback-detail/feedback-detail.component';
+import { SharedModule } from 'app/shared/shared.module';
+import { FeedbackDetailComponent } from 'app/feedback/feedback-detail/feedback-detail.component';
 
-import { BooleanQuestionComponent } from './question/boolean-question.component';
-import { GradeQuestionComponent } from './question/grade-question.component';
-import { MultiChoiceQuestionComponent } from './question/multi-choice-question.component';
-import { FeedbackListComponent } from './feedback-list/feedback-list.component';
+import { BooleanQuestionComponent } from 'app/feedback/question/boolean-question.component';
+import { GradeQuestionComponent } from 'app/feedback/question/grade-question.component';
+import { MultiChoiceQuestionComponent } from 'app/feedback/question/multi-choice-question.component';
+import { FeedbackListComponent } from 'app/feedback/feedback-list/feedback-list.component';
 // Data Source
-import { FeedBackListDataSource } from './feedback-list/feedback-list.data-source';
+import { FeedBackListDataSource } from 'app/feedback/feedback-list/feedback-list.data-source';
 // Routing
-import { FeedbackRoutingModule } from './feedback-routing.module';
-import { MyFeedbackDetailComponent } from './my-feedback-detail/my-feedback-detail.component';
-import { MyFeedbackListComponent } from './my-feedback-list/my-feedback-list.component';
-import { TeamFeedbackDetailComponent } from './team-feedback-detail/team-feedback-detail.component';
-import { TeamFeedbackListComponent } from './team-feedback-list/team-feedback-list.component';
-import { CategoryComponent } from './category/category.component';
-import { SkillComponent } from './skill/skill.component';
-import { QuestionResponseComponent } from './question-response/question-response.component';
+import { FeedbackRoutingModule } from 'app/feedback/feedback-routing.module';
+import { MyFeedbackDetailComponent } from 'app/feedback/my-feedback-detail/my-feedback-detail.component';
+import { MyFeedbackListComponent } from 'app/feedback/my-feedback-list/my-feedback-list.component';
+import { TeamFeedbackDetailComponent } from 'app/feedback/team-feedback-detail/team-feedback-detail.component';
+import { TeamFeedbackListComponent } from 'app/feedback/team-feedback-list/team-feedback-list.component';
+import { CategoryComponent } from 'app/feedback/category/category.component';
+import { SkillComponent } from 'app/feedback/skill/skill.component';
+import { QuestionResponseComponent } from 'app/feedback/question-response/question-response.component';
 
 @NgModule({
     imports: [

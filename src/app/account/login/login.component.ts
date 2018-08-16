@@ -1,11 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { APP_ROUTE_URLS, LOGIN_ERROR_MESSAGES, LOGIN_ERROR_TYPES, LOGIN_STATES } from '../../../constants/app-constants';
-import { AuthService } from '../../shared/services/auth.service';
+import { APP_ROUTE_URLS, LOGIN_ERROR_MESSAGES, LOGIN_ERROR_TYPES, LOGIN_STATES } from '@constants/app-constants';
+import { AuthService } from 'app/shared/services/auth.service';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
-import { OAuthCallbackService } from '../../shared/services/o-auth-callback.service';
-import { UserStoreService } from '../../shared/stores/user.store.service';
+import { OAuthCallbackService } from 'app/shared/services/o-auth-callback.service';
+import { UserStoreService } from 'app/shared/stores/user.store.service';
 import * as _ from 'lodash';
 
 @Component({

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Restangular } from 'ngx-restangular';
-import { APP_ROUTE_URLS, LOGIN_ERROR_TYPES } from '../../../constants/app-constants';
-import { environment } from '../../../environments/environment';
-import { UserStoreService } from '../stores/user.store.service';
+import { APP_ROUTE_URLS, LOGIN_ERROR_TYPES } from '@constants/app-constants';
+import { environment } from '@environments/environment';
+import { UserStoreService } from 'app/shared/stores/user.store.service';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 
 @Injectable()

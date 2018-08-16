@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { OAUTH_CALLBACK_EVENT_KEY } from '../../../constants/app-constants';
+import { OAUTH_CALLBACK_EVENT_KEY } from '@constants/app-constants';
 
 @Injectable()
 export class OAuthCallbackService {

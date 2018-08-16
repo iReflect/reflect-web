@@ -14,18 +14,18 @@ import {
     RATING_STATES_LABEL,
     SNACKBAR_DURATION,
     SPRINT_STATES
-} from '../../../constants/app-constants';
+} from '@constants/app-constants';
 import {
     ClickableButtonRendererComponent
-} from '../../shared/ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
-import { RetrospectiveService } from '../../shared/services/retrospective.service';
-import { RetrospectTaskModalComponent } from '../retrospect-task-modal/retrospect-task-modal.component';
-import { UtilsService } from '../../shared/utils/utils.service';
-import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.component';
+} from 'app/shared/ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
+import { RetrospectiveService } from 'app/shared/services/retrospective.service';
+import { RetrospectTaskModalComponent } from 'app/retrospective/retrospect-task-modal/retrospect-task-modal.component';
+import { UtilsService } from 'app/shared/utils/utils.service';
+import { BasicModalComponent } from 'app/shared/basic-modal/basic-modal.component';
 import * as _ from 'lodash';
-import { SelectCellEditorComponent } from '../../shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
-import { RatingRendererComponent } from '../../shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
-import { environment } from '../../../environments/environment';
+import { SelectCellEditorComponent } from 'app/shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
+import { RatingRendererComponent } from 'app/shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
+import { environment } from '@environments/environment';
 
 @Component({
     selector: 'app-sprint-task-summary',

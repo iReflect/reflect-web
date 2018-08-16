@@ -1,6 +1,6 @@
 import { Component, forwardRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { BaseQuestionComponent } from './question.base.component';
+import { BaseQuestionComponent } from 'app/feedback/question/question.base.component';
 
 @Component({
     selector: 'app-boolean-question',

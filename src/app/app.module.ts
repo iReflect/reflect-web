@@ -7,17 +7,17 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
 import { CookieModule } from 'ngx-cookie';
 import { RestangularModule } from 'ngx-restangular';
-import { APP_ROUTE_URLS } from '../constants/app-constants';
-import { AccountModule } from './account/account.module';
-import { AppComponent } from './app.component';
-import { CoreModule } from './core/core.module';
-import { CustomMaterialModule } from './core/custom-material/custom-material.module';
-import { FeedbackModule } from './feedback/feedback.module';
-import { HomeModule } from './home/home.module';
+import { APP_ROUTE_URLS } from '@constants/app-constants';
+import { AccountModule } from 'app/account/account.module';
+import { AppComponent } from 'app/app.component';
+import { CoreModule } from 'app/core/core.module';
+import { CustomMaterialModule } from 'app/core/custom-material/custom-material.module';
+import { FeedbackModule } from 'app/feedback/feedback.module';
+import { HomeModule } from 'app/home/home.module';
 
-import { SharedModule } from './shared/shared.module';
-import { SideNavComponent } from './sidenav/sidenav.component';
-import { RetrospectiveModule } from './retrospective/retrospective.module';
+import { SharedModule } from 'app/shared/shared.module';
+import { SideNavComponent } from 'app/sidenav/sidenav.component';
+import { RetrospectiveModule } from 'app/retrospective/retrospective.module';
 
 const routes: Routes = [
     { // Route to redirect to Home page if no url matches

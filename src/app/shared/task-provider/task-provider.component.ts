@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { TRACKER_TICKET_TYPE_MAP, COMMA_SEPARATED_STRING_PATTERN } from '../../../constants/app-constants';
+import { TRACKER_TICKET_TYPE_MAP, COMMA_SEPARATED_STRING_PATTERN } from '@constants/app-constants';
 
 @Component({
     selector: 'app-task-provider',
