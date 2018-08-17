@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+
+import { IsMaintenanceModeActiveGuard } from './core/route-guards/is-maintenance-mode-active.service';
 import { UserStoreService } from './shared/stores/user.store.service';
 
 @Component({
@@ -6,13 +8,22 @@ import { UserStoreService } from './shared/stores/user.store.service';
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
-    userLoggedIn = false;
+export class AppComponent implements OnInit {
+    isAppLoadedAndUserLoggedIn = false;
 
     constructor(private userStoreService: UserStoreService) {
+    }
 
+    ngOnInit() {
+        this.checkAppLoadedAndUserLoggedIn();
+    }
+
+    checkAppLoadedAndUserLoggedIn() {
         this.userStoreService.token$.subscribe(
-            token => this.userLoggedIn = Boolean(token)
+            token => {
+                const userLoggedIn = Boolean(token);
+                this.isAppLoadedAndUserLoggedIn = userLoggedIn && !IsMaintenanceModeActiveGuard.isAppUnderMaintenance;
+            }
         );
     }
 }

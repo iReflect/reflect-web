@@ -51,6 +51,7 @@ export const APP_ROUTE_URLS = {
     forwardSlash: '/',
     login: 'login',
     auth: 'auth',
+    maintenance: 'maintenance',
 
     feedbackList: 'feedbacks',
     feedback: 'feedbacks/:id',

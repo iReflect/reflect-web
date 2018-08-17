@@ -25,7 +25,7 @@ import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.compon
 import * as _ from 'lodash';
 import { SelectCellEditorComponent } from '../../shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
 import { RatingRendererComponent } from '../../shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
-import { environment } from '../../../environments/environment';
+import { AppConfig } from '../../app.config';
 
 @Component({
     selector: 'app-sprint-task-summary',
@@ -151,7 +151,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             stopEditingWhenGridLosesFocus: true,
             onColumnVisible: (event) => this.gridApi.sizeColumnsToFit()
         };
-        if (environment.useAgGridEnterprise) {
+        if (AppConfig.settings.useAgGridEnterprise) {
             this.gridOptions.enableFilter = true;
             this.gridOptions.enableSorting = true;
             this.gridOptions.floatingFilter = true;
@@ -226,6 +226,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         this.autoRefreshCurrentState = false;
         this.dialogRef = this.dialog.open(RetrospectTaskModalComponent, {
             width: '90%',
+            autoFocus: false,
             data: {
                 taskDetails: sprintTaskSummaryData,
                 sprintID: this.sprintID,
@@ -325,6 +326,12 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     newRowsAction: 'keep',
                     clearButton: true,
                 },
+                cellRenderer: (params) => {
+                    if (!params.data.IsTrackerTask || !params.data.URL) {
+                        return params.data.Key;
+                    }
+                    return `<a class="custom-ag-grid-anchor-cell" target="_blank" href="${params.data.URL}">${params.data.Key}</a>`;
+                }
             },
             {
                 headerName: 'Summary',
