@@ -21,7 +21,8 @@ import { RetrospectiveService } from 'app/shared/services/retrospective.service'
 import { UtilsService } from 'app/shared/utils/utils.service';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
-import { environment } from '@environments/environment';
+import { AppConfig } from 'app/app.config';
+import { SuppressKeyboardEventParams } from 'ag-grid/src/ts/entities/colDef';
 
 @Component({
     selector: 'app-retrospective-feedback',
@@ -127,7 +128,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
             suppressScrollOnNewData: true,
             onColumnVisible: (event) => this.gridApi.sizeColumnsToFit()
         };
-        if (environment.useAgGridEnterprise) {
+        if (AppConfig.settings.useAgGridEnterprise) {
             this.gridOptions.enableFilter = true;
             this.gridOptions.enableSorting = true;
             this.gridOptions.floatingFilter = true;
@@ -342,6 +343,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                         this.updateRetroFeedback(cellParams);
                     }
                 },
+                suppressKeyboardEvent: (event: SuppressKeyboardEventParams) => this.utils.isAgGridEditingEvent(event),
                 filter: 'agTextColumnFilter',
                 filterParams: {
                     newRowsAction: 'keep',

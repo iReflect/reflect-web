@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Restangular } from 'ngx-restangular';
-import { APP_ROUTE_URLS, LOGIN_ERROR_TYPES } from '@constants/app-constants';
-import { environment } from '@environments/environment';
-import { UserStoreService } from 'app/shared/stores/user.store.service';
+
 import { LoadingBarService } from '@ngx-loading-bar/core';
+import { Restangular } from 'ngx-restangular';
+
+import { AppConfig } from 'app/app.config';
+import { APP_ROUTE_URLS, LOGIN_ERROR_TYPES } from '@constants/app-constants';
+import { UserStoreService } from 'app/shared/stores/user.store.service';
 
 @Injectable()
 export class RestApiHelperService {
@@ -37,7 +39,8 @@ export class RestApiHelperService {
     public getBasicDataApiHelper() {
         if (!this.dataRestangular) {
             this.dataRestangular = this.restangular.withConfig((RestangularProvider) => {
-                RestangularProvider.setBaseUrl(environment.apiHostUrl + environment.baseApiUrl);
+                RestangularProvider.setRequestSuffix('/');
+                RestangularProvider.setBaseUrl(`${AppConfig.settings.apiServerHostURL}${AppConfig.settings.baseApiURL}`);
             });
         }
         return this.dataRestangular;
@@ -46,7 +49,8 @@ export class RestApiHelperService {
     public getDataApiHelperWithLoader() {
         if (!this.dataRestangularWithLoader) {
             this.dataRestangularWithLoader = this.restangular.withConfig((RestangularProvider) => {
-                RestangularProvider.setBaseUrl(environment.apiHostUrl + environment.baseApiUrl);
+                RestangularProvider.setRequestSuffix('/');
+                RestangularProvider.setBaseUrl(`${AppConfig.settings.apiServerHostURL}${AppConfig.settings.baseApiURL}`);
                 RestangularProvider.addFullRequestInterceptor((element, operation, path, url, headers, params) => {
                     this.loaderService.start();
                     return {
@@ -71,7 +75,8 @@ export class RestApiHelperService {
     public getAuthApiHelper() {
         if (!this.authRestangular) {
             this.authRestangular = this.restangular.withConfig((RestangularProvider) => {
-                RestangularProvider.setBaseUrl(environment.apiHostUrl);
+                RestangularProvider.setRequestSuffix('/');
+                RestangularProvider.setBaseUrl(AppConfig.settings.apiServerHostURL);
             });
         }
         return this.authRestangular;

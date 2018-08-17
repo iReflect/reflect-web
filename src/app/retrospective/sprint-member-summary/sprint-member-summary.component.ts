@@ -21,8 +21,7 @@ import { RatingRendererComponent } from 'app/shared/ag-grid-renderers/rating-ren
 import { BasicModalComponent } from 'app/shared/basic-modal/basic-modal.component';
 import { RetrospectiveService } from 'app/shared/services/retrospective.service';
 import { UtilsService } from 'app/shared/utils/utils.service';
-import { environment } from '@environments/environment';
-
+import { AppConfig } from 'app/app.config';
 @Component({
     selector: 'app-sprint-member-summary',
     templateUrl: './sprint-member-summary.component.html',
@@ -150,7 +149,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             stopEditingWhenGridLosesFocus: true,
             onColumnVisible: (event) => this.gridApi.sizeColumnsToFit()
         };
-        if (environment.useAgGridEnterprise) {
+        if (AppConfig.settings.useAgGridEnterprise) {
             this.gridOptions.enableFilter = true;
             this.gridOptions.enableSorting = true;
             this.gridOptions.floatingFilter = true;
