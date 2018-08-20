@@ -1,0 +1,6 @@
+{
+    "apiServerHostURL": "http://localhost:3000",
+    "baseApiURL": "/api/v1",
+    "useAgGridEnterprise": false,
+    "agGridLicenseKey": ""
+}
