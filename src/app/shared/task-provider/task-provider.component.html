@@ -44,9 +44,9 @@
         </mat-toolbar>
         <div class="table-box padded-container" [formGroupName]="taskProviderConfigKey">
             <div class="layout-row">
-                <mat-form-field class="flex">
+                <mat-form-field class="flex field-with-hint">
                     <input matInput 
-                    placeholder="Done (Comma Separated)" 
+                    placeholder="Completed (Comma Separated)" 
                     [pattern]="commaSeparatedRegex" 
                     [formControlName]="trackerTicketStatusMap.DONE"/>
                     <mat-error *ngIf="doneStatusControl.errors && doneStatusControl.errors['pattern']">
