@@ -1,11 +1,12 @@
-import { Component, EventEmitter, OnInit , OnChanges, OnDestroy, Input, Output, SimpleChanges} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit , OnChanges, OnDestroy, Output, SimpleChanges} from '@angular/core';
 
 import { MatSnackBar } from '@angular/material';
-import { API_RESPONSE_MESSAGES, SNACKBAR_DURATION, AUTO_REFRESH_DURATION } from '../../../constants/app-constants';
+import { API_RESPONSE_MESSAGES, AUTO_REFRESH_DURATION, SNACKBAR_DURATION} from '../../../constants/app-constants';
+import 'rxjs/add/operator/takeUntil';
+import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
 import { RetrospectiveService } from '../../shared/services/retrospective.service';
-import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'app-sprint-activity-log',
@@ -23,8 +24,8 @@ export class SprintActivityLogComponent implements OnInit, OnChanges, OnDestroy 
   @Output() onRefreshStart = new EventEmitter<boolean>();
   @Output() onRefreshEnd = new EventEmitter<boolean>();
 
-  responseData;
-  trailsDate;
+  responseData: any;
+  trailsDate: string;
   date: Date = new Date();
   autoRefreshCurrentState: boolean;
   private destroy$: Subject<boolean> = new Subject<boolean>();
@@ -93,27 +94,29 @@ export class SprintActivityLogComponent implements OnInit, OnChanges, OnDestroy 
   getActivityLog(isRefresh = false, isAutoRefresh = false) {
     if (!isAutoRefresh) {
       this.onRefreshStart.emit(true);
+    }
+
+    return this.retrospectiveService.getActivityLog(this.retrospectiveID, this.sprintID, isAutoRefresh)
+    .takeUntil(this.destroy$)
+    .subscribe(
+      response => {
+        this.responseData = response.data['Trails'];
+        if (!isAutoRefresh) {
+          this.onRefreshEnd.emit(true);
+        }
+      },
+      err => {
+        if (!isAutoRefresh) {
+          this.onRefreshEnd.emit(true);
+        }
+        if (!isRefresh) {
+          this.snackBar.open(
+            API_RESPONSE_MESSAGES.getActivityLogError, '', {duration: SNACKBAR_DURATION});
+          } else {
+            this.snackBar.open(
+            API_RESPONSE_MESSAGES.activityLogRefreshFailure, '', {duration: SNACKBAR_DURATION});
+        }
+      }
+    );
   }
-      return this.retrospectiveService.getActivityLog(this.retrospectiveID, this.sprintID, isAutoRefresh)
-      .takeUntil(this.destroy$)
-      .subscribe(
-              response => {
-                this.responseData = response.data['Trails'];
-                if (!isAutoRefresh) {
-                  this.onRefreshEnd.emit(true);
-              }
-              },
-              err => {
-                if (!isRefresh) {
-                  this.snackBar.open(
-                      API_RESPONSE_MESSAGES.getActivityLogError,
-                      '', {duration: SNACKBAR_DURATION});
-              } else {
-                  this.snackBar.open(
-                      API_RESPONSE_MESSAGES.activityLogRefreshFailure,
-                      '', {duration: SNACKBAR_DURATION});
-              }
-              }
-          );
-}
 }
