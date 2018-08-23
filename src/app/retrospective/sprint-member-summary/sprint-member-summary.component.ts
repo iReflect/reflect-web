@@ -295,14 +295,16 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
 
         dialogRef.afterClosed().takeUntil(this.destroy$).subscribe(result => {
             if (result) {
+                const index: number = params.node.rowIndex ;
+                this.gridApi.updateRowData({remove: [member]});
                 this.retrospectiveService.deleteSprintMember(this.retrospectiveID, this.sprintID, member.ID)
                     .takeUntil(this.destroy$)
                     .subscribe(
                         () => {
-                            this.gridApi.updateRowData({remove: [member]});
                             this.memberIDs = this.memberIDs.filter(ID => ID !== member.ID);
                         },
                         err => {
+                            this.gridApi.updateRowData({add: [member], addIndex: index});
                             this.snackBar.open(
                                 this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES
                                     .deleteSprintMemberError,
