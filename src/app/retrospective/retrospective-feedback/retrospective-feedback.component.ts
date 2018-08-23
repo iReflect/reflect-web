@@ -160,14 +160,16 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
 
     resolveSprintGoal(params: any) {
         const goalData = params.data;
+        const index: number = params.node.rowIndex;
+        this.gridApi.updateRowData({remove: [goalData]});
         this.retrospectiveService.resolveSprintGoal(this.retrospectiveID, this.sprintID, goalData.ID)
             .takeUntil(this.destroy$)
             .subscribe(
                 () => {
-                    this.gridApi.updateRowData({remove: [goalData]});
                     this.snackBar.open(API_RESPONSE_MESSAGES.goalResolvedSuccessfully, '', {duration: SNACKBAR_DURATION});
                 },
                 err => {
+                    this.gridApi.updateRowData({add: [goalData], addIndex: index});
                     this.snackBar.open(
                         this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.goalResolveFailed,
                         '', {duration: SNACKBAR_DURATION});
@@ -177,14 +179,16 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
 
     unresolveSprintGoal(params: any) {
         const goalData = params.data;
+        const index: number = params.node.rowIndex;
+        this.gridApi.updateRowData({remove: [goalData]});
         this.retrospectiveService.unresolveSprintGoal(this.retrospectiveID, this.sprintID, goalData.ID)
             .takeUntil(this.destroy$)
             .subscribe(
                 () => {
-                    this.gridApi.updateRowData({remove: [goalData]});
                     this.snackBar.open(API_RESPONSE_MESSAGES.goalUnResolvedSuccessfully, '', {duration: SNACKBAR_DURATION});
                 },
                 err => {
+                    this.gridApi.updateRowData({add: [goalData], addIndex: index});
                     this.snackBar.open(
                         this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.goalUnResolveFailed,
                         '', {duration: SNACKBAR_DURATION});
