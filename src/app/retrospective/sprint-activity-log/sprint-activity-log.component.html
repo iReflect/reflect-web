@@ -1,13 +1,19 @@
 <ng-container>
     <mat-list class="trails">
-        <mat-list-item *ngFor="let data of responseData;let i = index">
-            <div class="trails-date">
-                <div *ngIf=isDateChange(i)>
+        <mat-list-item *ngFor="let data of responseData;let i = index" >
+            <div class="trails-date-space">
+                <div *ngIf=isDateChange(i) class="trails-date">
                     {{trailsDate}}
                 </div>
             </div>
-            <div>
-                {{data['ActionBy']['FirstName'] |titlecase}} {{ data['ActionBy']['LastName']|titlecase }} {{ data['Action'] }}
+            <div class="each-trail">
+                <span class="action-by">
+                    {{ data['ActionBy']['FirstName'] | titlecase }} 
+                    {{ data['ActionBy']['LastName'] | titlecase }}
+                </span>
+                <span>
+                    {{ data['Action'] }}
+                </span>
             </div>
         </mat-list-item>
     </mat-list>

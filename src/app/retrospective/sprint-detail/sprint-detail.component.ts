@@ -158,7 +158,7 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
 
     getTabIndexMapping(sprintStatus) {
         if (sprintStatus === SPRINT_STATES.DRAFT) {
-            return {taskSummary: 0, memberSummary: 1, activityLog: 4};
+            return {taskSummary: 0, memberSummary: 1, activityLog: 2};
         }
         return {highlights: 0, taskSummary: 1, memberSummary: 2, notes: 3, activityLog: 4};
     }
