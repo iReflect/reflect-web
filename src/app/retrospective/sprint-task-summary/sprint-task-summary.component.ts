@@ -56,6 +56,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     private columnDefs: any;
     private gridApi: GridApi;
     private columnApi: ColumnApi;
+    private doneFlag = false;
     private destroy$: Subject<boolean> = new Subject<boolean>();
 
     constructor(
@@ -284,7 +285,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                         return {
                             useIcon: true,
                             color: 'primary',
-                            icon: params.data.DoneAt ? 'check_box' : 'check_box_outline_blank',
+                            icon: (params.data.DoneAt || this.doneFlag ) ? 'check_box' : 'check_box_outline_blank',
                             onClick: this.markDoneUnDone.bind(this),
                         };
                     },
@@ -564,8 +565,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 }
             });
         } else {
-            sprintTaskSummaryData.DoneAt = this.sprintEndDate;
-            params.node.setData(sprintTaskSummaryData);
+            this.doneFlag = true;
             // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
             params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
             this.retrospectiveService.markSprintTaskDone(this.retrospectiveID, this.sprintID, sprintTaskSummaryData.ID)
@@ -574,12 +574,14 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     response => {
                         const sprintTaskSummary = response.data;
                         params.node.setData(sprintTaskSummary);
+                        this.doneFlag = false;
                         // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
                         params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
                         this.snackBar.open(API_RESPONSE_MESSAGES.getSprintIssueMarkedDoneSuccess, '', {duration: SNACKBAR_DURATION});
                     },
                     err => {
                         sprintTaskSummaryData.DoneAt = null;
+                        this.doneFlag = false;
                         params.node.setData(sprintTaskSummaryData);
                         // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
                         params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
