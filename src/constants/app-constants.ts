@@ -286,6 +286,6 @@ export const TRACKER_TICKET_STATUS_MAP = {
     DONE: 'DoneStatus',
 };
 
-export const COMMA_SEPARATED_STRING_PATTERN = '([a-zA-Z-_\'\\s]+,\\s?)*([(a-zA-Z-_\'\\s]+)';
+export const COMMA_SEPARATED_STRING_PATTERN = '([(a-zA-Z])([a-zA-Z-_\'\\s]+,\\s?)*([(a-zA-Z-_\'\\s]+)([(a-zA-Z])';
 
 export const OAUTH_CALLBACK_EVENT_KEY = 'OAuthCallback';
