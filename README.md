@@ -7,7 +7,8 @@
 
 Either clone this repository or fork it on GitHub and clone your fork:
 
-``` git clone git@github.com:iReflect/reflect-web.git
+```
+git clone git@github.com:iReflect/reflect-web.git
 cd reflect-web
 ```
 
@@ -19,15 +20,15 @@ You need to install Node and then the development tools. Node comes with a packa
 
 - Install node - `https://docs.npmjs.com/getting-started/installing-node`
 
-### Warning
-
+**Warning**
 > Verify that you are running at least node 8.9.x and npm 5.x.x by running node -v and npm -v in a terminal window. Older versions might produce errors, but newer versions are fine.
 
 - Install local dependencies (from the project root folder):
 
 > This will install the dependencies declared in the package.json file
 
-``` cd reflect-web
+```
+cd reflect-web
 npm install
 ```
 
@@ -35,13 +36,15 @@ npm install
 
 ### Setup the server
 
-- Create a file `src/environment/environment.ts` using `src/environment/environment.ts.sample` file if not present.You can then modify the configurations accordingly.
+- Create a file `src/environment/environment.ts` using `src/environment/environment.ts.sample` file if not present.
+
+You can then modify the configurations accordingly.
 
 - Create a file `assets/config/config.local.json` using `assets/config/config.json.sample` file in your local machine and put the environment specific information in this file.
 
 > **Note:** Make sure that this config file is present in the final build of the application (in the same `assets/config` folder, named according to the environment) for the application to work properly.
 
-#### Start the server
+### Start the server
 
 - Run `npm start` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
@@ -49,13 +52,17 @@ npm install
 
 This app is made up of a number of Typescript, SCSS and HTML files that need to be merged into a final distribution for running.  We can use the angular-cli tool to do this (or the npm script which is nothing but a wrapper for the angular-cli command).
 
-*Build client application (for development server):
-    ```cd reflect-web
-    npm run build```
+* Build client application (for development server):
 
-*Build client application (for production server):
-    ```cd reflect-web
-    npm run prod-build```
+    ```
+    cd reflect-web
+    npm run build
+    ```
+* Build client application (for production server):
+    ```
+    cd reflect-web
+    npm run prod-build
+    ```
 
 ## Running unit tests
 
@@ -73,13 +80,12 @@ For more information, see [ng e2e](https://github.com/angular/angular-cli/wiki/e
 
 - Fork the repo under your Github account.
 - Get the package:
-
-```git clone git@github.com:GITHUB_USERNAME/reflect-web.git
-```
-
+    ```
+    git clone git@github.com:GITHUB_USERNAME/reflect-web.git
+    ```
 - Set your fork as a remote:
-
-```git remote add fork git@github.com:GITHUB_USERNAME/reflect-web.git
+    ```
+    git remote add fork git@github.com:GITHUB_USERNAME/reflect-web.git
     ```
 - File a ticket in our issue tracker [iReflect-Kanban](https://ireflect.atlassian.net/).
 - Make changes, commit to your fork.
