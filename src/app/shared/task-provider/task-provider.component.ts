@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { TRACKER_TICKET_TYPE_MAP, COMMA_SEPARATED_STRING_PATTERN } from '@constants/app-constants';
+import { TRACKER_TICKET_TYPE_MAP, COMMA_SEPARATED_STRING_PATTERN, TRACKER_TICKET_STATUS_MAP } from '@constants/app-constants';
 
 @Component({
     selector: 'app-task-provider',
@@ -18,6 +18,7 @@ export class TaskProviderComponent implements OnInit {
     isInitialized = false;
     showConfigFields = false;
     trackerTicketTypeMap = TRACKER_TICKET_TYPE_MAP;
+    trackerTicketStatusMap = TRACKER_TICKET_STATUS_MAP;
     commaSeparatedRegex = COMMA_SEPARATED_STRING_PATTERN;
 
     // Since we are dynamically generating the task provider's form, these are the possible fields
@@ -60,7 +61,11 @@ export class TaskProviderComponent implements OnInit {
             [TRACKER_TICKET_TYPE_MAP.BUG]: new FormControl('', Validators.required)
         };
 
-        configFieldsGroup = {...configFieldsGroup, ...ticketTypeMappingGroup};
+        const ticketStatusMappingGroup = {
+            [TRACKER_TICKET_STATUS_MAP.DONE]: new FormControl('', Validators.required)
+        };
+
+        configFieldsGroup = {...configFieldsGroup, ...ticketTypeMappingGroup, ...ticketStatusMappingGroup};
 
         this.taskProviderFormGroup.setControl(this.taskProviderConfigKey,
             new FormGroup(configFieldsGroup, Validators.required));
@@ -89,5 +94,8 @@ export class TaskProviderComponent implements OnInit {
 
     get bugTypeControl() {
         return this.taskProviderFormGroup.get([this.taskProviderConfigKey, TRACKER_TICKET_TYPE_MAP.BUG]);
+    }
+    get doneStatusControl() {
+        return this.taskProviderFormGroup.get([this.taskProviderConfigKey, TRACKER_TICKET_STATUS_MAP.DONE]);
     }
 }

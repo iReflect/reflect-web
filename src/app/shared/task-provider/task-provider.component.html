@@ -40,6 +40,23 @@
             </div>
         </div>
         <mat-toolbar class="small-toolbar">
+            Tracker Ticket Status Mapping
+        </mat-toolbar>
+        <div class="table-box padded-container" [formGroupName]="taskProviderConfigKey">
+            <div class="layout-row">
+                <mat-form-field class="flex field-with-hint">
+                    <input matInput placeholder="Completed (Comma Separated)" [pattern]="commaSeparatedRegex" [formControlName]="trackerTicketStatusMap.DONE"/>
+                    <mat-error *ngIf="doneStatusControl.errors && doneStatusControl.errors['pattern']">
+                        It should be a comma separated string
+                    </mat-error> 
+                    <mat-hint> 
+                        <mat-icon>info</mat-icon>
+                        <span>Comma seperated list of task status representing completed task</span>
+                    </mat-hint>
+                </mat-form-field>
+            </div>
+        </div>
+        <mat-toolbar class="small-toolbar">
             Tracker Ticket Type Mapping
         </mat-toolbar>
         <div class="table-box padded-container" [formGroupName]="taskProviderConfigKey">

@@ -31,7 +31,7 @@ npm install
 #### Setup the server
 - Create a file `src/environment/environment.ts` using `src/environment/environment.ts.sample` file if not present. 
 You can then modify the configurations accordingly.
-- Create a file `assets/config/config.<env-name>.json` using `assets/config/config.json.sample` file in your local machine and put the environment specific information in this file. Here, `env-name` in the file name should be replaced with the value of the `name` key in the `src/environment/environment.ts` file.
+- Create a file `assets/config/config.local.json` using `assets/config/config.json.sample` file in your local machine and put the environment specific information in this file.
 > **Note:** Make sure that this config file is present in the final build of the application (in the same `assets/config` folder, named according to the environment) for the application to work properly.
 #### Start the server
 - Run `npm start` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change 
