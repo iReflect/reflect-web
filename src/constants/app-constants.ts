@@ -286,6 +286,7 @@ export const TRACKER_TICKET_STATUS_MAP = {
     DONE: 'DoneStatus',
 };
 
+// this is a basic regex for comma seperated fields.TODO more optimisation is needed.
 export const COMMA_SEPARATED_STRING_PATTERN = '([(a-zA-Z])([a-zA-Z-_\'\\s]+,\\s?)*([(a-zA-Z-_\'\\s]+)([(a-zA-Z])';
 
 export const OAUTH_CALLBACK_EVENT_KEY = 'OAuthCallback';
