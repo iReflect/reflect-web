@@ -33,11 +33,7 @@ export class SprintActivityLogComponent implements OnInit, OnChanges, OnDestroy 
   constructor(
     private retrospectiveService: RetrospectiveService,
     private snackBar: MatSnackBar,
-  ) {
-    setInterval(() => {
-      this.date = new Date();
-    }, AUTO_REFRESH_DURATION);
-   }
+  ) {}
 
   ngOnInit() {
     this.autoRefreshCurrentState = this.enableRefresh;
