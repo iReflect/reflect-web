@@ -68,24 +68,7 @@ export class SprintActivityLogComponent implements OnInit, OnChanges, OnDestroy 
     this.autoRefreshCurrentState = false;
     this.destroy$.next(true);
     this.destroy$.complete();
-}
-
-  isDateChange(i) {
-    if (i === 0) {
-      if (this.responseData[i]['CreatedAt'].substr(0 , 10) === this.date.toISOString().substr(0 , 10)) {
-        this.trailsDate = 'Today';
-      } else {
-      this.trailsDate = this.responseData[i]['CreatedAt'].substr(0, 10);
-      }
-      return true;
-    }
-    if (this.responseData[i]['CreatedAt'].substr(0, 10) === this.responseData[i - 1]['CreatedAt'].substr(0, 10)) {
-      return false;
-    } else {
-      this.trailsDate = this.responseData[i]['CreatedAt'].substr(0, 10);
-      return true;
   }
-}
 
   getActivityLog(isRefresh = false, isAutoRefresh = false) {
     if (!isAutoRefresh) {

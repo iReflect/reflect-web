@@ -2,13 +2,13 @@
     <mat-list class="trails">
         <mat-list-item *ngFor="let data of responseData;let i = index" >
             <div class="trails-date-space">
-                <div *ngIf=isDateChange(i) class="trails-date">
-                    {{trailsDate}}
+                <div class="trails-date">
+                    {{ data['CreatedAt'] | date:'medium' }}
                 </div>
             </div>
             <div class="each-trail">
                 <span class="action-by">
-                    {{ data['ActionBy']['FirstName'] | titlecase }} 
+                    {{ data['ActionBy']['FirstName'] | titlecase }}
                     {{ data['ActionBy']['LastName'] | titlecase }}
                 </span>
                 <span>
