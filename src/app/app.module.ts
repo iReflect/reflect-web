@@ -5,24 +5,22 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
-
 import { CookieModule } from 'ngx-cookie';
+import { APP_ROUTE_URLS } from '@constants/app-constants';
+import { AccountModule } from 'app/account/account.module';
+import { AppComponent } from 'app/app.component';
+import { CoreModule } from 'app/core/core.module';
+import { CustomMaterialModule } from 'app/core/custom-material/custom-material.module';
+import { FeedbackModule } from 'app/feedback/feedback.module';
+import { HomeModule } from 'app/home/home.module';
+import { SharedModule } from 'app/shared/shared.module';
+import { SideNavComponent } from 'app/sidenav/sidenav.component';
+import { RetrospectiveModule } from 'app/retrospective/retrospective.module';
 import { LicenseManager } from 'ag-grid-enterprise';
-
-import { AccountModule } from './account/account.module';
-import { AppComponent } from './app.component';
 import { AppConfig } from './app.config';
 import { AppEnvConfig } from './app-config.model';
-import { APP_ROUTE_URLS } from '../constants/app-constants';
-import { CoreModule } from './core/core.module';
-import { CustomMaterialModule } from './core/custom-material/custom-material.module';
 import { IsMaintenanceModeActiveGuard } from './core/route-guards/is-maintenance-mode-active.service';
-import { FeedbackModule } from './feedback/feedback.module';
-import { HomeModule } from './home/home.module';
 import { MaintenanceComponent } from './maintenance/maintenance.component';
-import { RetrospectiveModule } from './retrospective/retrospective.module';
-import { SharedModule } from './shared/shared.module';
-import { SideNavComponent } from './sidenav/sidenav.component';
 
 const routes: Routes = [
     {

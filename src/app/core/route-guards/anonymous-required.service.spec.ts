@@ -1,6 +1,6 @@
 import { inject, TestBed } from '@angular/core/testing';
 
-import { AnonymousRequiredGuard } from './anonymous-required.service';
+import { AnonymousRequiredGuard } from 'app/core/route-guards/anonymous-required.service';
 
 describe('AnonymousRequiredService', () => {
     beforeEach(() => {

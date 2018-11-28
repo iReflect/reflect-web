@@ -5,10 +5,10 @@ import { MatSnackBar } from '@angular/material';
 import {
     API_RESPONSE_MESSAGES, SPRINT_STATES_LABEL, APP_ROUTE_URLS, SNACKBAR_DURATION,
     DATE_FORMAT
-} from '../../../constants/app-constants';
+} from '@constants/app-constants';
 import { SprintListDataSource } from './sprint-list.data-source';
-import { RetrospectiveService } from '../../shared/services/retrospective.service';
-import { UtilsService } from '../../shared/utils/utils.service';
+import { RetrospectiveService } from 'app/shared/services/retrospective.service';
+import { UtilsService } from 'app/shared/utils/utils.service';
 
 @Component({
     selector: 'app-sprint-list',

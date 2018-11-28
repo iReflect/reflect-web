@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { APP_ROUTE_URLS, FEEDBACK_STATES } from '../../../constants/app-constants';
-import { FeedbackService } from '../../shared/services/feedback.service';
+import { APP_ROUTE_URLS, FEEDBACK_STATES } from '@constants/app-constants';
+import { FeedbackService } from 'app/shared/services/feedback.service';
 
 @Component({
     selector: 'app-dashboard',

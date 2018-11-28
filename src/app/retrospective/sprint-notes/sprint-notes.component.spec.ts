@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SprintNotesComponent } from './sprint-notes.component';
+import { SprintNotesComponent } from 'app/retrospective/sprint-notes/sprint-notes.component';
 
 describe('SprintNotesComponent', () => {
     let component: SprintNotesComponent;

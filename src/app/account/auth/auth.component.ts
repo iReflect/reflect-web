@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import 'rxjs/add/operator/takeUntil';
-import { OAUTH_CALLBACK_EVENT_KEY } from '../../../constants/app-constants';
+import { OAUTH_CALLBACK_EVENT_KEY } from '@constants/app-constants';
 
 @Component({
     selector: 'app-auth',

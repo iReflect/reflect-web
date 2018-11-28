@@ -3,8 +3,8 @@ import { Router } from '@angular/router';
 
 import { Restangular } from 'ngx-restangular';
 
-import { AppEnvConfig } from './app-config.model';
-import { environment } from '../environments/environment';
+import { AppEnvConfig } from 'app/app-config.model';
+import { environment } from '@environments/environment';
 
 @Injectable()
 export class AppConfig {

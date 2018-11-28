@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { APP_ROUTE_URLS } from '../../constants/app-constants';
+import { APP_ROUTE_URLS } from '@constants/app-constants';
 // Import Guards
-import { AnonymousRequiredGuard } from '../core/route-guards/anonymous-required.service';
+import { AnonymousRequiredGuard } from 'app/core/route-guards/anonymous-required.service';
 // Import Components
-import { LoginComponent } from './login/login.component';
-import { AuthComponent } from './auth/auth.component';
+import { LoginComponent } from 'app/account/login/login.component';
+import { AuthComponent } from 'app/account/auth/auth.component';
 
 const routes: Routes = [
     {

@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SprintActivityLogComponent } from './sprint-activity-log.component';
+import { SprintActivityLogComponent } from 'app/retrospective/sprint-activity-log/sprint-activity-log.component';
 
 describe('SprintActivityLogComponent', () => {
   let component: SprintActivityLogComponent;

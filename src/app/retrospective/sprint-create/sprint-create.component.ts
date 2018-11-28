@@ -1,9 +1,9 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
-import { API_RESPONSE_MESSAGES, SNACKBAR_DURATION } from '../../../constants/app-constants';
-import { RetrospectiveService } from '../../shared/services/retrospective.service';
-import { UtilsService } from '../../shared/utils/utils.service';
+import { API_RESPONSE_MESSAGES, SNACKBAR_DURATION } from '@constants/app-constants';
+import { RetrospectiveService } from 'app/shared/services/retrospective.service';
+import { UtilsService } from 'app/shared/utils/utils.service';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 

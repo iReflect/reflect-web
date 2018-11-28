@@ -1,11 +1,11 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { RetrospectiveListDataSource } from './retrospective-list.data-source';
-import { RetrospectiveService } from '../../shared/services/retrospective.service';
+import { RetrospectiveService } from 'app/shared/services/retrospective.service';
 import { Router } from '@angular/router';
-import { API_RESPONSE_MESSAGES, APP_ROUTE_URLS, SNACKBAR_DURATION } from '../../../constants/app-constants';
+import { API_RESPONSE_MESSAGES, APP_ROUTE_URLS, SNACKBAR_DURATION } from '@constants/app-constants';
 import { MatDialog, MatSnackBar } from '@angular/material';
-import { RetrospectiveCreateComponent } from '../retrospective-create/retrospective-create.component';
-import { UtilsService } from '../../shared/utils/utils.service';
+import { RetrospectiveCreateComponent } from 'app/retrospective/retrospective-create/retrospective-create.component';
+import { UtilsService } from 'app/shared/utils/utils.service';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 

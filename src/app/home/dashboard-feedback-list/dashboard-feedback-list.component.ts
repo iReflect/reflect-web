@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { FeedBackListDataSource } from '../../feedback/feedback-list/feedback-list.data-source';
-import { FeedbackService } from '../../shared/services/feedback.service';
-import { APP_ROUTE_URLS, DATE_FORMAT, FEEDBACK_STATES } from '../../../constants/app-constants';
+import { FeedBackListDataSource } from 'app/feedback/feedback-list/feedback-list.data-source';
+import { FeedbackService } from 'app/shared/services/feedback.service';
+import { APP_ROUTE_URLS, DATE_FORMAT, FEEDBACK_STATES } from '@constants/app-constants';
 
 @Component({
     selector: 'app-dashboard-feedback-list',

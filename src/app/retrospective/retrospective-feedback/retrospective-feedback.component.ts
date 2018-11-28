@@ -13,15 +13,15 @@ import {
     RETRO_FEEDBACK_TYPES,
     SNACKBAR_DURATION,
     SPRINT_STATES
-} from '../../../constants/app-constants';
-import { SelectCellEditorComponent } from '../../shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
-import { DatePickerEditorComponent } from '../../shared/ag-grid-editors/date-picker-editor/date-picker-editor.component';
-import { ClickableButtonRendererComponent } from '../../shared/ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
-import { RetrospectiveService } from '../../shared/services/retrospective.service';
-import { UtilsService } from '../../shared/utils/utils.service';
+} from '@constants/app-constants';
+import { SelectCellEditorComponent } from 'app/shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
+import { DatePickerEditorComponent } from 'app/shared/ag-grid-editors/date-picker-editor/date-picker-editor.component';
+import { ClickableButtonRendererComponent } from 'app/shared/ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
+import { RetrospectiveService } from 'app/shared/services/retrospective.service';
+import { UtilsService } from 'app/shared/utils/utils.service';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
-import { AppConfig } from '../../app.config';
+import { AppConfig } from 'app/app.config';
 import { SuppressKeyboardEventParams } from 'ag-grid/src/ts/entities/colDef';
 
 @Component({
