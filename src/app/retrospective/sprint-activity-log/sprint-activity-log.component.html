@@ -2,9 +2,12 @@
     <mat-list class="trails">
         <mat-list-item *ngFor="let data of responseData;let i = index" >
             <div class="trails-date-space">
-                <div class="trails-date">
-                    {{ data['CreatedAt'] | date:'medium' }}
+                <div *ngIf="isDateChange(i); else displayDateTime" class="trails-time">
+                    {{ data['CreatedAt'] | date:'mediumTime' }}
                 </div>
+                <ng-template #displayDateTime>
+                    {{ data['CreatedAt'] | date:'medium' }}
+                </ng-template>
             </div>
             <div class="each-trail">
                 <span class="action-by">

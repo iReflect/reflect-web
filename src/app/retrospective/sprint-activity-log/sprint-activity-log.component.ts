@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit , OnChanges, OnDestroy, Output, SimpleChanges} from '@angular/core';
 
+import { DatePipe } from '@angular/common';
 import { MatSnackBar } from '@angular/material';
 import { API_RESPONSE_MESSAGES, AUTO_REFRESH_DURATION, SNACKBAR_DURATION} from '@constants/app-constants';
 import 'rxjs/add/operator/takeUntil';
@@ -33,6 +34,7 @@ export class SprintActivityLogComponent implements OnInit, OnChanges, OnDestroy 
   constructor(
     private retrospectiveService: RetrospectiveService,
     private snackBar: MatSnackBar,
+    private datePipe: DatePipe,
   ) {}
 
   ngOnInit() {
@@ -68,6 +70,11 @@ export class SprintActivityLogComponent implements OnInit, OnChanges, OnDestroy 
     this.autoRefreshCurrentState = false;
     this.destroy$.next(true);
     this.destroy$.complete();
+}
+
+  isDateChange(i) {
+    return i != 0 && this.datePipe.transform(this.responseData[i]['CreatedAt'], 'shortDate') ==
+      this.datePipe.transform(this.responseData[i - 1]['CreatedAt'], 'shortDate');
   }
 
   getActivityLog(isRefresh = false, isAutoRefresh = false) {
