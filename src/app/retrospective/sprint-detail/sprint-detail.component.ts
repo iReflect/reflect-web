@@ -146,7 +146,6 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
                         this.snackBar.open(
                             this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getSprintDetailsError,
                             '', {duration: SNACKBAR_DURATION});
-                        this.navigateToRetrospectiveDashboard();
                     } else {
                         this.snackBar.open(
                             API_RESPONSE_MESSAGES.sprintDetailsRefreshFailure,
