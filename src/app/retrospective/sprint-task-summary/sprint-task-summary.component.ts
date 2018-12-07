@@ -51,6 +51,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
 
     @Output() onRefreshStart = new EventEmitter<boolean>();
     @Output() onRefreshEnd = new EventEmitter<boolean>();
+    @Output() refreshSprintDetails = new EventEmitter();
 
     private params: any;
     private columnDefs: any;
@@ -552,6 +553,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                                 params.refreshCell({suppressFlash: false, newData: false, forceRefresh: true});
                                 this.snackBar.open(API_RESPONSE_MESSAGES.getSprintIssueMarkedUndoneSuccess,
                                     '', {duration: SNACKBAR_DURATION});
+                                this.refreshSprintDetails.emit();
                             },
                             err => {
                                 sprintTaskSummaryData.DoneAt = currentDoneAt;
@@ -578,6 +580,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                         // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
                         params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
                         this.snackBar.open(API_RESPONSE_MESSAGES.getSprintIssueMarkedDoneSuccess, '', {duration: SNACKBAR_DURATION});
+                        this.refreshSprintDetails.emit();
                     },
                     err => {
                         sprintTaskSummaryData.DoneAt = null;
