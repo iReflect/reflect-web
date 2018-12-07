@@ -3,10 +3,10 @@
         <mat-list-item *ngFor="let data of responseData;let i = index" >
             <div class="trails-date-space">
                 <div *ngIf="isDateChange(i); else displayDateTime" class="trails-time">
-                    {{ data['CreatedAt'] | date:'mediumTime' }}
+                    {{ data['CreatedAt'] | date:'hh:mm:ss a' }}
                 </div>
                 <ng-template #displayDateTime>
-                    {{ data['CreatedAt'] | date:'medium' }}
+                    {{ data['CreatedAt'] | date:'MMM dd, y, hh:mm:ss a' }}
                 </ng-template>
             </div>
             <div class="each-trail">
