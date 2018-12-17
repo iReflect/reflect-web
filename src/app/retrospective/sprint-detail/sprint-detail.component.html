@@ -146,8 +146,17 @@
                         </mat-tab>
                         <mat-tab label="Summary">
                             <div *ngIf="sprintDetails.LastSyncedAt && [syncStates.SYNCING, syncStates.QUEUED].indexOf(sprintDetails.SyncStatus) === -1; else not_synced">
-                                <app-sprint-task-summary [isTabActive]="selectedTabIndex === tabIndexMapping.taskSummary" [sprintStatus]="sprintStatus" [retrospectiveID]="retrospectiveID" [sprintID]="sprintID" [isSprintEditable]="sprintDetails.Editable" [refreshOnChange]="toggleToTriggerRefresh"
-                                    [enableRefresh]="enableRefresh" (onRefreshStart)="onChildRefreshStart($event)" (onRefreshEnd)="onChildRefreshEnd($event)">
+                                <app-sprint-task-summary
+                                    [isTabActive]="selectedTabIndex === tabIndexMapping.taskSummary"
+                                    [sprintStatus]="sprintStatus"
+                                    [retrospectiveID]="retrospectiveID"
+                                    [sprintID]="sprintID"
+                                    [isSprintEditable]="sprintDetails.Editable"
+                                    [sprintEndDate]="sprintDetails.EndDate"
+                                    [refreshOnChange]="toggleToTriggerRefresh"
+                                    [enableRefresh]="enableRefresh"
+                                    (onRefreshStart)="onChildRefreshStart($event)"
+                                    (onRefreshEnd)="onChildRefreshEnd($event)">
                                 </app-sprint-task-summary>
                             </div>
                         </mat-tab>
