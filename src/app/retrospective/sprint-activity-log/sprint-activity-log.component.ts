@@ -73,7 +73,7 @@ export class SprintActivityLogComponent implements OnInit, OnChanges, OnDestroy 
 }
 
   isDateChange(i) {
-    return i != 0 && this.datePipe.transform(this.responseData[i]['CreatedAt'], 'shortDate') ==
+    return i !== 0 && this.datePipe.transform(this.responseData[i]['CreatedAt'], 'shortDate') ===
       this.datePipe.transform(this.responseData[i - 1]['CreatedAt'], 'shortDate');
   }
 
