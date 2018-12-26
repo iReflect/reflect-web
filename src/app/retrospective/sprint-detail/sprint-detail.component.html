@@ -169,7 +169,8 @@
                                     [refreshOnChange]="toggleToTriggerRefresh"
                                     [enableRefresh]="enableRefresh"
                                     (onRefreshStart)="onChildRefreshStart($event)"
-                                    (onRefreshEnd)="onChildRefreshEnd($event)">
+                                    (onRefreshEnd)="onChildRefreshEnd($event)"
+                                    (refreshSprintDetails)="refreshSprintDetails()">
                                 </app-sprint-task-summary>
                             </div>
                         </mat-tab>
