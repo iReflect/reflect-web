@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
-import { IsMaintenanceModeActiveGuard } from './core/route-guards/is-maintenance-mode-active.service';
-import { UserStoreService } from './shared/stores/user.store.service';
+import { IsMaintenanceModeActiveGuard } from 'app/core/route-guards/is-maintenance-mode-active.service';
+import { UserStoreService } from 'app/shared/stores/user.store.service';
 
 @Component({
     selector: 'app-root',

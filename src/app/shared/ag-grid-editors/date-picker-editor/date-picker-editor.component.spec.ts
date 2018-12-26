@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DatePickerEditorComponent } from './date-picker-editor.component';
+import { DatePickerEditorComponent } from 'app/shared/ag-grid-editors/date-picker-editor/date-picker-editor.component';
 
 describe('SelectCellEditorComponent', () => {
     let component: DatePickerEditorComponent;

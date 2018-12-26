@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SprintDetailComponent } from './sprint-detail.component';
+import { SprintDetailComponent } from 'app/retrospective/sprint-detail/sprint-detail.component';
 
 describe('SprintDetailComponent', () => {
     let component: SprintDetailComponent;

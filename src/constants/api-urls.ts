@@ -35,6 +35,7 @@ export const API_URLS = {
     sprintTaskMemberSummary: '/retrospectives/:retrospectiveID/sprints/:sprintID/tasks/:taskID/members',
     sprintTaskMember: '/retrospectives/:retrospectiveID/sprints/:sprintID/tasks/:taskID/members/:memberID',
     sprintTaskMarkDone: '/retrospectives/:retrospectiveID/sprints/:sprintID/tasks/:taskID/done',
+    sprintActivityLog: '/retrospectives/:retrospectiveID/sprints/:sprintID/process_history/',
 
     activateSprint: '/retrospectives/:retrospectiveID/sprints/:sprintID/activate',
     freezeSprint: '/retrospectives/:retrospectiveID/sprints/:sprintID/freeze',

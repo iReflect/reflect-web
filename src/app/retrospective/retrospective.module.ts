@@ -4,22 +4,23 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MATERIAL_COMPATIBILITY_MODE, Md2Module } from 'md2';
 import { AgGridModule } from 'ag-grid-angular';
-import { CustomMaterialModule } from '../core/custom-material/custom-material.module';
-import { SharedModule } from '../shared/shared.module';
-import { RetrospectiveRoutingModule } from './retrospective-routing.module';
+import { CustomMaterialModule } from 'app/core/custom-material/custom-material.module';
+import { SharedModule } from 'app/shared/shared.module';
+import { RetrospectiveRoutingModule } from 'app/retrospective/retrospective-routing.module';
 // Import Components
-import { RetrospectiveListComponent } from './retrospective-list/retrospective-list.component';
-import { RetrospectiveCreateComponent } from './retrospective-create/retrospective-create.component';
-import { SprintDetailComponent } from './sprint-detail/sprint-detail.component';
-import { SprintMemberSummaryComponent } from './sprint-member-summary/sprint-member-summary.component';
-import { SprintTaskSummaryComponent } from './sprint-task-summary/sprint-task-summary.component';
-import { RetrospectTaskModalComponent } from './retrospect-task-modal/retrospect-task-modal.component';
-import { RetrospectiveDashboardComponent } from './retrospective-dashboard/retrospective-dashboard.component';
-import { SprintListComponent } from './sprint-list/sprint-list.component';
-import { SprintCreateComponent } from './sprint-create/sprint-create.component';
-import { RetrospectiveFeedbackComponent } from './retrospective-feedback/retrospective-feedback.component';
-import { SprintHighlightsComponent } from './sprint-highlights/sprint-highlights.component';
-import { SprintNotesComponent } from './sprint-notes/sprint-notes.component';
+import { RetrospectiveListComponent } from 'app/retrospective/retrospective-list/retrospective-list.component';
+import { RetrospectiveCreateComponent } from 'app/retrospective/retrospective-create/retrospective-create.component';
+import { SprintDetailComponent } from 'app/retrospective/sprint-detail/sprint-detail.component';
+import { SprintMemberSummaryComponent } from 'app/retrospective/sprint-member-summary/sprint-member-summary.component';
+import { SprintTaskSummaryComponent } from 'app/retrospective/sprint-task-summary/sprint-task-summary.component';
+import { RetrospectTaskModalComponent } from 'app/retrospective/retrospect-task-modal/retrospect-task-modal.component';
+import { RetrospectiveDashboardComponent } from 'app/retrospective/retrospective-dashboard/retrospective-dashboard.component';
+import { SprintListComponent } from 'app/retrospective/sprint-list/sprint-list.component';
+import { SprintCreateComponent } from 'app/retrospective/sprint-create/sprint-create.component';
+import { RetrospectiveFeedbackComponent } from 'app/retrospective/retrospective-feedback/retrospective-feedback.component';
+import { SprintHighlightsComponent } from 'app/retrospective/sprint-highlights/sprint-highlights.component';
+import { SprintNotesComponent } from 'app/retrospective/sprint-notes/sprint-notes.component';
+import { SprintActivityLogComponent } from 'app/retrospective/sprint-activity-log/sprint-activity-log.component';
 
 
 @NgModule({
@@ -46,6 +47,7 @@ import { SprintNotesComponent } from './sprint-notes/sprint-notes.component';
         RetrospectiveFeedbackComponent,
         SprintHighlightsComponent,
         SprintNotesComponent,
+        SprintActivityLogComponent,
     ],
     exports: [],
     providers: [

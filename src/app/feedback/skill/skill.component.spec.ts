@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SkillComponent } from './skill.component';
+import { SkillComponent } from 'app/feedback/skill/skill.component';
 
 describe('SkillComponent', () => {
     let component: SkillComponent;

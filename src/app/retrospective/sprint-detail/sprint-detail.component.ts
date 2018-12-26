@@ -14,10 +14,10 @@ import {
     SPRINT_STATES,
     SPRINT_STATES_LABEL,
     SPRINT_SYNC_STATES
-} from '../../../constants/app-constants';
-import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.component';
-import { RetrospectiveService } from '../../shared/services/retrospective.service';
-import { UtilsService } from '../../shared/utils/utils.service';
+} from '@constants/app-constants';
+import { BasicModalComponent } from 'app/shared/basic-modal/basic-modal.component';
+import { RetrospectiveService } from 'app/shared/services/retrospective.service';
+import { UtilsService } from 'app/shared/utils/utils.service';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
@@ -50,7 +50,7 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
     sprintActions = SPRINT_ACTIONS;
     sprintActionsLabel = SPRINT_ACTIONS_LABEL;
     syncStates = SPRINT_SYNC_STATES;
-    tabIndexMapping: any = {highlights: 0, taskSummary: 1, memberSummary: 2, notes: 3};
+    tabIndexMapping: any = {highlights: 0, taskSummary: 1, memberSummary: 2, notes: 3, activityLog: 4};
 
     private refresh$: Subject<number> = new Subject<number>();
     private destroy$: Subject<boolean> = new Subject<boolean>();
@@ -158,9 +158,9 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
 
     getTabIndexMapping(sprintStatus) {
         if (sprintStatus === SPRINT_STATES.DRAFT) {
-            return {taskSummary: 0, memberSummary: 1};
+            return {taskSummary: 0, memberSummary: 1, activityLog: 2};
         }
-        return {highlights: 0, taskSummary: 1, memberSummary: 2, notes: 3};
+        return {highlights: 0, taskSummary: 1, memberSummary: 2, notes: 3, activityLog: 4};
     }
 
     navigateToRetrospectiveDashboard() {

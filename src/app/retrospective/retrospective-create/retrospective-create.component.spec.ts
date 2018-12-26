@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RetrospectiveCreateComponent } from './retrospective-create.component';
+import { RetrospectiveCreateComponent } from 'app/retrospective/retrospective-create/retrospective-create.component';
 
 describe('RetrospectiveCreateComponent', () => {
     let component: RetrospectiveCreateComponent;

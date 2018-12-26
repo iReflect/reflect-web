@@ -1,11 +1,11 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RetrospectiveService } from '../../shared/services/retrospective.service';
+import { RetrospectiveService } from 'app/shared/services/retrospective.service';
 import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
-import { SprintCreateComponent } from '../sprint-create/sprint-create.component';
-import { API_RESPONSE_MESSAGES, APP_ROUTE_URLS, DATE_FORMAT, SNACKBAR_DURATION } from '../../../constants/app-constants';
-import { SprintListComponent } from '../sprint-list/sprint-list.component';
-import { UtilsService } from '../../shared/utils/utils.service';
+import { SprintCreateComponent } from 'app/retrospective/sprint-create/sprint-create.component';
+import { API_RESPONSE_MESSAGES, APP_ROUTE_URLS, DATE_FORMAT, SNACKBAR_DURATION } from '@constants/app-constants';
+import { SprintListComponent } from 'app/retrospective/sprint-list/sprint-list.component';
+import { UtilsService } from 'app/shared/utils/utils.service';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 

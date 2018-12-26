@@ -2,10 +2,10 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
-import { API_RESPONSE_MESSAGES, DATE_FORMAT, FEEDBACK_STATES, SNACKBAR_DURATION } from '../../../constants/app-constants';
-import { FeedbackService } from '../../shared/services/feedback.service';
-import { TeamFeedbackService } from '../../shared/services/team-feedback.service';
-import { UtilsService } from '../../shared/utils/utils.service';
+import { API_RESPONSE_MESSAGES, DATE_FORMAT, FEEDBACK_STATES, SNACKBAR_DURATION } from '@constants/app-constants';
+import { FeedbackService } from 'app/shared/services/feedback.service';
+import { TeamFeedbackService } from 'app/shared/services/team-feedback.service';
+import { UtilsService } from 'app/shared/utils/utils.service';
 
 @Component({
     selector: 'app-feedback-detail',

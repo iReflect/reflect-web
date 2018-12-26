@@ -1,7 +1,7 @@
 import { Component, forwardRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { BaseQuestionComponent } from './question.base.component';
-import { QUESTION_RESPONSE_SEPARATOR, QUESTION_TYPES } from '../../../constants/app-constants';
+import { BaseQuestionComponent } from 'app/feedback/question/question.base.component';
+import { QUESTION_RESPONSE_SEPARATOR, QUESTION_TYPES } from '@constants/app-constants';
 
 @Component({
     selector: 'app-multi-choice-question',

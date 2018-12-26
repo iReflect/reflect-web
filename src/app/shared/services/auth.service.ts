@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Restangular } from 'ngx-restangular';
 import { Observable } from 'rxjs/Observable';
-import { API_URLS } from '../../../constants/api-urls';
-import { RestApiHelperService } from '../utils/rest-api-helper.service';
-import { APP_ROUTE_URLS } from '../../../constants/app-constants';
+import { API_URLS } from '@constants/api-urls';
+import { RestApiHelperService } from 'app/shared/utils/rest-api-helper.service';
 
 
 @Injectable()
