@@ -372,9 +372,33 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 },
             },
             {
+                headerName: 'Participants',
+                field: 'TaskParticipants',
+                tooltipField: 'TaskParticipants',
+                minWidth: 160,
+                hide: true,
+                filter: 'agTextColumnFilter',
+                filterParams: {
+                    newRowsAction: 'keep',
+                    clearButton: true,
+                },
+            },
+            {
                 headerName: 'Sprint Owner',
                 field: 'SprintOwner',
                 tooltipField: 'SprintOwner',
+                minWidth: 160,
+                hide: true,
+                filter: 'agTextColumnFilter',
+                filterParams: {
+                    newRowsAction: 'keep',
+                    clearButton: true,
+                },
+            },
+            {
+                headerName: 'Sprint Participants',
+                field: 'SprintParticipants',
+                tooltipField: 'SprintParticipants',
                 minWidth: 160,
                 hide: true,
                 filter: 'agTextColumnFilter',
