@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ClickableButtonRendererComponent } from './clickable-button-renderer.component';
+import { ClickableButtonRendererComponent } from 'app/shared/ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
 
 describe('ClickableButtonRendererComponent', () => {
     let component: ClickableButtonRendererComponent;

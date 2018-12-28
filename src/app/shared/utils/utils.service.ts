@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { API_RESPONSE_MESSAGES, DATE_FORMAT } from '../../../constants/app-constants';
+import { API_RESPONSE_MESSAGES, DATE_FORMAT } from '@constants/app-constants';
 import { DatePipe } from '@angular/common';
 import * as moment from 'moment';
 import * as _ from 'lodash';

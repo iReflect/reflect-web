@@ -3,8 +3,8 @@ import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from
 
 import * as _ from 'lodash';
 
-import { AppConfig } from '../../app.config';
-import { APP_ROUTE_URLS } from '../../../constants/app-constants';
+import { AppConfig } from 'app/app.config';
+import { APP_ROUTE_URLS } from '@constants/app-constants';
 
 @Injectable()
 export class IsMaintenanceModeActiveGuard implements CanActivate {

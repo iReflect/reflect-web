@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
-import { COMMENT_TOOLTIP_MAP, QUESTION_TYPES } from '../../../constants/app-constants';
+import { COMMENT_TOOLTIP_MAP, QUESTION_TYPES } from '@constants/app-constants';
 
 @Component({
     selector: 'app-question-response',

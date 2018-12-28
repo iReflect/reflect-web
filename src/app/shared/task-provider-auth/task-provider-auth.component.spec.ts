@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TaskProviderAuthComponent } from './task-provider-auth.component';
+import { TaskProviderAuthComponent } from 'app/shared/task-provider-auth/task-provider-auth.component';
 
 describe('TaskProviderAuthComponent', () => {
     let component: TaskProviderAuthComponent;

@@ -1,0 +1,23 @@
+<ng-container>
+    <mat-list class="trails">
+        <mat-list-item *ngFor="let data of responseData;let i = index" >
+            <div class="trails-date-space">
+                <div *ngIf="isDateChange(i); else displayDateTime" class="trails-time">
+                    {{ data['CreatedAt'] | date:'hh:mm:ss a' }}
+                </div>
+                <ng-template #displayDateTime>
+                    {{ data['CreatedAt'] | date:'MMM dd, y, hh:mm:ss a' }}
+                </ng-template>
+            </div>
+            <div class="each-trail">
+                <span class="action-by">
+                    {{ data['ActionBy']['FirstName'] | titlecase }}
+                    {{ data['ActionBy']['LastName'] | titlecase }}
+                </span>
+                <span>
+                    {{ data['Action'] }}
+                </span>
+            </div>
+        </mat-list-item>
+    </mat-list>
+</ng-container>

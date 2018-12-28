@@ -1,10 +1,10 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
-import { RetrospectiveService } from '../../shared/services/retrospective.service';
-import { API_RESPONSE_MESSAGES, SNACKBAR_DURATION, TRACKER_TICKET_TYPE_MAP } from '../../../constants/app-constants';
+import { RetrospectiveService } from 'app/shared/services/retrospective.service';
+import { API_RESPONSE_MESSAGES, SNACKBAR_DURATION, TRACKER_TICKET_TYPE_MAP } from '@constants/app-constants';
 import * as _ from 'lodash';
-import { UtilsService } from '../../shared/utils/utils.service';
+import { UtilsService } from 'app/shared/utils/utils.service';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 

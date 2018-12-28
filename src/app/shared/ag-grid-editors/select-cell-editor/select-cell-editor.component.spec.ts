@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SelectCellEditorComponent } from './select-cell-editor.component';
+import { SelectCellEditorComponent } from 'app/shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
 
 describe('SelectCellEditorComponent', () => {
     let component: SelectCellEditorComponent;

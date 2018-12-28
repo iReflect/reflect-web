@@ -4,9 +4,9 @@ import { Router } from '@angular/router';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { Restangular } from 'ngx-restangular';
 
-import { AppConfig } from '../../app.config';
-import { APP_ROUTE_URLS, LOGIN_ERROR_TYPES } from '../../../constants/app-constants';
-import { UserStoreService } from '../stores/user.store.service';
+import { AppConfig } from 'app/app.config';
+import { APP_ROUTE_URLS, LOGIN_ERROR_TYPES } from '@constants/app-constants';
+import { UserStoreService } from 'app/shared/stores/user.store.service';
 
 @Injectable()
 export class RestApiHelperService {

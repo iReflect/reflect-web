@@ -1,0 +1,30 @@
+.trails-time {
+    padding-left: 6.4rem;
+}
+
+.trails-date-space {
+    color: black;
+    font-size: medium;
+    padding: 10px;
+    font-weight: bold;
+    background-color: whitesmoke;
+}
+
+.trails {
+    font-size: small;
+    overflow: scroll;
+    max-height: calc(100vh - 430px);
+    background-color: whitesmoke;
+    padding: 10px;
+}
+
+.each-trail {
+    padding: 10px;
+    margin-left: 10px;
+    background-color: whitesmoke;
+}
+
+.action-by {
+    color: #2196f3;
+}
+

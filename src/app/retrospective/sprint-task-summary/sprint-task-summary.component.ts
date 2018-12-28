@@ -14,19 +14,18 @@ import {
     RATING_STATES_LABEL,
     SNACKBAR_DURATION,
     SPRINT_STATES
-} from '../../../constants/app-constants';
+} from '@constants/app-constants';
 import {
     ClickableButtonRendererComponent
-} from '../../shared/ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
-import { RetrospectiveService } from '../../shared/services/retrospective.service';
-import { RetrospectTaskModalComponent } from '../retrospect-task-modal/retrospect-task-modal.component';
-import { UtilsService } from '../../shared/utils/utils.service';
-import { BasicModalComponent } from '../../shared/basic-modal/basic-modal.component';
+} from 'app/shared/ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
+import { RetrospectiveService } from 'app/shared/services/retrospective.service';
+import { RetrospectTaskModalComponent } from 'app/retrospective/retrospect-task-modal/retrospect-task-modal.component';
+import { UtilsService } from 'app/shared/utils/utils.service';
+import { BasicModalComponent } from 'app/shared/basic-modal/basic-modal.component';
 import * as _ from 'lodash';
-import { SelectCellEditorComponent } from '../../shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
-import { RatingRendererComponent } from '../../shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
-import { AppConfig } from '../../app.config';
-
+import { SelectCellEditorComponent } from 'app/shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
+import { RatingRendererComponent } from 'app/shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
+import { AppConfig } from 'app/app.config';
 @Component({
     selector: 'app-sprint-task-summary',
     templateUrl: './sprint-task-summary.component.html',
@@ -51,6 +50,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
 
     @Output() onRefreshStart = new EventEmitter<boolean>();
     @Output() onRefreshEnd = new EventEmitter<boolean>();
+    @Output() refreshSprintDetails = new EventEmitter();
 
     private params: any;
     private columnDefs: any;
@@ -576,6 +576,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                                 params.refreshCell({suppressFlash: false, newData: false, forceRefresh: true});
                                 this.snackBar.open(API_RESPONSE_MESSAGES.getSprintIssueMarkedUndoneSuccess,
                                     '', {duration: SNACKBAR_DURATION});
+                                this.refreshSprintDetails.emit();
                             },
                             err => {
                                 sprintTaskSummaryData.DoneAt = currentDoneAt;
@@ -602,6 +603,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                         // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
                         params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
                         this.snackBar.open(API_RESPONSE_MESSAGES.getSprintIssueMarkedDoneSuccess, '', {duration: SNACKBAR_DURATION});
+                        this.refreshSprintDetails.emit();
                     },
                     err => {
                         sprintTaskSummaryData.DoneAt = null;
