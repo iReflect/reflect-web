@@ -4,7 +4,7 @@ import { CookieService } from 'ngx-cookie';
 import 'rxjs/add/operator/filter';
 
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { USER_AUTH_TOKEN_KEY } from '../../../constants/app-constants';
+import { USER_AUTH_TOKEN_KEY } from '@constants/app-constants';
 
 
 @Injectable()

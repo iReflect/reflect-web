@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RatingRendererComponent } from './rating-renderer.component';
+import { RatingRendererComponent } from 'app/shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
 
 describe('RatingRendererComponent', () => {
     let component: RatingRendererComponent;

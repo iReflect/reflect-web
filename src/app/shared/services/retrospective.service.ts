@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { API_URLS } from '../../../constants/api-urls';
-import { RestApiHelperService } from '../utils/rest-api-helper.service';
+import { API_URLS } from '@constants/api-urls';
+import { RestApiHelperService } from 'app/shared/utils/rest-api-helper.service';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import {Restangular} from 'ngx-restangular';
@@ -189,6 +189,16 @@ export class RetrospectiveService {
         return this.getRestAngularService(isAutoRefresh)
             .one(
                 API_URLS.sprintTaskSummary
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+            )
+            .get();
+    }
+
+    getActivityLog(retrospectiveID, sprintID, isAutoRefresh = false): Observable<any> {
+        return this.getRestAngularService(isAutoRefresh)
+            .one(
+                API_URLS.sprintActivityLog
                     .replace(':retrospectiveID', retrospectiveID)
                     .replace(':sprintID', sprintID)
             )

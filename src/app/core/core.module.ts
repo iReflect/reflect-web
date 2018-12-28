@@ -5,16 +5,16 @@ import { FormsModule } from '@angular/forms';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 // Import Custom Modules
-import { SharedModule } from '../shared/shared.module';
-import { CustomMaterialModule } from './custom-material/custom-material.module';
-import { HeaderComponent } from './layout/header/header.component';
-import { LoggerService } from './logger.service';
+import { SharedModule } from 'app/shared/shared.module';
+import { CustomMaterialModule } from 'app/core/custom-material/custom-material.module';
+import { HeaderComponent } from 'app/core/layout/header/header.component';
+import { LoggerService } from 'app/core/logger.service';
 // Import Others
-import { throwIfAlreadyLoaded } from './module-import-guard';
-import { AnonymousRequiredGuard } from './route-guards/anonymous-required.service';
+import { throwIfAlreadyLoaded } from 'app/core/module-import-guard';
+import { AnonymousRequiredGuard } from 'app/core/route-guards/anonymous-required.service';
 // Import Custom Services
-import { LoginRequiredGuard } from './route-guards/login-required.service';
-import { IsMaintenanceModeActiveGuard } from './route-guards/is-maintenance-mode-active.service';
+import { LoginRequiredGuard } from 'app/core/route-guards/login-required.service';
+import { IsMaintenanceModeActiveGuard } from 'app/core/route-guards/is-maintenance-mode-active.service';
 import { RestangularModule } from 'ngx-restangular';
 
 // Import LoadingBarModule:

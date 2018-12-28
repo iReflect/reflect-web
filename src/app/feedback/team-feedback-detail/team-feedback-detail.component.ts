@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { TeamFeedbackService } from '../../shared/services/team-feedback.service';
-import { APP_ROUTE_URLS } from '../../../constants/app-constants';
+import { TeamFeedbackService } from 'app/shared/services/team-feedback.service';
+import { APP_ROUTE_URLS } from '@constants/app-constants';
 
 @Component({
     selector: 'app-team-feedback-detail-page',

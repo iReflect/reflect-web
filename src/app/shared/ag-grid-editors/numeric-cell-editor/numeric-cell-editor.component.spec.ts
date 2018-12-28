@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NumericCellEditorComponent } from './numeric-cell-editor.component';
+import { NumericCellEditorComponent } from 'app/shared/ag-grid-editors/numeric-cell-editor/numeric-cell-editor.component';
 
 describe('NumericCellEditorComponent', () => {
     let component: NumericCellEditorComponent;
