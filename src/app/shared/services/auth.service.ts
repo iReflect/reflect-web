@@ -17,6 +17,10 @@ export class AuthService {
         return this.restangular.one(API_URLS.login).get();
     }
 
+    basicAuthLogin(loginData: any): Observable<any> {
+        return this.restangular.one(API_URLS.login).post('', loginData);
+    }
+
     auth(queryParams: any): Observable<any> {
         return this.restangular.one(API_URLS.auth).post(undefined, undefined, queryParams);
     }

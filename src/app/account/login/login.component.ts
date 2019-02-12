@@ -5,6 +5,7 @@ import * as _ from 'lodash';
 import 'rxjs/add/operator/finally';
 import 'rxjs/add/operator/takeUntil';
 import { Subject } from 'rxjs/Subject';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { APP_ROUTE_URLS, LOGIN_ERROR_MESSAGES, LOGIN_ERROR_TYPES, LOGIN_STATES } from '@constants/app-constants';
 import { AuthService } from 'app/shared/services/auth.service';
@@ -16,6 +17,7 @@ import { UserStoreService } from 'app/shared/stores/user.store.service';
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss']
 })
+
 export class LoginComponent implements OnInit, OnDestroy {
 
     title: String = 'Sign In';
@@ -27,6 +29,11 @@ export class LoginComponent implements OnInit, OnDestroy {
     _errorMessage = '';
     isAuthorizing = false;
     returnURL = APP_ROUTE_URLS.root;
+    public loginGroup = new FormGroup({
+        Email: new FormControl('', [Validators.required, Validators.email]),
+        Password: new FormControl('', [Validators.required, Validators.minLength(8)])
+    });
+    hidePassword = true;
 
     private destroy$: Subject<boolean> = new Subject<boolean>();
 
@@ -57,6 +64,31 @@ export class LoginComponent implements OnInit, OnDestroy {
         if (this.showError) {
             this.errorMessage = LOGIN_ERROR_MESSAGES[error] || LOGIN_ERROR_MESSAGES.internalError;
         }
+    }
+    onSubmit() {
+        const LoginData = {
+            'Email': this.loginGroup.value.Email,
+            'Password': this.loginGroup.value.Password,
+          };
+        this.authService.basicAuthLogin(LoginData)
+        .subscribe((response: any) => {
+            this.userStoreService.updateUserData(response.data);
+            this.router.navigateByUrl(this.returnURL);
+        },
+        (error: any) => {
+            if (error.status === 404) {
+                this.error(LOGIN_ERROR_TYPES.notFound);
+            } else {
+                this.error(LOGIN_ERROR_TYPES.internalError);
+            }
+        });
+    }
+    get userEmail() {
+        return this.loginGroup.get('Email');
+    }
+
+    get userPassword() {
+        return this.loginGroup.get('Password');
     }
 
     get errorMessage() {
@@ -133,6 +165,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     private error(reason) {
         this.errorMessage = LOGIN_ERROR_MESSAGES[reason];
         // We need to retain the return url if there was an error while authenticating the user, therefore using 'merge' strategy.
-        this.router.navigate([APP_ROUTE_URLS.login], {queryParams: {error: reason}, queryParamsHandling: 'merge'});
+        this.router.navigate([APP_ROUTE_URLS.login], { queryParams: { error: reason }, queryParamsHandling: 'merge' });
     }
 }
