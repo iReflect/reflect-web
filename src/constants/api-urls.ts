@@ -2,6 +2,7 @@ export const API_URLS = {
     login: '/login',
     auth: '/auth',
     logout: '/logout',
+    identify: '/identify',
     feedback: '/feedbacks',
     teamFeedback: '/team-feedbacks',
     user: {

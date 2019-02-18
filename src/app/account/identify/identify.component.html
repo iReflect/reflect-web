@@ -1,0 +1,31 @@
+<ng-container>
+    <mat-toolbar color="primary">
+        <span><b>iReflect</b></span>
+        <span class="fill-remaining-space"></span>
+    </mat-toolbar>
+    <div class="login-page">
+        <div class="login-card">
+            <mat-card>
+                <mat-card-content>
+                    <p>
+                        <mat-error *ngIf="showError">{{errorMessage}}</mat-error>
+                    </p>
+                    <h2>Enter your Email</h2>
+                    <mat-form-field appearance="outline">
+                        <input matInput placeholder="Email" [formControl]="emailFormControl">
+                        <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
+                            Please enter a valid email address
+                        </mat-error>
+                        <mat-error *ngIf="emailFormControl.hasError('required')">
+                            Email is <strong>required</strong>
+                        </mat-error>
+                    </mat-form-field>
+                    <button mat-raised-button color="primary" (click)="onSubmit(true)" [disabled]="!emailFormControl.valid">Generate
+                        OTP</button>
+                    <button mat-button [disabled]="!emailFormControl.valid" (click)="onSubmit(false)">Already have a
+                        OTP?</button>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+</ng-container>

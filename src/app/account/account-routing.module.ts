@@ -7,6 +7,7 @@ import { AnonymousRequiredGuard } from 'app/core/route-guards/anonymous-required
 // Import Components
 import { LoginComponent } from 'app/account/login/login.component';
 import { AuthComponent } from 'app/account/auth/auth.component';
+import { IdentifyComponent } from 'app/account/identify/identify.component';
 
 const routes: Routes = [
     {
@@ -18,7 +19,12 @@ const routes: Routes = [
         path: APP_ROUTE_URLS.login,
         component: LoginComponent,
         canActivate: [AnonymousRequiredGuard]
-    }
+    },
+    {
+        path: APP_ROUTE_URLS.identify,
+        component: IdentifyComponent,
+        canActivate: [AnonymousRequiredGuard]
+    },
 ];
 
 @NgModule({

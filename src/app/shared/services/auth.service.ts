@@ -28,4 +28,7 @@ export class AuthService {
     logout() {
         return this.restangular.one(API_URLS.logout).post();
     }
+    identify(identifyData: any): Observable<any> {
+        return this.restangular.one(API_URLS.identify).post('', identifyData);
+    }
 }
