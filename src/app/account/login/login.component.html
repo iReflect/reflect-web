@@ -13,7 +13,7 @@
                     <h2>Welcome to iReflect</h2>
                     <form [formGroup]="loginGroup" (ngSubmit)="onSubmit()">
                         <mat-form-field appearance="outline">
-                          <input matInput placeholder="Email" formControlName="Email" >
+                          <input matInput placeholder="Email" formControlName="email" >
                           <mat-error *ngIf="userEmail.hasError('email') && !userEmail.hasError('required')">
                             Please enter a valid email address
                           </mat-error>
@@ -22,14 +22,14 @@
                           </mat-error>
                         </mat-form-field>
                         <mat-form-field appearance="outline">
-                            <input matInput placeholder="Password" [type]="hidePassword ? 'password' : 'text'" formControlName="Password" >
+                            <input matInput placeholder="Password" [type]="hidePassword ? 'password' : 'text'" formControlName="password" >
                             <mat-icon matSuffix (click)="hidePassword = !hidePassword">{{!hidePassword ? 'visibility' : 'visibility_off'}}</mat-icon>
                             <mat-error *ngIf="userPassword.hasError('minlength')">
                             Password must be at least 8 characters long.
                             </mat-error>
                         </mat-form-field>
                         <button mat-button class="forgot-password" [routerLink]="['/identify']">forgot password?</button>
-                        <button mat-raised-button color="primary" type="submit" [disabled]="!loginGroup.valid">Login</button>
+                        <button mat-raised-button color="primary" type="submit" [disabled]="!loginGroup.valid || disableLoginBtn">Login</button>
                       </form>
                     <div *ngIf="[loginStates.NOT_LOGGED_IN, loginStates.LOGIN_ERROR].indexOf(authState) !== -1;then please_login else logging_in"></div>
                     <ng-template #please_login>

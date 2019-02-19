@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import * as _ from 'lodash';
 import 'rxjs/add/operator/finally';
 import 'rxjs/add/operator/takeUntil';
+import { finalize } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
@@ -30,10 +31,11 @@ export class LoginComponent implements OnInit, OnDestroy {
     isAuthorizing = false;
     returnURL = APP_ROUTE_URLS.root;
     public loginGroup = new FormGroup({
-        Email: new FormControl('', [Validators.required, Validators.email]),
-        Password: new FormControl('', [Validators.required, Validators.minLength(8)])
+        email: new FormControl('', [Validators.required, Validators.email]),
+        password: new FormControl('', [Validators.required, Validators.minLength(8)])
     });
     hidePassword = true;
+    disableLoginBtn = false;
 
     private destroy$: Subject<boolean> = new Subject<boolean>();
 
@@ -66,29 +68,33 @@ export class LoginComponent implements OnInit, OnDestroy {
         }
     }
     onSubmit() {
-        const LoginData = {
-            'Email': this.loginGroup.value.Email,
-            'Password': this.loginGroup.value.Password,
+        const encryptedPassword = this.authService.encryptPassword(this.loginGroup.value.password);
+        const loginData = {
+            'email': this.loginGroup.value.email,
+            'password': encryptedPassword,
           };
-        this.authService.basicAuthLogin(LoginData)
+        this.disableLoginBtn = true;
+
+        this.authService.basicAuthLogin(loginData)
+        .pipe(finalize(() => { this.disableLoginBtn = false; }))
         .subscribe((response: any) => {
             this.userStoreService.updateUserData(response.data);
             this.router.navigateByUrl(this.returnURL);
         },
         (error: any) => {
             if (error.status === 404) {
-                this.error(LOGIN_ERROR_TYPES.notFound);
+                this.error(LOGIN_ERROR_TYPES.invalidEmailOrPassword);
             } else {
                 this.error(LOGIN_ERROR_TYPES.internalError);
             }
         });
     }
     get userEmail() {
-        return this.loginGroup.get('Email');
+        return this.loginGroup.get('email');
     }
 
     get userPassword() {
-        return this.loginGroup.get('Password');
+        return this.loginGroup.get('password');
     }
 
     get errorMessage() {
