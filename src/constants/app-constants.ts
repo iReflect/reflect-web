@@ -54,6 +54,7 @@ export const APP_ROUTE_URLS = {
     login: 'login',
     auth: 'auth',
     identify: 'identify',
+    code: 'code',
     maintenance: 'maintenance',
 
     feedbackList: 'feedbacks',
@@ -302,3 +303,6 @@ export const ITERATION_COUNT = 10000;
 export const KEY_SIZE = 256 / 32;
 
 export const SALT_FOR_PASSWORD = '';
+
+// ReSendTime ...
+export const RE_SEND_TIME = 10;

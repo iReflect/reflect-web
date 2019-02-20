@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { Validators, FormControl } from '@angular/forms';
 
-import { LOGIN_ERROR_MESSAGES } from '@constants/app-constants';
-
+import { LOGIN_ERROR_MESSAGES, APP_ROUTE_URLS } from '@constants/app-constants';
 import { AuthService } from 'app/shared/services/auth.service';
 
 @Component({
@@ -19,14 +19,20 @@ export class IdentifyComponent {
   public errorMessage: string;
   public showError = false;
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    ) {}
 
   onSubmit(sendOTP: boolean) {
     const identifyData = {
       'email': this.emailFormControl.value,
       'sendOTP': sendOTP,
     };
-    this.authService.identify(identifyData).subscribe(() => {}
+    this.authService.identify(identifyData).subscribe((response: any) => {
+      this.authService.setEmailAndReSendTime(identifyData.email, response.data.reSendTime);
+      this.router.navigate([APP_ROUTE_URLS.code]);
+    }
     , (errorResponse: any) => {
       if (errorResponse.status === 400) {
         this.errorMessage = errorResponse.data.error;

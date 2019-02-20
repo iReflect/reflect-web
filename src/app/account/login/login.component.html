@@ -28,7 +28,7 @@
                             Password must be at least 8 characters long.
                             </mat-error>
                         </mat-form-field>
-                        <button mat-button class="forgot-password" [routerLink]="['/identify']">forgot password?</button>
+                        <button mat-button color="primary" class="forgot-password" [routerLink]="['/identify']">forgot password?</button>
                         <button mat-raised-button color="primary" type="submit" [disabled]="!loginGroup.valid || disableLoginBtn">Login</button>
                       </form>
                     <div *ngIf="[loginStates.NOT_LOGGED_IN, loginStates.LOGIN_ERROR].indexOf(authState) !== -1;then please_login else logging_in"></div>

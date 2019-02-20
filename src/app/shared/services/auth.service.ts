@@ -12,6 +12,9 @@ import { RestApiHelperService } from 'app/shared/utils/rest-api-helper.service';
 @Injectable()
 export class AuthService {
     private restangular: Restangular;
+    private email: string;
+    private OTPReSendTime: number;
+    private otp: string;
 
     constructor(private restApiHelperService: RestApiHelperService) {
         this.restangular = restApiHelperService.getAuthApiHelper();
@@ -35,6 +38,9 @@ export class AuthService {
     identify(identifyData: any): Observable<any> {
         return this.restangular.one(API_URLS.identify).post('', identifyData);
     }
+    recover(recoveryData: any): Observable<any> {
+        return this.restangular.one(API_URLS.code).post('', recoveryData);
+    }
     encryptPassword(password: string) {
         return CryptoJS.PBKDF2(
             password,
@@ -43,5 +49,18 @@ export class AuthService {
                 keySize: KEY_SIZE,
                 iterations: ITERATION_COUNT
             }).toString();
+    }
+    setEmailAndReSendTime(email: string, reSendTime: number) {
+        this.email = email;
+        this.OTPReSendTime = reSendTime;
+    }
+    getEmailAndReSendTime(): any {
+        return {'email': this.email, 'reSendTime': this.OTPReSendTime};
+    }
+    setOTP(otp: string) {
+        this.otp = otp;
+    }
+    getOTP(): string {
+        return this.otp;
     }
 }

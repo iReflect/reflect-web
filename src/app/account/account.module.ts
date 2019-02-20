@@ -8,6 +8,7 @@ import { AccountRoutingModule } from 'app/account/account-routing.module';
 import { LoginComponent } from 'app/account/login/login.component';
 import { AuthComponent } from 'app/account/auth/auth.component';
 import { IdentifyComponent } from './identify/identify.component';
+import { CodeComponent } from './code/code.component';
 
 @NgModule({
     imports: [
@@ -21,6 +22,7 @@ import { IdentifyComponent } from './identify/identify.component';
         AuthComponent,
         LoginComponent,
         IdentifyComponent,
+        CodeComponent,
     ],
     exports: [],
     providers: []
