@@ -35,12 +35,19 @@ export class AuthService {
     logout() {
         return this.restangular.one(API_URLS.logout).post();
     }
+
     identify(identifyData: any): Observable<any> {
         return this.restangular.one(API_URLS.identify).post('', identifyData);
     }
+
     recover(recoveryData: any): Observable<any> {
         return this.restangular.one(API_URLS.code).post('', recoveryData);
     }
+
+    updatePassword(data: any): Observable<any> {
+        return this.restangular.one(API_URLS.updatePassword).post('', data);
+    }
+
     encryptPassword(password: string) {
         return CryptoJS.PBKDF2(
             password,
@@ -50,16 +57,20 @@ export class AuthService {
                 iterations: ITERATION_COUNT
             }).toString();
     }
+
     setEmailAndReSendTime(email: string, reSendTime: number) {
         this.email = email;
         this.OTPReSendTime = reSendTime;
     }
+
     getEmailAndReSendTime(): any {
-        return {'email': this.email, 'reSendTime': this.OTPReSendTime};
+        return { 'email': this.email, 'reSendTime': this.OTPReSendTime };
     }
+
     setOTP(otp: string) {
         this.otp = otp;
     }
+
     getOTP(): string {
         return this.otp;
     }

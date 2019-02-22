@@ -55,6 +55,7 @@ export const APP_ROUTE_URLS = {
     auth: 'auth',
     identify: 'identify',
     code: 'code',
+    updatePassword: 'update-password',
     maintenance: 'maintenance',
 
     feedbackList: 'feedbacks',
