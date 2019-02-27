@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import * as _ from 'lodash';
@@ -6,9 +7,8 @@ import 'rxjs/add/operator/finally';
 import 'rxjs/add/operator/takeUntil';
 import { finalize } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
 
-import { APP_ROUTE_URLS, LOGIN_ERROR_MESSAGES, LOGIN_ERROR_TYPES, LOGIN_STATES } from '@constants/app-constants';
+import { APP_ROUTE_URLS, LOGIN_ERROR_MESSAGES, LOGIN_ERROR_TYPES, LOGIN_STATES, MIN_PASSWORD_LENGTH } from '@constants/app-constants';
 import { AuthService } from 'app/shared/services/auth.service';
 import { OAuthCallbackService } from 'app/shared/services/o-auth-callback.service';
 import { UserStoreService } from 'app/shared/stores/user.store.service';
@@ -32,7 +32,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     returnURL = APP_ROUTE_URLS.root;
     public loginGroup = new FormGroup({
         email: new FormControl('', [Validators.required, Validators.email]),
-        password: new FormControl('', [Validators.required, Validators.minLength(8)])
+        password: new FormControl('', [Validators.required, Validators.minLength(MIN_PASSWORD_LENGTH)])
     });
     hidePassword = true;
     disableLoginBtn = false;
@@ -76,7 +76,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         this.disableLoginBtn = true;
 
         this.authService.basicAuthLogin(loginData)
-        .pipe(finalize(() => { this.disableLoginBtn = false; }))
+        .pipe(finalize(() => this.disableLoginBtn = false ))
         .subscribe((response: any) => {
             this.userStoreService.updateUserData(response.data);
             this.router.navigateByUrl(this.returnURL);
