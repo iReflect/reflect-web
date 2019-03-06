@@ -47,7 +47,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
     overlayNoRowsTemplate = '<span>No Members for this Issue!</span>';
     expandedDescHidden = true;
     allowDescViewToggle = true;
-    descMaxHeight = 90;
+    descMaxHeight = 40;
 
     private totalTaskPoints;
     private params: any;
