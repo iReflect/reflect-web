@@ -2,7 +2,7 @@ import {
     Component, EventEmitter, HostListener, Input, OnChanges, OnDestroy, OnInit, Output,
     SimpleChanges
 } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, _MatAutocompleteMixinBase, _MatProgressBarMixinBase } from '@angular/material';
 import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
 import * as _ from 'lodash';
 
@@ -23,6 +23,7 @@ import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import { AppConfig } from 'app/app.config';
 import { SuppressKeyboardEventParams } from 'ag-grid/src/ts/entities/colDef';
+import value from '*.json';
 
 @Component({
     selector: 'app-retrospective-feedback',
@@ -66,8 +67,8 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
     }
 
     constructor(private retrospectiveService: RetrospectiveService,
-                private snackBar: MatSnackBar,
-                private utils: UtilsService) {
+        private snackBar: MatSnackBar,
+        private utils: UtilsService) {
     }
 
     ngOnInit() {
@@ -161,18 +162,18 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
     resolveSprintGoal(params: any) {
         const goalData = params.data;
         const index: number = params.node.rowIndex;
-        this.gridApi.updateRowData({remove: [goalData]});
+        this.gridApi.updateRowData({ remove: [goalData] });
         this.retrospectiveService.resolveSprintGoal(this.retrospectiveID, this.sprintID, goalData.ID)
             .takeUntil(this.destroy$)
             .subscribe(
                 () => {
-                    this.snackBar.open(API_RESPONSE_MESSAGES.goalResolvedSuccessfully, '', {duration: SNACKBAR_DURATION});
+                    this.snackBar.open(API_RESPONSE_MESSAGES.goalResolvedSuccessfully, '', { duration: SNACKBAR_DURATION });
                 },
                 err => {
-                    this.gridApi.updateRowData({add: [goalData], addIndex: index});
+                    this.gridApi.updateRowData({ add: [goalData], addIndex: index });
                     this.snackBar.open(
                         this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.goalResolveFailed,
-                        '', {duration: SNACKBAR_DURATION});
+                        '', { duration: SNACKBAR_DURATION });
                 }
             );
     }
@@ -180,18 +181,18 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
     unresolveSprintGoal(params: any) {
         const goalData = params.data;
         const index: number = params.node.rowIndex;
-        this.gridApi.updateRowData({remove: [goalData]});
+        this.gridApi.updateRowData({ remove: [goalData] });
         this.retrospectiveService.unresolveSprintGoal(this.retrospectiveID, this.sprintID, goalData.ID)
             .takeUntil(this.destroy$)
             .subscribe(
                 () => {
-                    this.snackBar.open(API_RESPONSE_MESSAGES.goalUnResolvedSuccessfully, '', {duration: SNACKBAR_DURATION});
+                    this.snackBar.open(API_RESPONSE_MESSAGES.goalUnResolvedSuccessfully, '', { duration: SNACKBAR_DURATION });
                 },
                 err => {
-                    this.gridApi.updateRowData({add: [goalData], addIndex: index});
+                    this.gridApi.updateRowData({ add: [goalData], addIndex: index });
                     this.snackBar.open(
                         this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.goalUnResolveFailed,
-                        '', {duration: SNACKBAR_DURATION});
+                        '', { duration: SNACKBAR_DURATION });
                 }
             );
     }
@@ -206,12 +207,12 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                 .subscribe(
                     response => {
                         params.node.setData(response.data);
-                        this.snackBar.open(API_RESPONSE_MESSAGES.sprintHighlightsUpdateSuccess, '', {duration: SNACKBAR_DURATION});
+                        this.snackBar.open(API_RESPONSE_MESSAGES.sprintHighlightsUpdateSuccess, '', { duration: SNACKBAR_DURATION });
                     },
                     err => {
                         this.snackBar.open(
                             this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintHighlightsUpdateError,
-                            '', {duration: SNACKBAR_DURATION});
+                            '', { duration: SNACKBAR_DURATION });
                         this.revertCellValue(params);
                     }
                 );
@@ -221,12 +222,12 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                 .subscribe(
                     response => {
                         params.node.setData(response.data);
-                        this.snackBar.open(API_RESPONSE_MESSAGES.sprintNotesUpdateSuccess, '', {duration: SNACKBAR_DURATION});
+                        this.snackBar.open(API_RESPONSE_MESSAGES.sprintNotesUpdateSuccess, '', { duration: SNACKBAR_DURATION });
                     },
                     err => {
                         this.snackBar.open(
                             this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintNotesUpdateError,
-                            '', {duration: SNACKBAR_DURATION});
+                            '', { duration: SNACKBAR_DURATION });
                         this.revertCellValue(params);
                     }
                 );
@@ -236,12 +237,12 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                 .subscribe(
                     response => {
                         params.node.setData(response.data);
-                        this.snackBar.open(API_RESPONSE_MESSAGES.sprintGoalsUpdateSuccess, '', {duration: SNACKBAR_DURATION});
+                        this.snackBar.open(API_RESPONSE_MESSAGES.sprintGoalsUpdateSuccess, '', { duration: SNACKBAR_DURATION });
                     },
                     err => {
                         this.snackBar.open(
                             this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintGoalsUpdateError,
-                            '', {duration: SNACKBAR_DURATION});
+                            '', { duration: SNACKBAR_DURATION });
                         this.revertCellValue(params);
                     }
                 );
@@ -255,13 +256,13 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                     .takeUntil(this.destroy$)
                     .subscribe(
                         response => {
-                            this.gridApi.updateRowData({add: [response.data], addIndex: 0});
-                            this.snackBar.open(API_RESPONSE_MESSAGES.sprintHighlightsAddSuccess, '', {duration: SNACKBAR_DURATION});
+                            this.gridApi.updateRowData({ add: [response.data], addIndex: 0 });
+                            this.snackBar.open(API_RESPONSE_MESSAGES.sprintHighlightsAddSuccess, '', { duration: SNACKBAR_DURATION });
                         },
                         err => {
                             this.snackBar.open(
                                 this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintHighlightsAddError,
-                                '', {duration: SNACKBAR_DURATION});
+                                '', { duration: SNACKBAR_DURATION });
                         }
                     );
             } else if (this.feedbackType === RETRO_FEEDBACK_TYPES.NOTE) {
@@ -269,13 +270,13 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                     .takeUntil(this.destroy$)
                     .subscribe(
                         response => {
-                            this.gridApi.updateRowData({add: [response.data], addIndex: 0});
-                            this.snackBar.open(API_RESPONSE_MESSAGES.sprintNotesAddSuccess, '', {duration: SNACKBAR_DURATION});
+                            this.gridApi.updateRowData({ add: [response.data], addIndex: 0 });
+                            this.snackBar.open(API_RESPONSE_MESSAGES.sprintNotesAddSuccess, '', { duration: SNACKBAR_DURATION });
                         },
                         err => {
                             this.snackBar.open(
                                 this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintNotesAddError,
-                                '', {duration: SNACKBAR_DURATION});
+                                '', { duration: SNACKBAR_DURATION });
                         }
                     );
             } else if (this.feedbackType === RETRO_FEEDBACK_TYPES.GOAL) {
@@ -283,13 +284,13 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                     .takeUntil(this.destroy$)
                     .subscribe(
                         response => {
-                            this.gridApi.updateRowData({add: [response.data], addIndex: 0});
-                            this.snackBar.open(API_RESPONSE_MESSAGES.sprintGoalsAddSuccess, '', {duration: SNACKBAR_DURATION});
+                            this.gridApi.updateRowData({ add: [response.data], addIndex: 0 });
+                            this.snackBar.open(API_RESPONSE_MESSAGES.sprintGoalsAddSuccess, '', { duration: SNACKBAR_DURATION });
                         },
                         err => {
                             this.snackBar.open(
                                 this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintGoalsAddError,
-                                '', {duration: SNACKBAR_DURATION});
+                                '', { duration: SNACKBAR_DURATION });
                         }
                     );
             }
@@ -303,13 +304,13 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                 value: (value.FirstName + ' ' + value.LastName).trim(),
             };
         });
-        return [{id: null, value: 'None'}, ...teamMembers];
+        return [{ id: null, value: 'None' }, ...teamMembers];
     }
 
     revertCellValue(params) {
         const rowData = params.data;
         rowData[params.colDef.field] = params.oldValue;
-        this.gridApi.updateRowData({update: [rowData]});
+        this.gridApi.updateRowData({ update: [rowData] });
     }
 
     getDisplayedRowCount() {
@@ -329,7 +330,6 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
         if (sprintStatus === SPRINT_STATES.FROZEN || this.feedbackSubType === this.goalTypes.COMPLETED) {
             editable = false;
         }
-
         let columnDefs;
         columnDefs = [
             {
@@ -436,12 +436,18 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                 headerName: 'Created By',
                 field: 'CreatedBy',
                 minWidth: 160,
-                valueFormatter: (cellParams) => cellParams.value && (cellParams.value.FirstName + ' ' + cellParams.value.LastName).trim(),
+                cellRenderer: (cellParams) => {
+                    return (cellParams.value.FirstName + ' ' + cellParams.value.LastName).trim();
+                },
                 filter: 'agSetColumnFilter',
+                keyCreator: (cellParams) => {
+                    let key = (cellParams.value.FirstName + ' ' + cellParams.value.LastName).trim();
+                    return key;
+                },
                 filterParams: {
-                    suppressMiniFilter: true,
                     newRowsAction: 'keep',
-                    clearButton: true
+                    clearButton: true,
+                    suppressMiniFilter: true,
                 },
             },
         ];
