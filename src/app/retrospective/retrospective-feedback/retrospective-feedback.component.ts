@@ -388,7 +388,14 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                 field: 'AssigneeID',
                 minWidth: 160,
                 editable: editable,
-                valueFormatter: (cellParams) => {
+                cellRenderer: (cellParams) => {
+                    const assignee: any = _.filter(this.teamMembers, (member) => member.ID === cellParams.value)[0];
+                    if (_.isEmpty(assignee)) {
+                        return '-';
+                    }
+                    return (assignee.FirstName + ' ' + assignee.LastName).trim();
+                },
+                keyCreator: (cellParams) => {
                     const assignee: any = _.filter(this.teamMembers, (member) => member.ID === cellParams.value)[0];
                     if (_.isEmpty(assignee)) {
                         return '-';
