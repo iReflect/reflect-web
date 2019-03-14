@@ -10,6 +10,8 @@ import { Subject } from 'rxjs/Subject';
 import {
     API_RESPONSE_MESSAGES,
     AUTO_REFRESH_DURATION,
+    RETRO_FEEDBACK_TYPES,
+    RETRO_SUMMARY_TYPES,
     RATING_STATES,
     RATING_STATES_LABEL,
     SNACKBAR_DURATION,
@@ -26,6 +28,7 @@ import * as _ from 'lodash';
 import { SelectCellEditorComponent } from 'app/shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
 import { RatingRendererComponent } from 'app/shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
 import { AppConfig } from 'app/app.config';
+import { FilterDataService } from 'app/shared/services/filter-data.service';
 @Component({
     selector: 'app-sprint-task-summary',
     templateUrl: './sprint-task-summary.component.html',
@@ -63,6 +66,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         private snackBar: MatSnackBar,
         public dialog: MatDialog,
         private retrospectiveService: RetrospectiveService,
+        private filters: FilterDataService,
         private utils: UtilsService
     ) {
     }
@@ -109,6 +113,9 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     this.refreshSprintTaskSummary();
                     this.gridApi.sizeColumnsToFit();
                 });
+            }
+            if (changes.isTabActive && !changes.isTabActive.currentValue) {
+                this.filters.setFilterData(RETRO_SUMMARY_TYPES.TASK, this.gridApi.getFilterModel());
             }
         }
     }
@@ -194,6 +201,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     }
 
     getSprintTaskSummary(isRefresh = false, isAutoRefresh = false) {
+        this.filters.setFilterData(RETRO_SUMMARY_TYPES.TASK, this.gridApi.getFilterModel());
         return this.retrospectiveService.getSprintTaskSummary(this.retrospectiveID, this.sprintID, isAutoRefresh)
             .takeUntil(this.destroy$)
             .do(
@@ -204,17 +212,19 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                             this.gridApi.sizeColumnsToFit();
                         });
                     }
+                    this.restoreFilterData();
                 },
                 err => {
+                    this.restoreFilterData();
                     if (isRefresh) {
                         this.snackBar.open(
                             API_RESPONSE_MESSAGES.issueSummaryRefreshFailure,
-                            '', {duration: SNACKBAR_DURATION});
+                            '', { duration: SNACKBAR_DURATION });
                     } else {
                         this.snackBar.open(
                             this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES
                                 .getSprintIssueSummaryError,
-                            '', {duration: SNACKBAR_DURATION});
+                            '', { duration: SNACKBAR_DURATION });
                     }
                 },
                 () => {
@@ -255,12 +265,12 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     params.node.setData(response.data);
                     this.snackBar.open(
                         API_RESPONSE_MESSAGES.issueUpdated,
-                        '', {duration: SNACKBAR_DURATION});
+                        '', { duration: SNACKBAR_DURATION });
                 },
                 err => {
                     this.snackBar.open(
                         this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.updateSprintTaskError,
-                        '', {duration: SNACKBAR_DURATION});
+                        '', { duration: SNACKBAR_DURATION });
                     this.revertCellValue(params);
                 }
             );
@@ -269,7 +279,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     revertCellValue(params) {
         const rowData = params.data;
         rowData[params.colDef.field] = params.oldValue;
-        this.gridApi.updateRowData({update: [rowData]});
+        this.gridApi.updateRowData({ update: [rowData] });
     }
 
     private createColumnDefs(sprintStatus, isSprintEditable) {
@@ -285,7 +295,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                         return {
                             useIcon: true,
                             color: 'primary',
-                            icon: (params.data.DoneAt || this.doneFlag ) ? 'check_box' : 'check_box_outline_blank',
+                            icon: (params.data.DoneAt || this.doneFlag) ? 'check_box' : 'check_box_outline_blank',
                             onClick: this.markDoneUnDone.bind(this),
                         };
                     },
@@ -565,7 +575,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     sprintTaskSummaryData.DoneAt = null;
                     params.node.setData(sprintTaskSummaryData);
                     // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
-                    params.refreshCell({suppressFlash: false, newData: false, forceRefresh: true});
+                    params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
                     this.retrospectiveService.markSprintTaskUnDone(this.retrospectiveID, this.sprintID, sprintTaskSummaryData.ID)
                         .takeUntil(this.destroy$)
                         .subscribe(
@@ -573,18 +583,18 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                                 const sprintTaskSummary = response.data;
                                 params.node.setData(sprintTaskSummary);
                                 // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
-                                params.refreshCell({suppressFlash: false, newData: false, forceRefresh: true});
+                                params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
                                 this.snackBar.open(API_RESPONSE_MESSAGES.getSprintIssueMarkedUndoneSuccess,
-                                    '', {duration: SNACKBAR_DURATION});
+                                    '', { duration: SNACKBAR_DURATION });
                                 this.refreshSprintDetails.emit();
                             },
                             err => {
                                 sprintTaskSummaryData.DoneAt = currentDoneAt;
                                 params.node.setData(sprintTaskSummaryData);
                                 // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
-                                params.refreshCell({suppressFlash: false, newData: false, forceRefresh: true});
+                                params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
                                 this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.error,
-                                    '', {duration: SNACKBAR_DURATION});
+                                    '', { duration: SNACKBAR_DURATION });
                             }
                         );
                 }
@@ -602,7 +612,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                         this.doneFlag = false;
                         // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
                         params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
-                        this.snackBar.open(API_RESPONSE_MESSAGES.getSprintIssueMarkedDoneSuccess, '', {duration: SNACKBAR_DURATION});
+                        this.snackBar.open(API_RESPONSE_MESSAGES.getSprintIssueMarkedDoneSuccess, '', { duration: SNACKBAR_DURATION });
                         this.refreshSprintDetails.emit();
                     },
                     err => {
@@ -612,7 +622,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                         // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
                         params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
                         this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.error,
-                            '', {duration: SNACKBAR_DURATION});
+                            '', { duration: SNACKBAR_DURATION });
                     }
                 );
         }
@@ -622,6 +632,12 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         if (this.gridApi) {
             this.gridApi.setFilterModel(null);
             this.gridApi.onFilterChanged();
+            this.filters.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
         }
+    }
+
+    restoreFilterData() {
+        this.gridApi.setFilterModel(this.filters.getFilterData(RETRO_SUMMARY_TYPES.TASK));
+        this.gridApi.onFilterChanged();
     }
 }

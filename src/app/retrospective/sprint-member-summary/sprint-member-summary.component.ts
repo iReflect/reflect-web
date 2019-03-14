@@ -10,9 +10,10 @@ import 'rxjs/add/operator/finally';
 import {
     API_RESPONSE_MESSAGES,
     AUTO_REFRESH_DURATION,
+    RETRO_SUMMARY_TYPES,
     RATING_STATES,
     RATING_STATES_LABEL,
-    SNACKBAR_DURATION
+    SNACKBAR_DURATION,
 } from '@constants/app-constants';
 import { NumericCellEditorComponent } from 'app/shared/ag-grid-editors/numeric-cell-editor/numeric-cell-editor.component';
 import { SelectCellEditorComponent } from 'app/shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
@@ -20,6 +21,7 @@ import { ClickableButtonRendererComponent } from 'app/shared/ag-grid-renderers/c
 import { RatingRendererComponent } from 'app/shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
 import { BasicModalComponent } from 'app/shared/basic-modal/basic-modal.component';
 import { RetrospectiveService } from 'app/shared/services/retrospective.service';
+import { FilterDataService } from 'app/shared/services/filter-data.service';
 import { UtilsService } from 'app/shared/utils/utils.service';
 import { AppConfig } from 'app/app.config';
 @Component({
@@ -58,6 +60,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         private retrospectiveService: RetrospectiveService,
         private snackBar: MatSnackBar,
         private utils: UtilsService,
+        private filters: FilterDataService,
         public dialog: MatDialog
     ) {
     }
@@ -104,6 +107,9 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                     this.gridApi.sizeColumnsToFit();
                 });
             }
+            if (changes.isTabActive && !changes.isTabActive.currentValue) {
+                this.filters.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
+            }
         }
     }
 
@@ -123,7 +129,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                 err => {
                     this.snackBar.open(
                         this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getRetrospectiveMembersError,
-                        '', {duration: SNACKBAR_DURATION});
+                        '', { duration: SNACKBAR_DURATION });
                 }
             );
     }
@@ -198,6 +204,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     }
 
     getSprintMemberSummary(isRefresh = false, isAutoRefresh = false) {
+        this.filters.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
         return this.retrospectiveService.getSprintMemberSummary(this.retrospectiveID, this.sprintID, isAutoRefresh)
             .takeUntil(this.destroy$)
             .do(
@@ -211,43 +218,46 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                     if (!isRefresh && this.isTabActive) {
                         this.gridApi.sizeColumnsToFit();
                     }
+                    this.restoreFilterData();
                 },
                 err => {
+                    this.restoreFilterData();
                     if (isRefresh) {
                         this.snackBar.open(
                             API_RESPONSE_MESSAGES.memberSummaryRefreshFailure,
-                            '', {duration: SNACKBAR_DURATION});
+                            '', { duration: SNACKBAR_DURATION });
                     } else {
                         this.snackBar.open(
                             this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES
                                 .getSprintMemberSummaryError,
-                            '', {duration: SNACKBAR_DURATION});
+                            '', { duration: SNACKBAR_DURATION });
                     }
-                }
+                },
             );
+
     }
 
     addSprintMember() {
         if (this.selectedMemberID === undefined) {
             this.snackBar.open(
                 API_RESPONSE_MESSAGES.memberNotSelectedError,
-                '', {duration: SNACKBAR_DURATION});
+                '', { duration: SNACKBAR_DURATION });
         } else if (this.memberIDs.indexOf(this.selectedMemberID) !== -1) {
             this.snackBar.open(
                 API_RESPONSE_MESSAGES.memberAlreadyPresent,
-                '', {duration: SNACKBAR_DURATION});
+                '', { duration: SNACKBAR_DURATION });
         } else {
             this.retrospectiveService.addSprintMember(this.retrospectiveID, this.sprintID, this.selectedMemberID)
                 .takeUntil(this.destroy$)
                 .subscribe(
                     response => {
-                        this.gridApi.updateRowData({add: [response.data]});
+                        this.gridApi.updateRowData({ add: [response.data] });
                         this.memberIDs.push(this.selectedMemberID);
                     },
                     err => {
                         this.snackBar.open(
                             this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.addSprintMemberError,
-                            '', {duration: SNACKBAR_DURATION});
+                            '', { duration: SNACKBAR_DURATION });
                     }
                 );
         }
@@ -264,12 +274,12 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                     params.node.setData(response.data);
                     this.snackBar.open(
                         API_RESPONSE_MESSAGES.memberUpdated,
-                        '', {duration: SNACKBAR_DURATION});
+                        '', { duration: SNACKBAR_DURATION });
                 },
                 err => {
                     this.snackBar.open(
                         this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.updateSprintMemberError,
-                        '', {duration: SNACKBAR_DURATION});
+                        '', { duration: SNACKBAR_DURATION });
                     this.revertCellValue(params);
                 }
             );
@@ -278,7 +288,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     revertCellValue(params) {
         const rowData = params.data;
         rowData[params.colDef.field] = params.oldValue;
-        this.gridApi.updateRowData({update: [rowData]});
+        this.gridApi.updateRowData({ update: [rowData] });
     }
 
     deleteSprintMember(params) {
@@ -294,8 +304,8 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
 
         dialogRef.afterClosed().takeUntil(this.destroy$).subscribe(result => {
             if (result) {
-                const index: number = params.node.rowIndex ;
-                this.gridApi.updateRowData({remove: [member]});
+                const index: number = params.node.rowIndex;
+                this.gridApi.updateRowData({ remove: [member] });
                 this.retrospectiveService.deleteSprintMember(this.retrospectiveID, this.sprintID, member.ID)
                     .takeUntil(this.destroy$)
                     .subscribe(
@@ -303,11 +313,11 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                             this.memberIDs = this.memberIDs.filter(ID => ID !== member.ID);
                         },
                         err => {
-                            this.gridApi.updateRowData({add: [member], addIndex: index});
+                            this.gridApi.updateRowData({ add: [member], addIndex: index });
                             this.snackBar.open(
                                 this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES
                                     .deleteSprintMemberError,
-                                '', {duration: SNACKBAR_DURATION});
+                                '', { duration: SNACKBAR_DURATION });
                         }
                     );
             }
@@ -366,7 +376,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                         } else {
                             this.snackBar.open(
                                 API_RESPONSE_MESSAGES.allocationNegativeError,
-                                '', {duration: SNACKBAR_DURATION});
+                                '', { duration: SNACKBAR_DURATION });
                             this.revertCellValue(cellParams);
                         }
                     }
@@ -393,7 +403,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                         } else {
                             this.snackBar.open(
                                 API_RESPONSE_MESSAGES.expectationNegativeError,
-                                '', {duration: SNACKBAR_DURATION});
+                                '', { duration: SNACKBAR_DURATION });
                             this.revertCellValue(cellParams);
                         }
                     }
@@ -419,12 +429,12 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                         if (cellParams.newValue < 0) {
                             this.snackBar.open(
                                 API_RESPONSE_MESSAGES.vacationNumberError,
-                                '', {duration: SNACKBAR_DURATION});
+                                '', { duration: SNACKBAR_DURATION });
                             this.revertCellValue(cellParams);
                         } else if (cellParams.newValue > this.sprintDays) {
                             this.snackBar.open(
                                 API_RESPONSE_MESSAGES.vacationTimeError,
-                                '', {duration: SNACKBAR_DURATION});
+                                '', { duration: SNACKBAR_DURATION });
                             this.revertCellValue(cellParams);
                         } else {
                             this.updateSprintMember(cellParams);
@@ -525,6 +535,12 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         if (this.gridApi) {
             this.gridApi.setFilterModel(null);
             this.gridApi.onFilterChanged();
+            this.filters.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
         }
+    }
+
+    restoreFilterData() {
+        this.gridApi.setFilterModel(this.filters.getFilterData(RETRO_SUMMARY_TYPES.MEMBER));
+        this.gridApi.onFilterChanged();
     }
 }

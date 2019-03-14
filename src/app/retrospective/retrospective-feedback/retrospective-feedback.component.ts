@@ -17,6 +17,7 @@ import {
 import { SelectCellEditorComponent } from 'app/shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
 import { DatePickerEditorComponent } from 'app/shared/ag-grid-editors/date-picker-editor/date-picker-editor.component';
 import { ClickableButtonRendererComponent } from 'app/shared/ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
+import { FilterDataService } from 'app/shared/services/filter-data.service';
 import { RetrospectiveService } from 'app/shared/services/retrospective.service';
 import { UtilsService } from 'app/shared/utils/utils.service';
 import { Subject } from 'rxjs/Subject';
@@ -24,6 +25,7 @@ import 'rxjs/add/operator/takeUntil';
 import { AppConfig } from 'app/app.config';
 import { SuppressKeyboardEventParams } from 'ag-grid/src/ts/entities/colDef';
 import value from '*.json';
+import { Title } from '@angular/platform-browser';
 
 @Component({
     selector: 'app-retrospective-feedback',
@@ -68,7 +70,8 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
 
     constructor(private retrospectiveService: RetrospectiveService,
         private snackBar: MatSnackBar,
-        private utils: UtilsService) {
+        private utils: UtilsService,
+        private filters: FilterDataService) {
     }
 
     ngOnInit() {
@@ -79,6 +82,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
     ngOnChanges(changes: SimpleChanges): void {
         if (this.gridApi) {
             if (changes.sprintStatus || changes.teamMembers) {
+                this.filters.setFilterData(this.feedbackSubType, this.gridApi.getFilterModel());
                 this.columnDefs = this.createColumnDefs(this.sprintStatus, this.teamMembers);
                 this.gridApi.setColumnDefs(this.columnDefs);
             }
@@ -95,6 +99,10 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
             if (changes.isTabActive && changes.isTabActive.currentValue) {
                 this.resizeAgGrid();
             }
+            if (changes.isTabActive && !changes.isTabActive.currentValue) {
+                this.filters.setFilterData(this.feedbackSubType, this.gridApi.getFilterModel());
+            }
+            this.restoreFilterData();
         }
     }
 
@@ -567,7 +575,13 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
         if (this.gridApi) {
             this.gridApi.setFilterModel(null);
             this.gridApi.onFilterChanged();
+            this.filters.setFilterData(this.feedbackSubType, this.gridApi.getFilterModel());
         }
         event.stopPropagation();
+    }
+
+    restoreFilterData() {
+        this.gridApi.setFilterModel(this.filters.getFilterData(this.feedbackSubType));
+        this.gridApi.onFilterChanged();
     }
 }
