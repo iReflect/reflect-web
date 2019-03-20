@@ -306,3 +306,6 @@ export const SALT_FOR_PASSWORD = '';
 
 // ReSendTime ...
 export const RE_SEND_TIME = 10;
+
+// minimum password length.
+export const MIN_PASSWORD_LENGTH = 8;
