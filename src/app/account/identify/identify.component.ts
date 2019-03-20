@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Validators, FormControl } from '@angular/forms';
 
-import { LOGIN_ERROR_MESSAGES, APP_ROUTE_URLS } from '@constants/app-constants';
+import { APP_ROUTE_URLS, LOGIN_ERROR_MESSAGES } from '@constants/app-constants';
 import { AuthService } from 'app/shared/services/auth.service';
 
 @Component({

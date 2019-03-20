@@ -12,9 +12,11 @@ import { RestApiHelperService } from 'app/shared/utils/rest-api-helper.service';
 @Injectable()
 export class AuthService {
     private restangular: Restangular;
-    private email: string;
-    private OTPReSendTime: number;
     private otp: string;
+    private emailAndOTPReSendTimeData = {
+        'email': '',
+        'reSendTime': 0,
+    };
 
     constructor(private restApiHelperService: RestApiHelperService) {
         this.restangular = restApiHelperService.getAuthApiHelper();
@@ -55,12 +57,12 @@ export class AuthService {
     }
 
     setEmailAndReSendTime(email: string, reSendTime: number) {
-        this.email = email;
-        this.OTPReSendTime = reSendTime;
+        this.emailAndOTPReSendTimeData.email = email;
+        this.emailAndOTPReSendTimeData.reSendTime = reSendTime;
     }
 
     getEmailAndReSendTime(): any {
-        return {'email': this.email, 'reSendTime': this.OTPReSendTime};
+        return this.emailAndOTPReSendTimeData;
     }
 
     setOTP(otp: string) {
