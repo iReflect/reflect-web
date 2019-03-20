@@ -23,7 +23,7 @@
                         </mat-form-field>
                         <mat-form-field appearance="outline">
                             <input matInput placeholder="Password" [type]="hidePassword ? 'password' : 'text'" formControlName="password" >
-                            <mat-icon matSuffix (click)="hidePassword = !hidePassword">{{!hidePassword ? 'visibility' : 'visibility_off'}}</mat-icon>
+                            <mat-icon matSuffix (click)="hidePassword = !hidePassword">{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
                             <mat-error *ngIf="userPassword.hasError('minlength')">
                             Password must be at least 8 characters long.
                             </mat-error>

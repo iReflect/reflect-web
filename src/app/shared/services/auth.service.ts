@@ -4,8 +4,8 @@ import * as CryptoJS from 'crypto-js';
 import { Restangular } from 'ngx-restangular';
 import { Observable } from 'rxjs/Observable';
 
-import { API_URLS } from '@constants/api-urls';
 import { ITERATION_COUNT, KEY_SIZE, SALT_FOR_PASSWORD } from '@constants/app-constants';
+import { API_URLS } from '@constants/api-urls';
 import { RestApiHelperService } from 'app/shared/utils/rest-api-helper.service';
 
 
@@ -32,9 +32,11 @@ export class AuthService {
     logout() {
         return this.restangular.one(API_URLS.logout).post();
     }
+
     identify(identifyData: any): Observable<any> {
         return this.restangular.one(API_URLS.identify).post('', identifyData);
     }
+
     encryptPassword(password: string) {
         return CryptoJS.PBKDF2(
             password,
