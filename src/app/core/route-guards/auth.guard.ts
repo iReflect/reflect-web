@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
+
 import { Observable } from 'rxjs/Observable';
 
 import { APP_ROUTE_URLS } from '@constants/app-constants';
@@ -15,9 +16,12 @@ export class AuthGuard implements CanActivate {
 
   canActivate(
     next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
+    state: RouterStateSnapshot,
+    ): Observable<boolean> | Promise<boolean> | boolean {
 
-    if (!this.authService.getEmailAndReSendTime().email || !this.authService.getEmailAndReSendTime().reSendTime) {
+    const emailAndTimeData = this.authService.getEmailAndReSendTime();
+
+    if (!emailAndTimeData.email || !emailAndTimeData.reSendTime) {
       this.router.navigateByUrl(APP_ROUTE_URLS.forwardSlash);
       return false;
     }

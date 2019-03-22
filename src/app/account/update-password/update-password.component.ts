@@ -13,13 +13,13 @@ import { AuthService } from 'app/shared/services/auth.service';
 export class UpdatePasswordComponent {
 
   public passwordGroup = new FormGroup({
-    firstPassword: new FormControl('', [Validators.required, Validators.minLength(8)]),
-    secondPassword: new FormControl('', [Validators.required, Validators.minLength(8)])
+    password: new FormControl('', [Validators.required, Validators.minLength(8)]),
+    confirmPassword: new FormControl('', [Validators.required, Validators.minLength(8)])
   }, {
       validators: this.isPasswordSame
     });
-  public hideFirstPassword = true;
-  public hideSecondPassword = true;
+  public hidePassword = true;
+  public hideConfirmPassword = true;
   public errorMessage: string;
   public showError = false;
 
@@ -29,17 +29,17 @@ export class UpdatePasswordComponent {
   ) { }
 
   isPasswordSame(formGroup: FormGroup) {
-    const firstPassword = formGroup.get('firstPassword').value;
-    const secondPassword = formGroup.get('secondPassword').value;
-    return firstPassword === secondPassword ? null : { notSame: true };
+    const password = formGroup.get('password').value;
+    const confirmPassword = formGroup.get('confirmPassword').value;
+    return password === confirmPassword ? null : { notSame: true };
   }
 
   get password() {
-    return this.passwordGroup.get('firstPassword');
+    return this.passwordGroup.get('password');
   }
 
   onSubmit() {
-    const password = this.authService.encryptPassword(this.passwordGroup.get('firstPassword').value);
+    const password = this.authService.encryptPassword(this.passwordGroup.get('password').value);
     const updatePasswordData = {
       'email': this.authService.getEmailAndReSendTime().email,
       'otp': this.authService.getOTP(),
