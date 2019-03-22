@@ -22,6 +22,7 @@
                     </mat-form-field>
                     <button mat-raised-button color="primary" (click)="onSubmit(true)" [disabled]="!emailFormControl.valid">Generate
                         OTP</button>
+                    <button mat-raised-button color="primary" [routerLink]="['/']" >Cancel</button>
                     <button mat-button color="primary" [disabled]="!emailFormControl.valid" (click)="onSubmit(false)">Already have a
                         OTP?</button>
                 </mat-card-content>
