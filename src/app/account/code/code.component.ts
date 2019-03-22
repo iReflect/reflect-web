@@ -3,7 +3,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { AuthService } from 'app/shared/services/auth.service';
-import { LOGIN_ERROR_MESSAGES, RE_SEND_TIME, APP_ROUTE_URLS } from '@constants/app-constants';
+import { LOGIN_ERROR_MESSAGES, APP_ROUTE_URLS } from '@constants/app-constants';
 import { finalize } from 'rxjs/operators';
 
 @Component({
@@ -73,7 +73,8 @@ export class CodeComponent implements OnInit {
     };
     this.authService.identify(identifyData)
     .pipe(finalize(() => {this.disableReSendBtn = false; }))
-    .subscribe(() => {
+    .subscribe((response: any) => {
+      this.authService.setEmailAndReSendTime(identifyData.email, response.data.reSendTime);
       this.startTimer();
     },
       (errorResponse: any) => {
