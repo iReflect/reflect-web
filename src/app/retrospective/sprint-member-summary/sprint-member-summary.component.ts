@@ -91,6 +91,8 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             }
             // this if block also executes when changes.refreshOnChange toggles
             if (this.isTabActive && !changes.isTabActive) {
+                this.setColumnData();
+
                 if (this.autoRefreshCurrentState) {
                     this.refreshSprintMemberSummary(true);
                 }
@@ -98,6 +100,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                     this.refreshSprintMemberSummary();
                 }
                 this.gridApi.sizeColumnsToFit();
+                this.setColumnState();
             }
             // we do this separately because we need to wait
             // at the least one tick when this tab is made active
@@ -105,15 +108,18 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                 setTimeout(() => {
                     this.refreshSprintMemberSummary();
                     this.gridApi.sizeColumnsToFit();
+                    this.setColumnState();
                 });
             }
             if (changes.isTabActive && !changes.isTabActive.currentValue) {
+                this.setColumnData();
                 this.filters.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
             }
         }
     }
 
     ngOnDestroy() {
+        this.setColumnData();
         this.autoRefreshCurrentState = false;
         this.destroy$.next(true);
         this.destroy$.complete();
@@ -177,9 +183,12 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             .takeUntil(this.destroy$)
             .subscribe(() => {
                 if (this.autoRefreshCurrentState && this.isTabActive) {
+                    this.setColumnData();
                     this.refreshSprintMemberSummary(true);
+                    this.setColumnState();
                 }
             });
+        this.setColumnState();
     }
 
     onCellEditingStarted() {
@@ -542,5 +551,16 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     restoreFilterData() {
         this.gridApi.setFilterModel(this.filters.getFilterData(RETRO_SUMMARY_TYPES.MEMBER));
         this.gridApi.onFilterChanged();
+    }
+
+    setColumnData() {
+        this.filters.setColumnData(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER, this.columnApi.getColumnState());
+    }
+
+    setColumnState() {
+        const columnData = this.filters.getColumnData(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER);
+        if (columnData && columnData.length > 0) {
+            this.columnApi.setColumnState(columnData);
+        }
     }
 }

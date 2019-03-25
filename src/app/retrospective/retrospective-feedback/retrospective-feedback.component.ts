@@ -83,6 +83,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
         if (this.gridApi) {
             if (changes.sprintStatus || changes.teamMembers) {
                 this.filters.setFilterData(this.feedbackSubType, this.gridApi.getFilterModel());
+                this.setColumnData();
                 this.columnDefs = this.createColumnDefs(this.sprintStatus, this.teamMembers);
                 this.gridApi.setColumnDefs(this.columnDefs);
             }
@@ -100,13 +101,15 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                 this.resizeAgGrid();
             }
             if (changes.isTabActive && !changes.isTabActive.currentValue) {
+                this.setColumnData();
                 this.filters.setFilterData(this.feedbackSubType, this.gridApi.getFilterModel());
             }
+            this.setColumnState();
             this.restoreFilterData();
         }
     }
-
     ngOnDestroy() {
+        this.setColumnData();
         this.destroy$.next(true);
         this.destroy$.complete();
     }
@@ -151,6 +154,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
         this.params = params;
         this.gridApi = params.api;
         this.columnApi = params.columnApi;
+
         setTimeout(() => {
             if (this.data) {
                 this.gridApi.setRowData(
@@ -160,11 +164,13 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
             if (this.teamMembers && this.sprintStatus) {
                 this.columnDefs = this.createColumnDefs(this.sprintStatus, this.teamMembers);
                 this.gridApi.setColumnDefs(this.columnDefs);
+                this.setColumnState();
             }
             if (this.isTabActive) {
                 this.gridApi.sizeColumnsToFit();
             }
         });
+        this.setColumnState();
     }
 
     resolveSprintGoal(params: any) {
@@ -583,5 +589,16 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
     restoreFilterData() {
         this.gridApi.setFilterModel(this.filters.getFilterData(this.feedbackSubType));
         this.gridApi.onFilterChanged();
+    }
+
+    setColumnData() {
+        this.filters.setColumnData(this.retrospectiveID, this.feedbackSubType, this.columnApi.getColumnState());
+    }
+
+    setColumnState() {
+        const columnData = this.filters.getColumnData(this.retrospectiveID, this.feedbackSubType);
+        if (columnData && columnData.length > 0) {
+            this.columnApi.setColumnState(columnData);
+        }
     }
 }

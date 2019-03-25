@@ -92,12 +92,15 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         if (changes.sprintStatus) {
             this.columnDefs = this.createColumnDefs(changes.sprintStatus.currentValue, this.isSprintEditable);
             if (this.gridApi) {
+                this.setColumnData();
                 this.gridApi.setColumnDefs(this.columnDefs);
+                this.setColumnState();
             }
         }
         if (this.gridApi) {
             // this if block also executes when changes.refreshOnChange toggles
             if (this.isTabActive && !changes.isTabActive) {
+                this.setColumnData();
                 if (this.autoRefreshCurrentState) {
                     this.refreshSprintTaskSummary(true);
                 }
@@ -105,22 +108,27 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     this.refreshSprintTaskSummary();
                 }
                 this.gridApi.sizeColumnsToFit();
+                this.setColumnState();
+
             }
             // we do this separately because we need to wait
             // at the least one tick when this tab is made active
             if (changes.isTabActive && changes.isTabActive.currentValue) {
                 setTimeout(() => {
                     this.refreshSprintTaskSummary();
+                    this.setColumnState();
                     this.gridApi.sizeColumnsToFit();
                 });
             }
             if (changes.isTabActive && !changes.isTabActive.currentValue) {
+                this.setColumnData();
                 this.filters.setFilterData(RETRO_SUMMARY_TYPES.TASK, this.gridApi.getFilterModel());
             }
         }
     }
 
     ngOnDestroy() {
+        this.setColumnData();
         this.autoRefreshCurrentState = false;
         this.destroy$.next(true);
         this.destroy$.complete();
@@ -182,9 +190,12 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             .takeUntil(this.destroy$)
             .subscribe(() => {
                 if (this.isTabActive && this.autoRefreshCurrentState) {
+                    this.setColumnData();
                     this.refreshSprintTaskSummary(true);
+                    this.setColumnState();
                 }
             });
+        this.setColumnState();
     }
 
     refreshSprintTaskSummary(isAutoRefresh = false) {
@@ -639,5 +650,16 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     restoreFilterData() {
         this.gridApi.setFilterModel(this.filters.getFilterData(RETRO_SUMMARY_TYPES.TASK));
         this.gridApi.onFilterChanged();
+    }
+
+    setColumnData() {
+        this.filters.setColumnData(this.retrospectiveID, RETRO_SUMMARY_TYPES.TASK, this.columnApi.getColumnState());
+    }
+
+    setColumnState() {
+        const columnData = this.filters.getColumnData(this.retrospectiveID, RETRO_SUMMARY_TYPES.TASK);
+        if (columnData && columnData.length > 0) {
+            this.columnApi.setColumnState(columnData);
+        }
     }
 }
