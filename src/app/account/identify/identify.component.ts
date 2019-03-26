@@ -17,7 +17,6 @@ export class IdentifyComponent {
     Validators.email
   ]);
   public errorMessage: string;
-  public showError = false;
 
   constructor(
     private authService: AuthService,
@@ -34,12 +33,7 @@ export class IdentifyComponent {
       this.router.navigate([APP_ROUTE_URLS.code]);
     }
     , (errorResponse: any) => {
-      if (errorResponse.status === 400) {
-        this.errorMessage = errorResponse.data.error;
-      } else {
-        this.errorMessage = LOGIN_ERROR_MESSAGES.internalError;
-      }
-      this.showError = true;
+      this.errorMessage = errorResponse.status === 400 ? errorResponse.data.error : LOGIN_ERROR_MESSAGES.internalError;
     });
   }
 }

@@ -28,7 +28,7 @@
                             Password is <strong>required</strong>
                             </mat-error>
                         </mat-form-field>
-                        <button mat-button color="primary" class="forgot-password" [routerLink]="['/identify']">Forgot password?</button>
+                        <a class="forgot-password" [routerLink]="['/identify']">Forgot password?</a>
                         <button mat-raised-button color="primary" type="submit" [disabled]="!loginGroup.valid || disableLoginBtn">Login</button>
                       </form>
                     <div *ngIf="[loginStates.NOT_LOGGED_IN, loginStates.LOGIN_ERROR].indexOf(authState) !== -1;then please_login else logging_in"></div>

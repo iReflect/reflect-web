@@ -46,6 +46,10 @@ export class AuthService {
         return this.restangular.one(API_URLS.code).post('', recoveryData);
     }
 
+    updatePassword(data: any): Observable<any> {
+        return this.restangular.one(API_URLS.updatePassword).post('', data);
+    }
+
     encryptPassword(password: string) {
         return CryptoJS.PBKDF2(
             password,

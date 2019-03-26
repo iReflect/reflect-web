@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { AuthService } from 'app/shared/services/auth.service';
-import { LOGIN_ERROR_MESSAGES } from '@constants/app-constants';
+import { LOGIN_ERROR_MESSAGES, APP_ROUTE_URLS } from '@constants/app-constants';
 import { finalize } from 'rxjs/operators';
 
 @Component({
@@ -16,7 +17,6 @@ export class CodeComponent implements OnInit {
     Validators.required,
   ]);
   public errorMessage: string;
-  public showError = false;
   public timer: number;
   public showTimer = true;
   public reSendTimer: any;
@@ -24,6 +24,7 @@ export class CodeComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
+    private router: Router,
   ) { }
 
   ngOnInit() {
@@ -54,10 +55,10 @@ export class CodeComponent implements OnInit {
     this.authService.recover(recoveryData).subscribe(
       () => {
         this.authService.setOTP(recoveryData.otp);
+        this.router.navigate([APP_ROUTE_URLS.updatePassword]);
       },
       (errorResponse: any) => {
         this.errorMessage = errorResponse.data.error;
-        this.showError = true;
       }
     );
   }
@@ -66,7 +67,7 @@ export class CodeComponent implements OnInit {
     this.disableReSendBtn = true;
     const identifyData = {
       'email': this.authService.getEmailAndReSendTime().email,
-      'sendOTP': true,
+      'emailOTP': true,
     };
     this.authService.identify(identifyData)
     .pipe(finalize(() => {this.disableReSendBtn = false; }))
@@ -75,12 +76,7 @@ export class CodeComponent implements OnInit {
       this.startTimer();
     },
       (errorResponse: any) => {
-        if (errorResponse.status === 400) {
-          this.errorMessage = errorResponse.data.error;
-        } else {
-          this.errorMessage = LOGIN_ERROR_MESSAGES.internalError;
-        }
-        this.showError = true;
+        this.errorMessage = errorResponse.status === 400 ? errorResponse.data.error : LOGIN_ERROR_MESSAGES.internalError;
       });
   }
 }
