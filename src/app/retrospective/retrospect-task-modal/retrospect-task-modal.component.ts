@@ -43,6 +43,8 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
     enableRefresh: boolean;
     autoRefreshCurrentState: boolean;
     issueDescriptionHTML: string;
+    //To ignore column data updation in angular scope when grid is initialized
+    setColumnFlag: boolean;
 
     memberIDs = [];
     ratingStates = RATING_STATES;
@@ -71,14 +73,15 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
         this.enableRefresh = data.enableRefresh;
         this.autoRefreshCurrentState = data.enableRefresh;
         this.taskDetails = data.taskDetails;
-        this.retrospectiveID = data.retrospectiveID,
-            // TODO: Check for better ways of handling new lines, carriage returns in angular
-            this.issueDescriptionHTML = this.data.taskDetails.Description.replace(/\r\n|↵|\n/g, '<br>');
+        this.retrospectiveID = data.retrospectiveID;
+        // TODO: Check for better ways of handling new lines, carriage returns in angular
+        this.issueDescriptionHTML = this.data.taskDetails.Description.replace(/\r\n|↵|\n/g, '<br>');
         if (!this.taskDetails.Estimate) {
             this.taskDetails.Estimate = 0;
         }
         this.getSprintMembers();
         this.columnDefs = this.createColumnDefs(data.isSprintEditable);
+        this.setColumnFlag = false;
         this.setGridOptions();
     }
 
@@ -102,7 +105,6 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
     }
 
     ngOnDestroy() {
-        this.setColumnData();
         this.autoRefreshCurrentState = false;
         this.destroy$.next(true);
         this.destroy$.complete();
@@ -154,7 +156,11 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
             stopEditingWhenGridLosesFocus: true,
             suppressDragLeaveHidesColumns: true,
             suppressScrollOnNewData: true,
-            onColumnVisible: (event) => this.gridApi.sizeColumnsToFit()
+            onColumnVisible: (event) => this.gridApi.sizeColumnsToFit(),
+            //this event is triggered when there is change in grid columns
+            onDisplayedColumnsChanged: (event) => {
+                this.setColumnData(event.columnApi.getColumnState());
+            },
         };
         if (AppConfig.settings.useAgGridEnterprise) {
             this.gridOptions.enableFilter = true;
@@ -175,7 +181,6 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
             .takeUntil(this.destroy$)
             .subscribe(() => {
                 if (this.autoRefreshCurrentState) {
-                    this.setColumnData();
                     this.getSprintTaskMemberSummary(true, true);
                     this.setColumnState();
                 }
@@ -184,9 +189,6 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
     }
 
     getSprintTaskMemberSummary(isRefresh = false, isAutoRefresh = false) {
-        if (isRefresh) {
-            this.setColumnData();
-        }
         const getTaskMemberSummary$ = this.retrospectiveService
             .getSprintTaskMemberSummary(
                 this.data.retrospectiveID,
@@ -228,6 +230,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                     }
                 }
             );
+        //To restore columns state on refresh    
         if (isRefresh) {
             this.setColumnState();
         }
@@ -515,11 +518,16 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
             this.gridApi.onFilterChanged();
         }
     }
-
-    setColumnData() {
-        this.filters.setColumnData(this.retrospectiveID, RETRO_MODAL_TYPES.TASK, this.columnApi.getColumnState());
+    //To save the columns current state in angular scope
+    setColumnData(columnData: any) {
+        if (this.setColumnFlag) {
+            this.filters.setColumnData(this.retrospectiveID, RETRO_MODAL_TYPES.TASK, columnData);
+        }
+        if (!this.setColumnFlag) {
+            this.setColumnFlag = true;
+        }
     }
-
+    //To restore the saved state of columns 
     setColumnState() {
         const columnData = this.filters.getColumnData(this.retrospectiveID, RETRO_MODAL_TYPES.TASK);
         if (columnData && columnData.length > 0) {

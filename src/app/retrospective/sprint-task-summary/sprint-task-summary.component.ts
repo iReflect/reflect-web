@@ -41,6 +41,8 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     ratingStates = RATING_STATES;
     overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the Issues are loading!</span>';
     overlayNoRowsTemplate = '<span>No Issues in this sprint!</span>';
+    //To ignore column data updation in angular scope when grid is intialized
+    setColumnflag: boolean;
 
     @Input() retrospectiveID;
     @Input() sprintID;
@@ -81,6 +83,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
 
     ngOnInit(): void {
         this.columnDefs = this.createColumnDefs(this.sprintStatus, this.isSprintEditable);
+        this.setColumnflag = false;
         this.setGridOptions();
         this.autoRefreshCurrentState = this.enableRefresh;
     }
@@ -92,7 +95,6 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         if (changes.sprintStatus) {
             this.columnDefs = this.createColumnDefs(changes.sprintStatus.currentValue, this.isSprintEditable);
             if (this.gridApi) {
-                this.setColumnData();
                 this.gridApi.setColumnDefs(this.columnDefs);
                 this.setColumnState();
             }
@@ -100,7 +102,6 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         if (this.gridApi) {
             // this if block also executes when changes.refreshOnChange toggles
             if (this.isTabActive && !changes.isTabActive) {
-                this.setColumnData();
                 if (this.autoRefreshCurrentState) {
                     this.refreshSprintTaskSummary(true);
                 }
@@ -121,14 +122,12 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 });
             }
             if (changes.isTabActive && !changes.isTabActive.currentValue) {
-                this.setColumnData();
                 this.filters.setFilterData(RETRO_SUMMARY_TYPES.TASK, this.gridApi.getFilterModel());
             }
         }
     }
 
     ngOnDestroy() {
-        this.setColumnData();
         this.autoRefreshCurrentState = false;
         this.destroy$.next(true);
         this.destroy$.complete();
@@ -166,7 +165,11 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             suppressDragLeaveHidesColumns: true,
             suppressScrollOnNewData: true,
             stopEditingWhenGridLosesFocus: true,
-            onColumnVisible: (event) => this.gridApi.sizeColumnsToFit()
+            onColumnVisible: (event) => this.gridApi.sizeColumnsToFit(),
+            //this event is triggred when there is change in grid columns
+            onDisplayedColumnsChanged: (event) => {
+                this.setColumnData(event.columnApi.getColumnState());
+            },
         };
         if (AppConfig.settings.useAgGridEnterprise) {
             this.gridOptions.enableFilter = true;
@@ -190,7 +193,6 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             .takeUntil(this.destroy$)
             .subscribe(() => {
                 if (this.isTabActive && this.autoRefreshCurrentState) {
-                    this.setColumnData();
                     this.refreshSprintTaskSummary(true);
                     this.setColumnState();
                 }
@@ -646,16 +648,21 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             this.filters.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
         }
     }
-
+    // To restore the saved state of filters 
     restoreFilterData() {
         this.gridApi.setFilterModel(this.filters.getFilterData(RETRO_SUMMARY_TYPES.TASK));
         this.gridApi.onFilterChanged();
     }
-
-    setColumnData() {
-        this.filters.setColumnData(this.retrospectiveID, RETRO_SUMMARY_TYPES.TASK, this.columnApi.getColumnState());
+    // To save the current state of columns in angular scope
+    setColumnData(columnData: any) {
+        if (this.setColumnflag && this.isTabActive) {
+            this.filters.setColumnData(this.retrospectiveID, RETRO_SUMMARY_TYPES.TASK, columnData);
+        }
+        if (!this.setColumnflag) {
+            this.setColumnflag = true;
+        }
     }
-
+    // To restore the saved state of columns 
     setColumnState() {
         const columnData = this.filters.getColumnData(this.retrospectiveID, RETRO_SUMMARY_TYPES.TASK);
         if (columnData && columnData.length > 0) {

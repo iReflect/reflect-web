@@ -38,7 +38,8 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     ratingStates = RATING_STATES;
     overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the members are loading!</span>';
     overlayNoRowsTemplate = '<span>No Members for this sprint!</span>';
-
+    //To ignore column data updation in angular scope when grid is intialized
+    setColumnflag: boolean;
     @Input() retrospectiveID;
     @Input() sprintID;
     @Input() isSprintEditable: boolean;
@@ -77,6 +78,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         this.autoRefreshCurrentState = this.enableRefresh;
         this.getRetroMembers();
         this.columnDefs = this.createColumnDefs(this.isSprintEditable);
+        this.setColumnflag = false;
         this.setGridOptions();
     }
 
@@ -91,8 +93,6 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             }
             // this if block also executes when changes.refreshOnChange toggles
             if (this.isTabActive && !changes.isTabActive) {
-                this.setColumnData();
-
                 if (this.autoRefreshCurrentState) {
                     this.refreshSprintMemberSummary(true);
                 }
@@ -112,14 +112,12 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                 });
             }
             if (changes.isTabActive && !changes.isTabActive.currentValue) {
-                this.setColumnData();
                 this.filters.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
             }
         }
     }
 
     ngOnDestroy() {
-        this.setColumnData();
         this.autoRefreshCurrentState = false;
         this.destroy$.next(true);
         this.destroy$.complete();
@@ -159,7 +157,11 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             suppressDragLeaveHidesColumns: true,
             suppressScrollOnNewData: true,
             stopEditingWhenGridLosesFocus: true,
-            onColumnVisible: (event) => this.gridApi.sizeColumnsToFit()
+            onColumnVisible: (event) => this.gridApi.sizeColumnsToFit(),
+            //this event is triggred when there is change in grid columns
+            onDisplayedColumnsChanged: (event) => {
+                this.setColumnData(event.columnApi.getColumnState());
+            },
         };
         if (AppConfig.settings.useAgGridEnterprise) {
             this.gridOptions.enableFilter = true;
@@ -183,7 +185,6 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             .takeUntil(this.destroy$)
             .subscribe(() => {
                 if (this.autoRefreshCurrentState && this.isTabActive) {
-                    this.setColumnData();
                     this.refreshSprintMemberSummary(true);
                     this.setColumnState();
                 }
@@ -547,16 +548,21 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             this.filters.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
         }
     }
-
+    // restore the state of filter 
     restoreFilterData() {
         this.gridApi.setFilterModel(this.filters.getFilterData(RETRO_SUMMARY_TYPES.MEMBER));
         this.gridApi.onFilterChanged();
     }
-
-    setColumnData() {
-        this.filters.setColumnData(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER, this.columnApi.getColumnState());
+    //To save the current state of columns in angular scope
+    setColumnData(columnData) {
+        if (this.setColumnflag && this.isTabActive) {
+            this.filters.setColumnData(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER, columnData);
+        }
+        if (!this.setColumnflag) {
+            this.setColumnflag = true;
+        }
     }
-
+    //To restore the saved state of columns
     setColumnState() {
         const columnData = this.filters.getColumnData(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER);
         if (columnData && columnData.length > 0) {
