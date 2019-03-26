@@ -8,7 +8,7 @@ import 'rxjs/add/operator/takeUntil';
 import { finalize } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
 
-import { APP_ROUTE_URLS, LOGIN_ERROR_MESSAGES, LOGIN_ERROR_TYPES, LOGIN_STATES, MIN_PASSWORD_LENGTH } from '@constants/app-constants';
+import { APP_ROUTE_URLS, LOGIN_ERROR_MESSAGES, LOGIN_ERROR_TYPES, LOGIN_STATES } from '@constants/app-constants';
 import { AuthService } from 'app/shared/services/auth.service';
 import { OAuthCallbackService } from 'app/shared/services/o-auth-callback.service';
 import { UserStoreService } from 'app/shared/stores/user.store.service';
@@ -32,7 +32,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     returnURL = APP_ROUTE_URLS.root;
     public loginGroup = new FormGroup({
         email: new FormControl('', [Validators.required, Validators.email]),
-        password: new FormControl('', [Validators.required, Validators.minLength(MIN_PASSWORD_LENGTH)])
+        password: new FormControl('', [Validators.required])
     });
     hidePassword = true;
     disableLoginBtn = false;
@@ -82,11 +82,7 @@ export class LoginComponent implements OnInit, OnDestroy {
             this.router.navigateByUrl(this.returnURL);
         },
         (error: any) => {
-            if (error.status === 404) {
-                this.error(LOGIN_ERROR_TYPES.invalidEmailOrPassword);
-            } else {
-                this.error(LOGIN_ERROR_TYPES.internalError);
-            }
+            this.error(error.status === 404 ? LOGIN_ERROR_TYPES.invalidEmailOrPassword : LOGIN_ERROR_TYPES.internalError);
         });
     }
     get userEmail() {
