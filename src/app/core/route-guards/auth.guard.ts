@@ -21,10 +21,13 @@ export class AuthGuard implements CanActivate {
 
     const emailAndTimeData = this.authService.getEmailAndReSendTime();
 
+    // check is email and re-send time exists or not.
     if (!emailAndTimeData.email || !emailAndTimeData.reSendTime) {
       this.router.navigateByUrl(APP_ROUTE_URLS.forwardSlash);
       return false;
     }
+    // checking if this is update password page or not.
+    // if yes then OTP exists or not.
     if (next.routeConfig.path === APP_ROUTE_URLS.updatePassword && !this.authService.getOTP()) {
       this.router.navigateByUrl(APP_ROUTE_URLS.forwardSlash);
       return false;

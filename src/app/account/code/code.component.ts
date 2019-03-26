@@ -17,7 +17,6 @@ export class CodeComponent implements OnInit {
     Validators.required,
   ]);
   public errorMessage: string;
-  public showError = false;
   public timer: number;
   public showTimer = true;
   public reSendTimer: any;
@@ -60,7 +59,6 @@ export class CodeComponent implements OnInit {
       },
       (errorResponse: any) => {
         this.errorMessage = errorResponse.data.error;
-        this.showError = true;
       }
     );
   }
@@ -78,12 +76,7 @@ export class CodeComponent implements OnInit {
       this.startTimer();
     },
       (errorResponse: any) => {
-        if (errorResponse.status === 400) {
-          this.errorMessage = errorResponse.data.error;
-        } else {
-          this.errorMessage = LOGIN_ERROR_MESSAGES.internalError;
-        }
-        this.showError = true;
+        this.errorMessage = errorResponse.status === 400 ? errorResponse.data.error : LOGIN_ERROR_MESSAGES.internalError;
       });
   }
 }

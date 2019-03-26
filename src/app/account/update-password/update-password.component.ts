@@ -21,7 +21,6 @@ export class UpdatePasswordComponent {
   public hidePassword = true;
   public hideConfirmPassword = true;
   public errorMessage: string;
-  public showError = false;
 
   constructor(
     private authService: AuthService,
@@ -50,12 +49,7 @@ export class UpdatePasswordComponent {
         this.router.navigate([APP_ROUTE_URLS.login]);
       },
         (errorResponse: any) => {
-          if (errorResponse.status === 400) {
-            this.errorMessage = errorResponse.data.error;
-          } else {
-            this.errorMessage = LOGIN_ERROR_MESSAGES.internalError;
-          }
-          this.showError = true;
+          this.errorMessage = errorResponse.status === 400 ? errorResponse.data.error : LOGIN_ERROR_MESSAGES.internalError;
         }
       );
   }
