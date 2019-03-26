@@ -24,8 +24,8 @@
                         <mat-form-field appearance="outline">
                             <input matInput placeholder="Password" [type]="hidePassword ? 'password' : 'text'" formControlName="password" >
                             <mat-icon matSuffix (click)="hidePassword = !hidePassword">{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
-                            <mat-error *ngIf="userPassword.hasError('minlength')">
-                            Password must be at least 8 characters long.
+                            <mat-error *ngIf="userPassword.hasError('required')">
+                            Password is <strong>required</strong>
                             </mat-error>
                         </mat-form-field>
                         <button mat-button class="forgot-password" [routerLink]="['/identify']">Forgot password?</button>
