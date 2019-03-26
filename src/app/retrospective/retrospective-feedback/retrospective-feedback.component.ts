@@ -2,7 +2,7 @@ import {
     Component, EventEmitter, HostListener, Input, OnChanges, OnDestroy, OnInit, Output,
     SimpleChanges
 } from '@angular/core';
-import { MatSnackBar, _MatAutocompleteMixinBase, _MatProgressBarMixinBase } from '@angular/material';
+import { MatSnackBar } from '@angular/material';
 import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
 import * as _ from 'lodash';
 
@@ -23,7 +23,6 @@ import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import { AppConfig } from 'app/app.config';
 import { SuppressKeyboardEventParams } from 'ag-grid/src/ts/entities/colDef';
-import value from '*.json';
 
 @Component({
     selector: 'app-retrospective-feedback',
@@ -66,9 +65,11 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
         this.resizeAgGrid();
     }
 
-    constructor(private retrospectiveService: RetrospectiveService,
+    constructor(
+        private retrospectiveService: RetrospectiveService,
         private snackBar: MatSnackBar,
-        private utils: UtilsService) {
+        private utils: UtilsService
+    ) {
     }
 
     ngOnInit() {
@@ -298,10 +299,10 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
     }
 
     getTeamMemberOptions(teamMembers) {
-        teamMembers = _.map(teamMembers, (value: any) => {
+        teamMembers = _.map(teamMembers, (data: any) => {
             return {
-                id: _.parseInt(value.ID),
-                value: (value.FirstName + ' ' + value.LastName).trim(),
+                id: _.parseInt(data.ID),
+                value: (data.FirstName + ' ' + data.LastName).trim(),
             };
         });
         return [{ id: null, value: 'None' }, ...teamMembers];
@@ -436,18 +437,13 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                 headerName: 'Created By',
                 field: 'CreatedBy',
                 minWidth: 160,
-                cellRenderer: (cellParams) => {
-                    return (cellParams.value.FirstName + ' ' + cellParams.value.LastName).trim();
-                },
                 filter: 'agSetColumnFilter',
-                keyCreator: (cellParams) => {
-                    let key = (cellParams.value.FirstName + ' ' + cellParams.value.LastName).trim();
-                    return key;
-                },
+                cellRenderer: (cellParams) => this.createdByKeyCreater(cellParams),
+                keyCreator: (cellParams) => this.createdByKeyCreater(cellParams),
                 filterParams: {
+                    suppressMiniFilter: true,
                     newRowsAction: 'keep',
                     clearButton: true,
-                    suppressMiniFilter: true,
                 },
             },
         ];
@@ -554,6 +550,10 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
             }
         }
         return columnDefs;
+    }
+    // create keys with respect to cellparams of created by column in grid
+    createdByKeyCreater(cellParams: any) {
+        return (cellParams.value.FirstName + ' ' + cellParams.value.LastName).trim();
     }
 
     clearFilters(event) {
