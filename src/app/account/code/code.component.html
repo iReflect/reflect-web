@@ -1,0 +1,32 @@
+<ng-container>
+    <mat-toolbar color="primary">
+        <span><b>iReflect</b></span>
+        <span class="fill-remaining-space"></span>
+    </mat-toolbar>
+    <div class="login-page">
+        <div class="login-card">
+            <mat-card>
+                <mat-card-content>
+                    <p>
+                        <mat-error *ngIf="errorMessage">{{errorMessage}}</mat-error>
+                    </p>
+                    <h2>Enter your OTP</h2>
+                    <mat-form-field appearance="outline">
+                        <input matInput placeholder="OTP" [formControl]="codeFormControl">
+                        <mat-error *ngIf="codeFormControl.hasError('required')">
+                            OTP is <strong>required</strong>
+                        </mat-error>
+                    </mat-form-field>
+                    <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="!codeFormControl.valid">Submit OTP</button>
+                    <button mat-raised-button color="primary" [routerLink]="['/']" >Cancel</button>
+                    <div class="re-send-btn">
+                    <h5 *ngIf="showTimer" class="timer-text">Please Wait for {{timer}} seconds to resend OTP</h5>
+                      <h5 *ngIf="!showTimer">Click here to resend OTP
+                        <button mat-button color="primary"  [disabled]="disableReSendBtn" (click)="sendOTP()">Resend OTP?</button>                    
+                      </h5>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </div>
+    </div>
+</ng-container>
