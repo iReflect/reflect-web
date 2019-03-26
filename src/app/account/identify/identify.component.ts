@@ -24,10 +24,10 @@ export class IdentifyComponent {
     private router: Router,
     ) {}
 
-  onSubmit(sendOTP: boolean) {
+  onSubmit(emailOTP: boolean) {
     const identifyData = {
       'email': this.emailFormControl.value,
-      'sendOTP': sendOTP,
+      'emailOTP': emailOTP,
     };
     this.authService.identify(identifyData).subscribe((response: any) => {
       this.authService.setEmailAndReSendTime(identifyData.email, response.data.reSendTime);

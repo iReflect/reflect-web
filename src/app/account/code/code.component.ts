@@ -34,13 +34,13 @@ export class CodeComponent implements OnInit {
 
   startTimer() {
     this.timer = this.authService.getEmailAndReSendTime().reSendTime;
-    this.showTimer = this.timer === 0 ? false : true;
+    this.showTimer = this.timer !== 0;
     this.reSendTimer = setInterval(() => {
       this.timer--;
       if (this.timer <= 0) {
         this.stopTimer(this.reSendTimer);
       }
-    }, 1000);
+    }, 1000); // 1 second.
   }
 
   stopTimer(timer: any) {
