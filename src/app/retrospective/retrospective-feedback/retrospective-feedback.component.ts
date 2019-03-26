@@ -389,20 +389,8 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                 field: 'AssigneeID',
                 minWidth: 160,
                 editable: editable,
-                cellRenderer: (cellParams) => {
-                    const assignee: any = _.filter(this.teamMembers, (member) => member.ID === cellParams.value)[0];
-                    if (_.isEmpty(assignee)) {
-                        return '-';
-                    }
-                    return (assignee.FirstName + ' ' + assignee.LastName).trim();
-                },
-                keyCreator: (cellParams) => {
-                    const assignee: any = _.filter(this.teamMembers, (member) => member.ID === cellParams.value)[0];
-                    if (_.isEmpty(assignee)) {
-                        return '-';
-                    }
-                    return (assignee.FirstName + ' ' + assignee.LastName).trim();
-                },
+                cellRenderer: (cellParams) => this.assigneeKeyCreator(cellParams),
+                keyCreator: (cellParams) => this.assigneeKeyCreator(cellParams),
                 onCellValueChanged: (cellParams) => {
                     if (cellParams.newValue !== cellParams.oldValue) {
                         this.updateRetroFeedback(cellParams);
@@ -558,9 +546,19 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
         }
         return columnDefs;
     }
+
     // create keys with respect to cellparams of created by column in grid
     createdByKeyCreater(cellParams: any) {
         return (cellParams.value.FirstName + ' ' + cellParams.value.LastName).trim();
+    }
+
+    // create keys with respect to cellparams of assignee column in grid
+    assigneeKeyCreator(cellParams: any) {
+        const assignee: any = _.filter(this.teamMembers, (member) => member.ID === cellParams.value)[0];
+        if (_.isEmpty(assignee)) {
+            return '-';
+        }
+        return (assignee.FirstName + ' ' + assignee.LastName).trim();
     }
 
     clearFilters(event) {
