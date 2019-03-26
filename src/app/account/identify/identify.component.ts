@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { Validators, FormControl } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
-import { LOGIN_ERROR_MESSAGES } from '@constants/app-constants';
-
+import { APP_ROUTE_URLS, LOGIN_ERROR_MESSAGES } from '@constants/app-constants';
 import { AuthService } from 'app/shared/services/auth.service';
 
 @Component({
@@ -17,23 +17,23 @@ export class IdentifyComponent {
     Validators.email
   ]);
   public errorMessage: string;
-  public showError = false;
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    ) {}
 
   onSubmit(emailOTP: boolean) {
     const identifyData = {
       'email': this.emailFormControl.value,
       'emailOTP': emailOTP,
     };
-    this.authService.identify(identifyData).subscribe(() => {}
+    this.authService.identify(identifyData).subscribe((response: any) => {
+      this.authService.setEmailAndReSendTime(identifyData.email, response.data.reSendTime);
+      this.router.navigate([APP_ROUTE_URLS.code]);
+    }
     , (errorResponse: any) => {
-      if (errorResponse.status === 400) {
-        this.errorMessage = errorResponse.data.error;
-      } else {
-        this.errorMessage = LOGIN_ERROR_MESSAGES.internalError;
-      }
-      this.showError = true;
+      this.errorMessage = errorResponse.status === 400 ? errorResponse.data.error : LOGIN_ERROR_MESSAGES.internalError;
     });
   }
 }

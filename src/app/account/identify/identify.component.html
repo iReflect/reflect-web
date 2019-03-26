@@ -8,7 +8,7 @@
             <mat-card>
                 <mat-card-content>
                     <p>
-                        <mat-error *ngIf="showError">{{errorMessage}}</mat-error>
+                        <mat-error *ngIf="errorMessage">{{errorMessage}}</mat-error>
                     </p>
                     <h2>Enter your Email</h2>
                     <mat-form-field appearance="outline">
@@ -22,7 +22,8 @@
                     </mat-form-field>
                     <button mat-raised-button color="primary" (click)="onSubmit(true)" [disabled]="!emailFormControl.valid">Generate
                         OTP</button>
-                    <button mat-button [disabled]="!emailFormControl.valid" (click)="onSubmit(false)">Already have a
+                    <button mat-raised-button color="primary" [routerLink]="['/']" >Cancel</button>
+                    <button mat-button color="primary" [disabled]="!emailFormControl.valid" (click)="onSubmit(false)">Already have an
                         OTP?</button>
                 </mat-card-content>
             </mat-card>
