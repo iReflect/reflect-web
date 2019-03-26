@@ -67,7 +67,7 @@ export class CodeComponent implements OnInit {
     this.disableReSendBtn = true;
     const identifyData = {
       'email': this.authService.getEmailAndReSendTime().email,
-      'sendOTP': true,
+      'emailOTP': true,
     };
     this.authService.identify(identifyData)
     .pipe(finalize(() => {this.disableReSendBtn = false; }))
