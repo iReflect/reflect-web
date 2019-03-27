@@ -60,7 +60,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         private retrospectiveService: RetrospectiveService,
         private snackBar: MatSnackBar,
         private utils: UtilsService,
-        private filters: FilterDataService,
+        private filterService: FilterDataService,
         public dialog: MatDialog
     ) {
     }
@@ -108,7 +108,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                 });
             }
             if (changes.isTabActive && !changes.isTabActive.currentValue) {
-                this.filters.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
+                this.filterService.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
             }
         }
     }
@@ -204,7 +204,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     }
 
     getSprintMemberSummary(isRefresh = false, isAutoRefresh = false) {
-        this.filters.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
+        this.filterService.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
         return this.retrospectiveService.getSprintMemberSummary(this.retrospectiveID, this.sprintID, isAutoRefresh)
             .takeUntil(this.destroy$)
             .do(
@@ -535,12 +535,12 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         if (this.gridApi) {
             this.gridApi.setFilterModel(null);
             this.gridApi.onFilterChanged();
-            this.filters.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
+            this.filterService.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
         }
     }
 
+    // restore the state of column filters
     restoreFilterData() {
-        this.gridApi.setFilterModel(this.filters.getFilterData(RETRO_SUMMARY_TYPES.MEMBER));
-        this.gridApi.onFilterChanged();
+        this.gridApi.setFilterModel(this.filterService.getFilterData(RETRO_SUMMARY_TYPES.MEMBER));
     }
 }

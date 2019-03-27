@@ -66,7 +66,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         private snackBar: MatSnackBar,
         public dialog: MatDialog,
         private retrospectiveService: RetrospectiveService,
-        private filters: FilterDataService,
+        private filterService: FilterDataService,
         private utils: UtilsService
     ) {
     }
@@ -115,7 +115,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 });
             }
             if (changes.isTabActive && !changes.isTabActive.currentValue) {
-                this.filters.setFilterData(RETRO_SUMMARY_TYPES.TASK, this.gridApi.getFilterModel());
+                this.filterService.setFilterData(RETRO_SUMMARY_TYPES.TASK, this.gridApi.getFilterModel());
             }
         }
     }
@@ -201,7 +201,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     }
 
     getSprintTaskSummary(isRefresh = false, isAutoRefresh = false) {
-        this.filters.setFilterData(RETRO_SUMMARY_TYPES.TASK, this.gridApi.getFilterModel());
+        this.filterService.setFilterData(RETRO_SUMMARY_TYPES.TASK, this.gridApi.getFilterModel());
         return this.retrospectiveService.getSprintTaskSummary(this.retrospectiveID, this.sprintID, isAutoRefresh)
             .takeUntil(this.destroy$)
             .do(
@@ -632,12 +632,12 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         if (this.gridApi) {
             this.gridApi.setFilterModel(null);
             this.gridApi.onFilterChanged();
-            this.filters.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
+            this.filterService.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
         }
     }
 
+    // restore the state column filters
     restoreFilterData() {
-        this.gridApi.setFilterModel(this.filters.getFilterData(RETRO_SUMMARY_TYPES.TASK));
-        this.gridApi.onFilterChanged();
+        this.gridApi.setFilterModel(this.filterService.getFilterData(RETRO_SUMMARY_TYPES.TASK));
     }
 }

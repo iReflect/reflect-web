@@ -70,10 +70,9 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
         private retrospectiveService: RetrospectiveService,
         private snackBar: MatSnackBar,
         private utils: UtilsService,
-        private filters: FilterDataService
+        private filterService: FilterDataService
     ) {
     }
-
     ngOnInit() {
         this.columnDefs = this.createColumnDefs(this.sprintStatus, this.teamMembers);
         this.setGridOptions();
@@ -81,8 +80,11 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
 
     ngOnChanges(changes: SimpleChanges): void {
         if (this.gridApi) {
-            if (changes.sprintStatus || changes.teamMembers) {
-                this.filters.setFilterData(this.feedbackSubType, this.gridApi.getFilterModel());
+            if (changes.teamMembers || changes.data) {
+                this.filterService.setFilterData(this.feedbackSubType, this.gridApi.getFilterModel());
+            }
+            if (changes.sprintStatus) {
+                this.filterService.setFilterData(this.feedbackSubType, this.gridApi.getFilterModel());
                 this.columnDefs = this.createColumnDefs(this.sprintStatus, this.teamMembers);
                 this.gridApi.setColumnDefs(this.columnDefs);
             }
@@ -100,7 +102,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                 this.resizeAgGrid();
             }
             if (changes.isTabActive && !changes.isTabActive.currentValue) {
-                this.filters.setFilterData(this.feedbackSubType, this.gridApi.getFilterModel());
+                this.filterService.setFilterData(this.feedbackSubType, this.gridApi.getFilterModel());
             }
             this.restoreFilterData();
         }
@@ -135,7 +137,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
             stopEditingWhenGridLosesFocus: true,
             suppressDragLeaveHidesColumns: true,
             suppressScrollOnNewData: true,
-            onColumnVisible: (event) => this.gridApi.sizeColumnsToFit()
+            onColumnVisible: (event) => this.gridApi.sizeColumnsToFit(),
         };
         if (AppConfig.settings.useAgGridEnterprise) {
             this.gridOptions.enableFilter = true;
@@ -305,7 +307,8 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
         }
     }
 
-    getTeamMemberOptions(teamMembers) {
+    getTeamMemberOptions() {
+        let teamMembers = this.teamMembers;
         teamMembers = _.map(teamMembers, (data: any) => {
             return {
                 id: _.parseInt(data.ID),
@@ -405,7 +408,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                 },
                 cellEditor: 'selectEditor',
                 cellEditorParams: {
-                    selectOptions: this.getTeamMemberOptions(teamMembers),
+                    selectOptions: this.getTeamMemberOptions(),
                 },
                 filter: 'agSetColumnFilter',
                 filterParams: {
@@ -572,13 +575,14 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
         if (this.gridApi) {
             this.gridApi.setFilterModel(null);
             this.gridApi.onFilterChanged();
-            this.filters.setFilterData(this.feedbackSubType, this.gridApi.getFilterModel());
+            this.filterService.setFilterData(this.feedbackSubType, this.gridApi.getFilterModel());
         }
         event.stopPropagation();
     }
 
+    // restore the state of column filters
     restoreFilterData() {
-        this.gridApi.setFilterModel(this.filters.getFilterData(this.feedbackSubType));
-        this.gridApi.onFilterChanged();
+        this.gridApi.setFilterModel(this.filterService.getFilterData(this.feedbackSubType));
     }
 }
+

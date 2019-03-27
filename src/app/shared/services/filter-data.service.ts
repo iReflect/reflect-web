@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class FilterDataService {
-
-  constructor() { }
   filterData = {
     'key-takeaways': [],
     'things-well-done': [],
@@ -14,7 +12,7 @@ export class FilterDataService {
     'goals-pending': [],
     'task-summary': [],
     'member-summary': [],
-    };
+  };
 
   setFilterData(tableKey, data) {
     this.filterData[tableKey] = data;
