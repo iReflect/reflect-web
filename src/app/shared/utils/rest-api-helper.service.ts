@@ -77,6 +77,22 @@ export class RestApiHelperService {
             this.authRestangular = this.restangular.withConfig((RestangularProvider) => {
                 RestangularProvider.setRequestSuffix('/');
                 RestangularProvider.setBaseUrl(AppConfig.settings.apiServerHostURL);
+                RestangularProvider.addFullRequestInterceptor((element, operation, path, url, headers, params) => {
+                    this.loaderService.start();
+                    return {
+                        params: params,
+                        headers: headers,
+                        element: element
+                    };
+                });
+                RestangularProvider.addResponseInterceptor(data => {
+                    this.loaderService.complete();
+                    return data;
+                });
+                RestangularProvider.addErrorInterceptor(data => {
+                    this.loaderService.complete();
+                    return data;
+                });
             });
         }
         return this.authRestangular;
