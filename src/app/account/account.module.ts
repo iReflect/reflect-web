@@ -7,6 +7,9 @@ import { SharedModule } from 'app/shared/shared.module';
 import { AccountRoutingModule } from 'app/account/account-routing.module';
 import { LoginComponent } from 'app/account/login/login.component';
 import { AuthComponent } from 'app/account/auth/auth.component';
+import { IdentifyComponent } from 'app/account/identify/identify.component';
+import { CodeComponent } from 'app/account/code/code.component';
+import { UpdatePasswordComponent } from 'app/account/update-password/update-password.component';
 
 @NgModule({
     imports: [
@@ -19,6 +22,9 @@ import { AuthComponent } from 'app/account/auth/auth.component';
     declarations: [
         AuthComponent,
         LoginComponent,
+        IdentifyComponent,
+        CodeComponent,
+        UpdatePasswordComponent,
     ],
     exports: [],
     providers: []

@@ -37,10 +37,12 @@ export const COMMENT_TOOLTIP_MAP = {
 export const LOGIN_ERROR_TYPES = {
     notFound: 'notFound',
     unauthorized: 'unauthorized',
-    internalError: 'internalError'
+    internalError: 'internalError',
+    invalidEmailOrPassword: 'invalidEmailOrPassword',
 };
 
 export const LOGIN_ERROR_MESSAGES = {
+    invalidEmailOrPassword: 'Invalid Email Or Password',
     notFound: 'User doesn\'t exist! Try with another user or contact admin.',
     unauthorized: 'Invalid Session! Login again.',
     internalError: 'Some error occurred! Try again.'
@@ -51,6 +53,9 @@ export const APP_ROUTE_URLS = {
     forwardSlash: '/',
     login: 'login',
     auth: 'auth',
+    identify: 'identify',
+    code: 'code',
+    updatePassword: 'update-password',
     maintenance: 'maintenance',
 
     feedbackList: 'feedbacks',
@@ -292,3 +297,13 @@ export const TRACKER_TICKET_STATUS_MAP = {
 export const COMMA_SEPARATED_STRING_PATTERN = '([(a-zA-Z])([a-zA-Z-_\'\\s]+,\\s?)*([(a-zA-Z-_\'\\s]+)([(a-zA-Z])';
 
 export const OAUTH_CALLBACK_EVENT_KEY = 'OAuthCallback';
+
+// <-----------------constants for PBKDF2 encryption------------------>
+export const ITERATION_COUNT = 10000;
+
+export const KEY_SIZE = 256 / 32;
+
+export const SALT_FOR_PASSWORD = '';
+
+// minimum password length.
+export const MIN_PASSWORD_LENGTH = 8;
