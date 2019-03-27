@@ -11,6 +11,7 @@ import { HeaderComponent } from 'app/core/layout/header/header.component';
 import { LoggerService } from 'app/core/logger.service';
 // Import Others
 import { throwIfAlreadyLoaded } from 'app/core/module-import-guard';
+import { AuthGuard } from 'app/core/route-guards/auth.guard';
 import { AnonymousRequiredGuard } from 'app/core/route-guards/anonymous-required.service';
 // Import Custom Services
 import { LoginRequiredGuard } from 'app/core/route-guards/login-required.service';
@@ -52,6 +53,7 @@ export function RestangularConfigFactory(RestangularProvider, loaderService) {
         LoggerService,
         LoginRequiredGuard,
         AnonymousRequiredGuard,
+        AuthGuard,
         IsMaintenanceModeActiveGuard,
         {provide: MAT_DATE_LOCALE, useValue: 'en'},
         {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
