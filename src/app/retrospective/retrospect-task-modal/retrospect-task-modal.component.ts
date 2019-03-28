@@ -47,7 +47,9 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
     overlayNoRowsTemplate = '<span>No Members for this Issue!</span>';
     expandedDescHidden = true;
     allowDescViewToggle = true;
-    descMaxHeight = 90;
+    // If the height of the description section is not more than 40px (since 40 is the max-height for description section,
+    // we won't show "Show More" and/or "Show Less" buttons.
+    descMaxHeight = 40;
 
     private totalTaskPoints;
     private params: any;
@@ -86,11 +88,9 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
 
     ngAfterViewChecked() {
         const issueDescElement = document.getElementById('issue-description');
-        // If the height of the description section is not more than 90px (since 90 is the max-height for description section,
-        // we won't show "Show More" and/or "Show Less" buttons.
-        if (issueDescElement && issueDescElement.offsetHeight < this.descMaxHeight) {
+        if (issueDescElement) {
             setTimeout(() => {
-                this.allowDescViewToggle = false;
+                this.allowDescViewToggle = (issueDescElement.offsetHeight >= this.descMaxHeight);
             });
         }
     }
