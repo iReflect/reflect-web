@@ -50,6 +50,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
     // If the height of the description section is not more than 40px (since 40 is the max-height for description section,
     // we won't show "Show More" and/or "Show Less" buttons.
     descMaxHeight = 40;
+    compactSummary: string;
 
     private totalTaskPoints;
     private params: any;
@@ -68,6 +69,10 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
         this.enableRefresh = data.enableRefresh;
         this.autoRefreshCurrentState = data.enableRefresh;
         this.taskDetails = data.taskDetails;
+        this.compactSummary = this.taskDetails.Summary;
+        if (this.compactSummary.length > 200) {
+            this.compactSummary = this.compactSummary.slice(0, 190) + '....';
+        }
         // TODO: Check for better ways of handling new lines, carriage returns in angular
         this.issueDescriptionHTML = this.data.taskDetails.Description.replace(/\r\n|↵|\n/g, '<br>');
         if (!this.taskDetails.Estimate) {
