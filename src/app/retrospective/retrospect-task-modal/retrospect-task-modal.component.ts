@@ -13,7 +13,8 @@ import {
     MEMBER_TASK_ROLES_LABEL,
     RATING_STATES,
     RATING_STATES_LABEL,
-    SNACKBAR_DURATION
+    SNACKBAR_DURATION,
+    COMPACT_SUMMARY_MAX_LENGTH
 } from '@constants/app-constants';
 import { NumericCellEditorComponent } from 'app/shared/ag-grid-editors/numeric-cell-editor/numeric-cell-editor.component';
 import { SelectCellEditorComponent } from 'app/shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
@@ -70,8 +71,8 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
         this.autoRefreshCurrentState = data.enableRefresh;
         this.taskDetails = data.taskDetails;
         this.compactSummary = this.taskDetails.Summary;
-        if (this.compactSummary.length > 200) {
-            this.compactSummary = this.compactSummary.slice(0, 190) + '....';
+        if (this.compactSummary.length > COMPACT_SUMMARY_MAX_LENGTH) {
+            this.compactSummary = this.compactSummary.slice(0, COMPACT_SUMMARY_MAX_LENGTH) + '...';
         }
         // TODO: Check for better ways of handling new lines, carriage returns in angular
         this.issueDescriptionHTML = this.data.taskDetails.Description.replace(/\r\n|↵|\n/g, '<br>');
