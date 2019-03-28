@@ -11,7 +11,7 @@
         <ng-template #taskKeyView>
             {{taskDetails.Key}}
         </ng-template>
-        <span *ngIf="taskDetails.Summary"> : {{taskDetails.Summary}}</span>
+        <span *ngIf="taskDetails.Summary" matTooltip="{{taskDetails.Summary}}"> : {{compactSummary}}</span>
     </h2>
     <button mat-icon-button class="close-icon" tabindex="-1" (click)="closeDialog()">
         <mat-icon>clear</mat-icon>

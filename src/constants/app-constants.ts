@@ -304,6 +304,9 @@ export const ITERATION_COUNT = 10000;
 export const KEY_SIZE = 256 / 32;
 
 export const SALT_FOR_PASSWORD = '';
+// <------------------------------------------------------------------>
 
 // minimum password length.
 export const MIN_PASSWORD_LENGTH = 8;
+
+export const COMPACT_SUMMARY_MAX_LENGTH = 200;
