@@ -208,6 +208,9 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
     }
 
     updateRetroFeedback(params: any) {
+        if (params.colDef.field === 'AssigneeID' && !params.newValue) {
+            params.newValue = 0;
+        }
         const updatedRetroFeedbackData = {
             [params.colDef.field]: params.newValue
         };
