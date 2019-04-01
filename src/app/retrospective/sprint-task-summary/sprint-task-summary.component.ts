@@ -212,10 +212,8 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                             this.gridApi.sizeColumnsToFit();
                         });
                     }
-                    this.restoreFilterData();
                 },
                 err => {
-                    this.restoreFilterData();
                     if (isRefresh) {
                         this.snackBar.open(
                             API_RESPONSE_MESSAGES.issueSummaryRefreshFailure,
@@ -228,6 +226,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     }
                 },
                 () => {
+                    this.restoreFilterData();
                     this.autoRefreshCurrentState = this.enableRefresh;
                 }
             );

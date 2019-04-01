@@ -12,6 +12,7 @@ export class FilterDataService {
     'goals-pending': [],
     'task-summary': [],
     'member-summary': [],
+    'task-modal': [],
   };
 
   setFilterData(tableKey, data) {

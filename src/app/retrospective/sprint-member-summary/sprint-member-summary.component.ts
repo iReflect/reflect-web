@@ -218,10 +218,8 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                     if (!isRefresh && this.isTabActive) {
                         this.gridApi.sizeColumnsToFit();
                     }
-                    this.restoreFilterData();
                 },
                 err => {
-                    this.restoreFilterData();
                     if (isRefresh) {
                         this.snackBar.open(
                             API_RESPONSE_MESSAGES.memberSummaryRefreshFailure,
@@ -233,6 +231,9 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                             '', { duration: SNACKBAR_DURATION });
                     }
                 },
+                () => {
+                    this.restoreFilterData();
+                }
             );
 
     }

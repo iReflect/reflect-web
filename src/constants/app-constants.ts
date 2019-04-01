@@ -250,6 +250,10 @@ export const RETRO_SUMMARY_TYPES = {
     MEMBER: 'member-summary'
 };
 
+export const RETRO_MODAL_TYPES = {
+    TASK: 'task-modal'
+};
+
 export const RETRO_FEEDBACK_GOAL_TYPES = {
     ADDED: 'goals-added',
     COMPLETED: 'goals-accomplished',

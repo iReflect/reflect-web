@@ -13,6 +13,7 @@ import {
     MEMBER_TASK_ROLES_LABEL,
     RATING_STATES,
     RATING_STATES_LABEL,
+    RETRO_MODAL_TYPES,
     SNACKBAR_DURATION
 } from '@constants/app-constants';
 import { NumericCellEditorComponent } from 'app/shared/ag-grid-editors/numeric-cell-editor/numeric-cell-editor.component';
@@ -20,6 +21,7 @@ import { SelectCellEditorComponent } from 'app/shared/ag-grid-editors/select-cel
 import { RatingRendererComponent } from 'app/shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
 import { RetrospectiveService } from 'app/shared/services/retrospective.service';
 import { UtilsService } from 'app/shared/utils/utils.service';
+import { FilterDataService } from 'app/shared/services/filter-data.service';
 import {
     CellClassParams, IsColumnFuncParams, NewValueParams,
     SuppressKeyboardEventParams
@@ -60,6 +62,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
         private retrospectiveService: RetrospectiveService,
         private snackBar: MatSnackBar,
         private utils: UtilsService,
+        private filterService: FilterDataService,
         public dialogRef: MatDialogRef<RetrospectTaskModalComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any
     ) {
@@ -119,7 +122,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                 err => {
                     this.snackBar.open(
                         this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getSprintMembersError,
-                        '', {duration: SNACKBAR_DURATION});
+                        '', { duration: SNACKBAR_DURATION });
                 }
             );
     }
@@ -174,6 +177,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
     }
 
     getSprintTaskMemberSummary(isRefresh = false, isAutoRefresh = false) {
+        this.filterService.setFilterData(RETRO_MODAL_TYPES.TASK, this.gridApi.getFilterModel());
         const getTaskMemberSummary$ = this.retrospectiveService
             .getSprintTaskMemberSummary(
                 this.data.retrospectiveID,
@@ -205,16 +209,17 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                     if (isRefresh) {
                         this.snackBar.open(
                             this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.autoRefreshFailure,
-                            '', {duration: SNACKBAR_DURATION});
+                            '', { duration: SNACKBAR_DURATION });
                     } else {
                         this.snackBar.open(
                             this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES
                                 .getSprintIssueMemberSummaryError,
-                            '', {duration: SNACKBAR_DURATION});
+                            '', { duration: SNACKBAR_DURATION });
                         this.dialogRef.close();
                     }
                 }
             );
+        this.restoreFilterData();
         return getTaskMemberSummary$;
     }
 
@@ -224,8 +229,8 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
         this.gridApi.setRowData(null);
         const getTaskMemberSummary$ = this.getSprintTaskMemberSummary(true);
         getTaskMemberSummary$.subscribe(
-            () => {},
-            () => {},
+            () => { },
+            () => { },
             () => this.gridApi.hideOverlay()
         );
     }
@@ -235,11 +240,11 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
         if (this.selectedMemberID === undefined) {
             this.snackBar.open(
                 API_RESPONSE_MESSAGES.memberNotSelectedError,
-                '', {duration: SNACKBAR_DURATION});
+                '', { duration: SNACKBAR_DURATION });
         } else if (this.memberIDs.indexOf(this.selectedMemberID) !== -1) {
             this.snackBar.open(
                 API_RESPONSE_MESSAGES.memberAlreadyPresent,
-                '', {duration: SNACKBAR_DURATION});
+                '', { duration: SNACKBAR_DURATION });
         } else {
             this.retrospectiveService.addTaskMember(
                 this.data.retrospectiveID, this.data.sprintID, this.taskDetails.ID, this.selectedMemberID
@@ -250,7 +255,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                 err => {
                     this.snackBar.open(
                         this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.addSprintIssueMemberError,
-                        '', {duration: SNACKBAR_DURATION});
+                        '', { duration: SNACKBAR_DURATION });
                 }
             );
         }
@@ -274,12 +279,12 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                 params.node.setData(response.data);
                 this.snackBar.open(
                     API_RESPONSE_MESSAGES.memberUpdated,
-                    '', {duration: SNACKBAR_DURATION});
+                    '', { duration: SNACKBAR_DURATION });
             },
             err => {
                 this.snackBar.open(
                     this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.updateSprintMemberError,
-                    '', {duration: SNACKBAR_DURATION});
+                    '', { duration: SNACKBAR_DURATION });
                 this.revertCellValue(params);
             }
         );
@@ -288,7 +293,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
     revertCellValue(params) {
         const rowData = params.data;
         rowData[params.colDef.field] = params.oldValue;
-        this.gridApi.updateRowData({update: [rowData]});
+        this.gridApi.updateRowData({ update: [rowData] });
         this.gridApi.refreshCells();
     }
 
@@ -301,7 +306,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
             {
                 headerName: 'Name',
                 colId: 'Name',
-                valueGetter: ({data: user}) => `${user.FirstName} ${user.LastName}`.trim(),
+                valueGetter: ({ data: user }) => `${user.FirstName} ${user.LastName}`.trim(),
                 minWidth: 160,
                 pinned: true,
                 filter: 'agSetColumnFilter',
@@ -363,12 +368,12 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                         if (newStoryPoints > this.taskDetails.Estimate) {
                             this.snackBar.open(
                                 API_RESPONSE_MESSAGES.issueStoryPointsEstimatesError,
-                                '', {duration: SNACKBAR_DURATION});
+                                '', { duration: SNACKBAR_DURATION });
                             this.revertCellValue(cellParams);
                         } else if (cellParams.newValue < 0) {
                             this.snackBar.open(
                                 API_RESPONSE_MESSAGES.issueStoryPointsNegativeError,
-                                '', {duration: SNACKBAR_DURATION});
+                                '', { duration: SNACKBAR_DURATION });
                             this.revertCellValue(cellParams);
                         } else {
                             this.updateSprintTaskMember(cellParams, (response) => {
@@ -496,6 +501,12 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
         if (this.gridApi) {
             this.gridApi.setFilterModel(null);
             this.gridApi.onFilterChanged();
+            this.filterService.setFilterData(RETRO_MODAL_TYPES.TASK, this.gridApi.getFilterModel());
         }
     }
+    // restore the state column filters
+    restoreFilterData() {
+        this.gridApi.setFilterModel(this.filterService.getFilterData(RETRO_MODAL_TYPES.TASK));
+    }
+
 }
