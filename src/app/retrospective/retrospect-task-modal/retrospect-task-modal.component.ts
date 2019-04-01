@@ -23,7 +23,6 @@ import { RatingRendererComponent } from 'app/shared/ag-grid-renderers/rating-ren
 import { RetrospectiveService } from 'app/shared/services/retrospective.service';
 import { FilterDataService } from 'app/shared/services/filter-data.service';
 import { UtilsService } from 'app/shared/utils/utils.service';
-import { FilterDataService } from 'app/shared/services/filter-data.service';
 import {
     CellClassParams, IsColumnFuncParams, NewValueParams,
     SuppressKeyboardEventParams
