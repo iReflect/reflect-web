@@ -14,7 +14,8 @@ import {
     RATING_STATES,
     RATING_STATES_LABEL,
     RETRO_MODAL_TYPES,
-    SNACKBAR_DURATION
+    SNACKBAR_DURATION,
+    COMPACT_SUMMARY_MAX_LENGTH
 } from '@constants/app-constants';
 import { NumericCellEditorComponent } from 'app/shared/ag-grid-editors/numeric-cell-editor/numeric-cell-editor.component';
 import { SelectCellEditorComponent } from 'app/shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
@@ -52,7 +53,10 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
     overlayNoRowsTemplate = '<span>No Members for this Issue!</span>';
     expandedDescHidden = true;
     allowDescViewToggle = true;
-    descMaxHeight = 90;
+    // If the height of the description section is not more than 40px (since 40 is the max-height for description section,
+    // we won't show "Show More" and/or "Show Less" buttons.
+    descMaxHeight = 40;
+    compactSummary: string;
 
     private totalTaskPoints;
     private params: any;
@@ -74,6 +78,10 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
         this.autoRefreshCurrentState = data.enableRefresh;
         this.taskDetails = data.taskDetails;
         this.retrospectiveID = data.retrospectiveID;
+        this.compactSummary = this.taskDetails.Summary;
+        if (this.compactSummary.length > COMPACT_SUMMARY_MAX_LENGTH) {
+            this.compactSummary = this.compactSummary.slice(0, COMPACT_SUMMARY_MAX_LENGTH) + '...';
+        }
         // TODO: Check for better ways of handling new lines, carriage returns in angular
         this.issueDescriptionHTML = this.data.taskDetails.Description.replace(/\r\n|↵|\n/g, '<br>');
         if (!this.taskDetails.Estimate) {
@@ -95,11 +103,9 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
 
     ngAfterViewChecked() {
         const issueDescElement = document.getElementById('issue-description');
-        // If the height of the description section is not more than 90px (since 90 is the max-height for description section,
-        // we won't show "Show More" and/or "Show Less" buttons.
-        if (issueDescElement && issueDescElement.offsetHeight < this.descMaxHeight) {
+        if (issueDescElement) {
             setTimeout(() => {
-                this.allowDescViewToggle = false;
+                this.allowDescViewToggle = (issueDescElement.offsetHeight >= this.descMaxHeight);
             });
         }
     }
