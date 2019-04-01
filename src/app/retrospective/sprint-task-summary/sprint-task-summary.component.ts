@@ -68,7 +68,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         private snackBar: MatSnackBar,
         public dialog: MatDialog,
         private retrospectiveService: RetrospectiveService,
-        private filters: FilterDataService,
+        private filterService: FilterDataService,
         private utils: UtilsService
     ) {
     }
@@ -122,7 +122,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 });
             }
             if (changes.isTabActive && !changes.isTabActive.currentValue) {
-                this.filters.setFilterData(RETRO_SUMMARY_TYPES.TASK, this.gridApi.getFilterModel());
+                this.filterService.setFilterData(RETRO_SUMMARY_TYPES.TASK, this.gridApi.getFilterModel());
             }
         }
     }
@@ -214,7 +214,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     }
 
     getSprintTaskSummary(isRefresh = false, isAutoRefresh = false) {
-        this.filters.setFilterData(RETRO_SUMMARY_TYPES.TASK, this.gridApi.getFilterModel());
+        this.filterService.setFilterData(RETRO_SUMMARY_TYPES.TASK, this.gridApi.getFilterModel());
         return this.retrospectiveService.getSprintTaskSummary(this.retrospectiveID, this.sprintID, isAutoRefresh)
             .takeUntil(this.destroy$)
             .do(
@@ -225,10 +225,8 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                             this.gridApi.sizeColumnsToFit();
                         });
                     }
-                    this.restoreFilterData();
                 },
                 err => {
-                    this.restoreFilterData();
                     if (isRefresh) {
                         this.snackBar.open(
                             API_RESPONSE_MESSAGES.issueSummaryRefreshFailure,
@@ -241,6 +239,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     }
                 },
                 () => {
+                    this.restoreFilterData();
                     this.autoRefreshCurrentState = this.enableRefresh;
                 }
             );
@@ -645,18 +644,18 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         if (this.gridApi) {
             this.gridApi.setFilterModel(null);
             this.gridApi.onFilterChanged();
-            this.filters.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
+            this.filterService.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
         }
     }
-    // To restore the saved state of filters
+
+    // restore the state column filters
     restoreFilterData() {
-        this.gridApi.setFilterModel(this.filters.getFilterData(RETRO_SUMMARY_TYPES.TASK));
-        this.gridApi.onFilterChanged();
+        this.gridApi.setFilterModel(this.filterService.getFilterData(RETRO_SUMMARY_TYPES.TASK));
     }
     // To save the current state of columns in angular scope
     setColumnData(columnData: any) {
         if (this.setColumnflag && this.isTabActive) {
-            this.filters.setColumnData(this.retrospectiveID, RETRO_SUMMARY_TYPES.TASK, columnData);
+            this.filterService.setColumnData(this.retrospectiveID, RETRO_SUMMARY_TYPES.TASK, columnData);
         }
         if (!this.setColumnflag) {
             this.setColumnflag = true;
@@ -664,7 +663,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     }
     // To restore the saved state of columns
     setColumnState() {
-        const columnData = this.filters.getColumnData(this.retrospectiveID, RETRO_SUMMARY_TYPES.TASK);
+        const columnData = this.filterService.getColumnData(this.retrospectiveID, RETRO_SUMMARY_TYPES.TASK);
         if (columnData && columnData.length > 0) {
             this.columnApi.setColumnState(columnData);
         }

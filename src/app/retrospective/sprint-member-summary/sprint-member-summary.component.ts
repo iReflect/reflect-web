@@ -61,7 +61,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         private retrospectiveService: RetrospectiveService,
         private snackBar: MatSnackBar,
         private utils: UtilsService,
-        private filters: FilterDataService,
+        private filterService: FilterDataService,
         public dialog: MatDialog
     ) {
     }
@@ -112,7 +112,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                 });
             }
             if (changes.isTabActive && !changes.isTabActive.currentValue) {
-                this.filters.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
+                this.filterService.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
             }
         }
     }
@@ -214,7 +214,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     }
 
     getSprintMemberSummary(isRefresh = false, isAutoRefresh = false) {
-        this.filters.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
+        this.filterService.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
         return this.retrospectiveService.getSprintMemberSummary(this.retrospectiveID, this.sprintID, isAutoRefresh)
             .takeUntil(this.destroy$)
             .do(
@@ -228,10 +228,8 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                     if (!isRefresh && this.isTabActive) {
                         this.gridApi.sizeColumnsToFit();
                     }
-                    this.restoreFilterData();
                 },
                 err => {
-                    this.restoreFilterData();
                     if (isRefresh) {
                         this.snackBar.open(
                             API_RESPONSE_MESSAGES.memberSummaryRefreshFailure,
@@ -243,6 +241,9 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                             '', { duration: SNACKBAR_DURATION });
                     }
                 },
+                () => {
+                    this.restoreFilterData();
+                }
             );
 
     }
@@ -545,18 +546,18 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         if (this.gridApi) {
             this.gridApi.setFilterModel(null);
             this.gridApi.onFilterChanged();
-            this.filters.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
+            this.filterService.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
         }
     }
-    // restore the state of filter
+
+    // restore the state of column filters
     restoreFilterData() {
-        this.gridApi.setFilterModel(this.filters.getFilterData(RETRO_SUMMARY_TYPES.MEMBER));
-        this.gridApi.onFilterChanged();
+        this.gridApi.setFilterModel(this.filterService.getFilterData(RETRO_SUMMARY_TYPES.MEMBER));
     }
     // To save the current state of columns in angular scope
     setColumnData(columnData) {
         if (this.setColumnflag && this.isTabActive) {
-            this.filters.setColumnData(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER, columnData);
+            this.filterService.setColumnData(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER, columnData);
         }
         if (!this.setColumnflag) {
             this.setColumnflag = true;
@@ -564,7 +565,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     }
     // To restore the saved state of columns
     setColumnState() {
-        const columnData = this.filters.getColumnData(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER);
+        const columnData = this.filterService.getColumnData(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER);
         if (columnData && columnData.length > 0) {
             this.columnApi.setColumnState(columnData);
         }

@@ -71,9 +71,9 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
         private retrospectiveService: RetrospectiveService,
         private snackBar: MatSnackBar,
         private utils: UtilsService,
-        private filters: FilterDataService) {
+        private filterService: FilterDataService
+    ) {
     }
-
     ngOnInit() {
         this.columnDefs = this.createColumnDefs(this.sprintStatus, this.teamMembers);
         this.setColumnflag = -2;
@@ -82,9 +82,11 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
 
     ngOnChanges(changes: SimpleChanges): void {
         if (this.gridApi) {
-            if (changes.sprintStatus || changes.teamMembers) {
-                this.filters.setFilterData(this.feedbackSubType, this.gridApi.getFilterModel());
-                // this.setColumnData();
+            if (changes.teamMembers || changes.data) {
+                this.filterService.setFilterData(this.feedbackSubType, this.gridApi.getFilterModel());
+            }
+            if (changes.sprintStatus) {
+                this.filterService.setFilterData(this.feedbackSubType, this.gridApi.getFilterModel());
                 this.columnDefs = this.createColumnDefs(this.sprintStatus, this.teamMembers);
                 this.gridApi.setColumnDefs(this.columnDefs);
             }
@@ -102,8 +104,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                 this.resizeAgGrid();
             }
             if (changes.isTabActive && !changes.isTabActive.currentValue) {
-                // this.setColumnData();
-                this.filters.setFilterData(this.feedbackSubType, this.gridApi.getFilterModel());
+                this.filterService.setFilterData(this.feedbackSubType, this.gridApi.getFilterModel());
             }
             this.setColumnState();
             this.restoreFilterData();
@@ -322,7 +323,8 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
         }
     }
 
-    getTeamMemberOptions(teamMembers) {
+    getTeamMemberOptions() {
+        let teamMembers = this.teamMembers;
         teamMembers = _.map(teamMembers, (data: any) => {
             return {
                 id: _.parseInt(data.ID),
@@ -422,7 +424,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                 },
                 cellEditor: 'selectEditor',
                 cellEditorParams: {
-                    selectOptions: this.getTeamMemberOptions(teamMembers),
+                    selectOptions: this.getTeamMemberOptions(),
                 },
                 filter: 'agSetColumnFilter',
                 filterParams: {
@@ -589,19 +591,19 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
         if (this.gridApi) {
             this.gridApi.setFilterModel(null);
             this.gridApi.onFilterChanged();
-            this.filters.setFilterData(this.feedbackSubType, this.gridApi.getFilterModel());
+            this.filterService.setFilterData(this.feedbackSubType, this.gridApi.getFilterModel());
         }
         event.stopPropagation();
     }
-    // To restore the saved state of filters
+
+    // restore the state of column filters
     restoreFilterData() {
-        this.gridApi.setFilterModel(this.filters.getFilterData(this.feedbackSubType));
-        this.gridApi.onFilterChanged();
+        this.gridApi.setFilterModel(this.filterService.getFilterData(this.feedbackSubType));
     }
     // To save the current state of columns in angular scope
     setColumnData(columnData: any) {
         if (this.setColumnflag >= 0 && this.isTabActive) {
-            this.filters.setColumnData(this.retrospectiveID, this.feedbackSubType, columnData);
+            this.filterService.setColumnData(this.retrospectiveID, this.feedbackSubType, columnData);
         }
         if (this.setColumnflag < 0) {
             this.setColumnflag++;
@@ -609,9 +611,10 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
     }
     // To restore the saved state of columns
     setColumnState() {
-        const columnData = this.filters.getColumnData(this.retrospectiveID, this.feedbackSubType);
+        const columnData = this.filterService.getColumnData(this.retrospectiveID, this.feedbackSubType);
         if (columnData && columnData.length > 0) {
             this.columnApi.setColumnState(columnData);
         }
     }
 }
+

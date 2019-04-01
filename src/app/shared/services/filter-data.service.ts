@@ -12,6 +12,7 @@ export class FilterDataService {
     'goals-pending': [],
     'task-summary': [],
     'member-summary': [],
+    'task-modal': [],
   };
   coloumData = {};
   constructor() { }
@@ -61,6 +62,7 @@ export class FilterDataService {
       'goals-pending': [],
       'task-summary': [],
       'member-summary': [],
+      'task-modal': [],
     };
   }
 }

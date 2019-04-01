@@ -23,6 +23,7 @@ import { RatingRendererComponent } from 'app/shared/ag-grid-renderers/rating-ren
 import { RetrospectiveService } from 'app/shared/services/retrospective.service';
 import { FilterDataService } from 'app/shared/services/filter-data.service';
 import { UtilsService } from 'app/shared/utils/utils.service';
+import { FilterDataService } from 'app/shared/services/filter-data.service';
 import {
     CellClassParams, IsColumnFuncParams, NewValueParams,
     SuppressKeyboardEventParams
@@ -69,7 +70,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
         private retrospectiveService: RetrospectiveService,
         private snackBar: MatSnackBar,
         private utils: UtilsService,
-        private filters: FilterDataService,
+        private filterService: FilterDataService,
         public dialogRef: MatDialogRef<RetrospectTaskModalComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any
     ) {
@@ -195,6 +196,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
     }
 
     getSprintTaskMemberSummary(isRefresh = false, isAutoRefresh = false) {
+        this.filterService.setFilterData(RETRO_MODAL_TYPES.TASK, this.gridApi.getFilterModel());
         const getTaskMemberSummary$ = this.retrospectiveService
             .getSprintTaskMemberSummary(
                 this.data.retrospectiveID,
@@ -240,6 +242,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
         if (isRefresh) {
             this.setColumnState();
         }
+        this.restoreFilterData();
         return getTaskMemberSummary$;
 
     }
@@ -522,12 +525,13 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
         if (this.gridApi) {
             this.gridApi.setFilterModel(null);
             this.gridApi.onFilterChanged();
+            this.filterService.setFilterData(RETRO_MODAL_TYPES.TASK, this.gridApi.getFilterModel());
         }
     }
     // To save the columns current state in angular scope
     setColumnData(columnData: any) {
         if (this.setColumnFlag) {
-            this.filters.setColumnData(this.retrospectiveID, RETRO_MODAL_TYPES.TASK, columnData);
+            this.filterService.setColumnData(this.retrospectiveID, RETRO_MODAL_TYPES.TASK, columnData);
         }
         if (!this.setColumnFlag) {
             this.setColumnFlag = true;
@@ -535,9 +539,14 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
     }
     // To restore the saved state of columns
     setColumnState() {
-        const columnData = this.filters.getColumnData(this.retrospectiveID, RETRO_MODAL_TYPES.TASK);
+        const columnData = this.filterService.getColumnData(this.retrospectiveID, RETRO_MODAL_TYPES.TASK);
         if (columnData && columnData.length > 0) {
             this.columnApi.setColumnState(columnData);
         }
     }
+    // restore the state column filters
+    restoreFilterData() {
+        this.gridApi.setFilterModel(this.filterService.getFilterData(RETRO_MODAL_TYPES.TASK));
+    }
+
 }
