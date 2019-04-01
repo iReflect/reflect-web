@@ -21,8 +21,8 @@ export class AuthGuard implements CanActivate {
 
     const emailAndTimeData = this.authService.getEmailAndReSendTime();
 
-    // check is email and re-send time exists or not.
-    if (!emailAndTimeData.email || !emailAndTimeData.reSendTime) {
+    // check if email exists or not, if not we redirect the user to the login page.
+    if (!emailAndTimeData.email) {
       this.router.navigateByUrl(APP_ROUTE_URLS.forwardSlash);
       return false;
     }
