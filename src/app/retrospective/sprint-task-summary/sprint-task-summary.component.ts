@@ -41,7 +41,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     ratingStates = RATING_STATES;
     overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the Issues are loading!</span>';
     overlayNoRowsTemplate = '<span>No Issues in this sprint!</span>';
-    //To ignore column data updation in angular scope when grid is intialized
+    // To ignore column data updation in angular scope when grid is intialized
     setColumnflag: boolean;
 
     @Input() retrospectiveID;
@@ -166,7 +166,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             suppressScrollOnNewData: true,
             stopEditingWhenGridLosesFocus: true,
             onColumnVisible: (event) => this.gridApi.sizeColumnsToFit(),
-            //this event is triggred when there is change in grid columns
+            // this event is triggred when there is change in grid columns
             onDisplayedColumnsChanged: (event) => {
                 this.setColumnData(event.columnApi.getColumnState());
             },
@@ -648,7 +648,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             this.filters.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
         }
     }
-    // To restore the saved state of filters 
+    // To restore the saved state of filters
     restoreFilterData() {
         this.gridApi.setFilterModel(this.filters.getFilterData(RETRO_SUMMARY_TYPES.TASK));
         this.gridApi.onFilterChanged();
@@ -662,7 +662,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             this.setColumnflag = true;
         }
     }
-    // To restore the saved state of columns 
+    // To restore the saved state of columns
     setColumnState() {
         const columnData = this.filters.getColumnData(this.retrospectiveID, RETRO_SUMMARY_TYPES.TASK);
         if (columnData && columnData.length > 0) {

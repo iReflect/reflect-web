@@ -38,7 +38,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     ratingStates = RATING_STATES;
     overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the members are loading!</span>';
     overlayNoRowsTemplate = '<span>No Members for this sprint!</span>';
-    //To ignore column data updation in angular scope when grid is intialized
+    // To ignore column data updation in angular scope when grid is intialized
     setColumnflag: boolean;
     @Input() retrospectiveID;
     @Input() sprintID;
@@ -158,7 +158,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             suppressScrollOnNewData: true,
             stopEditingWhenGridLosesFocus: true,
             onColumnVisible: (event) => this.gridApi.sizeColumnsToFit(),
-            //this event is triggred when there is change in grid columns
+            // this event is triggred when there is change in grid columns
             onDisplayedColumnsChanged: (event) => {
                 this.setColumnData(event.columnApi.getColumnState());
             },
@@ -548,12 +548,12 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             this.filters.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
         }
     }
-    // restore the state of filter 
+    // restore the state of filter
     restoreFilterData() {
         this.gridApi.setFilterModel(this.filters.getFilterData(RETRO_SUMMARY_TYPES.MEMBER));
         this.gridApi.onFilterChanged();
     }
-    //To save the current state of columns in angular scope
+    // To save the current state of columns in angular scope
     setColumnData(columnData) {
         if (this.setColumnflag && this.isTabActive) {
             this.filters.setColumnData(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER, columnData);
@@ -562,7 +562,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             this.setColumnflag = true;
         }
     }
-    //To restore the saved state of columns
+    // To restore the saved state of columns
     setColumnState() {
         const columnData = this.filters.getColumnData(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER);
         if (columnData && columnData.length > 0) {

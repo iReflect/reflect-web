@@ -44,7 +44,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
     enableRefresh: boolean;
     autoRefreshCurrentState: boolean;
     issueDescriptionHTML: string;
-    //To ignore column data updation in angular scope when grid is initialized
+    // To ignore column data updation in angular scope when grid is initialized
     setColumnFlag: boolean;
 
     memberIDs = [];
@@ -163,7 +163,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
             suppressDragLeaveHidesColumns: true,
             suppressScrollOnNewData: true,
             onColumnVisible: (event) => this.gridApi.sizeColumnsToFit(),
-            //this event is triggered when there is change in grid columns
+            // this event is triggered when there is change in grid columns
             onDisplayedColumnsChanged: (event) => {
                 this.setColumnData(event.columnApi.getColumnState());
             },
@@ -236,7 +236,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                     }
                 }
             );
-        //To restore columns state on refresh    
+        // To restore columns state on refresh
         if (isRefresh) {
             this.setColumnState();
         }
@@ -524,7 +524,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
             this.gridApi.onFilterChanged();
         }
     }
-    //To save the columns current state in angular scope
+    // To save the columns current state in angular scope
     setColumnData(columnData: any) {
         if (this.setColumnFlag) {
             this.filters.setColumnData(this.retrospectiveID, RETRO_MODAL_TYPES.TASK, columnData);
@@ -533,7 +533,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
             this.setColumnFlag = true;
         }
     }
-    //To restore the saved state of columns 
+    // To restore the saved state of columns
     setColumnState() {
         const columnData = this.filters.getColumnData(this.retrospectiveID, RETRO_MODAL_TYPES.TASK);
         if (columnData && columnData.length > 0) {

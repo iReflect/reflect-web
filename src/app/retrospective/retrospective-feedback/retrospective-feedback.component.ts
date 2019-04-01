@@ -34,7 +34,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
     gridOptions: GridOptions;
     sprintStates = SPRINT_STATES;
     goalTypes = RETRO_FEEDBACK_GOAL_TYPES;
-    //To ignore column data updation in angular scope when grid is intialized
+    // To ignore column data updation in angular scope when grid is intialized
     setColumnflag: number;
     @Input() title;
     @Input() retrospectiveID;
@@ -135,7 +135,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
             onCellEditingStopped: () => this.onCellEditingStopped(),
             onGridReady: event => {
                 this.onGridReady(event);
-                this.setColumnState()
+                this.setColumnState();
             },
             rowHeight: 48,
             singleClickEdit: true,
@@ -143,7 +143,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
             suppressDragLeaveHidesColumns: true,
             suppressScrollOnNewData: true,
             onColumnVisible: (event) => this.gridApi.sizeColumnsToFit(),
-            //this event is triggred when there is change in grid columns
+            // this event is triggred when there is change in grid columns
             onDisplayedColumnsChanged: (event) => {
                 this.setColumnData(event.columnApi.getColumnState());
             },
