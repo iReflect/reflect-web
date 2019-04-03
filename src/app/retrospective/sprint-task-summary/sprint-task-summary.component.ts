@@ -205,11 +205,8 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         this.filterService.setFilterData(RETRO_SUMMARY_TYPES.TASK, this.gridApi.getFilterModel());
         return this.retrospectiveService.getSprintTaskSummary(this.retrospectiveID, this.sprintID, isAutoRefresh)
             .takeUntil(this.destroy$)
-            .pipe(
-                finalize(() => {
-                    this.restoreFilterData();
-                })
-            ).do(
+            .pipe(finalize(() => { this.restoreFilterData(); }))
+            .do(
                 response => {
                     this.gridApi.setRowData(response.data.Tasks);
                     if (!isRefresh && this.isTabActive) {

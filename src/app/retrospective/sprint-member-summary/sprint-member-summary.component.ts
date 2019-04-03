@@ -208,11 +208,8 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         this.filterService.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
         return this.retrospectiveService.getSprintMemberSummary(this.retrospectiveID, this.sprintID, isAutoRefresh)
             .takeUntil(this.destroy$)
-            .pipe(
-                finalize(() => {
-                    this.restoreFilterData();
-                })
-            ).do(
+            .pipe(finalize(() => { this.restoreFilterData(); }))
+            .do(
                 response => {
                     const members = response.data.Members;
                     this.gridApi.setRowData(members);
