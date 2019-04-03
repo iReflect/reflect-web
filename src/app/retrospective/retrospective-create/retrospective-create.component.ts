@@ -1,12 +1,14 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
-import { RetrospectiveService } from 'app/shared/services/retrospective.service';
-import { API_RESPONSE_MESSAGES, SNACKBAR_DURATION, TRACKER_TICKET_TYPE_MAP } from '@constants/app-constants';
+
 import * as _ from 'lodash';
-import { UtilsService } from 'app/shared/utils/utils.service';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
+
+import { API_RESPONSE_MESSAGES, SNACKBAR_DURATION, TRACKER_TICKET_TYPE_MAP } from '@constants/app-constants';
+import { RetrospectiveService } from 'app/shared/services/retrospective.service';
+import { UtilsService } from 'app/shared/utils/utils.service';
 
 @Component({
     selector: 'app-retrospective-create',
@@ -29,6 +31,9 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
     // Maintains the task providers count
     taskProvidersIndex = -1;
 
+    timeProvidersList: any = [];
+    disableTimeProviderField = true;
+    selectedTimeField: string;
     // Keys used for form controls and provider lookups
     taskProviderKey = 'taskProvider';
 
@@ -96,6 +101,31 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
             );
     }
 
+    getTimeProviders() {
+        const team: string = this.retroFormGroup.value.team;
+        let selectedTaskProvider: string;
+        this.retroFormGroup.value.taskProvider.forEach(provider => {
+            selectedTaskProvider = provider.selectedTaskProvider;
+        });
+
+        if (!team || !selectedTaskProvider) {
+            return;
+        }
+        this.disableTimeProviderField = false;
+        this.retrospectiveService.getTimeProvidersList(selectedTaskProvider, team)
+        .subscribe(
+            (data) => {
+                this.timeProvidersList = data.body.timeProviderList;
+                this.selectedTimeField = this.timeProvidersList[0];
+            },
+            (err: Error) => {
+                this.snackBar.open(
+                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getTimeProviderOptionError,
+                    '', {duration: SNACKBAR_DURATION});
+            }
+        );
+    }
+
     taskProviderInitialized(index) {
         return taskProviderFormGroup => {
             if (this.taskProvidersList[index]) {
@@ -111,6 +141,7 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
             'team': new FormControl('', Validators.required),
             'storyPointPerWeek': new FormControl('', Validators.required),
             'projectName': new FormControl('', Validators.required),
+            'timeProviderKey': new FormControl('', Validators.required),
         });
     }
 
@@ -129,6 +160,7 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
             'team': formValue.team,
             'storyPointPerWeek': formValue.storyPointPerWeek,
             'projectName': formValue.projectName,
+            'timeProviderKey': formValue.timeProviderKey,
             'taskProvider': formValue.taskProvider.map(provider => {
                 const taskProviderConfig = provider.taskProviderConfig;
 
