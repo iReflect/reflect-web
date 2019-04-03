@@ -33,7 +33,7 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
 
     timeProvidersList: any = [];
     disableTimeProviderField = true;
-    selectedTimeField: string;
+    selectedTimeField = {};
     // Keys used for form controls and provider lookups
     taskProviderKey = 'taskProvider';
 
@@ -111,14 +111,15 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
         if (!team || !selectedTaskProvider) {
             return;
         }
-        this.disableTimeProviderField = false;
         this.retrospectiveService.getTimeProvidersList(selectedTaskProvider, team)
         .subscribe(
             (data) => {
-                this.timeProvidersList = data.body.timeProviderList;
+                this.timeProvidersList = data.body.TimeProviders;
                 this.selectedTimeField = this.timeProvidersList[0];
+                this.disableTimeProviderField = false;
             },
             (err: Error) => {
+                this.disableTimeProviderField = true;
                 this.snackBar.open(
                     this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getTimeProviderOptionError,
                     '', {duration: SNACKBAR_DURATION});

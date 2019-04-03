@@ -59,7 +59,7 @@
                     <app-task-provider
                         [taskProviderOptions]="taskProviderOptions"
                         (initializedTaskProvider)="taskProviderInitialized(providerIndex)($event)"
-                        (getTimeProviders)="getTimeProviders()">
+                        (onProviderChanged)="getTimeProviders()">
                     </app-task-provider>
                 </div>
             </div>
@@ -73,10 +73,10 @@
             <div class="flex">
                 <mat-form-field>
                         <mat-hint *ngIf="disableTimeProviderField" class="project-name-hint">Choose a Task Provider and Team first</mat-hint>
-                    <mat-select formControlName="timeProviderKey" [(ngModel)]="selectedTimeField" placeholder="Select a Time Provider" [disabled]="disableTimeProviderField">
-                        <mat-option *ngFor="let timeProvider of timeProvidersList;" [value]="timeProvider">
-                            {{timeProvider}}</mat-option>
-                    </mat-select>
+                        <mat-select formControlName="timeProviderKey" [(ngModel)]="selectedTimeField.Name" placeholder="Select a Time Provider" [disabled]="disableTimeProviderField">
+                            <mat-option *ngFor="let timeProvider of timeProvidersList;" [value]="timeProvider.Name">
+                            {{timeProvider.DisplayName}}</mat-option>
+                        </mat-select>
                 </mat-form-field>
             </div>
         </div>
