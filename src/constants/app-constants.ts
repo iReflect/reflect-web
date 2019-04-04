@@ -302,6 +302,19 @@ export const TRACKER_TICKET_STATUS_MAP = {
     DONE: 'DoneStatus',
 };
 
+export const Retro_Grid_Service_Data = {
+    [SPRINT_NOTES_SECTIONS_LIST[0].KEY]: [],
+    [SPRINT_NOTES_SECTIONS_LIST[1].KEY]: [],
+    [HIGHLIGHTS_LIST[0].KEY]: [],
+    [HIGHLIGHTS_LIST[1].KEY]: [],
+    [RETRO_FEEDBACK_GOAL_TYPES.ADDED]: [],
+    [RETRO_FEEDBACK_GOAL_TYPES.COMPLETED]: [],
+    [RETRO_FEEDBACK_GOAL_TYPES.PENDING]: [],
+    [RETRO_SUMMARY_TYPES.TASK]: [],
+    [RETRO_SUMMARY_TYPES.MEMBER]: [],
+    [RETRO_MODAL_TYPES.TASK]: [],
+  };
+
 // this is a basic regex for comma seperated fields.TODO more optimisation is needed.
 export const COMMA_SEPARATED_STRING_PATTERN = '([(a-zA-Z])([a-zA-Z-_\'\\s]+,\\s?)*([(a-zA-Z-_\'\\s]+)([(a-zA-Z])';
 

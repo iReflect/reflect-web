@@ -21,7 +21,7 @@ import { ClickableButtonRendererComponent } from 'app/shared/ag-grid-renderers/c
 import { RatingRendererComponent } from 'app/shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
 import { BasicModalComponent } from 'app/shared/basic-modal/basic-modal.component';
 import { RetrospectiveService } from 'app/shared/services/retrospective.service';
-import { FilterDataService } from 'app/shared/services/filter-data.service';
+import { GridService } from 'app/shared/services/grid.service';
 import { UtilsService } from 'app/shared/utils/utils.service';
 import { AppConfig } from 'app/app.config';
 @Component({
@@ -61,7 +61,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         private retrospectiveService: RetrospectiveService,
         private snackBar: MatSnackBar,
         private utils: UtilsService,
-        private filterService: FilterDataService,
+        private gridService: GridService,
         public dialog: MatDialog
     ) {
     }
@@ -100,7 +100,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                     this.refreshSprintMemberSummary();
                 }
                 this.gridApi.sizeColumnsToFit();
-                this.setColumnState();
+                this.applyColumnState();
             }
             // we do this separately because we need to wait
             // at the least one tick when this tab is made active
@@ -108,11 +108,11 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                 setTimeout(() => {
                     this.refreshSprintMemberSummary();
                     this.gridApi.sizeColumnsToFit();
-                    this.setColumnState();
+                    this.applyColumnState();
                 });
             }
             if (changes.isTabActive && !changes.isTabActive.currentValue) {
-                this.filterService.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
+                this.saveFilterState();
             }
         }
     }
@@ -160,7 +160,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             onColumnVisible: (event) => this.gridApi.sizeColumnsToFit(),
             // this event is triggred when there is change in grid columns
             onDisplayedColumnsChanged: (event) => {
-                this.setColumnData(event.columnApi.getColumnState());
+                this.saveColumnState(event.columnApi.getColumnState());
             },
         };
         if (AppConfig.settings.useAgGridEnterprise) {
@@ -186,10 +186,10 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             .subscribe(() => {
                 if (this.autoRefreshCurrentState && this.isTabActive) {
                     this.refreshSprintMemberSummary(true);
-                    this.setColumnState();
+                    this.applyColumnState();
                 }
             });
-        this.setColumnState();
+        this.applyColumnState();
     }
 
     onCellEditingStarted() {
@@ -214,7 +214,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     }
 
     getSprintMemberSummary(isRefresh = false, isAutoRefresh = false) {
-        this.filterService.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
+        this.saveFilterState();
         return this.retrospectiveService.getSprintMemberSummary(this.retrospectiveID, this.sprintID, isAutoRefresh)
             .takeUntil(this.destroy$)
             .do(
@@ -339,6 +339,8 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         let deleteButtonColumnDef: any = {};
         if (isSprintEditable) {
             deleteButtonColumnDef = {
+                colId: 'delete',
+                headerClass: 'custom-ag-grid-header',
                 cellRenderer: 'deleteButtonRenderer',
                 cellRendererParams: {
                     useIcon: true,
@@ -350,6 +352,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                 suppressMenu: true,
                 suppressSorting: true,
                 suppressFilter: true,
+                pinned: 'right'
             };
         }
         const columnDefs = [
@@ -546,28 +549,32 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         if (this.gridApi) {
             this.gridApi.setFilterModel(null);
             this.gridApi.onFilterChanged();
-            this.filterService.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
+            this.saveFilterState();
         }
     }
+    // TO save the states of column filters
+    saveFilterState() {
+        this.gridService.saveFilterState(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
 
+    }
     // restore the state of column filters
     restoreFilterData() {
-        this.gridApi.setFilterModel(this.filterService.getFilterData(RETRO_SUMMARY_TYPES.MEMBER));
+        this.gridApi.setFilterModel(this.gridService.getFilterState(RETRO_SUMMARY_TYPES.MEMBER));
     }
     // To save the current state of columns in angular scope
-    setColumnData(columnData) {
+    saveColumnState(columnState) {
         if (this.setColumnflag && this.isTabActive) {
-            this.filterService.setColumnData(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER, columnData);
+            this.gridService.saveColumnState(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER, columnState);
+            // this.columnApi.setColumnPinned("delete", "right");
         }
-        if (!this.setColumnflag) {
-            this.setColumnflag = true;
-        }
+        this.setColumnflag = true;
     }
     // To restore the saved state of columns
-    setColumnState() {
-        const columnData = this.filterService.getColumnData(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER);
-        if (columnData && columnData.length > 0) {
-            this.columnApi.setColumnState(columnData);
+    applyColumnState() {
+        const columnState = this.gridService.getColumnState(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER);
+        if (columnState && columnState.length > 0) {
+            this.columnApi.setColumnState(columnState);
+            this.columnApi.setColumnPinned('delete', 'right');
         }
     }
 }

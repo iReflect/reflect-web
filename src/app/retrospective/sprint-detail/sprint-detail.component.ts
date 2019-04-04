@@ -17,7 +17,7 @@ import {
 } from '@constants/app-constants';
 import { BasicModalComponent } from 'app/shared/basic-modal/basic-modal.component';
 import { RetrospectiveService } from 'app/shared/services/retrospective.service';
-import { FilterDataService } from 'app/shared/services/filter-data.service';
+import { GridService } from 'app/shared/services/grid.service';
 import { UtilsService } from 'app/shared/utils/utils.service';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -61,7 +61,7 @@ export class SprintDetailComponent implements OnInit, OnDestroy {
         private snackBar: MatSnackBar,
         private router: Router,
         private utils: UtilsService,
-        private filters: FilterDataService,
+        private gridService: GridService,
         private activatedRoute: ActivatedRoute,
         public dialog: MatDialog,
         private changeDetectorRefs: ChangeDetectorRef
@@ -102,7 +102,7 @@ export class SprintDetailComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.filters.clearFilterData();
+        this.gridService.clearFilterState();
         this.destroy$.next(true);
         this.destroy$.complete();
     }

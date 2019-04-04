@@ -28,7 +28,7 @@ import * as _ from 'lodash';
 import { SelectCellEditorComponent } from 'app/shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
 import { RatingRendererComponent } from 'app/shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
 import { AppConfig } from 'app/app.config';
-import { FilterDataService } from 'app/shared/services/filter-data.service';
+import { GridService } from 'app/shared/services/grid.service';
 @Component({
     selector: 'app-sprint-task-summary',
     templateUrl: './sprint-task-summary.component.html',
@@ -68,7 +68,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         private snackBar: MatSnackBar,
         public dialog: MatDialog,
         private retrospectiveService: RetrospectiveService,
-        private filterService: FilterDataService,
+        private gridService: GridService,
         private utils: UtilsService
     ) {
     }
@@ -96,7 +96,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             this.columnDefs = this.createColumnDefs(changes.sprintStatus.currentValue, this.isSprintEditable);
             if (this.gridApi) {
                 this.gridApi.setColumnDefs(this.columnDefs);
-                this.setColumnState();
+                this.applyColumnState();
             }
         }
         if (this.gridApi) {
@@ -109,7 +109,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     this.refreshSprintTaskSummary();
                 }
                 this.gridApi.sizeColumnsToFit();
-                this.setColumnState();
+                this.applyColumnState();
 
             }
             // we do this separately because we need to wait
@@ -117,12 +117,12 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             if (changes.isTabActive && changes.isTabActive.currentValue) {
                 setTimeout(() => {
                     this.refreshSprintTaskSummary();
-                    this.setColumnState();
+                    this.applyColumnState();
                     this.gridApi.sizeColumnsToFit();
                 });
             }
             if (changes.isTabActive && !changes.isTabActive.currentValue) {
-                this.filterService.setFilterData(RETRO_SUMMARY_TYPES.TASK, this.gridApi.getFilterModel());
+                this.saveFilterState();
             }
         }
     }
@@ -168,7 +168,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             onColumnVisible: (event) => this.gridApi.sizeColumnsToFit(),
             // this event is triggred when there is change in grid columns
             onDisplayedColumnsChanged: (event) => {
-                this.setColumnData(event.columnApi.getColumnState());
+                this.saveColumnState(event.columnApi.getColumnState());
             },
         };
         if (AppConfig.settings.useAgGridEnterprise) {
@@ -194,10 +194,10 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             .subscribe(() => {
                 if (this.isTabActive && this.autoRefreshCurrentState) {
                     this.refreshSprintTaskSummary(true);
-                    this.setColumnState();
+                    this.applyColumnState();
                 }
             });
-        this.setColumnState();
+        this.applyColumnState();
     }
 
     refreshSprintTaskSummary(isAutoRefresh = false) {
@@ -214,7 +214,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     }
 
     getSprintTaskSummary(isRefresh = false, isAutoRefresh = false) {
-        this.filterService.setFilterData(RETRO_SUMMARY_TYPES.TASK, this.gridApi.getFilterModel());
+        this.saveFilterState();
         return this.retrospectiveService.getSprintTaskSummary(this.retrospectiveID, this.sprintID, isAutoRefresh)
             .takeUntil(this.destroy$)
             .do(
@@ -644,28 +644,30 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         if (this.gridApi) {
             this.gridApi.setFilterModel(null);
             this.gridApi.onFilterChanged();
-            this.filterService.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
+            this.saveFilterState();
         }
     }
-
+    // TO save the states of column filters
+    saveFilterState() {
+        this.gridService.saveFilterState(RETRO_SUMMARY_TYPES.TASK, this.gridApi.getFilterModel());
+    }
     // restore the state column filters
     restoreFilterData() {
-        this.gridApi.setFilterModel(this.filterService.getFilterData(RETRO_SUMMARY_TYPES.TASK));
+        this.gridApi.setFilterModel(this.gridService.getFilterState(RETRO_SUMMARY_TYPES.TASK));
     }
     // To save the current state of columns in angular scope
-    setColumnData(columnData: any) {
+    saveColumnState(columnState: any) {
         if (this.setColumnflag && this.isTabActive) {
-            this.filterService.setColumnData(this.retrospectiveID, RETRO_SUMMARY_TYPES.TASK, columnData);
+            this.gridService.saveColumnState(this.retrospectiveID, RETRO_SUMMARY_TYPES.TASK, columnState);
         }
-        if (!this.setColumnflag) {
-            this.setColumnflag = true;
-        }
+        this.setColumnflag = true;
     }
     // To restore the saved state of columns
-    setColumnState() {
-        const columnData = this.filterService.getColumnData(this.retrospectiveID, RETRO_SUMMARY_TYPES.TASK);
-        if (columnData && columnData.length > 0) {
-            this.columnApi.setColumnState(columnData);
+    applyColumnState() {
+        const columnState = this.gridService.getColumnState(this.retrospectiveID, RETRO_SUMMARY_TYPES.TASK);
+        if (columnState && columnState.length > 0) {
+            this.columnApi.setColumnState(columnState);
         }
+
     }
 }
