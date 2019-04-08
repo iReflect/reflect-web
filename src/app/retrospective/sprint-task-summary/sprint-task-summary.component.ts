@@ -135,7 +135,8 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             frameworkComponents: {
                 'ratingEditor': SelectCellEditorComponent,
                 'ratingRenderer': RatingRendererComponent,
-                'clickableButtonRenderer': ClickableButtonRendererComponent
+                'clickableButtonRenderer': ClickableButtonRendererComponent,
+                'deleteButtonRenderer': ClickableButtonRendererComponent,
             },
             onCellEditingStarted: () => this.onCellEditingStarted(),
             onGridReady: event => this.onGridReady(event),
@@ -209,12 +210,12 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     if (isRefresh) {
                         this.snackBar.open(
                             API_RESPONSE_MESSAGES.issueSummaryRefreshFailure,
-                            '', {duration: SNACKBAR_DURATION});
+                            '', { duration: SNACKBAR_DURATION });
                     } else {
                         this.snackBar.open(
                             this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES
                                 .getSprintIssueSummaryError,
-                            '', {duration: SNACKBAR_DURATION});
+                            '', { duration: SNACKBAR_DURATION });
                     }
                 },
                 () => {
@@ -255,12 +256,12 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     params.node.setData(response.data);
                     this.snackBar.open(
                         API_RESPONSE_MESSAGES.issueUpdated,
-                        '', {duration: SNACKBAR_DURATION});
+                        '', { duration: SNACKBAR_DURATION });
                 },
                 err => {
                     this.snackBar.open(
                         this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.updateSprintTaskError,
-                        '', {duration: SNACKBAR_DURATION});
+                        '', { duration: SNACKBAR_DURATION });
                     this.revertCellValue(params);
                 }
             );
@@ -269,7 +270,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     revertCellValue(params) {
         const rowData = params.data;
         rowData[params.colDef.field] = params.oldValue;
-        this.gridApi.updateRowData({update: [rowData]});
+        this.gridApi.updateRowData({ update: [rowData] });
     }
 
     private createColumnDefs(sprintStatus, isSprintEditable) {
@@ -285,7 +286,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                         return {
                             useIcon: true,
                             color: 'primary',
-                            icon: (params.data.DoneAt || this.doneFlag ) ? 'check_box' : 'check_box_outline_blank',
+                            icon: (params.data.DoneAt || this.doneFlag) ? 'check_box' : 'check_box_outline_blank',
                             onClick: this.markDoneUnDone.bind(this),
                         };
                     },
@@ -296,6 +297,24 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     comparator: (valueA, valueB, nodeA, nodeB, isInverted) => {
                         return !isInverted;
                     }
+                }
+            ];
+        }
+        let deleteButtonColumnDef = [];
+        if (isSprintEditable) {
+            deleteButtonColumnDef = [
+                {
+                    cellRenderer: 'deleteButtonRenderer',
+                    cellRendererParams: {
+                        useIcon: true,
+                        icon: 'delete',
+                        onClick: this.deleteTask.bind(this)
+                    },
+                    minWidth: 100,
+                    cellClass: 'delete-column',
+                    suppressMenu: true,
+                    suppressSorting: true,
+                    suppressFilter: true,
                 }
             ];
         }
@@ -539,11 +558,40 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     },
                 },
             },
+            ...deleteButtonColumnDef,
         ];
     }
 
     getDisplayedRowCount() {
         return (this.gridApi && this.gridApi.getDisplayedRowCount()) || 0;
+    }
+
+    deleteTask(params: any) {
+        const task = params.data;
+        const dialogRef = this.dialog.open(BasicModalComponent, {
+            data: {
+                content: 'Are you sure you want to delete ' + (task.Key) + ' task?',
+                confirmBtn: 'Yes',
+                cancelBtn: 'Cancel'
+            },
+            disableClose: true
+        });
+        dialogRef.afterClosed().takeUntil(this.destroy$).subscribe(result => {
+            if (result) {
+                const index: number = params.node.rowIndex;
+                this.gridApi.updateRowData({ remove: [task] });
+                this.retrospectiveService.deleteSprintTask(this.retrospectiveID, this.sprintID, task.ID)
+                .takeUntil(this.destroy$)
+                .subscribe(() => {},
+                    err => {
+                        this.gridApi.updateRowData({ add: [task], addIndex: index });
+                        this.snackBar.open(
+                            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintTaskDeletedError,
+                            '', { duration: SNACKBAR_DURATION });
+                    }
+                );
+            }
+        });
     }
 
     markDoneUnDone(params) {
@@ -565,7 +613,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     sprintTaskSummaryData.DoneAt = null;
                     params.node.setData(sprintTaskSummaryData);
                     // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
-                    params.refreshCell({suppressFlash: false, newData: false, forceRefresh: true});
+                    params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
                     this.retrospectiveService.markSprintTaskUnDone(this.retrospectiveID, this.sprintID, sprintTaskSummaryData.ID)
                         .takeUntil(this.destroy$)
                         .subscribe(
@@ -573,18 +621,18 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                                 const sprintTaskSummary = response.data;
                                 params.node.setData(sprintTaskSummary);
                                 // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
-                                params.refreshCell({suppressFlash: false, newData: false, forceRefresh: true});
+                                params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
                                 this.snackBar.open(API_RESPONSE_MESSAGES.getSprintIssueMarkedUndoneSuccess,
-                                    '', {duration: SNACKBAR_DURATION});
+                                    '', { duration: SNACKBAR_DURATION });
                                 this.refreshSprintDetails.emit();
                             },
                             err => {
                                 sprintTaskSummaryData.DoneAt = currentDoneAt;
                                 params.node.setData(sprintTaskSummaryData);
                                 // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
-                                params.refreshCell({suppressFlash: false, newData: false, forceRefresh: true});
+                                params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
                                 this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.error,
-                                    '', {duration: SNACKBAR_DURATION});
+                                    '', { duration: SNACKBAR_DURATION });
                             }
                         );
                 }
@@ -602,7 +650,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                         this.doneFlag = false;
                         // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
                         params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
-                        this.snackBar.open(API_RESPONSE_MESSAGES.getSprintIssueMarkedDoneSuccess, '', {duration: SNACKBAR_DURATION});
+                        this.snackBar.open(API_RESPONSE_MESSAGES.getSprintIssueMarkedDoneSuccess, '', { duration: SNACKBAR_DURATION });
                         this.refreshSprintDetails.emit();
                     },
                     err => {
@@ -612,7 +660,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                         // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
                         params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
                         this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.error,
-                            '', {duration: SNACKBAR_DURATION});
+                            '', { duration: SNACKBAR_DURATION });
                     }
                 );
         }

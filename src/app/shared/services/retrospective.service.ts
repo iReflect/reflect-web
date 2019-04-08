@@ -317,6 +317,17 @@ export class RetrospectiveService {
             .customPATCH(updatedHighlightData);
     }
 
+    deleteSprintHighlight(retrospectiveID, sprintID, sprintHighlightID): Observable<any> {
+        return this.restangularWithLoader
+            .one(
+                API_URLS.sprintHighlight
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+                    .replace(':highlightID', sprintHighlightID)
+            )
+            .remove();
+    }
+
     getSprintGoals(retrospectiveID, sprintID, goalType, isAutoRefresh = false): Observable<any> {
         return this.getRestAngularService(isAutoRefresh)
             .one(
@@ -373,6 +384,17 @@ export class RetrospectiveService {
             .customPATCH(updatedGoalData);
     }
 
+    deleteRetroGoal(retrospectiveID, sprintID, sprintGoalID): Observable<any> {
+        return this.restangularWithLoader
+            .one(
+                API_URLS.sprintGoal
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+                    .replace(':goalID', sprintGoalID)
+            )
+            .remove();
+    }
+
     getSprintNotes(retrospectiveID, sprintID, isAutoRefresh = false): Observable<any> {
         return this.getRestAngularService(isAutoRefresh)
             .one(
@@ -407,6 +429,17 @@ export class RetrospectiveService {
             .customPATCH(updatedNoteData);
     }
 
+    deleteRetroNote(retrospectiveID, sprintID, sprintNoteID): Observable<any> {
+        return this.restangularWithLoader
+            .one(
+                API_URLS.sprintNote
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+                    .replace(':noteID', sprintNoteID)
+            )
+            .remove();
+    }
+
     markSprintTaskDone(retrospectiveID, sprintID, taskID): Observable<any> {
         return this.restangularWithLoader
             .one(
@@ -422,6 +455,16 @@ export class RetrospectiveService {
         return this.restangularWithLoader
             .one(
                 API_URLS.sprintTaskMarkDone
+                    .replace(':retrospectiveID', retrospectiveID)
+                    .replace(':sprintID', sprintID)
+                    .replace(':taskID', taskID)
+            )
+            .remove();
+    }
+    deleteSprintTask(retrospectiveID, sprintID, taskID): Observable<any> {
+        return this.restangularWithLoader
+            .one(
+                API_URLS.sprintTaskDetails
                     .replace(':retrospectiveID', retrospectiveID)
                     .replace(':sprintID', sprintID)
                     .replace(':taskID', taskID)
