@@ -86,6 +86,9 @@
                             <p>
                                 Sprint Points: <b>{{ sprintBugs.TotalPointsEarned | number:decimalFormat }}</b>
                             </p>
+                            <p>
+                                Actual Hours: <b>{{  sprintBugs.ActualHours / 60 | number:decimalFormat}}</b>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -102,6 +105,9 @@
                             </p>
                             <p>
                                 Sprint Points: <b>{{ sprintFeatures.TotalPointsEarned | number:decimalFormat }}</b>
+                            </p>
+                            <p>
+                                Actual Hours: <b>{{  sprintFeatures.ActualHours / 60 | number:decimalFormat}}</b>
                             </p>
                         </div>
                         <span class="fill-remaining-space"></span>
@@ -122,6 +128,9 @@
                             </p>
                             <p>
                                 Sprint Points: <b>{{ sprintTasks.TotalPointsEarned | number:decimalFormat }}</b>
+                            </p>
+                            <p>
+                                Actual Hours: <b>{{  sprintTasks.ActualHours / 60  | number:decimalFormat}}</b>
                             </p>
                         </div>
                         <span class="fill-remaining-space"></span>
