@@ -352,7 +352,6 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                 suppressMenu: true,
                 suppressSorting: true,
                 suppressFilter: true,
-                pinned: 'right'
             };
         }
         const columnDefs = [
@@ -563,9 +562,16 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     }
     // To save the current state of columns in angular scope
     saveColumnState(columnState) {
+        if (this.setColumnflag && !this.isTabActive  && this.isSprintEditable) {
+            const prevColumnState = this.gridService.getColumnState(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER);
+            if (prevColumnState && prevColumnState.length == 9) {
+                const currentState = this.columnApi.getColumnState();
+                prevColumnState.push(currentState[0]);
+                this.gridService.saveColumnState(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER, prevColumnState);
+            }
+        }
         if (this.setColumnflag && this.isTabActive) {
             this.gridService.saveColumnState(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER, columnState);
-            // this.columnApi.setColumnPinned("delete", "right");
         }
         this.setColumnflag = true;
     }
@@ -574,7 +580,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         const columnState = this.gridService.getColumnState(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER);
         if (columnState && columnState.length > 0) {
             this.columnApi.setColumnState(columnState);
-            this.columnApi.setColumnPinned('delete', 'right');
+            // this.columnApi.setColumnPinned('delete', 'right');
         }
     }
 }

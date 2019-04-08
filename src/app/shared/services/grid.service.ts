@@ -30,6 +30,9 @@ export class GridService {
       };
       this.columnState[retroId][tableKey] = columnState;
     } else {
+      if(tableKey == RETRO_SUMMARY_TYPES.MEMBER && this.columnState[retroId][tableKey].length == 10 && columnState.length == 9) {
+         columnState.push(this.columnState[retroId][tableKey][9])
+      }
       this.columnState[retroId][tableKey] = columnState;
     }
   }
