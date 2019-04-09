@@ -86,7 +86,7 @@
                             <p>
                                 Sprint Points: <b>{{ sprintBugs.TotalPointsEarned | number:decimalFormat }}</b>
                             </p>
-                            <p>
+                            <p *ngIf="sprintBugs.ActualHours">
                                 Actual Hours: <b>{{  sprintBugs.ActualHours / 60 | number:decimalFormat}}</b>
                             </p>
                         </div>
@@ -106,7 +106,7 @@
                             <p>
                                 Sprint Points: <b>{{ sprintFeatures.TotalPointsEarned | number:decimalFormat }}</b>
                             </p>
-                            <p>
+                            <p *ngIf="sprintFeatures.ActualHours">
                                 Actual Hours: <b>{{  sprintFeatures.ActualHours / 60 | number:decimalFormat}}</b>
                             </p>
                         </div>
@@ -129,7 +129,7 @@
                             <p>
                                 Sprint Points: <b>{{ sprintTasks.TotalPointsEarned | number:decimalFormat }}</b>
                             </p>
-                            <p>
+                            <p *ngIf="sprintTasks.ActualHours">
                                 Actual Hours: <b>{{  sprintTasks.ActualHours / 60  | number:decimalFormat}}</b>
                             </p>
                         </div>
