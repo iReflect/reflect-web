@@ -293,6 +293,8 @@ export const TRACKER_TICKET_STATUS_MAP = {
     DONE: 'DoneStatus',
 };
 
+export const MINUTES_TO_HOURS = 60;
+
 // this is a basic regex for comma seperated fields.TODO more optimisation is needed.
 export const COMMA_SEPARATED_STRING_PATTERN = '([(a-zA-Z])([a-zA-Z-_\'\\s]+,\\s?)*([(a-zA-Z-_\'\\s]+)([(a-zA-Z])';
 

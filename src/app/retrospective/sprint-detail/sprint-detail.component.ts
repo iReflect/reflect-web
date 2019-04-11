@@ -7,6 +7,7 @@ import {
     AUTO_REFRESH_DURATION,
     AUTO_REFRESH_KEY,
     DATE_FORMAT,
+    MINUTES_TO_HOURS,
     RESYNC_REFRESH_DURATION,
     SNACKBAR_DURATION,
     SPRINT_ACTIONS,
@@ -45,6 +46,7 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
     toggleToTriggerRefresh = false;
     dateFormat = DATE_FORMAT;
     decimalFormat = '1.0-2';
+    minutesToHours = MINUTES_TO_HOURS;
     sprintStates = SPRINT_STATES;
     sprintStatesLabel = SPRINT_STATES_LABEL;
     sprintActions = SPRINT_ACTIONS;
