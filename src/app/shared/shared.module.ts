@@ -8,6 +8,7 @@ import { ValuesPipe } from 'app/shared/pipes/values.pipe';
 import { AuthService } from 'app/shared/services/auth.service';
 import { FeedbackService } from 'app/shared/services/feedback.service';
 import { TeamFeedbackService } from 'app/shared/services/team-feedback.service';
+import { RetroDataService } from 'app/shared/services/retro-data.service';
 import { UserService } from 'app/shared/services/user.service';
 import { UserStoreService } from 'app/shared/stores/user.store.service';
 import { RestApiHelperService } from 'app/shared/utils/rest-api-helper.service';
@@ -62,6 +63,7 @@ import { OAuthCallbackService } from 'app/shared/services/o-auth-callback.servic
         UrlHelperService,
         AuthService,
         OAuthCallbackService,
+        RetroDataService,
         UserService,
         FeedbackService,
         TeamFeedbackService,

@@ -1,11 +1,12 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { RetrospectiveListDataSource } from './retrospective-list.data-source';
 import { RetrospectiveService } from 'app/shared/services/retrospective.service';
 import { Router } from '@angular/router';
 import { API_RESPONSE_MESSAGES, APP_ROUTE_URLS, SNACKBAR_DURATION } from '@constants/app-constants';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog, MatSnackBar, SHOW_ANIMATION } from '@angular/material';
 import { RetrospectiveCreateComponent } from 'app/retrospective/retrospective-create/retrospective-create.component';
 import { UtilsService } from 'app/shared/utils/utils.service';
+import { RetroDataService } from 'app/shared/services/retro-data.service';
+import { UserService } from 'app/shared/services/user.service';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 
@@ -15,12 +16,17 @@ import 'rxjs/add/operator/takeUntil';
     styleUrls: ['./retrospective-list.component.scss']
 })
 export class RetrospectiveListComponent implements OnInit, OnDestroy {
-    dataSource: RetrospectiveListDataSource;
+    myRetroDataSource: any;
+    othersRetroDataSource: any;
     displayedColumns = ['title', 'team', 'created_at', 'latest_sprint'];
+    showAll: boolean;
+    isAdmin: boolean;
     private destroy$: Subject<boolean> = new Subject<boolean>();
 
     constructor(
+        private userService: UserService,
         private retrospectiveService: RetrospectiveService,
+        private retroDataService: RetroDataService,
         private snackBar: MatSnackBar,
         public dialog: MatDialog,
         private router: Router,
@@ -30,26 +36,42 @@ export class RetrospectiveListComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+        this.userService.getCurrentUser().takeUntil(this.destroy$).subscribe(
+            response => this.isAdmin = response.data.IsAdmin
+        );
+        this.showAll = this.retroDataService.getShowAllRetroState();
         this.initializeDataSource();
     }
-
     ngOnDestroy() {
         this.destroy$.next(true);
         this.destroy$.complete();
-        this.dataSource = null;
+        this.myRetroDataSource = null;
+        this.othersRetroDataSource = null;
     }
 
     initializeDataSource() {
-        this.dataSource = new RetrospectiveListDataSource(
-            this.retrospectiveService,
-            this.showCannotGetRetrospectivesError.bind(this)
-        );
+        this.retrospectiveService.getRetrospectives()
+            .takeUntil(this.destroy$)
+            .subscribe(
+                response => {
+                    this.myRetroDataSource = response.data.MyRetrospectives;
+                    this.othersRetroDataSource = response.data.OthersRetrospectives;
+                },
+                err => {
+                    this.showCannotGetRetrospectivesError(err);
+                }
+            );
+    }
+
+    showRetrospectiveList() {
+        this.retroDataService.saveShowAllRetroState(!this.showAll);
+        this.showAll = !this.showAll;
     }
 
     showCannotGetRetrospectivesError(err) {
         this.snackBar.open(
             this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getRetrospectivesError,
-            '', {duration: SNACKBAR_DURATION});
+            '', { duration: SNACKBAR_DURATION });
     }
 
     navigateToRetrospectiveDetail(row) {
@@ -83,7 +105,7 @@ export class RetrospectiveListComponent implements OnInit, OnDestroy {
                 err => {
                     this.snackBar.open(
                         this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.noSprintsError,
-                        '', {duration: SNACKBAR_DURATION});
+                        '', { duration: SNACKBAR_DURATION });
                     this.router.navigateByUrl(APP_ROUTE_URLS.retrospectiveDashboard
                         .replace(':retrospectiveID', row.ID));
                 }
