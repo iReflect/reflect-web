@@ -80,11 +80,10 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
 
     ngOnChanges(changes: SimpleChanges): void {
         if (this.gridApi) {
-            if (changes.teamMembers || changes.data) {
+            if (changes.teamMembers) {
                 this.filterService.setFilterData(this.feedbackSubType, this.gridApi.getFilterModel());
             }
-            if (changes.sprintStatus) {
-                this.filterService.setFilterData(this.feedbackSubType, this.gridApi.getFilterModel());
+            if ((changes.teamMembers && changes.teamMembers.previousValue === undefined) || changes.sprintStatus) {
                 this.columnDefs = this.createColumnDefs(this.sprintStatus, this.teamMembers);
                 this.gridApi.setColumnDefs(this.columnDefs);
             }
@@ -310,8 +309,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
         }
     }
 
-    getTeamMemberOptions() {
-        let teamMembers = this.teamMembers;
+    getTeamMemberOptions(teamMembers) {
         teamMembers = _.map(teamMembers, (data: any) => {
             return {
                 id: _.parseInt(data.ID),
@@ -409,9 +407,10 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                         this.updateRetroFeedback(cellParams);
                     }
                 },
+
                 cellEditor: 'selectEditor',
                 cellEditorParams: {
-                    selectOptions: this.getTeamMemberOptions(),
+                    selectOptions: this.getTeamMemberOptions(teamMembers),
                 },
                 filter: 'agSetColumnFilter',
                 filterParams: {
