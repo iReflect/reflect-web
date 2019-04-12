@@ -562,25 +562,33 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     }
     // To save the current state of columns in angular scope
     saveColumnState(columnState) {
-        if (this.setColumnflag && !this.isTabActive  && this.isSprintEditable) {
-            const prevColumnState = this.gridService.getColumnState(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER);
-            if (prevColumnState && prevColumnState.length == 9) {
-                const currentState = this.columnApi.getColumnState();
-                prevColumnState.push(currentState[0]);
-                this.gridService.saveColumnState(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER, prevColumnState);
-            }
-        }
         if (this.setColumnflag && this.isTabActive) {
+            const savedColumnState = this.gridService.getColumnState(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER);
+            if (!this.isSprintEditable && savedColumnState && columnState.length < savedColumnState.length) {
+                columnState= this.addDeleteColumnState(columnState,savedColumnState);
+            }
             this.gridService.saveColumnState(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER, columnState);
         }
         this.setColumnflag = true;
     }
     // To restore the saved state of columns
     applyColumnState() {
-        const columnState = this.gridService.getColumnState(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER);
+        let columnState = this.gridService.getColumnState(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER);
         if (columnState && columnState.length > 0) {
+            const currentColumnState = this.columnApi.getColumnState()
+            if (this.isSprintEditable && columnState.length < currentColumnState.length) {
+               columnState= this.addDeleteColumnState(columnState,currentColumnState);
+            }
             this.columnApi.setColumnState(columnState);
-            // this.columnApi.setColumnPinned('delete', 'right');
         }
+    }
+    // To insert delete column at its saved state 
+    addDeleteColumnState(currentColumnState,savedColumnState) {
+        for (let i = 0; i < savedColumnState.length; i++) {
+            if (savedColumnState[i]["colId"] === 'delete') {
+                currentColumnState.splice(i, 0, savedColumnState[i]);
+            }
+        }
+        return currentColumnState;
     }
 }

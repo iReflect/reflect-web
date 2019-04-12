@@ -82,10 +82,10 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
 
     ngOnChanges(changes: SimpleChanges): void {
         if (this.gridApi) {
-            if (changes.teamMembers || changes.data) {
+            if (changes.teamMembers) {
                 this.saveFilterState();
             }
-            if (changes.sprintStatus) {
+            if ((changes.teamMembers && changes.teamMembers.previousValue === undefined) || changes.sprintStatus) {
                 this.saveFilterState();
                 this.columnDefs = this.createColumnDefs(this.sprintStatus, this.teamMembers);
                 this.gridApi.setColumnDefs(this.columnDefs);
