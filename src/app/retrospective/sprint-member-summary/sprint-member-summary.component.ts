@@ -565,7 +565,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         if (this.setColumnflag && this.isTabActive) {
             const savedColumnState = this.gridService.getColumnState(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER);
             if (!this.isSprintEditable && savedColumnState && columnState.length < savedColumnState.length) {
-                columnState= this.addDeleteColumnState(columnState,savedColumnState);
+                columnState = this.addDeleteColumnState(columnState, savedColumnState);
             }
             this.gridService.saveColumnState(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER, columnState);
         }
@@ -575,17 +575,17 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     applyColumnState() {
         let columnState = this.gridService.getColumnState(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER);
         if (columnState && columnState.length > 0) {
-            const currentColumnState = this.columnApi.getColumnState()
+            const currentColumnState = this.columnApi.getColumnState();
             if (this.isSprintEditable && columnState.length < currentColumnState.length) {
-               columnState= this.addDeleteColumnState(columnState,currentColumnState);
+                columnState = this.addDeleteColumnState(columnState, currentColumnState);
             }
             this.columnApi.setColumnState(columnState);
         }
     }
-    // To insert delete column at its saved state 
-    addDeleteColumnState(currentColumnState,savedColumnState) {
+    // To insert delete column at its saved state
+    addDeleteColumnState(currentColumnState, savedColumnState) {
         for (let i = 0; i < savedColumnState.length; i++) {
-            if (savedColumnState[i]["colId"] === 'delete') {
+            if (savedColumnState[i]['colId'] === 'delete') {
                 currentColumnState.splice(i, 0, savedColumnState[i]);
             }
         }
