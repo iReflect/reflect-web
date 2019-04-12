@@ -60,7 +60,7 @@
                 </div>
                 <br>
                 <div *ngIf="isAdmin && !showAll" class="action-buttons">
-                    <button mat-raised-button color="primary" (click)="showRetrospectiveList()">Show All
+                    <button mat-raised-button color="primary" (click)="changeRetrospectiveList()">Show All
                     </button>
                 </div>
             </div>
@@ -114,7 +114,7 @@
                     </div>
                 </div> <br>
                 <div *ngIf="isAdmin && showAll" class="action-buttons">
-                    <button mat-raised-button color="primary" (click)="showRetrospectiveList()">Show Less
+                    <button mat-raised-button color="primary" (click)="changeRetrospectiveList()">Show Less
                     </button>
                 </div>
             </div>

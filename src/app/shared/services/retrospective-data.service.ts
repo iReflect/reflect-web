@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 @Injectable()
-export class RetroDataService {
+export class RetrospectiveDataService {
     private showAllRetro = false;
 
     saveShowAllRetroState(state: boolean) {

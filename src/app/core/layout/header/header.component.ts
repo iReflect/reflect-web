@@ -2,8 +2,8 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { APP_ROUTE_URLS } from '@constants/app-constants';
 import { AuthService } from 'app/shared/services/auth.service';
+import { RetrospectiveDataService } from 'app/shared/services/retrospective-data.service';
 import { UserService } from 'app/shared/services/user.service';
-import { RetroDataService } from 'app/shared/services/retro-data.service';
 import { UserStoreService } from 'app/shared/stores/user.store.service';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
@@ -24,7 +24,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     constructor(
         private router: Router,
         private authService: AuthService,
-        private retroDataService: RetroDataService,
+        private retrospectiveDataService: RetrospectiveDataService,
         private userStoreService: UserStoreService,
         private userService: UserService
     ) {
@@ -61,7 +61,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
             this.authService.logout().takeUntil(this.destroy$).subscribe(
                 () => {
                     this.userStoreService.clearUserData();
-                    this.retroDataService.clearRetroData();
+                    this.retrospectiveDataService.clearRetroData();
                     this.logoutInProgress = false;
                     this.router.navigateByUrl(APP_ROUTE_URLS.login);
                 }

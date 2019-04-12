@@ -5,7 +5,7 @@ import { API_RESPONSE_MESSAGES, APP_ROUTE_URLS, SNACKBAR_DURATION } from '@const
 import { MatDialog, MatSnackBar, SHOW_ANIMATION } from '@angular/material';
 import { RetrospectiveCreateComponent } from 'app/retrospective/retrospective-create/retrospective-create.component';
 import { UtilsService } from 'app/shared/utils/utils.service';
-import { RetroDataService } from 'app/shared/services/retro-data.service';
+import { RetrospectiveDataService } from 'app/shared/services/retrospective-data.service';
 import { UserService } from 'app/shared/services/user.service';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
@@ -26,7 +26,7 @@ export class RetrospectiveListComponent implements OnInit, OnDestroy {
     constructor(
         private userService: UserService,
         private retrospectiveService: RetrospectiveService,
-        private retroDataService: RetroDataService,
+        private retrospectiveDataService: RetrospectiveDataService,
         private snackBar: MatSnackBar,
         public dialog: MatDialog,
         private router: Router,
@@ -39,7 +39,7 @@ export class RetrospectiveListComponent implements OnInit, OnDestroy {
         this.userService.getCurrentUser().takeUntil(this.destroy$).subscribe(
             response => this.isAdmin = response.data.IsAdmin
         );
-        this.showAll = this.retroDataService.getShowAllRetroState();
+        this.showAll = this.retrospectiveDataService.getShowAllRetroState();
         this.initializeDataSource();
     }
     ngOnDestroy() {
@@ -63,8 +63,8 @@ export class RetrospectiveListComponent implements OnInit, OnDestroy {
             );
     }
 
-    showRetrospectiveList() {
-        this.retroDataService.saveShowAllRetroState(!this.showAll);
+    changeRetrospectiveList() {
+        this.retrospectiveDataService.saveShowAllRetroState(!this.showAll);
         this.showAll = !this.showAll;
     }
 
