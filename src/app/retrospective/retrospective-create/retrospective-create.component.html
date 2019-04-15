@@ -44,7 +44,7 @@
             <div class="flex">
                 <mat-form-field>
                     <input matInput formControlName="projectName" placeholder="Specify Project Name (Comma Separated)">
-                    <mat-hint class="project-name-hint">Used by time provider</mat-hint>
+                    <mat-hint class="larger-size-hint">Used by time provider</mat-hint>
                 </mat-form-field>
             </div>
         </div>
@@ -72,8 +72,8 @@
         <div class="flex-container layout-row">
             <div class="flex">
                 <mat-form-field>
-                        <mat-hint *ngIf="disableTimeProviderField" class="project-name-hint">Choose a Task Provider and Team first</mat-hint>
-                        <mat-select formControlName="timeProviderKey" [(ngModel)]="selectedTimeField.Name" placeholder="Select a Time Provider" [disabled]="disableTimeProviderField">
+                        <mat-hint *ngIf="disableTimeProviderField" class="larger-size-hint">Choose a Task Provider and Team first</mat-hint>
+                        <mat-select formControlName="timeProviderKey" [(ngModel)]="selectedTimeProvider.Name" placeholder="Select a Time Provider" [disabled]="disableTimeProviderField">
                             <mat-option *ngFor="let timeProvider of timeProvidersList;" [value]="timeProvider.Name">
                             {{timeProvider.DisplayName}}</mat-option>
                         </mat-select>
