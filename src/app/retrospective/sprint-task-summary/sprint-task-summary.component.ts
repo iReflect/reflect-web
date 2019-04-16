@@ -6,6 +6,7 @@ import 'rxjs/add/observable/interval';
 import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/operator/finally';
 import { Observable } from 'rxjs/Observable';
+import { finalize } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
 import {
     API_RESPONSE_MESSAGES,
@@ -217,6 +218,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         this.saveFilterState();
         return this.retrospectiveService.getSprintTaskSummary(this.retrospectiveID, this.sprintID, isAutoRefresh)
             .takeUntil(this.destroy$)
+            .pipe(finalize(() => { this.restoreFilterData(); }))
             .do(
                 response => {
                     this.gridApi.setRowData(response.data.Tasks);
@@ -239,7 +241,6 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     }
                 },
                 () => {
-                    this.restoreFilterData();
                     this.autoRefreshCurrentState = this.enableRefresh;
                 }
             );

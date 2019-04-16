@@ -3,6 +3,7 @@ import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import * as _ from 'lodash';
 import { Observable } from 'rxjs/Observable';
+import { finalize } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/observable/interval';
@@ -217,6 +218,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         this.saveFilterState();
         return this.retrospectiveService.getSprintMemberSummary(this.retrospectiveID, this.sprintID, isAutoRefresh)
             .takeUntil(this.destroy$)
+            .pipe(finalize(() => { this.restoreFilterData(); }))
             .do(
                 response => {
                     const members = response.data.Members;
@@ -241,9 +243,6 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                             '', { duration: SNACKBAR_DURATION });
                     }
                 },
-                () => {
-                    this.restoreFilterData();
-                }
             );
 
     }

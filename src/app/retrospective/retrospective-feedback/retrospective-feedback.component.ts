@@ -322,8 +322,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
         }
     }
 
-    getTeamMemberOptions() {
-        let teamMembers = this.teamMembers;
+    getTeamMemberOptions(teamMembers) {
         teamMembers = _.map(teamMembers, (data: any) => {
             return {
                 id: _.parseInt(data.ID),
@@ -421,9 +420,10 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                         this.updateRetroFeedback(cellParams);
                     }
                 },
+
                 cellEditor: 'selectEditor',
                 cellEditorParams: {
-                    selectOptions: this.getTeamMemberOptions(),
+                    selectOptions: this.getTeamMemberOptions(teamMembers),
                 },
                 filter: 'agSetColumnFilter',
                 filterParams: {
