@@ -487,7 +487,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             {
                 headerName: 'My Hours',
                 headerClass: 'custom-ag-grid-header',
-                field: 'SprintActiveMemberTime',
+                field: 'SprintCurrentMemberTime',
                 minWidth: 120,
                 suppressFilter: true,
                 valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value / 60),
