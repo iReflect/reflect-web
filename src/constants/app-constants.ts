@@ -189,6 +189,18 @@ export const RESYNC_REFRESH_DURATION = 30000;
 
 export const DATE_FORMAT = 'MMMM dd, yyyy';
 
+export const RESOLUTION_STATES = {
+    DONE: 1,
+    WONT_DO: 2,
+    DUPLICATE: 3,
+    CANT_REPRODUCE: 4,
+};
+export const RESOLUTION_STATES_LABEL = {
+    [RESOLUTION_STATES.DONE]: 'Done',
+    [RESOLUTION_STATES.WONT_DO]: 'Won\'t Do',
+    [RESOLUTION_STATES.DUPLICATE]: 'Duplicate',
+    [RESOLUTION_STATES.CANT_REPRODUCE]: 'Can\'t Reproduce',
+};
 export const RATING_STATES = {
     RED: 0,
     IMPROVE: 1,

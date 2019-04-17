@@ -1,5 +1,5 @@
 import { Component, EventEmitter, HostListener, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
-import { MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog, MatSnackBar, HIDE_ANIMATION } from '@angular/material';
 import { MatDialogRef } from '@angular/material/dialog/typings/dialog-ref';
 import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
 import 'rxjs/add/observable/interval';
@@ -12,6 +12,7 @@ import {
     AUTO_REFRESH_DURATION,
     RATING_STATES,
     RATING_STATES_LABEL,
+    RESOLUTION_STATES_LABEL,
     SNACKBAR_DURATION,
     SPRINT_STATES
 } from '@constants/app-constants';
@@ -26,6 +27,7 @@ import * as _ from 'lodash';
 import { SelectCellEditorComponent } from 'app/shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
 import { RatingRendererComponent } from 'app/shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
 import { AppConfig } from 'app/app.config';
+import { ReturnStatement } from '@angular/compiler';
 @Component({
     selector: 'app-sprint-task-summary',
     templateUrl: './sprint-task-summary.component.html',
@@ -133,7 +135,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 width: 10,
             },
             frameworkComponents: {
-                'ratingEditor': SelectCellEditorComponent,
+                'selectEditor': SelectCellEditorComponent,
                 'ratingRenderer': RatingRendererComponent,
                 'clickableButtonRenderer': ClickableButtonRendererComponent
             },
@@ -209,12 +211,12 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     if (isRefresh) {
                         this.snackBar.open(
                             API_RESPONSE_MESSAGES.issueSummaryRefreshFailure,
-                            '', {duration: SNACKBAR_DURATION});
+                            '', { duration: SNACKBAR_DURATION });
                     } else {
                         this.snackBar.open(
                             this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES
                                 .getSprintIssueSummaryError,
-                            '', {duration: SNACKBAR_DURATION});
+                            '', { duration: SNACKBAR_DURATION });
                     }
                 },
                 () => {
@@ -255,12 +257,12 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     params.node.setData(response.data);
                     this.snackBar.open(
                         API_RESPONSE_MESSAGES.issueUpdated,
-                        '', {duration: SNACKBAR_DURATION});
+                        '', { duration: SNACKBAR_DURATION });
                 },
                 err => {
                     this.snackBar.open(
                         this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.updateSprintTaskError,
-                        '', {duration: SNACKBAR_DURATION});
+                        '', { duration: SNACKBAR_DURATION });
                     this.revertCellValue(params);
                 }
             );
@@ -269,7 +271,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     revertCellValue(params) {
         const rowData = params.data;
         rowData[params.colDef.field] = params.oldValue;
-        this.gridApi.updateRowData({update: [rowData]});
+        this.gridApi.updateRowData({ update: [rowData] });
     }
 
     private createColumnDefs(sprintStatus, isSprintEditable) {
@@ -280,13 +282,36 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     headerName: 'Done',
                     headerClass: 'custom-ag-grid-header task-summary-done-icon-header',
                     colId: 'markDone',
+                    tooltip: (cellParams) => {
+                        return RESOLUTION_STATES_LABEL[cellParams.data.Resolution];
+                    },
+                    editable: (params) => {
+                        return isSprintEditable && !params.data.DoneAt;
+                    },
                     cellRenderer: 'clickableButtonRenderer',
-                    cellRendererParams: (params) => {
+                    cellEditor: 'selectEditor',
+                    cellEditorParams: {
+                        selectOptions: _.map(RESOLUTION_STATES_LABEL, (value, key) => {
+                            return {
+                                id: _.parseInt(key),
+                                value: value
+                            };
+                        })
+                    },
+                    valueSetter: (cellParams) => {
+                        this.markDoneUnDone(cellParams, cellParams.newValue);
+                    }
+                    ,
+                    cellRendererParams: (cellParams) => {
                         return {
                             useIcon: true,
                             color: 'primary',
-                            icon: (params.data.DoneAt || this.doneFlag ) ? 'check_box' : 'check_box_outline_blank',
-                            onClick: this.markDoneUnDone.bind(this),
+                            icon: (cellParams.data.DoneAt || this.doneFlag) ? 'check_box' : 'check_box_outline_blank',
+                            onClick: (params) => {
+                                if (params.data.DoneAt) {
+                                    this.markDoneUnDone(params, null);
+                                }
+                            }
                         };
                     },
                     pinned: true,
@@ -435,7 +460,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 field: 'Rating',
                 minWidth: 120,
                 editable: isSprintEditable,
-                cellEditor: 'ratingEditor',
+                cellEditor: 'selectEditor',
                 cellEditorParams: {
                     selectOptions: _.map(RATING_STATES_LABEL, (value, key) => {
                         return {
@@ -546,10 +571,11 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         return (this.gridApi && this.gridApi.getDisplayedRowCount()) || 0;
     }
 
-    markDoneUnDone(params) {
+    markDoneUnDone(params, resolution) {
         const sprintTaskSummaryData = params.data;
         if (sprintTaskSummaryData.DoneAt) {
             let currentDoneAt;
+            let currentResolution;
             const dialogRef = this.dialog.open(BasicModalComponent, {
                 data: {
                     content: 'Are you sure you want to mark this issue as Undone?',
@@ -562,59 +588,61 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             dialogRef.afterClosed().takeUntil(this.destroy$).subscribe(result => {
                 if (result) {
                     currentDoneAt = sprintTaskSummaryData.DoneAt;
+                    currentResolution = sprintTaskSummaryData.Resolution;
                     sprintTaskSummaryData.DoneAt = null;
+                    sprintTaskSummaryData.Resolution = null;
                     params.node.setData(sprintTaskSummaryData);
-                    // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
-                    params.refreshCell({suppressFlash: false, newData: false, forceRefresh: true});
+                    // // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
+                    params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
                     this.retrospectiveService.markSprintTaskUnDone(this.retrospectiveID, this.sprintID, sprintTaskSummaryData.ID)
                         .takeUntil(this.destroy$)
                         .subscribe(
                             response => {
                                 const sprintTaskSummary = response.data;
                                 params.node.setData(sprintTaskSummary);
-                                // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
-                                params.refreshCell({suppressFlash: false, newData: false, forceRefresh: true});
+                                // // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
+                                params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
                                 this.snackBar.open(API_RESPONSE_MESSAGES.getSprintIssueMarkedUndoneSuccess,
-                                    '', {duration: SNACKBAR_DURATION});
+                                    '', { duration: SNACKBAR_DURATION });
                                 this.refreshSprintDetails.emit();
                             },
                             err => {
                                 sprintTaskSummaryData.DoneAt = currentDoneAt;
+                                sprintTaskSummaryData.Resolution = currentResolution;
                                 params.node.setData(sprintTaskSummaryData);
-                                // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
-                                params.refreshCell({suppressFlash: false, newData: false, forceRefresh: true});
+                                // // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
+                                params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
                                 this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.error,
-                                    '', {duration: SNACKBAR_DURATION});
+                                    '', { duration: SNACKBAR_DURATION });
                             }
                         );
                 }
             });
         } else {
-            this.doneFlag = true;
-            // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
-            params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
-            this.retrospectiveService.markSprintTaskDone(this.retrospectiveID, this.sprintID, sprintTaskSummaryData.ID)
-                .takeUntil(this.destroy$)
-                .subscribe(
-                    response => {
-                        const sprintTaskSummary = response.data;
-                        params.node.setData(sprintTaskSummary);
-                        this.doneFlag = false;
-                        // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
-                        params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
-                        this.snackBar.open(API_RESPONSE_MESSAGES.getSprintIssueMarkedDoneSuccess, '', {duration: SNACKBAR_DURATION});
-                        this.refreshSprintDetails.emit();
-                    },
-                    err => {
-                        sprintTaskSummaryData.DoneAt = null;
-                        this.doneFlag = false;
-                        params.node.setData(sprintTaskSummaryData);
-                        // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
-                        params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
-                        this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.error,
-                            '', {duration: SNACKBAR_DURATION});
-                    }
-                );
+            if (resolution) {
+                this.doneFlag = true;
+                sprintTaskSummaryData.Resolution = resolution;
+                params.node.setData(sprintTaskSummaryData);
+                this.retrospectiveService.markSprintTaskDone(this.retrospectiveID, this.sprintID, sprintTaskSummaryData.ID, resolution)
+                    .takeUntil(this.destroy$)
+                    .subscribe(
+                        response => {
+                            const sprintTaskSummary = response.data;
+                            params.node.setData(sprintTaskSummary);
+                            this.doneFlag = false;
+                            this.snackBar.open(API_RESPONSE_MESSAGES.getSprintIssueMarkedDoneSuccess, '', { duration: SNACKBAR_DURATION });
+                            this.refreshSprintDetails.emit();
+                        },
+                        err => {
+                            sprintTaskSummaryData.DoneAt = null;
+                            sprintTaskSummaryData.Resolution = null;
+                            this.doneFlag = false;
+                            params.node.setData(sprintTaskSummaryData);
+                            this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.error,
+                                '', { duration: SNACKBAR_DURATION });
+                        }
+                    );
+            }
         }
     }
 
