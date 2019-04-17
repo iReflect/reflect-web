@@ -207,12 +207,18 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
         const updatedRetroFeedbackData = {
             [params.colDef.field]: params.newValue
         };
-        if (params.colDef.field === 'Scope' && params.newValue === RETRO_FEEDBACK_SCOPE_TYPES.Team) {
-            params.data.Scope = RETRO_FEEDBACK_SCOPE_TYPES.Team;
+        if (params.colDef.field === 'Scope') {
             assigneeIDPrevValue = params.data.AssigneeID;
-            params.data.AssigneeID = null;
+            if (params.newValue === RETRO_FEEDBACK_SCOPE_TYPES.Team) {
+                params.data.Scope = RETRO_FEEDBACK_SCOPE_TYPES.Team;
+                params.data.AssigneeID = null;
+                updatedRetroFeedbackData['AssigneeID'] = 0;
+            } else {
+                params.data.Scope = RETRO_FEEDBACK_SCOPE_TYPES.Individual;
+                params.data.AssigneeID = this.teamMembers[0].ID;
+                updatedRetroFeedbackData['AssigneeID'] = this.teamMembers[0].ID;
+            }
             params.node.setData(params.data);
-            updatedRetroFeedbackData['AssigneeID'] = 0;
         }
         if (this.feedbackType === RETRO_FEEDBACK_TYPES.HIGHLIGHT) {
             this.retrospectiveService.updateSprintHighlight(this.retrospectiveID, this.sprintID, params.data.ID, updatedRetroFeedbackData)
