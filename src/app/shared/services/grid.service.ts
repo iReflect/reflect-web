@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import {
-  Retro_Grid_Service_Data,
+  RETRO_GRID_SERVICE_DATA,
   SPRINT_NOTES_SECTIONS_LIST,
   HIGHLIGHTS_LIST,
   RETRO_FEEDBACK_GOAL_TYPES,
@@ -11,7 +11,7 @@ import {
 @Injectable()
 export class GridService {
   columnState = {};
-  filterState = Retro_Grid_Service_Data;
+  filterState = RETRO_GRID_SERVICE_DATA;
   constructor() { }
 
   saveColumnState(retroId: string, tableKey: string, columnState: any) {
@@ -53,6 +53,6 @@ export class GridService {
   }
 
   clearFilterState() {
-    this.filterState = Retro_Grid_Service_Data;
+    this.filterState = RETRO_GRID_SERVICE_DATA;
   }
 }

@@ -42,8 +42,8 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     ratingStates = RATING_STATES;
     overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the Issues are loading!</span>';
     overlayNoRowsTemplate = '<span>No Issues in this sprint!</span>';
-    // To ignore column data updation in angular scope when grid is intialized
-    setColumnflag: boolean;
+    // To ignore column state updation in angular scope when grid is intialized
+    columnSavingFlag: boolean;
 
     @Input() retrospectiveID;
     @Input() sprintID;
@@ -84,7 +84,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
 
     ngOnInit(): void {
         this.columnDefs = this.createColumnDefs(this.sprintStatus, this.isSprintEditable);
-        this.setColumnflag = false;
+        this.columnSavingFlag = false;
         this.setGridOptions();
         this.autoRefreshCurrentState = this.enableRefresh;
     }
@@ -648,27 +648,56 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             this.saveFilterState();
         }
     }
-    // TO save the states of column filters
+    // TO save the column filters states in grid service
     saveFilterState() {
         this.gridService.saveFilterState(RETRO_SUMMARY_TYPES.TASK, this.gridApi.getFilterModel());
     }
-    // restore the state column filters
+    // o Trestore the state of column filters from grid service
     restoreFilterData() {
         this.gridApi.setFilterModel(this.gridService.getFilterState(RETRO_SUMMARY_TYPES.TASK));
     }
-    // To save the current state of columns in angular scope
-    saveColumnState(columnState: any) {
-        if (this.setColumnflag && this.isTabActive) {
-            this.gridService.saveColumnState(this.retrospectiveID, RETRO_SUMMARY_TYPES.TASK, columnState);
+    // To save the current column state in grid service
+    saveColumnState(currentColumnState: any) {
+        // To ignore saving of column state when first time grid is initialized
+        if (this.columnSavingFlag && this.isTabActive) {
+            // savedColumnState contains the column states saved in grid service
+            const savedColumnState = this.gridService.getColumnState(this.retrospectiveID, RETRO_SUMMARY_TYPES.TASK);
+            // If Sprint is not editable and  savedColumnState have the state of done column
+            // then to preserve done column state
+            // this will add the done column state in  currentColumnState from savedColumnState
+            if (!this.isSprintEditable && savedColumnState && currentColumnState.length < savedColumnState.length) {
+                currentColumnState = this.addDoneColumnState(currentColumnState, savedColumnState);
+            }
+            this.gridService.saveColumnState(this.retrospectiveID, RETRO_SUMMARY_TYPES.TASK, currentColumnState);
         }
-        this.setColumnflag = true;
+        this.columnSavingFlag = true;
     }
-    // To restore the saved state of columns
+    // To restore the saved state of columns from grid service
     applyColumnState() {
-        const columnState = this.gridService.getColumnState(this.retrospectiveID, RETRO_SUMMARY_TYPES.TASK);
-        if (columnState && columnState.length > 0) {
-            this.columnApi.setColumnState(columnState);
+        //  savedColumnState contains the column states saved in grid service
+        let savedColumnState = this.gridService.getColumnState(this.retrospectiveID, RETRO_SUMMARY_TYPES.TASK);
+        // To check if there is any saved column state for this table
+        // if present then apply to grid
+        if (savedColumnState && savedColumnState.length > 0) {
+            // currentColumnState contains the current states of columns in grid
+            const currentColumnState = this.columnApi.getColumnState();
+            // If Sprint is editable and  savedColumnState does not have the state of done column
+            // this will add the done column state in  savedColumnState from currentColumnState
+            if (this.isSprintEditable && savedColumnState.length < currentColumnState.length) {
+                savedColumnState = this.addDoneColumnState(savedColumnState, currentColumnState);
+            }
+            this.columnApi.setColumnState(savedColumnState);
         }
 
     }
+    // To insert done column at its saved state
+    addDoneColumnState(destinationColumnState, sourceColumnState) {
+        for (let i = 0; i < sourceColumnState.length; i++) {
+            if (sourceColumnState[i]['colId'] === 'markDone') {
+                destinationColumnState.splice(i, 0, sourceColumnState[i]);
+            }
+        }
+        return destinationColumnState;
+    }
 }
+

@@ -44,8 +44,8 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
     enableRefresh: boolean;
     autoRefreshCurrentState: boolean;
     issueDescriptionHTML: string;
-    // To ignore column data updation in angular scope when grid is initialized
-    setColumnFlag = false;
+    // To ignore column states updation in angular scope when grid is initialized
+    columnSavingFlag = false;
 
     memberIDs = [];
     ratingStates = RATING_STATES;
@@ -525,25 +525,28 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
             this.saveFilterState();
         }
     }
-    // To save the columns current state in angular scope
+    // To save the columns current state in grid service
     saveColumnState(columnState: any) {
-        if (this.setColumnFlag) {
+        // To ignore saving of column states when first time grid is initialized
+        if (this.columnSavingFlag) {
             this.gridService.saveColumnState(this.retrospectiveID, RETRO_MODAL_TYPES.TASK, columnState);
         }
-        this.setColumnFlag = true;
+        this.columnSavingFlag = true;
     }
-    // To restore the saved state of columns
+    // To restore the saved column states from grid service
     applyColumnState() {
-        const columnState = this.gridService.getColumnState(this.retrospectiveID, RETRO_MODAL_TYPES.TASK);
-        if (columnState && columnState.length > 0) {
-            this.columnApi.setColumnState(columnState);
+        const savedColumnState = this.gridService.getColumnState(this.retrospectiveID, RETRO_MODAL_TYPES.TASK);
+        // To check if there is any saved column state for this table
+        // if present then apply to grid
+        if (savedColumnState && savedColumnState.length > 0) {
+            this.columnApi.setColumnState(savedColumnState);
         }
     }
-    // TO save the states of column filters
+    // To save the states of column filters in grid service
     saveFilterState() {
         this.gridService.saveFilterState(RETRO_MODAL_TYPES.TASK, this.gridApi.getFilterModel());
     }
-    // restore the state column filters
+    // To restore the saved state of column filters from grid service
     restoreFilterState() {
         this.gridApi.setFilterModel(this.gridService.getFilterState(RETRO_MODAL_TYPES.TASK));
     }

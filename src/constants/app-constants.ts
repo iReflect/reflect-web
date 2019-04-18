@@ -302,7 +302,7 @@ export const TRACKER_TICKET_STATUS_MAP = {
     DONE: 'DoneStatus',
 };
 
-export const Retro_Grid_Service_Data = {
+export const RETRO_GRID_SERVICE_DATA = {
     [SPRINT_NOTES_SECTIONS_LIST[0].KEY]: [],
     [SPRINT_NOTES_SECTIONS_LIST[1].KEY]: [],
     [HIGHLIGHTS_LIST[0].KEY]: [],

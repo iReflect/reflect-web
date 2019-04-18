@@ -39,8 +39,8 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     ratingStates = RATING_STATES;
     overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the members are loading!</span>';
     overlayNoRowsTemplate = '<span>No Members for this sprint!</span>';
-    // To ignore column data updation in angular scope when grid is intialized
-    setColumnflag: boolean;
+    // To ignore column state updation in angular scope when grid is intialized
+    columnSavingFlag: boolean;
     @Input() retrospectiveID;
     @Input() sprintID;
     @Input() isSprintEditable: boolean;
@@ -79,7 +79,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         this.autoRefreshCurrentState = this.enableRefresh;
         this.getRetroMembers();
         this.columnDefs = this.createColumnDefs(this.isSprintEditable);
-        this.setColumnflag = false;
+        this.columnSavingFlag = false;
         this.setGridOptions();
     }
 
@@ -560,34 +560,46 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         this.gridApi.setFilterModel(this.gridService.getFilterState(RETRO_SUMMARY_TYPES.MEMBER));
     }
     // To save the current state of columns in angular scope
-    saveColumnState(columnState) {
-        if (this.setColumnflag && this.isTabActive) {
+    saveColumnState(currentColumnState) {
+        // To ignore the saving of column state when first time grid is initialised
+        if (this.columnSavingFlag && this.isTabActive) {
+            // savedColumnState contains the column states saved in grid service
             const savedColumnState = this.gridService.getColumnState(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER);
-            if (!this.isSprintEditable && savedColumnState && columnState.length < savedColumnState.length) {
-                columnState = this.addDeleteColumnState(columnState, savedColumnState);
+            // If Sprint is not editable and  savedColumnState have the state of delete column
+            // then to preserve delete column state
+            // this will add the delete column state in  currentColumnState from savedColumnState
+            if (!this.isSprintEditable && savedColumnState && currentColumnState.length < savedColumnState.length) {
+                currentColumnState = this.addDeleteColumnState(currentColumnState, savedColumnState);
             }
-            this.gridService.saveColumnState(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER, columnState);
+            this.gridService.saveColumnState(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER, currentColumnState);
         }
-        this.setColumnflag = true;
+        this.columnSavingFlag = true;
     }
     // To restore the saved state of columns
     applyColumnState() {
-        let columnState = this.gridService.getColumnState(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER);
-        if (columnState && columnState.length > 0) {
+        //  savedColumnState contains the column states saved in grid service
+        let savedColumnState = this.gridService.getColumnState(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER);
+        // To check if there is any saved column state for this table
+        // if present then apply to grid
+        if (savedColumnState && savedColumnState.length > 0) {
+            // currentColumnState contains the current states of columns in grid
             const currentColumnState = this.columnApi.getColumnState();
-            if (this.isSprintEditable && columnState.length < currentColumnState.length) {
-                columnState = this.addDeleteColumnState(columnState, currentColumnState);
+            // If Sprint is editable and  savedColumnState does not have the state of delete column
+            // this will add the delete column state in  savedColumnState from currentColumnState
+            if (this.isSprintEditable && savedColumnState.length < currentColumnState.length) {
+                savedColumnState = this.addDeleteColumnState(savedColumnState, currentColumnState);
             }
-            this.columnApi.setColumnState(columnState);
+            // To apply preserved column states to grid
+            this.columnApi.setColumnState(savedColumnState);
         }
     }
     // To insert delete column at its saved state
-    addDeleteColumnState(currentColumnState, savedColumnState) {
-        for (let i = 0; i < savedColumnState.length; i++) {
-            if (savedColumnState[i]['colId'] === 'delete') {
-                currentColumnState.splice(i, 0, savedColumnState[i]);
+    addDeleteColumnState(destinationColumnState, sourceColumnState) {
+        for (let i = 0; i < sourceColumnState.length; i++) {
+            if (sourceColumnState[i]['colId'] === 'delete') {
+                destinationColumnState.splice(i, 0, sourceColumnState[i]);
             }
         }
-        return currentColumnState;
+        return destinationColumnState;
     }
 }
