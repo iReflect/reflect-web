@@ -307,7 +307,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
         const retroFeedback = params.data;
         const dialogRef = this.dialog.open(BasicModalComponent, {
             data: {
-                content: 'Are you sure you want to delete ' + (retroFeedback.SubType) + '?',
+                content: 'Are you sure you want to delete this ?',
                 confirmBtn: 'Yes',
                 cancelBtn: 'Cancel'
             },

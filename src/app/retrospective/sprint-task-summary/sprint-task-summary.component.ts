@@ -570,7 +570,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         const task = params.data;
         const dialogRef = this.dialog.open(BasicModalComponent, {
             data: {
-                content: 'Are you sure you want to delete ' + (task.Key) + ' task?',
+                content: 'Are you sure you want to delete task ' + (task.Key) + ' ?',
                 confirmBtn: 'Yes',
                 cancelBtn: 'Cancel'
             },
