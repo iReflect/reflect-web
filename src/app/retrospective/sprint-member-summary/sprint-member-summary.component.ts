@@ -475,7 +475,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                 cellRenderer: 'ratingRenderer',
                 onCellValueChanged: (cellParams) => {
                     if ((cellParams.newValue !== cellParams.oldValue) &&
-                        (cellParams.newValue >= this.ratingStates.RED && cellParams.newValue <= this.ratingStates.NOTABLE)) {
+                        (cellParams.newValue >= this.ratingStates.CONCERN && cellParams.newValue <= this.ratingStates.NOTABLE)) {
                         this.updateSprintMember(cellParams);
                     }
                 },

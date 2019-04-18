@@ -447,7 +447,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                 },
                 onCellValueChanged: (cellParams: NewValueParams) => {
                     if ((cellParams.newValue !== cellParams.oldValue) &&
-                        (cellParams.newValue >= this.ratingStates.RED && cellParams.newValue <= this.ratingStates.NOTABLE)) {
+                        (cellParams.newValue >= this.ratingStates.CONCERN && cellParams.newValue <= this.ratingStates.NOTABLE)) {
                         this.updateSprintTaskMember(cellParams);
                     }
                 },
