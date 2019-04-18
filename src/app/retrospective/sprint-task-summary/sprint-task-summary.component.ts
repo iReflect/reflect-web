@@ -12,6 +12,7 @@ import {
     AUTO_REFRESH_DURATION,
     RATING_STATES,
     RATING_STATES_LABEL,
+    RESOLUTION_STATES,
     RESOLUTION_STATES_LABEL,
     SNACKBAR_DURATION,
     SPRINT_STATES
@@ -38,6 +39,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     dialogRef: MatDialogRef<any>;
     autoRefreshCurrentState: boolean;
     ratingStates = RATING_STATES;
+    resolutionStates = RESOLUTION_STATES
     overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the Issues are loading!</span>';
     overlayNoRowsTemplate = '<span>No Issues in this sprint!</span>';
 
@@ -299,7 +301,9 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                         })
                     },
                     valueSetter: (cellParams) => {
-                        this.markDoneUnDone(cellParams, cellParams.newValue);
+                        if (cellParams.newValue >= this.resolutionStates.DONE && cellParams.newValue <= this.resolutionStates.CANT_REPRODUCE) {
+                            this.markDoneUnDone(cellParams, cellParams.newValue);
+                        }
                     }
                     ,
                     cellRendererParams: (cellParams) => {
