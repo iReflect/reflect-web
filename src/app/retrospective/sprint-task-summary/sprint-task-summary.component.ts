@@ -116,6 +116,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 });
             }
             if (changes.isTabActive && !changes.isTabActive.currentValue) {
+                // To save the current state of column filters in grid service
                 this.filterService.setFilterData(RETRO_SUMMARY_TYPES.TASK, this.gridApi.getFilterModel());
             }
         }
@@ -202,6 +203,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     }
 
     getSprintTaskSummary(isRefresh = false, isAutoRefresh = false) {
+        // To save the current state of column filters in grid dervice
         this.filterService.setFilterData(RETRO_SUMMARY_TYPES.TASK, this.gridApi.getFilterModel());
         return this.retrospectiveService.getSprintTaskSummary(this.retrospectiveID, this.sprintID, isAutoRefresh)
             .takeUntil(this.destroy$)
@@ -636,7 +638,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         }
     }
 
-    // restore the state column filters
+    // To restore the saved state column filters from grid service
     restoreFilterData() {
         this.gridApi.setFilterModel(this.filterService.getFilterData(RETRO_SUMMARY_TYPES.TASK));
     }

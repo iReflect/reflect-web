@@ -81,6 +81,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
     ngOnChanges(changes: SimpleChanges): void {
         if (this.gridApi) {
             if (changes.teamMembers) {
+                // To save the current  filter states in grid service
                 this.filterService.setFilterData(this.feedbackSubType, this.gridApi.getFilterModel());
             }
             if ((changes.teamMembers && changes.teamMembers.previousValue === undefined) || changes.sprintStatus) {
@@ -101,8 +102,10 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                 this.resizeAgGrid();
             }
             if (changes.isTabActive && !changes.isTabActive.currentValue) {
+                // To save the current filter states in grid service
                 this.filterService.setFilterData(this.feedbackSubType, this.gridApi.getFilterModel());
             }
+            // To restore the state of column filters from grid service
             this.restoreFilterData();
         }
     }
@@ -582,7 +585,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
         event.stopPropagation();
     }
 
-    // restore the state of column filters
+    // To restore the saved state of column filters from grid service
     restoreFilterData() {
         this.gridApi.setFilterModel(this.filterService.getFilterData(this.feedbackSubType));
     }

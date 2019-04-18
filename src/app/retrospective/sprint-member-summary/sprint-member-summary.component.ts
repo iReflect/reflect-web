@@ -109,6 +109,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                 });
             }
             if (changes.isTabActive && !changes.isTabActive.currentValue) {
+                // To save the current state of column filters in grid service
                 this.filterService.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
             }
         }
@@ -205,6 +206,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     }
 
     getSprintMemberSummary(isRefresh = false, isAutoRefresh = false) {
+        // To save the current state of column filters in grid service
         this.filterService.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
         return this.retrospectiveService.getSprintMemberSummary(this.retrospectiveID, this.sprintID, isAutoRefresh)
             .takeUntil(this.destroy$)
@@ -539,7 +541,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         }
     }
 
-    // restore the state of column filters
+    // To restore the saved state of column filters from grid service
     restoreFilterData() {
         this.gridApi.setFilterModel(this.filterService.getFilterData(RETRO_SUMMARY_TYPES.MEMBER));
     }
