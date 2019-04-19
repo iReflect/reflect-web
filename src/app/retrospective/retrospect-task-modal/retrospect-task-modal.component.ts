@@ -193,6 +193,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
     }
 
     getSprintTaskMemberSummary(isRefresh = false, isAutoRefresh = false) {
+        // To save the current state of column filters in grid service
         this.saveFilterState();
         const getTaskMemberSummary$ = this.retrospectiveService
             .getSprintTaskMemberSummary(
