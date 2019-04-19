@@ -39,7 +39,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     dialogRef: MatDialogRef<any>;
     autoRefreshCurrentState: boolean;
     ratingStates = RATING_STATES;
-    resolutionStates = RESOLUTION_STATES
+    resolutionStates = RESOLUTION_STATES;
     overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the Issues are loading!</span>';
     overlayNoRowsTemplate = '<span>No Issues in this sprint!</span>';
 
@@ -301,7 +301,8 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                         })
                     },
                     valueSetter: (cellParams) => {
-                        if (cellParams.newValue >= this.resolutionStates.DONE && cellParams.newValue <= this.resolutionStates.CANT_REPRODUCE) {
+                        if (cellParams.newValue >= this.resolutionStates.DONE &&
+                            cellParams.newValue <= this.resolutionStates.CANT_REPRODUCE) {
                             this.markDoneUnDone(cellParams, cellParams.newValue);
                         }
                     }
@@ -639,9 +640,15 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                         },
                         err => {
                             sprintTaskSummaryData.DoneAt = null;
-                            sprintTaskSummaryData.Resolution = null;
+                            sprintTaskSummaryData.Resolution = 0;
                             this.doneFlag = false;
                             params.node.setData(sprintTaskSummaryData);
+                            // // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
+                            const cellRefreshParams = {
+                                force: true,
+                                rowNode: params.node
+                            };
+                            this.gridApi.refreshCells(cellRefreshParams);
                             this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.error,
                                 '', { duration: SNACKBAR_DURATION });
                         }
