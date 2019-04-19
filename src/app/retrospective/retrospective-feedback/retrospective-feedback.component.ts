@@ -80,13 +80,10 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
 
     ngOnChanges(changes: SimpleChanges): void {
         if (this.gridApi) {
-            if (changes.teamMembers) {
-                // To save the current  filter states in grid service
-                this.filterService.setFilterData(this.feedbackSubType, this.gridApi.getFilterModel());
-            }
             if ((changes.teamMembers && changes.teamMembers.previousValue === undefined) || changes.sprintStatus) {
                 this.columnDefs = this.createColumnDefs(this.sprintStatus, this.teamMembers);
                 this.gridApi.setColumnDefs(this.columnDefs);
+                this.restoreFilterData();
             }
             if (changes.data) {
                 const data = changes.data.currentValue || [];
@@ -101,12 +98,6 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
             if (changes.isTabActive && changes.isTabActive.currentValue) {
                 this.resizeAgGrid();
             }
-            if (changes.isTabActive && !changes.isTabActive.currentValue) {
-                // To save the current filter states in grid service
-                this.filterService.setFilterData(this.feedbackSubType, this.gridApi.getFilterModel());
-            }
-            // To restore the state of column filters from grid service
-            this.restoreFilterData();
         }
     }
 
@@ -140,6 +131,8 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
             suppressDragLeaveHidesColumns: true,
             suppressScrollOnNewData: true,
             onColumnVisible: (event) => this.gridApi.sizeColumnsToFit(),
+            onFilterChanged: (event) =>{this.filterService.setFilterData(this.feedbackSubType, this.gridApi.getFilterModel());
+            }
         };
         if (AppConfig.settings.useAgGridEnterprise) {
             this.gridOptions.enableFilter = true;

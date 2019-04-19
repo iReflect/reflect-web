@@ -3,7 +3,6 @@ import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import * as _ from 'lodash';
 import { Observable } from 'rxjs/Observable';
-import { finalize } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/observable/interval';
@@ -87,8 +86,10 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         }
         if (this.gridApi) {
             if (changes.isSprintEditable) {
+                this.filterService.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
                 this.columnDefs = this.createColumnDefs(changes.isSprintEditable.currentValue);
                 this.gridApi.setColumnDefs(this.columnDefs);
+                this.restoreFilterData();
             }
             // this if block also executes when changes.refreshOnChange toggles
             if (this.isTabActive && !changes.isTabActive) {
@@ -107,10 +108,6 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                     this.refreshSprintMemberSummary();
                     this.gridApi.sizeColumnsToFit();
                 });
-            }
-            if (changes.isTabActive && !changes.isTabActive.currentValue) {
-                // To save the current state of column filters in grid service
-                this.filterService.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
             }
         }
     }
@@ -155,7 +152,10 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             suppressDragLeaveHidesColumns: true,
             suppressScrollOnNewData: true,
             stopEditingWhenGridLosesFocus: true,
-            onColumnVisible: (event) => this.gridApi.sizeColumnsToFit()
+            onColumnVisible: (event) => this.gridApi.sizeColumnsToFit(),
+            onFilterChanged: (event) =>{
+                this.filterService.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
+            }
         };
         if (AppConfig.settings.useAgGridEnterprise) {
             this.gridOptions.enableFilter = true;
@@ -206,11 +206,8 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     }
 
     getSprintMemberSummary(isRefresh = false, isAutoRefresh = false) {
-        // To save the current state of column filters in grid service
-        this.filterService.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
         return this.retrospectiveService.getSprintMemberSummary(this.retrospectiveID, this.sprintID, isAutoRefresh)
             .takeUntil(this.destroy$)
-            .pipe(finalize(() => { this.restoreFilterData(); }))
             .do(
                 response => {
                     const members = response.data.Members;
@@ -222,6 +219,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                     if (!isRefresh && this.isTabActive) {
                         this.gridApi.sizeColumnsToFit();
                     }
+                    this.restoreFilterData()
                 },
                 err => {
                     if (isRefresh) {

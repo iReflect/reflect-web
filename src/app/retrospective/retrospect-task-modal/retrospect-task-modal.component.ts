@@ -183,8 +183,6 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
     }
 
     getSprintTaskMemberSummary(isRefresh = false, isAutoRefresh = false) {
-        // To save the current state of column filters in grid service
-        this.filterService.setFilterData(RETRO_MODAL_TYPES.TASK, this.gridApi.getFilterModel());
         const getTaskMemberSummary$ = this.retrospectiveService
             .getSprintTaskMemberSummary(
                 this.data.retrospectiveID,
@@ -226,7 +224,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                     }
                 }
             );
-        this.restoreFilterData();
+
         return getTaskMemberSummary$;
     }
 
@@ -508,12 +506,6 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
         if (this.gridApi) {
             this.gridApi.setFilterModel(null);
             this.gridApi.onFilterChanged();
-            this.filterService.setFilterData(RETRO_MODAL_TYPES.TASK, this.gridApi.getFilterModel());
         }
     }
-    // To restore the saved state of column filters from grid service
-    restoreFilterData() {
-        this.gridApi.setFilterModel(this.filterService.getFilterData(RETRO_MODAL_TYPES.TASK));
-    }
-
 }
