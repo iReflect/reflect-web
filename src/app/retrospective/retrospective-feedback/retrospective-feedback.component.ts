@@ -600,9 +600,9 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
     // To be called when there is any change in grid columns
     onDisplayedColumnsChanged(columnState: any) {
         if (this.skipColumnPreservationCounter <= 0) {
-            if( this.isTabActive){
-            // To save the current state of columns in angular scope
-            this.gridService.saveColumnState(this.retrospectiveID, this.feedbackSubType, columnState);
+            if (this.isTabActive) {
+                // To save the current state of columns in angular scope
+                this.gridService.saveColumnState(this.retrospectiveID, this.feedbackSubType, columnState);
             }
         } else {
             // To ignore the saving of column states when first time grid is
