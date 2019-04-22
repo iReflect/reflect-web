@@ -201,20 +201,14 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
 
     updateRetroFeedback(params: any) {
         let assigneeIDPrevValue: any;
-        if (params.colDef.field === 'AssigneeID' && !params.newValue) {
-            params.newValue = 0;
-        }
         const updatedRetroFeedbackData = {
             [params.colDef.field]: params.newValue
         };
         if (params.colDef.field === 'Scope') {
             assigneeIDPrevValue = params.data.AssigneeID;
             if (params.newValue === RETRO_FEEDBACK_SCOPE_TYPES.Team) {
-                params.data.Scope = RETRO_FEEDBACK_SCOPE_TYPES.Team;
                 params.data.AssigneeID = null;
-                updatedRetroFeedbackData['AssigneeID'] = 0;
             } else {
-                params.data.Scope = RETRO_FEEDBACK_SCOPE_TYPES.Individual;
                 params.data.AssigneeID = this.teamMembers[0].ID;
                 updatedRetroFeedbackData['AssigneeID'] = this.teamMembers[0].ID;
             }
@@ -232,7 +226,11 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                         this.snackBar.open(
                             this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintHighlightsUpdateError,
                             '', { duration: SNACKBAR_DURATION });
-                        this.revertCellValue(params, assigneeIDPrevValue);
+                        if (params.colDef.field === 'Scope') {
+                            this.revertCellValue(params, assigneeIDPrevValue);
+                        } else {
+                            this.revertCellValue(params);
+                        }
                     }
                 );
         } else if (this.feedbackType === RETRO_FEEDBACK_TYPES.NOTE) {
@@ -247,7 +245,11 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                         this.snackBar.open(
                             this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintNotesUpdateError,
                             '', { duration: SNACKBAR_DURATION });
-                        this.revertCellValue(params, assigneeIDPrevValue);
+                        if (params.colDef.field === 'Scope') {
+                            this.revertCellValue(params, assigneeIDPrevValue);
+                        } else {
+                            this.revertCellValue(params);
+                        }
                     }
                 );
         } else if (this.feedbackType === RETRO_FEEDBACK_TYPES.GOAL) {
@@ -262,7 +264,11 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                         this.snackBar.open(
                             this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintGoalsUpdateError,
                             '', { duration: SNACKBAR_DURATION });
-                        this.revertCellValue(params, assigneeIDPrevValue);
+                        if (params.colDef.field === 'Scope') {
+                            this.revertCellValue(params, assigneeIDPrevValue);
+                        } else {
+                            this.revertCellValue(params);
+                        }
                     }
                 );
         }
@@ -327,11 +333,11 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
         return teamMembers;
     }
 
-    revertCellValue(params, assigneeIDPrevValue) {
+    revertCellValue(params, ...assigneeIDPrevValue) {
         const rowData = params.data;
         rowData[params.colDef.field] = params.oldValue;
-        if (params.colDef.field === 'Scope' && params.newValue === RETRO_FEEDBACK_SCOPE_TYPES.Team) {
-            rowData.AssigneeID = assigneeIDPrevValue;
+        if (params.colDef.field === 'Scope') {
+            rowData.AssigneeID = assigneeIDPrevValue[0];
         }
         this.gridApi.updateRowData({ update: [rowData] });
     }
