@@ -89,6 +89,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                 this.filterService.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
                 this.columnDefs = this.createColumnDefs(changes.isSprintEditable.currentValue);
                 this.gridApi.setColumnDefs(this.columnDefs);
+                // To restore apllied filters on sprint status changes
                 this.restoreFilterData();
             }
             // this if block also executes when changes.refreshOnChange toggles
@@ -153,9 +154,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             suppressScrollOnNewData: true,
             stopEditingWhenGridLosesFocus: true,
             onColumnVisible: (event) => this.gridApi.sizeColumnsToFit(),
-            onFilterChanged: (event) =>{
-                this.filterService.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
-            }
+            onFilterChanged: (event) => this.filterService.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
         };
         if (AppConfig.settings.useAgGridEnterprise) {
             this.gridOptions.enableFilter = true;
@@ -219,7 +218,8 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                     if (!isRefresh && this.isTabActive) {
                         this.gridApi.sizeColumnsToFit();
                     }
-                    this.restoreFilterData()
+                    // To restore applied filters on recyncing the data
+                    this.restoreFilterData();
                 },
                 err => {
                     if (isRefresh) {
@@ -535,7 +535,6 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         if (this.gridApi) {
             this.gridApi.setFilterModel(null);
             this.gridApi.onFilterChanged();
-            this.filterService.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
         }
     }
 

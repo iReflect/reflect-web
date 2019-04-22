@@ -93,6 +93,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             this.columnDefs = this.createColumnDefs(changes.sprintStatus.currentValue, this.isSprintEditable);
             if (this.gridApi) {
                 this.gridApi.setColumnDefs(this.columnDefs);
+                // To restore apllied filters on sprint status changes
                 this.restoreFilterData();
             }
         }
@@ -157,9 +158,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             suppressScrollOnNewData: true,
             stopEditingWhenGridLosesFocus: true,
             onColumnVisible: (event) => this.gridApi.sizeColumnsToFit(),
-            onFilterChanged: (event) => {
-                this.filterService.setFilterData(RETRO_SUMMARY_TYPES.TASK, this.gridApi.getFilterModel());
-            }
+            onFilterChanged: (event) => this.filterService.setFilterData(RETRO_SUMMARY_TYPES.TASK, this.gridApi.getFilterModel());
         };
         if (AppConfig.settings.useAgGridEnterprise) {
             this.gridOptions.enableFilter = true;
@@ -212,6 +211,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                             this.gridApi.sizeColumnsToFit();
                         });
                     }
+                    // To restore applied filters on recyncing the data
                     this.restoreFilterData();
                 },
                 err => {

@@ -83,6 +83,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
             if ((changes.teamMembers && changes.teamMembers.previousValue === undefined) || changes.sprintStatus) {
                 this.columnDefs = this.createColumnDefs(this.sprintStatus, this.teamMembers);
                 this.gridApi.setColumnDefs(this.columnDefs);
+                // To restore apllied filters on sprint status changes
                 this.restoreFilterData();
             }
             if (changes.data) {
@@ -131,8 +132,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
             suppressDragLeaveHidesColumns: true,
             suppressScrollOnNewData: true,
             onColumnVisible: (event) => this.gridApi.sizeColumnsToFit(),
-            onFilterChanged: (event) =>{this.filterService.setFilterData(this.feedbackSubType, this.gridApi.getFilterModel());
-            }
+            onFilterChanged: (event) => this.filterService.setFilterData(this.feedbackSubType, this.gridApi.getFilterModel());
         };
         if (AppConfig.settings.useAgGridEnterprise) {
             this.gridOptions.enableFilter = true;
@@ -573,7 +573,6 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
         if (this.gridApi) {
             this.gridApi.setFilterModel(null);
             this.gridApi.onFilterChanged();
-            this.filterService.setFilterData(this.feedbackSubType, this.gridApi.getFilterModel());
         }
         event.stopPropagation();
     }
