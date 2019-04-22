@@ -6,7 +6,6 @@ import 'rxjs/add/observable/interval';
 import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/operator/finally';
 import { Observable } from 'rxjs/Observable';
-import { finalize } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
 import {
     API_RESPONSE_MESSAGES,
@@ -98,6 +97,8 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             if (this.gridApi) {
                 this.gridApi.setColumnDefs(this.columnDefs);
                 this.applyColumnState();
+                // To restore apllied filters on sprint status changes
+                this.restoreFilterState();
             }
         }
         if (this.gridApi) {
@@ -121,10 +122,6 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     this.applyColumnState();
                     this.gridApi.sizeColumnsToFit();
                 });
-            }
-            if (changes.isTabActive && !changes.isTabActive.currentValue) {
-                // To save the current state of column filters in grid service
-                this.saveFilterState();
             }
         }
     }
@@ -172,6 +169,8 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             onDisplayedColumnsChanged: (event) => {
                 this.saveColumnState(event.columnApi.getColumnState());
             },
+            // To save the current state of column filters in grid dervice
+            onFilterChanged: (event) => this.saveFilterState(),
         };
         if (AppConfig.settings.useAgGridEnterprise) {
             this.gridOptions.enableFilter = true;
@@ -216,11 +215,8 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     }
 
     getSprintTaskSummary(isRefresh = false, isAutoRefresh = false) {
-        // To save the current state of column filters in grid dervice
-        this.saveFilterState();
         return this.retrospectiveService.getSprintTaskSummary(this.retrospectiveID, this.sprintID, isAutoRefresh)
             .takeUntil(this.destroy$)
-            .pipe(finalize(() => { this.restoreFilterData(); }))
             .do(
                 response => {
                     this.gridApi.setRowData(response.data.Tasks);
@@ -229,6 +225,8 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                             this.gridApi.sizeColumnsToFit();
                         });
                     }
+                    // To restore applied filters on recyncing the data
+                    this.restoreFilterState();
                 },
                 err => {
                     if (isRefresh) {
@@ -647,15 +645,14 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         if (this.gridApi) {
             this.gridApi.setFilterModel(null);
             this.gridApi.onFilterChanged();
-            this.saveFilterState();
         }
     }
     // TO save the column filters states in grid service
     saveFilterState() {
         this.gridService.saveFilterState(RETRO_SUMMARY_TYPES.TASK, this.gridApi.getFilterModel());
     }
-    // o Trestore the state of column filters from grid service
-    restoreFilterData() {
+    // To restore the state of column filters from grid service
+    restoreFilterState() {
         this.gridApi.setFilterModel(this.gridService.getFilterState(RETRO_SUMMARY_TYPES.TASK));
     }
     // To save the current column state in grid service

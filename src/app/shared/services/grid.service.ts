@@ -53,6 +53,17 @@ export class GridService {
   }
 
   clearFilterState() {
-    this.filterState = RETRO_GRID_SERVICE_DATA;
+    this.filterState =  {
+        [RETRO_MODAL_TYPES.TASK]: [],
+        [HIGHLIGHTS_LIST[0].KEY]: [],
+        [HIGHLIGHTS_LIST[1].KEY]: [],
+        [RETRO_SUMMARY_TYPES.TASK]: [],
+        [RETRO_SUMMARY_TYPES.MEMBER]: [],
+        [RETRO_FEEDBACK_GOAL_TYPES.ADDED]: [],
+        [RETRO_FEEDBACK_GOAL_TYPES.PENDING]: [],
+        [SPRINT_NOTES_SECTIONS_LIST[0].KEY]: [],
+        [SPRINT_NOTES_SECTIONS_LIST[1].KEY]: [],
+        [RETRO_FEEDBACK_GOAL_TYPES.COMPLETED]: [],
+      };
   }
 }

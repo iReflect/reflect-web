@@ -1,3 +1,5 @@
+import { variable } from "@angular/compiler/src/output/output_ast";
+
 export const USER_AUTH_TOKEN_KEY = 'user_auth_token';
 
 export const AUTO_REFRESH_KEY = 'auto_refresh_saved_state';

@@ -35,7 +35,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
     sprintStates = SPRINT_STATES;
     goalTypes = RETRO_FEEDBACK_GOAL_TYPES;
     // To ignore column states updation in angular scope when grid is intialized
-    ignoreColumnSavingCounter: number;
+    skipColumnSavingCounter: number;
     @Input() title;
     @Input() retrospectiveID;
     @Input() sprintID;
@@ -76,20 +76,17 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
     }
     ngOnInit() {
         this.columnDefs = this.createColumnDefs(this.sprintStatus, this.teamMembers);
-        this.ignoreColumnSavingCounter = 2;
+        this.skipColumnSavingCounter = 2;
         this.setGridOptions();
     }
 
     ngOnChanges(changes: SimpleChanges): void {
         if (this.gridApi) {
-            if (changes.teamMembers) {
-                // To save the current  filter states in grid service
-                this.saveFilterState();
-            }
             if ((changes.teamMembers && changes.teamMembers.previousValue === undefined) || changes.sprintStatus) {
-                this.saveFilterState();
                 this.columnDefs = this.createColumnDefs(this.sprintStatus, this.teamMembers);
                 this.gridApi.setColumnDefs(this.columnDefs);
+                // To restore apllied filters on sprint status changes
+                this.restoreFilterState();
             }
             if (changes.data) {
                 const data = changes.data.currentValue || [];
@@ -104,12 +101,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
             if (changes.isTabActive && changes.isTabActive.currentValue) {
                 this.resizeAgGrid();
             }
-            if (changes.isTabActive && !changes.isTabActive.currentValue) {
-                // To save the current filter states in grid service
-                this.saveFilterState();
-            }
             this.applyColumnState();
-            this.restoreFilterState();
         }
     }
     ngOnDestroy() {
@@ -149,6 +141,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
             onDisplayedColumnsChanged: (event) => {
                 this.onDisplayedColumnsChanged(event.columnApi.getColumnState());
             },
+            onFilterChanged: (event) => this.saveFilterState(),
         };
         if (AppConfig.settings.useAgGridEnterprise) {
             this.gridOptions.enableFilter = true;
@@ -592,7 +585,6 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
         if (this.gridApi) {
             this.gridApi.setFilterModel(null);
             this.gridApi.onFilterChanged();
-            this.saveFilterState();
         }
         event.stopPropagation();
     }
@@ -608,15 +600,15 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
 
     // To be called when there is any change in grid columns
     onDisplayedColumnsChanged(columnState: any) {
-        if (this.ignoreColumnSavingCounter <= 0 && this.isTabActive) {
+        if (this.skipColumnSavingCounter <= 0 && this.isTabActive) {
             // To save the current state of columns in angular scope
             this.gridService.saveColumnState(this.retrospectiveID, this.feedbackSubType, columnState);
         }
         // To ignore the saving of column states when first time grid is
         // initialized and first time data is inserted in grid
         // this runs two times to prevent overriding of column states saved in grid service
-        if (this.ignoreColumnSavingCounter > 0) {
-            this.ignoreColumnSavingCounter--;
+        if (this.skipColumnSavingCounter > 0) {
+            this.skipColumnSavingCounter--;
         }
     }
 

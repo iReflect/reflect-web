@@ -3,7 +3,6 @@ import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import * as _ from 'lodash';
 import { Observable } from 'rxjs/Observable';
-import { finalize } from 'rxjs/operators';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/observable/interval';
@@ -91,6 +90,8 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             if (changes.isSprintEditable) {
                 this.columnDefs = this.createColumnDefs(changes.isSprintEditable.currentValue);
                 this.gridApi.setColumnDefs(this.columnDefs);
+                // To restore apllied filters on sprint status changes
+                this.restoreFilterState();
             }
             // this if block also executes when changes.refreshOnChange toggles
             if (this.isTabActive && !changes.isTabActive) {
@@ -111,10 +112,6 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                     this.gridApi.sizeColumnsToFit();
                     this.applyColumnState();
                 });
-            }
-            if (changes.isTabActive && !changes.isTabActive.currentValue) {
-                  // To save the current state of column filters in grid service
-                this.saveFilterState();
             }
         }
     }
@@ -164,6 +161,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             onDisplayedColumnsChanged: (event) => {
                 this.saveColumnState(event.columnApi.getColumnState());
             },
+            onFilterChanged: (event) => this.saveFilterState(),
         };
         if (AppConfig.settings.useAgGridEnterprise) {
             this.gridOptions.enableFilter = true;
@@ -216,11 +214,8 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     }
 
     getSprintMemberSummary(isRefresh = false, isAutoRefresh = false) {
-          // To save the current state of column filters in grid service
-        this.saveFilterState();
         return this.retrospectiveService.getSprintMemberSummary(this.retrospectiveID, this.sprintID, isAutoRefresh)
             .takeUntil(this.destroy$)
-            .pipe(finalize(() => { this.restoreFilterData(); }))
             .do(
                 response => {
                     const members = response.data.Members;
@@ -232,6 +227,8 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                     if (!isRefresh && this.isTabActive) {
                         this.gridApi.sizeColumnsToFit();
                     }
+                    // To restore applied filters on recyncing the data
+                    this.restoreFilterState();
                 },
                 err => {
                     if (isRefresh) {
@@ -549,7 +546,6 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         if (this.gridApi) {
             this.gridApi.setFilterModel(null);
             this.gridApi.onFilterChanged();
-            this.saveFilterState();
         }
     }
     // TO save the states of column filters
@@ -558,7 +554,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
 
     }
     // To restore the saved state of column filters from grid service
-    restoreFilterData() {
+    restoreFilterState() {
         this.gridApi.setFilterModel(this.gridService.getFilterState(RETRO_SUMMARY_TYPES.MEMBER));
     }
     // To save the current state of columns in angular scope
