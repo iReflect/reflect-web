@@ -34,8 +34,8 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
     gridOptions: GridOptions;
     sprintStates = SPRINT_STATES;
     goalTypes = RETRO_FEEDBACK_GOAL_TYPES;
-    // To ignore column states updation in angular scope when grid is intialized
-    skipColumnSavingCounter: number;
+    // To ignore column states updation two times when grid is initialized and data is inserted in the grid
+    skipColumnPreservationCounter = 2;
     @Input() title;
     @Input() retrospectiveID;
     @Input() sprintID;
@@ -76,7 +76,6 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
     }
     ngOnInit() {
         this.columnDefs = this.createColumnDefs(this.sprintStatus, this.teamMembers);
-        this.skipColumnSavingCounter = 2;
         this.setGridOptions();
     }
 
@@ -600,15 +599,14 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
 
     // To be called when there is any change in grid columns
     onDisplayedColumnsChanged(columnState: any) {
-        if (this.skipColumnSavingCounter <= 0 && this.isTabActive) {
+        if (this.skipColumnPreservationCounter <= 0 && this.isTabActive) {
             // To save the current state of columns in angular scope
             this.gridService.saveColumnState(this.retrospectiveID, this.feedbackSubType, columnState);
-        }
-        // To ignore the saving of column states when first time grid is
-        // initialized and first time data is inserted in grid
-        // this runs two times to prevent overriding of column states saved in grid service
-        if (this.skipColumnSavingCounter > 0) {
-            this.skipColumnSavingCounter--;
+        } else {
+            // To ignore the saving of column states when first time grid is
+            // initialized and first time data is inserted in grid
+            // this runs two times to prevent overriding of column states saved in grid service
+            this.skipColumnPreservationCounter--;
         }
     }
 
