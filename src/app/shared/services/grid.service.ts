@@ -1,20 +1,21 @@
 import { Injectable } from '@angular/core';
-
+/* 
+In grid service we store states of columns and column filters for following tables
+Key Take-Aways
+Additional Things Done
+Things Well Done
+Other Highlights
+Goals added
+Goals accomplished
+Goals pending
+Sprint task summary
+Sprint member summary
+*/
 @Injectable()
 export class GridService {
   columnState = {};
   filterState: any = {};
   constructor() { }
-  // In grid service we store states of columns and column filters for following tables
-  // Key Take-Aways
-  // Additional Things Done
-  // Things Well Done
-  // Other Highlights
-  // Goals added
-  // Goals accomplished
-  // Goals pending
-  // Sprint task summary
-  // Sprint member summary
 
   saveColumnState(retroID: string, tableKey: string, columnState: any) {
     if (!this.columnState[retroID]) {
