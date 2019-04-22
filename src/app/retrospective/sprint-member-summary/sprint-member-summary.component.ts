@@ -154,7 +154,9 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             suppressScrollOnNewData: true,
             stopEditingWhenGridLosesFocus: true,
             onColumnVisible: (event) => this.gridApi.sizeColumnsToFit(),
-            onFilterChanged: (event) => this.filterService.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
+            onFilterChanged: (event) => {
+                this.filterService.setFilterData(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
+            }
         };
         if (AppConfig.settings.useAgGridEnterprise) {
             this.gridOptions.enableFilter = true;
