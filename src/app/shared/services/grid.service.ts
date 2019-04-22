@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
-/* 
-In grid service we store states of columns and column filters for following tables
-Key Take-Aways
-Additional Things Done
-Things Well Done
-Other Highlights
-Goals added
-Goals accomplished
-Goals pending
-Sprint task summary
-Sprint member summary
+/*
+In grid service we store states of columns and column filters for following tables :
+1. Key Take-Aways
+2. Additional Things Done
+3. Things Well Done
+4. Other Highlights
+5. Goals added
+6. Goals accomplished
+7. Goals pending
+8. Sprint task summary
+9. Sprint member summary
 */
 @Injectable()
 export class GridService {
