@@ -1,4 +1,3 @@
-import { variable } from "@angular/compiler/src/output/output_ast";
 
 export const USER_AUTH_TOKEN_KEY = 'user_auth_token';
 
