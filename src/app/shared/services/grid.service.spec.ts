@@ -1,15 +1,15 @@
 import { TestBed, inject } from '@angular/core/testing';
 
-import { FilterDataService } from './filter-data.service';
+import { GridService } from './grid.service';
 
 describe('FilterDataService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [FilterDataService]
+      providers: [GridService]
     });
   });
 
-  it('should be created', inject([FilterDataService], (service: FilterDataService) => {
+  it('should be created', inject([GridService], (service: GridService) => {
     expect(service).toBeTruthy();
   }));
 });
