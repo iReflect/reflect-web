@@ -39,7 +39,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the members are loading!</span>';
     overlayNoRowsTemplate = '<span>No Members for this sprint!</span>';
     // To ignore column state updation in angular scope when grid is intialized
-    columnSavingFlag: boolean;
+    columnPreservationFlag = false;
     @Input() retrospectiveID;
     @Input() sprintID;
     @Input() isSprintEditable: boolean;
@@ -78,7 +78,6 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         this.autoRefreshCurrentState = this.enableRefresh;
         this.getRetroMembers();
         this.columnDefs = this.createColumnDefs(this.isSprintEditable);
-        this.columnSavingFlag = false;
         this.setGridOptions();
     }
 
@@ -560,7 +559,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     // To save the current state of columns in angular scope
     saveColumnState(currentColumnState) {
         // To ignore the saving of column state when first time grid is initialised
-        if (this.columnSavingFlag && this.isTabActive) {
+        if (this.columnPreservationFlag && this.isTabActive) {
             // savedColumnState contains the column states saved in grid service
             const savedColumnState = this.gridService.getColumnState(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER);
             // If Sprint is not editable and  savedColumnState have the state of delete column
@@ -571,7 +570,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             }
             this.gridService.saveColumnState(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER, currentColumnState);
         }
-        this.columnSavingFlag = true;
+        this.columnPreservationFlag = true;
     }
     // To restore the saved state of columns
     applyColumnState() {
@@ -593,11 +592,11 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     }
     // To insert delete column at its saved state
     addDeleteColumnState(destinationColumnState, sourceColumnState) {
-        for (let i = 0; i < sourceColumnState.length; i++) {
-            if (sourceColumnState[i]['colId'] === 'delete') {
-                destinationColumnState.splice(i, 0, sourceColumnState[i]);
+        sourceColumnState.forEach((value, index) => {
+            if (value['colId'] === 'delete') {
+                destinationColumnState.splice(index, 0, value);
             }
-        }
+        });
         return destinationColumnState;
     }
 }

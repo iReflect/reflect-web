@@ -1,42 +1,31 @@
 import { Injectable } from '@angular/core';
 
-import {
-  RETRO_GRID_SERVICE_DATA,
-  SPRINT_NOTES_SECTIONS_LIST,
-  HIGHLIGHTS_LIST,
-  RETRO_FEEDBACK_GOAL_TYPES,
-  RETRO_MODAL_TYPES,
-  RETRO_SUMMARY_TYPES
-} from '@constants/app-constants';
 @Injectable()
 export class GridService {
   columnState = {};
-  filterState = RETRO_GRID_SERVICE_DATA;
+  filterState: any = {};
   constructor() { }
+  // In grid service we store states of columns and column filters for following tables
+  // Key Take-Aways
+  // Additional Things Done
+  // Things Well Done
+  // Other Highlights
+  // Goals added
+  // Goals accomplished
+  // Goals pending
+  // Sprint task summary
+  // Sprint member summary
 
-  saveColumnState(retroId: string, tableKey: string, columnState: any) {
-    if (!this.columnState[retroId]) {
-      this.columnState[retroId] = {
-        [RETRO_MODAL_TYPES.TASK]: [],
-        [HIGHLIGHTS_LIST[0].KEY]: [],
-        [HIGHLIGHTS_LIST[1].KEY]: [],
-        [RETRO_SUMMARY_TYPES.TASK]: [],
-        [RETRO_SUMMARY_TYPES.MEMBER]: [],
-        [RETRO_FEEDBACK_GOAL_TYPES.ADDED]: [],
-        [RETRO_FEEDBACK_GOAL_TYPES.PENDING]: [],
-        [SPRINT_NOTES_SECTIONS_LIST[0].KEY]: [],
-        [SPRINT_NOTES_SECTIONS_LIST[1].KEY]: [],
-        [RETRO_FEEDBACK_GOAL_TYPES.COMPLETED]: [],
-      };
-      this.columnState[retroId][tableKey] = columnState;
-    } else {
-      this.columnState[retroId][tableKey] = columnState;
+  saveColumnState(retroID: string, tableKey: string, columnState: any) {
+    if (!this.columnState[retroID]) {
+      this.columnState[retroID] = {};
     }
+    this.columnState[retroID][tableKey] = columnState;
   }
 
-  getColumnState(retroId: string, tableKey: string): any {
-    if (this.columnState[retroId]) {
-      return this.columnState[retroId][tableKey];
+  getColumnState(retroID: string, tableKey: string): any {
+    if (this.columnState[retroID]) {
+      return this.columnState[retroID][tableKey];
     }
   }
 
@@ -53,17 +42,6 @@ export class GridService {
   }
 
   clearFilterState() {
-    this.filterState =  {
-        [RETRO_MODAL_TYPES.TASK]: [],
-        [HIGHLIGHTS_LIST[0].KEY]: [],
-        [HIGHLIGHTS_LIST[1].KEY]: [],
-        [RETRO_SUMMARY_TYPES.TASK]: [],
-        [RETRO_SUMMARY_TYPES.MEMBER]: [],
-        [RETRO_FEEDBACK_GOAL_TYPES.ADDED]: [],
-        [RETRO_FEEDBACK_GOAL_TYPES.PENDING]: [],
-        [SPRINT_NOTES_SECTIONS_LIST[0].KEY]: [],
-        [SPRINT_NOTES_SECTIONS_LIST[1].KEY]: [],
-        [RETRO_FEEDBACK_GOAL_TYPES.COMPLETED]: [],
-      };
+    this.filterState = {};
   }
 }

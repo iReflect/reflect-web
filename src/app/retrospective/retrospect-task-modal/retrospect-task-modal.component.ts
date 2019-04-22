@@ -45,7 +45,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
     autoRefreshCurrentState: boolean;
     issueDescriptionHTML: string;
     // To ignore column states updation in angular scope when grid is initialized
-    columnSavingFlag = false;
+    columnPreservationFlag = false;
 
     memberIDs = [];
     ratingStates = RATING_STATES;
@@ -526,10 +526,10 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
     // To save the columns current state in grid service
     saveColumnState(columnState: any) {
         // To ignore saving of column states when first time grid is initialized
-        if (this.columnSavingFlag) {
+        if (this.columnPreservationFlag) {
             this.gridService.saveColumnState(this.retrospectiveID, RETRO_MODAL_TYPES.TASK, columnState);
         }
-        this.columnSavingFlag = true;
+        this.columnPreservationFlag = true;
     }
     // To restore the saved column states from grid service
     applyColumnState() {

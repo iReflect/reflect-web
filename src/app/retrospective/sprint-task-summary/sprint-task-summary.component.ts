@@ -42,7 +42,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the Issues are loading!</span>';
     overlayNoRowsTemplate = '<span>No Issues in this sprint!</span>';
     // To ignore column state updation in angular scope when grid is intialized
-    columnSavingFlag: boolean;
+    columnPreservationFlag = false;
 
     @Input() retrospectiveID;
     @Input() sprintID;
@@ -83,7 +83,6 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
 
     ngOnInit(): void {
         this.columnDefs = this.createColumnDefs(this.sprintStatus, this.isSprintEditable);
-        this.columnSavingFlag = false;
         this.setGridOptions();
         this.autoRefreshCurrentState = this.enableRefresh;
     }
@@ -658,7 +657,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     // To save the current column state in grid service
     saveColumnState(currentColumnState: any) {
         // To ignore saving of column state when first time grid is initialized
-        if (this.columnSavingFlag && this.isTabActive) {
+        if (this.columnPreservationFlag && this.isTabActive) {
             // savedColumnState contains the column states saved in grid service
             const savedColumnState = this.gridService.getColumnState(this.retrospectiveID, RETRO_SUMMARY_TYPES.TASK);
             // If Sprint is not editable and  savedColumnState have the state of done column
@@ -669,7 +668,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             }
             this.gridService.saveColumnState(this.retrospectiveID, RETRO_SUMMARY_TYPES.TASK, currentColumnState);
         }
-        this.columnSavingFlag = true;
+        this.columnPreservationFlag = true;
     }
     // To restore the saved state of columns from grid service
     applyColumnState() {
@@ -691,11 +690,11 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     }
     // To insert done column at its saved state
     addDoneColumnState(destinationColumnState, sourceColumnState) {
-        for (let i = 0; i < sourceColumnState.length; i++) {
-            if (sourceColumnState[i]['colId'] === 'markDone') {
-                destinationColumnState.splice(i, 0, sourceColumnState[i]);
+        sourceColumnState.forEach((value, index) => {
+            if (value['colId'] === 'markDone') {
+                destinationColumnState.splice(index, 0, value);
             }
-        }
+        });
         return destinationColumnState;
     }
 }
