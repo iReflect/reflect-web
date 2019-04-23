@@ -2,7 +2,7 @@
 
 .ag-grid-container {
     width: 100%;
-    height: 330px;
+    height: 40vh;
 
     ag-grid-angular {
         width: 100%;
@@ -10,9 +10,17 @@
     }
 }
 
+.retrospect-task {
+    height: 95vh;
+}
+
+.information-box {
+    overflow-y: auto;
+}
+
 .add-member {
     mat-select {
-        max-width: 200px;
+        width: 10vw;
     }
 }
 
@@ -21,7 +29,7 @@
     margin-bottom: 5px;
 
     &.show-more {
-        max-height: 90px;
+        max-height: 40px;
         overflow: hidden;
     }
 }
