@@ -335,7 +335,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                 if (this.feedbackType === RETRO_FEEDBACK_TYPES.HIGHLIGHT) {
                     this.retrospectiveService.deleteSprintHighlight(this.retrospectiveID, this.sprintID, retroFeedback.ID)
                         .takeUntil(this.destroy$)
-                        .subscribe(() => {},
+                        .subscribe(() => { },
                             err => {
                                 this.gridApi.updateRowData({ add: [retroFeedback], addIndex: index });
                                 this.snackBar.open(
@@ -346,7 +346,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                 } else if (this.feedbackType === RETRO_FEEDBACK_TYPES.NOTE) {
                     this.retrospectiveService.deleteRetroNote(this.retrospectiveID, this.sprintID, retroFeedback.ID)
                         .takeUntil(this.destroy$)
-                        .subscribe(() => {},
+                        .subscribe(() => { },
                             err => {
                                 this.gridApi.updateRowData({ add: [retroFeedback], addIndex: index });
                                 this.snackBar.open(
@@ -357,7 +357,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                 } else if (this.feedbackType === RETRO_FEEDBACK_TYPES.GOAL) {
                     this.retrospectiveService.deleteRetroGoal(this.retrospectiveID, this.sprintID, retroFeedback.ID)
                         .takeUntil(this.destroy$)
-                        .subscribe(() => {},
+                        .subscribe(() => { },
                             err => {
                                 this.gridApi.updateRowData({ add: [retroFeedback], addIndex: index });
                                 this.snackBar.open(
@@ -621,6 +621,8 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
         }
 
         const deleteButtonColumnDef = {
+            colId: 'delete',
+            headerClass: 'custom-ag-grid-header',
             cellRenderer: 'deleteButtonRenderer',
             cellRendererParams: {
                 useIcon: true,
