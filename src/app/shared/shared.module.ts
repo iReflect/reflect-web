@@ -25,6 +25,7 @@ import { SelectCellEditorComponent } from 'app/shared/ag-grid-editors/select-cel
 import { ClickableButtonRendererComponent } from 'app/shared/ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
 import { RatingRendererComponent } from 'app/shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
 import { DatePickerEditorComponent } from 'app/shared/ag-grid-editors/date-picker-editor/date-picker-editor.component';
+import { GridService } from 'app/shared/services/grid.service';
 import { UtilsService } from 'app/shared/utils/utils.service';
 import { OAuthCallbackService } from 'app/shared/services/o-auth-callback.service';
 
@@ -62,6 +63,7 @@ import { OAuthCallbackService } from 'app/shared/services/o-auth-callback.servic
     providers: [
         UrlHelperService,
         AuthService,
+        GridService,
         OAuthCallbackService,
         RetrospectiveDataService,
         UserService,

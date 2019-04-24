@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { APP_ROUTE_URLS } from '@constants/app-constants';
 import { AuthService } from 'app/shared/services/auth.service';
 import { RetrospectiveDataService } from 'app/shared/services/retrospective-data.service';
+import { GridService } from 'app/shared/services/grid.service';
 import { UserService } from 'app/shared/services/user.service';
 import { UserStoreService } from 'app/shared/stores/user.store.service';
 import { Subject } from 'rxjs/Subject';
@@ -25,6 +26,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         private router: Router,
         private authService: AuthService,
         private retrospectiveDataService: RetrospectiveDataService,
+        private gridService: GridService,
         private userStoreService: UserStoreService,
         private userService: UserService
     ) {
@@ -63,6 +65,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
                     this.userStoreService.clearUserData();
                     this.retrospectiveDataService.clearRetroData();
                     this.logoutInProgress = false;
+                    this.gridService.clearColumnState();
+                    this.gridService.clearFilterState();
                     this.router.navigateByUrl(APP_ROUTE_URLS.login);
                 }
             );
