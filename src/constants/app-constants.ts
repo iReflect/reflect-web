@@ -1,3 +1,4 @@
+
 export const USER_AUTH_TOKEN_KEY = 'user_auth_token';
 
 export const AUTO_REFRESH_KEY = 'auto_refresh_saved_state';
@@ -113,6 +114,7 @@ export const API_RESPONSE_MESSAGES = {
     getTeamListError: 'Cannot get teams list!',
     noTeamsError: 'You are not a part of any team!',
     getTeamProviderOptionsError: 'Cannot get team provider options!',
+    getTimeProviderOptionError: 'Cannot get time provider options!',
     createRetroError: 'Cannot Create Retro!',
     getRetrospectivesError: 'Cannot get Retrospectives',
     getSprintsError: 'Cannot get Sprints',
@@ -150,7 +152,11 @@ export const API_RESPONSE_MESSAGES = {
     sprintGoalsAddError: 'Cannot add a sprint goal!',
     sprintGoalsAddSuccess: 'Successfully added a sprint goal!',
     dateNullError: 'Cannot set date as null!',
-    permissionDeniedError: 'You do not have permission to view this page!'
+    permissionDeniedError: 'You do not have permission to view this page!',
+    sprintNoteDeletedError: 'Failed to delete the note!',
+    sprintHighlightDeletedError: 'Failed to delete the highlight!',
+    sprintGoalDeletedError: 'Failed to delete the goal!',
+    sprintTaskDeletedError: 'Failed to delete the task!',
 };
 
 export const QUESTION_RESPONSE_SEPARATOR = ',';
@@ -254,7 +260,16 @@ export const SPRINT_SYNC_STATES_LABEL = {
 export const RETRO_FEEDBACK_TYPES = {
     NOTE: 0,
     HIGHLIGHT: 1,
-    GOAL: 2,
+    GOAL: 2
+};
+
+export const RETRO_SUMMARY_TYPES = {
+    TASK: 'task-summary',
+    MEMBER: 'member-summary'
+};
+
+export const RETRO_MODAL_TYPES = {
+    TASK: 'task-modal'
 };
 
 export const RETRO_FEEDBACK_GOAL_TYPES = {
