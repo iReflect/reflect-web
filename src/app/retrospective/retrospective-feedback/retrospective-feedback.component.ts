@@ -2,7 +2,7 @@ import {
     Component, EventEmitter, HostListener, Input, OnChanges, OnDestroy, OnInit, Output,
     SimpleChanges
 } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
 import * as _ from 'lodash';
 
@@ -17,6 +17,7 @@ import {
 import { SelectCellEditorComponent } from 'app/shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
 import { DatePickerEditorComponent } from 'app/shared/ag-grid-editors/date-picker-editor/date-picker-editor.component';
 import { ClickableButtonRendererComponent } from 'app/shared/ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
+import { BasicModalComponent } from 'app/shared/basic-modal/basic-modal.component';
 import { GridService } from 'app/shared/services/grid.service';
 import { RetrospectiveService } from 'app/shared/services/retrospective.service';
 import { UtilsService } from 'app/shared/utils/utils.service';
@@ -71,6 +72,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
         private retrospectiveService: RetrospectiveService,
         private snackBar: MatSnackBar,
         private utils: UtilsService,
+        public dialog: MatDialog,
         private gridService: GridService,
     ) {
     }
@@ -123,6 +125,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                 'selectEditor': SelectCellEditorComponent,
                 'clickableButtonRenderer': ClickableButtonRendererComponent,
                 'datePicker': DatePickerEditorComponent,
+                'deleteButtonRenderer': ClickableButtonRendererComponent,
             },
             onCellEditingStarted: () => this.onCellEditingStarted(),
             onCellEditingStopped: () => this.onCellEditingStopped(),
@@ -314,6 +317,59 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                     );
             }
         }
+    }
+    deleteRetroFeedback(params: any) {
+        const retroFeedback = params.data;
+        const dialogRef = this.dialog.open(BasicModalComponent, {
+            data: {
+                content: 'Are you sure you want to delete this ?',
+                confirmBtn: 'Yes',
+                cancelBtn: 'Cancel'
+            },
+            disableClose: true
+        });
+        dialogRef.afterClosed().takeUntil(this.destroy$).subscribe(result => {
+            if (result) {
+                const index: number = params.node.rowIndex;
+                this.gridApi.updateRowData({ remove: [retroFeedback] });
+                if (this.feedbackType === RETRO_FEEDBACK_TYPES.HIGHLIGHT) {
+                    this.retrospectiveService.deleteSprintHighlight(this.retrospectiveID, this.sprintID, retroFeedback.ID)
+                        .takeUntil(this.destroy$)
+                        .subscribe(() => { },
+                            err => {
+                                this.gridApi.updateRowData({ add: [retroFeedback], addIndex: index });
+                                this.snackBar.open(
+                                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintHighlightDeletedError,
+                                    '', { duration: SNACKBAR_DURATION });
+                            }
+                        );
+                } else if (this.feedbackType === RETRO_FEEDBACK_TYPES.NOTE) {
+                    this.retrospectiveService.deleteRetroNote(this.retrospectiveID, this.sprintID, retroFeedback.ID)
+                        .takeUntil(this.destroy$)
+                        .subscribe(() => { },
+                            err => {
+                                this.gridApi.updateRowData({ add: [retroFeedback], addIndex: index });
+                                this.snackBar.open(
+                                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintNoteDeletedError,
+                                    '', { duration: SNACKBAR_DURATION });
+                            }
+                        );
+                } else if (this.feedbackType === RETRO_FEEDBACK_TYPES.GOAL) {
+                    this.retrospectiveService.deleteRetroGoal(this.retrospectiveID, this.sprintID, retroFeedback.ID)
+                        .takeUntil(this.destroy$)
+                        .subscribe(() => { },
+                            err => {
+                                this.gridApi.updateRowData({ add: [retroFeedback], addIndex: index });
+                                this.snackBar.open(
+                                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintGoalDeletedError,
+                                    '', { duration: SNACKBAR_DURATION });
+                            }
+                        );
+                }
+
+            }
+        });
+
     }
 
     getTeamMemberOptions(teamMembers) {
@@ -563,6 +619,27 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                 }
             }
         }
+
+        const deleteButtonColumnDef = {
+            colId: 'delete',
+            headerClass: 'custom-ag-grid-header',
+            cellRenderer: 'deleteButtonRenderer',
+            cellRendererParams: {
+                useIcon: true,
+                icon: 'delete',
+                onClick: this.deleteRetroFeedback.bind(this)
+            },
+            minWidth: 100,
+            cellClass: 'delete-column',
+            suppressMenu: true,
+            suppressSorting: true,
+            suppressFilter: true,
+        };
+
+        if (sprintStatus === SPRINT_STATES.ACTIVE) {
+            columnDefs.push(deleteButtonColumnDef);
+        }
+
         return columnDefs;
     }
 

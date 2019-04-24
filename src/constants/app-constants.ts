@@ -152,7 +152,11 @@ export const API_RESPONSE_MESSAGES = {
     sprintGoalsAddError: 'Cannot add a sprint goal!',
     sprintGoalsAddSuccess: 'Successfully added a sprint goal!',
     dateNullError: 'Cannot set date as null!',
-    permissionDeniedError: 'You do not have permission to view this page!'
+    permissionDeniedError: 'You do not have permission to view this page!',
+    sprintNoteDeletedError: 'Failed to delete the note!',
+    sprintHighlightDeletedError: 'Failed to delete the highlight!',
+    sprintGoalDeletedError: 'Failed to delete the goal!',
+    sprintTaskDeletedError: 'Failed to delete the task!',
 };
 
 export const QUESTION_RESPONSE_SEPARATOR = ',';

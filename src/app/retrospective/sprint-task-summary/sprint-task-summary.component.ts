@@ -147,7 +147,8 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             frameworkComponents: {
                 'ratingEditor': SelectCellEditorComponent,
                 'ratingRenderer': RatingRendererComponent,
-                'clickableButtonRenderer': ClickableButtonRendererComponent
+                'clickableButtonRenderer': ClickableButtonRendererComponent,
+                'deleteButtonRenderer': ClickableButtonRendererComponent,
             },
             onCellEditingStarted: () => this.onCellEditingStarted(),
             onGridReady: event => this.onGridReady(event),
@@ -318,6 +319,26 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     comparator: (valueA, valueB, nodeA, nodeB, isInverted) => {
                         return !isInverted;
                     }
+                }
+            ];
+        }
+        let deleteButtonColumnDef = [];
+        if (isSprintEditable) {
+            deleteButtonColumnDef = [
+                {
+                    colId: 'delete',
+                    headerClass: 'custom-ag-grid-header',
+                    cellRenderer: 'deleteButtonRenderer',
+                    cellRendererParams: {
+                        useIcon: true,
+                        icon: 'delete',
+                        onClick: this.deleteTask.bind(this)
+                    },
+                    minWidth: 100,
+                    cellClass: 'delete-column',
+                    suppressMenu: true,
+                    suppressSorting: true,
+                    suppressFilter: true,
                 }
             ];
         }
@@ -561,11 +582,40 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     },
                 },
             },
+            ...deleteButtonColumnDef,
         ];
     }
 
     getDisplayedRowCount() {
         return (this.gridApi && this.gridApi.getDisplayedRowCount()) || 0;
+    }
+
+    deleteTask(params: any) {
+        const task = params.data;
+        const dialogRef = this.dialog.open(BasicModalComponent, {
+            data: {
+                content: 'Are you sure you want to delete task ' + (task.Key) + ' ?',
+                confirmBtn: 'Yes',
+                cancelBtn: 'Cancel'
+            },
+            disableClose: true
+        });
+        dialogRef.afterClosed().takeUntil(this.destroy$).subscribe(result => {
+            if (result) {
+                const index: number = params.node.rowIndex;
+                this.gridApi.updateRowData({ remove: [task] });
+                this.retrospectiveService.deleteSprintTask(this.retrospectiveID, this.sprintID, task.ID)
+                    .takeUntil(this.destroy$)
+                    .subscribe(() => { },
+                        err => {
+                            this.gridApi.updateRowData({ add: [task], addIndex: index });
+                            this.snackBar.open(
+                                this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintTaskDeletedError,
+                                '', { duration: SNACKBAR_DURATION });
+                        }
+                    );
+            }
+        });
     }
 
     markDoneUnDone(params) {
@@ -664,7 +714,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             // then to preserve done column state
             // this will add the done column state in  currentColumnState from savedColumnState
             if (!this.isSprintEditable && savedColumnState && currentColumnState.length < savedColumnState.length) {
-                currentColumnState = this.addDoneColumnState(currentColumnState, savedColumnState);
+                currentColumnState = this.addDoneAndDeleteColumnState(currentColumnState, savedColumnState);
             }
             this.gridService.saveColumnState(this.retrospectiveID, RETRO_SUMMARY_TYPES.TASK, currentColumnState);
         }
@@ -682,20 +732,20 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             // If Sprint is editable and  savedColumnState does not have the state of done column
             // this will add the done column state in  savedColumnState from currentColumnState
             if (this.isSprintEditable && savedColumnState.length < currentColumnState.length) {
-                savedColumnState = this.addDoneColumnState(savedColumnState, currentColumnState);
+                savedColumnState = this.addDoneAndDeleteColumnState(savedColumnState, currentColumnState);
             }
             this.columnApi.setColumnState(savedColumnState);
         }
 
     }
-    // To insert done column at its saved state
-    addDoneColumnState(destinationColumnState, sourceColumnState) {
+    // To insert done and delete column at its saved state
+    addDoneAndDeleteColumnState(destinationColumnState, sourceColumnState) {
         sourceColumnState.forEach((value, index) => {
-            if (value['colId'] === 'markDone') {
+            if (value['colId'] === 'markDone' || value['colId'] === 'delete') {
                 destinationColumnState.splice(index, 0, value);
             }
         });
         return destinationColumnState;
     }
-}
 
+}
