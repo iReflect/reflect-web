@@ -245,8 +245,10 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                             this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintHighlightsUpdateError,
                             '', { duration: SNACKBAR_DURATION });
                         if (params.colDef.field === 'Scope') {
+                            // To revert the change of assigneeID with change in Scope
                             this.revertCellValue(params, assigneeIDPrevValue);
                         } else {
+                            // To revert the change of only changed field
                             this.revertCellValue(params);
                         }
                     }
@@ -264,8 +266,10 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                             this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintNotesUpdateError,
                             '', { duration: SNACKBAR_DURATION });
                         if (params.colDef.field === 'Scope') {
+                            // To revert the change of assigneeID with change in Scope
                             this.revertCellValue(params, assigneeIDPrevValue);
                         } else {
+                            // To revert the change of only changed field
                             this.revertCellValue(params);
                         }
                     }
@@ -283,8 +287,10 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                             this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintGoalsUpdateError,
                             '', { duration: SNACKBAR_DURATION });
                         if (params.colDef.field === 'Scope') {
+                            // To revert the change of assigneeID with change in Scope
                             this.revertCellValue(params, assigneeIDPrevValue);
                         } else {
+                            // To revert the change of only changed field
                             this.revertCellValue(params);
                         }
                     }
@@ -404,11 +410,12 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
         return teamMembers;
     }
 
-    revertCellValue(params, ...assigneeIDPrevValue) {
+    revertCellValue(params, ...revertParams) {
         const rowData = params.data;
         rowData[params.colDef.field] = params.oldValue;
+        // To revert the value of assigneeId when Scope changes
         if (params.colDef.field === 'Scope') {
-            rowData.AssigneeID = assigneeIDPrevValue[0];
+            rowData.AssigneeID = revertParams[0];
         }
         this.gridApi.updateRowData({ update: [rowData] });
     }
