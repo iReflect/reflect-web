@@ -13,6 +13,7 @@ import {
     MEMBER_TASK_ROLES_LABEL,
     RATING_STATES,
     RATING_STATES_LABEL,
+    RETRO_MODAL_TYPES,
     SNACKBAR_DURATION,
     COMPACT_SUMMARY_MAX_LENGTH
 } from '@constants/app-constants';
@@ -20,6 +21,7 @@ import { NumericCellEditorComponent } from 'app/shared/ag-grid-editors/numeric-c
 import { SelectCellEditorComponent } from 'app/shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
 import { RatingRendererComponent } from 'app/shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
 import { RetrospectiveService } from 'app/shared/services/retrospective.service';
+import { GridService } from 'app/shared/services/grid.service';
 import { UtilsService } from 'app/shared/utils/utils.service';
 import {
     CellClassParams, IsColumnFuncParams, NewValueParams,
@@ -35,12 +37,15 @@ import { AppConfig } from 'app/app.config';
 })
 export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked {
     sprintMembers: any;
+    retrospectiveID: any;
     taskDetails: any;
     selectedMemberID: number;
     gridOptions: GridOptions;
     enableRefresh: boolean;
     autoRefreshCurrentState: boolean;
     issueDescriptionHTML: string;
+    // To ignore column states updation in angular scope when grid is initialized
+    columnPreservationFlag = false;
 
     memberIDs = [];
     ratingStates = RATING_STATES;
@@ -64,12 +69,14 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
         private retrospectiveService: RetrospectiveService,
         private snackBar: MatSnackBar,
         private utils: UtilsService,
+        private gridService: GridService,
         public dialogRef: MatDialogRef<RetrospectTaskModalComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any
     ) {
         this.enableRefresh = data.enableRefresh;
         this.autoRefreshCurrentState = data.enableRefresh;
         this.taskDetails = data.taskDetails;
+        this.retrospectiveID = data.retrospectiveID;
         this.compactSummary = this.taskDetails.Summary;
         if (this.compactSummary.length > COMPACT_SUMMARY_MAX_LENGTH) {
             this.compactSummary = this.compactSummary.slice(0, COMPACT_SUMMARY_MAX_LENGTH) + '...';
@@ -125,7 +132,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                 err => {
                     this.snackBar.open(
                         this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getSprintMembersError,
-                        '', {duration: SNACKBAR_DURATION});
+                        '', { duration: SNACKBAR_DURATION });
                 }
             );
     }
@@ -153,7 +160,11 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
             stopEditingWhenGridLosesFocus: true,
             suppressDragLeaveHidesColumns: true,
             suppressScrollOnNewData: true,
-            onColumnVisible: (event) => this.gridApi.sizeColumnsToFit()
+            onColumnVisible: (event) => this.gridApi.sizeColumnsToFit(),
+            // this event is triggered when there is change in grid columns
+            onDisplayedColumnsChanged: (event) => {
+                this.saveColumnState(event.columnApi.getColumnState());
+            },
         };
         if (AppConfig.settings.useAgGridEnterprise) {
             this.gridOptions.enableFilter = true;
@@ -175,8 +186,10 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
             .subscribe(() => {
                 if (this.autoRefreshCurrentState) {
                     this.getSprintTaskMemberSummary(true, true);
+                    this.applyColumnState();
                 }
             });
+        this.applyColumnState();
     }
 
     getSprintTaskMemberSummary(isRefresh = false, isAutoRefresh = false) {
@@ -211,17 +224,23 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                     if (isRefresh) {
                         this.snackBar.open(
                             this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.autoRefreshFailure,
-                            '', {duration: SNACKBAR_DURATION});
+                            '', { duration: SNACKBAR_DURATION });
                     } else {
                         this.snackBar.open(
                             this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES
                                 .getSprintIssueMemberSummaryError,
-                            '', {duration: SNACKBAR_DURATION});
+                            '', { duration: SNACKBAR_DURATION });
                         this.dialogRef.close();
                     }
                 }
             );
+        // To restore columns state on refresh
+        if (isRefresh) {
+            this.applyColumnState();
+        }
+
         return getTaskMemberSummary$;
+
     }
 
     refreshIssueMemberSummaryAgGrid() {
@@ -230,8 +249,8 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
         this.gridApi.setRowData(null);
         const getTaskMemberSummary$ = this.getSprintTaskMemberSummary(true);
         getTaskMemberSummary$.subscribe(
-            () => {},
-            () => {},
+            () => { },
+            () => { },
             () => this.gridApi.hideOverlay()
         );
     }
@@ -241,11 +260,11 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
         if (this.selectedMemberID === undefined) {
             this.snackBar.open(
                 API_RESPONSE_MESSAGES.memberNotSelectedError,
-                '', {duration: SNACKBAR_DURATION});
+                '', { duration: SNACKBAR_DURATION });
         } else if (this.memberIDs.indexOf(this.selectedMemberID) !== -1) {
             this.snackBar.open(
                 API_RESPONSE_MESSAGES.memberAlreadyPresent,
-                '', {duration: SNACKBAR_DURATION});
+                '', { duration: SNACKBAR_DURATION });
         } else {
             this.retrospectiveService.addTaskMember(
                 this.data.retrospectiveID, this.data.sprintID, this.taskDetails.ID, this.selectedMemberID
@@ -256,7 +275,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                 err => {
                     this.snackBar.open(
                         this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.addSprintIssueMemberError,
-                        '', {duration: SNACKBAR_DURATION});
+                        '', { duration: SNACKBAR_DURATION });
                 }
             );
         }
@@ -280,12 +299,12 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                 params.node.setData(response.data);
                 this.snackBar.open(
                     API_RESPONSE_MESSAGES.memberUpdated,
-                    '', {duration: SNACKBAR_DURATION});
+                    '', { duration: SNACKBAR_DURATION });
             },
             err => {
                 this.snackBar.open(
                     this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.updateSprintMemberError,
-                    '', {duration: SNACKBAR_DURATION});
+                    '', { duration: SNACKBAR_DURATION });
                 this.revertCellValue(params);
             }
         );
@@ -294,7 +313,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
     revertCellValue(params) {
         const rowData = params.data;
         rowData[params.colDef.field] = params.oldValue;
-        this.gridApi.updateRowData({update: [rowData]});
+        this.gridApi.updateRowData({ update: [rowData] });
         this.gridApi.refreshCells();
     }
 
@@ -307,7 +326,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
             {
                 headerName: 'Name',
                 colId: 'Name',
-                valueGetter: ({data: user}) => `${user.FirstName} ${user.LastName}`.trim(),
+                valueGetter: ({ data: user }) => `${user.FirstName} ${user.LastName}`.trim(),
                 minWidth: 160,
                 pinned: true,
                 filter: 'agSetColumnFilter',
@@ -369,12 +388,12 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                         if (newStoryPoints > this.taskDetails.Estimate) {
                             this.snackBar.open(
                                 API_RESPONSE_MESSAGES.issueStoryPointsEstimatesError,
-                                '', {duration: SNACKBAR_DURATION});
+                                '', { duration: SNACKBAR_DURATION });
                             this.revertCellValue(cellParams);
                         } else if (cellParams.newValue < 0) {
                             this.snackBar.open(
                                 API_RESPONSE_MESSAGES.issueStoryPointsNegativeError,
-                                '', {duration: SNACKBAR_DURATION});
+                                '', { duration: SNACKBAR_DURATION });
                             this.revertCellValue(cellParams);
                         } else {
                             this.updateSprintTaskMember(cellParams, (response) => {
@@ -502,6 +521,23 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
         if (this.gridApi) {
             this.gridApi.setFilterModel(null);
             this.gridApi.onFilterChanged();
+        }
+    }
+    // To save the columns current state in grid service
+    saveColumnState(columnState: any) {
+        // To ignore saving of column states when first time grid is initialized
+        if (this.columnPreservationFlag) {
+            this.gridService.saveColumnState(this.retrospectiveID, RETRO_MODAL_TYPES.TASK, columnState);
+        }
+        this.columnPreservationFlag = true;
+    }
+    // To restore the saved column states from grid service
+    applyColumnState() {
+        const savedColumnState = this.gridService.getColumnState(this.retrospectiveID, RETRO_MODAL_TYPES.TASK);
+        // To check if there is any saved column state for this table
+        // if present then apply to grid
+        if (savedColumnState && savedColumnState.length > 0) {
+            this.columnApi.setColumnState(savedColumnState);
         }
     }
 }

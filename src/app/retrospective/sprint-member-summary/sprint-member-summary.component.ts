@@ -10,9 +10,10 @@ import 'rxjs/add/operator/finally';
 import {
     API_RESPONSE_MESSAGES,
     AUTO_REFRESH_DURATION,
+    RETRO_SUMMARY_TYPES,
     RATING_STATES,
     RATING_STATES_LABEL,
-    SNACKBAR_DURATION
+    SNACKBAR_DURATION,
 } from '@constants/app-constants';
 import { NumericCellEditorComponent } from 'app/shared/ag-grid-editors/numeric-cell-editor/numeric-cell-editor.component';
 import { SelectCellEditorComponent } from 'app/shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
@@ -20,6 +21,7 @@ import { ClickableButtonRendererComponent } from 'app/shared/ag-grid-renderers/c
 import { RatingRendererComponent } from 'app/shared/ag-grid-renderers/rating-renderer/rating-renderer.component';
 import { BasicModalComponent } from 'app/shared/basic-modal/basic-modal.component';
 import { RetrospectiveService } from 'app/shared/services/retrospective.service';
+import { GridService } from 'app/shared/services/grid.service';
 import { UtilsService } from 'app/shared/utils/utils.service';
 import { AppConfig } from 'app/app.config';
 @Component({
@@ -36,7 +38,8 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     ratingStates = RATING_STATES;
     overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the members are loading!</span>';
     overlayNoRowsTemplate = '<span>No Members for this sprint!</span>';
-
+    // To ignore column state updation in angular scope when grid is intialized
+    columnPreservationFlag = false;
     @Input() retrospectiveID;
     @Input() sprintID;
     @Input() isSprintEditable: boolean;
@@ -58,6 +61,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         private retrospectiveService: RetrospectiveService,
         private snackBar: MatSnackBar,
         private utils: UtilsService,
+        private gridService: GridService,
         public dialog: MatDialog
     ) {
     }
@@ -85,6 +89,8 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             if (changes.isSprintEditable) {
                 this.columnDefs = this.createColumnDefs(changes.isSprintEditable.currentValue);
                 this.gridApi.setColumnDefs(this.columnDefs);
+                // To restore apllied filters on sprint status changes
+                this.restoreFilterState();
             }
             // this if block also executes when changes.refreshOnChange toggles
             if (this.isTabActive && !changes.isTabActive) {
@@ -95,6 +101,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                     this.refreshSprintMemberSummary();
                 }
                 this.gridApi.sizeColumnsToFit();
+                this.applyColumnState();
             }
             // we do this separately because we need to wait
             // at the least one tick when this tab is made active
@@ -102,6 +109,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                 setTimeout(() => {
                     this.refreshSprintMemberSummary();
                     this.gridApi.sizeColumnsToFit();
+                    this.applyColumnState();
                 });
             }
         }
@@ -123,7 +131,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                 err => {
                     this.snackBar.open(
                         this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getRetrospectiveMembersError,
-                        '', {duration: SNACKBAR_DURATION});
+                        '', { duration: SNACKBAR_DURATION });
                 }
             );
     }
@@ -147,7 +155,12 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             suppressDragLeaveHidesColumns: true,
             suppressScrollOnNewData: true,
             stopEditingWhenGridLosesFocus: true,
-            onColumnVisible: (event) => this.gridApi.sizeColumnsToFit()
+            onColumnVisible: (event) => this.gridApi.sizeColumnsToFit(),
+            // this event is triggred when there is change in grid columns
+            onDisplayedColumnsChanged: (event) => {
+                this.saveColumnState(event.columnApi.getColumnState());
+            },
+            onFilterChanged: (event) => this.saveFilterState(),
         };
         if (AppConfig.settings.useAgGridEnterprise) {
             this.gridOptions.enableFilter = true;
@@ -172,8 +185,10 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             .subscribe(() => {
                 if (this.autoRefreshCurrentState && this.isTabActive) {
                     this.refreshSprintMemberSummary(true);
+                    this.applyColumnState();
                 }
             });
+        this.applyColumnState();
     }
 
     onCellEditingStarted() {
@@ -211,43 +226,46 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                     if (!isRefresh && this.isTabActive) {
                         this.gridApi.sizeColumnsToFit();
                     }
+                    // To restore applied filters on recyncing the data
+                    this.restoreFilterState();
                 },
                 err => {
                     if (isRefresh) {
                         this.snackBar.open(
                             API_RESPONSE_MESSAGES.memberSummaryRefreshFailure,
-                            '', {duration: SNACKBAR_DURATION});
+                            '', { duration: SNACKBAR_DURATION });
                     } else {
                         this.snackBar.open(
                             this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES
                                 .getSprintMemberSummaryError,
-                            '', {duration: SNACKBAR_DURATION});
+                            '', { duration: SNACKBAR_DURATION });
                     }
-                }
+                },
             );
+
     }
 
     addSprintMember() {
         if (this.selectedMemberID === undefined) {
             this.snackBar.open(
                 API_RESPONSE_MESSAGES.memberNotSelectedError,
-                '', {duration: SNACKBAR_DURATION});
+                '', { duration: SNACKBAR_DURATION });
         } else if (this.memberIDs.indexOf(this.selectedMemberID) !== -1) {
             this.snackBar.open(
                 API_RESPONSE_MESSAGES.memberAlreadyPresent,
-                '', {duration: SNACKBAR_DURATION});
+                '', { duration: SNACKBAR_DURATION });
         } else {
             this.retrospectiveService.addSprintMember(this.retrospectiveID, this.sprintID, this.selectedMemberID)
                 .takeUntil(this.destroy$)
                 .subscribe(
                     response => {
-                        this.gridApi.updateRowData({add: [response.data]});
+                        this.gridApi.updateRowData({ add: [response.data] });
                         this.memberIDs.push(this.selectedMemberID);
                     },
                     err => {
                         this.snackBar.open(
                             this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.addSprintMemberError,
-                            '', {duration: SNACKBAR_DURATION});
+                            '', { duration: SNACKBAR_DURATION });
                     }
                 );
         }
@@ -264,12 +282,12 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                     params.node.setData(response.data);
                     this.snackBar.open(
                         API_RESPONSE_MESSAGES.memberUpdated,
-                        '', {duration: SNACKBAR_DURATION});
+                        '', { duration: SNACKBAR_DURATION });
                 },
                 err => {
                     this.snackBar.open(
                         this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.updateSprintMemberError,
-                        '', {duration: SNACKBAR_DURATION});
+                        '', { duration: SNACKBAR_DURATION });
                     this.revertCellValue(params);
                 }
             );
@@ -278,7 +296,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     revertCellValue(params) {
         const rowData = params.data;
         rowData[params.colDef.field] = params.oldValue;
-        this.gridApi.updateRowData({update: [rowData]});
+        this.gridApi.updateRowData({ update: [rowData] });
     }
 
     deleteSprintMember(params) {
@@ -294,8 +312,8 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
 
         dialogRef.afterClosed().takeUntil(this.destroy$).subscribe(result => {
             if (result) {
-                const index: number = params.node.rowIndex ;
-                this.gridApi.updateRowData({remove: [member]});
+                const index: number = params.node.rowIndex;
+                this.gridApi.updateRowData({ remove: [member] });
                 this.retrospectiveService.deleteSprintMember(this.retrospectiveID, this.sprintID, member.ID)
                     .takeUntil(this.destroy$)
                     .subscribe(
@@ -303,11 +321,11 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                             this.memberIDs = this.memberIDs.filter(ID => ID !== member.ID);
                         },
                         err => {
-                            this.gridApi.updateRowData({add: [member], addIndex: index});
+                            this.gridApi.updateRowData({ add: [member], addIndex: index });
                             this.snackBar.open(
                                 this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES
                                     .deleteSprintMemberError,
-                                '', {duration: SNACKBAR_DURATION});
+                                '', { duration: SNACKBAR_DURATION });
                         }
                     );
             }
@@ -318,6 +336,8 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
         let deleteButtonColumnDef: any = {};
         if (isSprintEditable) {
             deleteButtonColumnDef = {
+                colId: 'delete',
+                headerClass: 'custom-ag-grid-header',
                 cellRenderer: 'deleteButtonRenderer',
                 cellRendererParams: {
                     useIcon: true,
@@ -366,7 +386,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                         } else {
                             this.snackBar.open(
                                 API_RESPONSE_MESSAGES.allocationNegativeError,
-                                '', {duration: SNACKBAR_DURATION});
+                                '', { duration: SNACKBAR_DURATION });
                             this.revertCellValue(cellParams);
                         }
                     }
@@ -393,7 +413,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                         } else {
                             this.snackBar.open(
                                 API_RESPONSE_MESSAGES.expectationNegativeError,
-                                '', {duration: SNACKBAR_DURATION});
+                                '', { duration: SNACKBAR_DURATION });
                             this.revertCellValue(cellParams);
                         }
                     }
@@ -419,12 +439,12 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                         if (cellParams.newValue < 0) {
                             this.snackBar.open(
                                 API_RESPONSE_MESSAGES.vacationNumberError,
-                                '', {duration: SNACKBAR_DURATION});
+                                '', { duration: SNACKBAR_DURATION });
                             this.revertCellValue(cellParams);
                         } else if (cellParams.newValue > this.sprintDays) {
                             this.snackBar.open(
                                 API_RESPONSE_MESSAGES.vacationTimeError,
-                                '', {duration: SNACKBAR_DURATION});
+                                '', { duration: SNACKBAR_DURATION });
                             this.revertCellValue(cellParams);
                         } else {
                             this.updateSprintMember(cellParams);
@@ -526,5 +546,57 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             this.gridApi.setFilterModel(null);
             this.gridApi.onFilterChanged();
         }
+    }
+    // TO save the states of column filters
+    saveFilterState() {
+        this.gridService.saveFilterState(RETRO_SUMMARY_TYPES.MEMBER, this.gridApi.getFilterModel());
+
+    }
+    // To restore the saved state of column filters from grid service
+    restoreFilterState() {
+        this.gridApi.setFilterModel(this.gridService.getFilterState(RETRO_SUMMARY_TYPES.MEMBER));
+    }
+    // To save the current state of columns in angular scope
+    saveColumnState(currentColumnState) {
+        // To ignore the saving of column state when first time grid is initialised
+        if (this.columnPreservationFlag && this.isTabActive) {
+            // savedColumnState contains the column states saved in grid service
+            const savedColumnState = this.gridService.getColumnState(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER);
+            // If Sprint is not editable and  savedColumnState have the state of delete column
+            // then to preserve delete column state
+            // this will add the delete column state in  currentColumnState from savedColumnState
+            if (!this.isSprintEditable && savedColumnState && currentColumnState.length < savedColumnState.length) {
+                currentColumnState = this.addDeleteColumnState(currentColumnState, savedColumnState);
+            }
+            this.gridService.saveColumnState(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER, currentColumnState);
+        }
+        this.columnPreservationFlag = true;
+    }
+    // To restore the saved state of columns
+    applyColumnState() {
+        //  savedColumnState contains the column states saved in grid service
+        let savedColumnState = this.gridService.getColumnState(this.retrospectiveID, RETRO_SUMMARY_TYPES.MEMBER);
+        // To check if there is any saved column state for this table
+        // if present then apply to grid
+        if (savedColumnState && savedColumnState.length > 0) {
+            // currentColumnState contains the current states of columns in grid
+            const currentColumnState = this.columnApi.getColumnState();
+            // If Sprint is editable and  savedColumnState does not have the state of delete column
+            // this will add the delete column state in  savedColumnState from currentColumnState
+            if (this.isSprintEditable && savedColumnState.length < currentColumnState.length) {
+                savedColumnState = this.addDeleteColumnState(savedColumnState, currentColumnState);
+            }
+            // To apply preserved column states to grid
+            this.columnApi.setColumnState(savedColumnState);
+        }
+    }
+    // To insert delete column at its saved state
+    addDeleteColumnState(destinationColumnState, sourceColumnState) {
+        sourceColumnState.forEach((value, index) => {
+            if (value['colId'] === 'delete') {
+                destinationColumnState.splice(index, 0, value);
+            }
+        });
+        return destinationColumnState;
     }
 }
