@@ -1,3 +1,4 @@
+
 export const USER_AUTH_TOKEN_KEY = 'user_auth_token';
 
 export const AUTO_REFRESH_KEY = 'auto_refresh_saved_state';
@@ -243,7 +244,16 @@ export const SPRINT_SYNC_STATES_LABEL = {
 export const RETRO_FEEDBACK_TYPES = {
     NOTE: 0,
     HIGHLIGHT: 1,
-    GOAL: 2,
+    GOAL: 2
+};
+
+export const RETRO_SUMMARY_TYPES = {
+    TASK: 'task-summary',
+    MEMBER: 'member-summary'
+};
+
+export const RETRO_MODAL_TYPES = {
+    TASK: 'task-modal'
 };
 
 export const RETRO_FEEDBACK_GOAL_TYPES = {
