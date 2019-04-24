@@ -65,6 +65,13 @@ export class RetrospectiveService {
             .get();
     }
 
+    getTimeProvidersList(taskTrackerName: string, team: string): Observable<any> {
+        const params = {teamID: team, taskTrackerName: taskTrackerName};
+        return this.restangularWithLoader
+        .one(API_URLS.timeProvidersList)
+        .customGET('', params);
+    }
+
     createRetro(retroConfig: any): Observable<any> {
         return this.restangularWithLoader
             .all('retrospectives')
