@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -18,6 +18,7 @@ import {
 } from '@constants/app-constants';
 import { BasicModalComponent } from 'app/shared/basic-modal/basic-modal.component';
 import { RetrospectiveService } from 'app/shared/services/retrospective.service';
+import { GridService } from 'app/shared/services/grid.service';
 import { UtilsService } from 'app/shared/utils/utils.service';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -29,7 +30,7 @@ import 'rxjs/add/operator/do';
     templateUrl: './sprint-detail.component.html',
     styleUrls: ['./sprint-detail.component.scss']
 })
-export class SprintDetailComponent implements OnInit, OnDestroy  {
+export class SprintDetailComponent implements OnInit, OnDestroy {
     sprintDays: number;
     sprintStatus: number;
     sprintID: any;
@@ -52,7 +53,7 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
     sprintActions = SPRINT_ACTIONS;
     sprintActionsLabel = SPRINT_ACTIONS_LABEL;
     syncStates = SPRINT_SYNC_STATES;
-    tabIndexMapping: any = {highlights: 0, taskSummary: 1, memberSummary: 2, notes: 3, activityLog: 4};
+    tabIndexMapping: any = { highlights: 0, taskSummary: 1, memberSummary: 2, notes: 3, activityLog: 4 };
 
     private refresh$: Subject<number> = new Subject<number>();
     private destroy$: Subject<boolean> = new Subject<boolean>();
@@ -62,6 +63,7 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
         private snackBar: MatSnackBar,
         private router: Router,
         private utils: UtilsService,
+        private gridService: GridService,
         private activatedRoute: ActivatedRoute,
         public dialog: MatDialog,
         private changeDetectorRefs: ChangeDetectorRef
@@ -102,6 +104,7 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
     }
 
     ngOnDestroy() {
+        this.gridService.clearFilterState();
         this.destroy$.next(true);
         this.destroy$.complete();
     }
@@ -116,9 +119,9 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
     refreshSprintDetails() {
         this.toggleToTriggerRefresh = !this.toggleToTriggerRefresh;
         this.sprintDetailsRefreshComplete = false;
-        this.getSprintDetails(true).subscribe(() => {}, () => {}, () => {
-                this.sprintDetailsRefreshComplete = true;
-            }
+        this.getSprintDetails(true).subscribe(() => { }, () => { }, () => {
+            this.sprintDetailsRefreshComplete = true;
+        }
         );
     }
 
@@ -147,11 +150,11 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
                     if (!isRefresh) {
                         this.snackBar.open(
                             this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getSprintDetailsError,
-                            '', {duration: SNACKBAR_DURATION});
+                            '', { duration: SNACKBAR_DURATION });
                     } else {
                         this.snackBar.open(
                             API_RESPONSE_MESSAGES.sprintDetailsRefreshFailure,
-                            '', {duration: SNACKBAR_DURATION});
+                            '', { duration: SNACKBAR_DURATION });
                     }
                 }
             );
@@ -159,9 +162,9 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
 
     getTabIndexMapping(sprintStatus) {
         if (sprintStatus === SPRINT_STATES.DRAFT) {
-            return {taskSummary: 0, memberSummary: 1, activityLog: 2};
+            return { taskSummary: 0, memberSummary: 1, activityLog: 2 };
         }
-        return {highlights: 0, taskSummary: 1, memberSummary: 2, notes: 3, activityLog: 4};
+        return { highlights: 0, taskSummary: 1, memberSummary: 2, notes: 3, activityLog: 4 };
     }
 
     navigateToRetrospectiveDashboard() {
@@ -170,7 +173,7 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
 
     sprintStateChangeError(errorMessage) {
         if (errorMessage) {
-            this.snackBar.open(errorMessage, '', {duration: SNACKBAR_DURATION});
+            this.snackBar.open(errorMessage, '', { duration: SNACKBAR_DURATION });
         }
     }
 
@@ -195,7 +198,7 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
                             this.selectedTabIndex += 1;
                             this.snackBar.open(
                                 API_RESPONSE_MESSAGES.sprintActivated,
-                                '', {duration: SNACKBAR_DURATION});
+                                '', { duration: SNACKBAR_DURATION });
                         },
                         err => this.sprintStateChangeError(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintActivateError)
                     );
@@ -220,7 +223,7 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
                         this.sprintStatus = this.sprintStates.FROZEN;
                         this.snackBar.open(
                             API_RESPONSE_MESSAGES.sprintFrozen,
-                            '', {duration: SNACKBAR_DURATION});
+                            '', { duration: SNACKBAR_DURATION });
                     },
                     err => this.sprintStateChangeError(
                         this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintFreezeError)
@@ -247,13 +250,13 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
                         () => {
                             this.snackBar.open(
                                 API_RESPONSE_MESSAGES.sprintDiscarded,
-                                '', {duration: SNACKBAR_DURATION});
+                                '', { duration: SNACKBAR_DURATION });
                             this.navigateToRetrospectiveDashboard();
                         },
                         err => this.sprintStateChangeError(
                             this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintDiscardError)
                     );
-                }
+            }
         });
     }
 
@@ -265,13 +268,13 @@ export class SprintDetailComponent implements OnInit, OnDestroy  {
                     this.sprintDetails.SyncStatus = SPRINT_SYNC_STATES.QUEUED;
                     this.snackBar.open(
                         API_RESPONSE_MESSAGES.sprintComputationInitiated,
-                            '', {duration: SNACKBAR_DURATION});
+                        '', { duration: SNACKBAR_DURATION });
                     this.refresh$.next(RESYNC_REFRESH_DURATION);
                 },
                 err => {
                     this.snackBar.open(
                         this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.resyncSprintError,
-                        '', {duration: SNACKBAR_DURATION});
+                        '', { duration: SNACKBAR_DURATION });
                 }
             );
     }
