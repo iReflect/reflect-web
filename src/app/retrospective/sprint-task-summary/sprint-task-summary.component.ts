@@ -1,5 +1,5 @@
 import { Component, EventEmitter, HostListener, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
-import { MatDialog, MatSnackBar, HIDE_ANIMATION } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import { MatDialogRef } from '@angular/material/dialog/typings/dialog-ref';
 import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
 import 'rxjs/add/observable/interval';
@@ -41,7 +41,6 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
     dialogRef: MatDialogRef<any>;
     autoRefreshCurrentState: boolean;
     ratingStates = RATING_STATES;
-    resolutionStates = RESOLUTION_STATES;
     overlayLoadingTemplate = '<span class="ag-overlay-loading-center">Please wait while the Issues are loading!</span>';
     overlayNoRowsTemplate = '<span>No Issues in this sprint!</span>';
     // To ignore column state updation in angular scope when grid is intialized
@@ -323,8 +322,8 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                         })
                     },
                     valueSetter: (cellParams) => {
-                        if (cellParams.newValue >= this.resolutionStates.DONE &&
-                            cellParams.newValue <= this.resolutionStates.CANT_REPRODUCE) {
+                        if (cellParams.newValue >= RESOLUTION_STATES.DONE &&
+                            cellParams.newValue <= RESOLUTION_STATES.CANT_REPRODUCE) {
                             this.markDoneUnDone(cellParams, cellParams.newValue);
                         }
                     }
@@ -676,7 +675,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     sprintTaskSummaryData.DoneAt = null;
                     sprintTaskSummaryData.Resolution = null;
                     params.node.setData(sprintTaskSummaryData);
-                    // // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
+                    // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
                     params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
                     this.retrospectiveService.markSprintTaskUnDone(this.retrospectiveID, this.sprintID, sprintTaskSummaryData.ID)
                         .takeUntil(this.destroy$)
@@ -684,7 +683,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                             response => {
                                 const sprintTaskSummary = response.data;
                                 params.node.setData(sprintTaskSummary);
-                                // // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
+                                // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
                                 params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
                                 this.snackBar.open(API_RESPONSE_MESSAGES.getSprintIssueMarkedUndoneSuccess,
                                     '', { duration: SNACKBAR_DURATION });
@@ -694,7 +693,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                                 sprintTaskSummaryData.DoneAt = currentDoneAt;
                                 sprintTaskSummaryData.Resolution = currentResolution;
                                 params.node.setData(sprintTaskSummaryData);
-                                // // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
+                                // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
                                 params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
                                 this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.error,
                                     '', { duration: SNACKBAR_DURATION });
@@ -722,7 +721,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                             sprintTaskSummaryData.Resolution = 0;
                             this.doneFlag = false;
                             params.node.setData(sprintTaskSummaryData);
-                            // // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
+                            // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
                             const cellRefreshParams = {
                                 force: true,
                                 rowNode: params.node
