@@ -236,7 +236,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     } else {
                         this.snackBar.open(
                             this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES
-                                .getSprintIssueSummaryError,
+                                .someThingWentWrong,
                             '', { duration: SNACKBAR_DURATION });
                     }
                 },
@@ -282,7 +282,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 },
                 err => {
                     this.snackBar.open(
-                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.updateSprintTaskError,
+                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong,
                         '', { duration: SNACKBAR_DURATION });
                     this.revertCellValue(params);
                 }
@@ -618,7 +618,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                         err => {
                             this.gridApi.updateRowData({ add: [task], addIndex: index });
                             this.snackBar.open(
-                                this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintTaskDeletedError,
+                                this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong,
                                 '', { duration: SNACKBAR_DURATION });
                         }
                     );
@@ -663,7 +663,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                                 params.node.setData(sprintTaskSummaryData);
                                 // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
                                 params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
-                                this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.error,
+                                this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong,
                                     '', { duration: SNACKBAR_DURATION });
                             }
                         );
@@ -691,7 +691,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                         params.node.setData(sprintTaskSummaryData);
                         // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
                         params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
-                        this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.error,
+                        this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong,
                             '', { duration: SNACKBAR_DURATION });
                     }
                 );

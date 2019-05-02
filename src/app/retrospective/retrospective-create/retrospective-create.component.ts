@@ -77,7 +77,7 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
                 },
                 err => {
                     this.snackBar.open(
-                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getTeamListError,
+                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong,
                         '', {duration: SNACKBAR_DURATION});
                     this.dialogRef.close();
                 }
@@ -94,7 +94,7 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
                 },
                 err => {
                     this.snackBar.open(
-                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getTeamProviderOptionsError,
+                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getTaskProviderOptionsError,
                         '', {duration: SNACKBAR_DURATION});
                     this.dialogRef.close();
                 }
@@ -121,7 +121,7 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
             (err: Error) => {
                 this.disableTimeProviderField = true;
                 this.snackBar.open(
-                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getTimeProviderOptionError,
+                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong,
                     '', {duration: SNACKBAR_DURATION});
             }
         );
@@ -199,7 +199,7 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
                 },
                 err => {
                     this.snackBar.open(
-                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.createRetroError,
+                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong,
                         '', {duration: SNACKBAR_DURATION});
                     this.disableButton = false;
                 }

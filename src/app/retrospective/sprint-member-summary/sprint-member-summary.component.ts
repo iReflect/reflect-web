@@ -82,6 +82,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
     }
 
     ngOnChanges(changes: SimpleChanges): void {
+        console.log(changes)
         if (changes.enableRefresh) {
             this.autoRefreshCurrentState = changes.enableRefresh.currentValue;
         }
@@ -130,7 +131,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                 },
                 err => {
                     this.snackBar.open(
-                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getRetrospectiveMembersError,
+                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong,
                         '', { duration: SNACKBAR_DURATION });
                 }
             );
@@ -237,7 +238,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                     } else {
                         this.snackBar.open(
                             this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES
-                                .getSprintMemberSummaryError,
+                                .someThingWentWrong,
                             '', { duration: SNACKBAR_DURATION });
                     }
                 },
@@ -264,7 +265,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                     },
                     err => {
                         this.snackBar.open(
-                            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.addSprintMemberError,
+                            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong,
                             '', { duration: SNACKBAR_DURATION });
                     }
                 );
@@ -286,7 +287,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                 },
                 err => {
                     this.snackBar.open(
-                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.updateSprintMemberError,
+                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong,
                         '', { duration: SNACKBAR_DURATION });
                     this.revertCellValue(params);
                 }
@@ -324,7 +325,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                             this.gridApi.updateRowData({ add: [member], addIndex: index });
                             this.snackBar.open(
                                 this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES
-                                    .deleteSprintMemberError,
+                                    .someThingWentWrong,
                                 '', { duration: SNACKBAR_DURATION });
                         }
                     );

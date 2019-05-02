@@ -65,7 +65,7 @@ export class SprintListComponent implements OnInit, OnDestroy {
     }
 
     showCannotGetSprintsError(err) {
-        this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getSprintsError, '', {duration: SNACKBAR_DURATION});
+        this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong, '', {duration: SNACKBAR_DURATION});
     }
 
     initializeDataSource() {

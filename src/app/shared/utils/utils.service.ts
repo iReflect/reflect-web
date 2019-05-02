@@ -9,6 +9,7 @@ export class UtilsService {
     constructor(private datePipe: DatePipe) { }
 
     getApiErrorMessage(response): string {
+        console.log("hhhhhhhhh",response.data.error)
         if (response.data && response.data.error) {
             return _.upperFirst(response.data.error.trim());
         } else if (response.status === 403) {

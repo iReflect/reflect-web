@@ -118,7 +118,7 @@ export class SprintCreateComponent implements OnInit, OnDestroy {
                 },
                 err => {
                     this.snackBar.open(
-                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintCreateError,
+                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong,
                         '', {duration: SNACKBAR_DURATION});
                     this.disableButton = false;
                 }

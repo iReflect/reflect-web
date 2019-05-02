@@ -61,7 +61,7 @@ export class RetrospectiveDashboardComponent implements OnInit, OnDestroy {
                 },
                 err => {
                     this.snackBar.open(
-                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.invalidRetroAccessError,
+                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong,
                         '', {duration: SNACKBAR_DURATION});
                     this.router.navigateByUrl(APP_ROUTE_URLS.retrospectiveList);
                 }

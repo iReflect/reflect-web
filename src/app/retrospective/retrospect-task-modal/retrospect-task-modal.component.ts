@@ -131,7 +131,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                 },
                 err => {
                     this.snackBar.open(
-                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getSprintMembersError,
+                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong,
                         '', { duration: SNACKBAR_DURATION });
                 }
             );
@@ -228,7 +228,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                     } else {
                         this.snackBar.open(
                             this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES
-                                .getSprintIssueMemberSummaryError,
+                                .someThingWentWrong,
                             '', { duration: SNACKBAR_DURATION });
                         this.dialogRef.close();
                     }
@@ -274,7 +274,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
                 },
                 err => {
                     this.snackBar.open(
-                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.addSprintIssueMemberError,
+                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong,
                         '', { duration: SNACKBAR_DURATION });
                 }
             );
@@ -303,7 +303,7 @@ export class RetrospectTaskModalComponent implements OnDestroy, AfterViewChecked
             },
             err => {
                 this.snackBar.open(
-                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.updateSprintMemberError,
+                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong,
                     '', { duration: SNACKBAR_DURATION });
                 this.revertCellValue(params);
             }

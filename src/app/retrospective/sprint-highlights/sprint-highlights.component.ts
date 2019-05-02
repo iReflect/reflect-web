@@ -122,7 +122,7 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
                             API_RESPONSE_MESSAGES.sprintHighlightsTabRefreshFailure,
                             '', {duration: SNACKBAR_DURATION});
                     } else {
-                        this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintPendingGoalsGetError,
+                        this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong,
                             '', {duration: SNACKBAR_DURATION});
                     }
                 }
@@ -142,7 +142,7 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
                             API_RESPONSE_MESSAGES.sprintHighlightsTabRefreshFailure,
                             '', {duration: SNACKBAR_DURATION});
                     } else {
-                        this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintAccomplishedGoalsGetError,
+                        this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong,
                             '', {duration: SNACKBAR_DURATION});
                     }
                 }
@@ -162,7 +162,7 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
                             API_RESPONSE_MESSAGES.sprintHighlightsTabRefreshFailure,
                             '', {duration: SNACKBAR_DURATION});
                     } else {
-                        this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintHighlightsGetError,
+                        this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong,
                             '', {duration: SNACKBAR_DURATION});
                     }
                 }
@@ -182,7 +182,7 @@ export class SprintHighlightsComponent implements OnInit, OnChanges, OnDestroy {
                             API_RESPONSE_MESSAGES.sprintHighlightsTabRefreshFailure,
                             '', {duration: SNACKBAR_DURATION});
                     } else {
-                        this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getRetrospectiveMembersError,
+                        this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong,
                             '', {duration: SNACKBAR_DURATION});
                     }
                 }

@@ -147,7 +147,7 @@ export class SprintDetailComponent implements OnInit, OnDestroy {
                 err => {
                     if (!isRefresh) {
                         this.snackBar.open(
-                            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getSprintDetailsError,
+                            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong,
                             '', { duration: SNACKBAR_DURATION });
                     } else {
                         this.snackBar.open(
@@ -198,7 +198,7 @@ export class SprintDetailComponent implements OnInit, OnDestroy {
                                 API_RESPONSE_MESSAGES.sprintActivated,
                                 '', { duration: SNACKBAR_DURATION });
                         },
-                        err => this.sprintStateChangeError(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintActivateError)
+                        err => this.sprintStateChangeError(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong)
                     );
             }
         });
@@ -224,7 +224,7 @@ export class SprintDetailComponent implements OnInit, OnDestroy {
                             '', { duration: SNACKBAR_DURATION });
                     },
                     err => this.sprintStateChangeError(
-                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintFreezeError)
+                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong)
                 );
             }
         });
@@ -252,7 +252,7 @@ export class SprintDetailComponent implements OnInit, OnDestroy {
                             this.navigateToRetrospectiveDashboard();
                         },
                         err => this.sprintStateChangeError(
-                            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintDiscardError)
+                            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong)
                     );
             }
         });

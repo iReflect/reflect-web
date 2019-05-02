@@ -48,7 +48,7 @@ export class RetrospectiveListComponent implements OnInit, OnDestroy {
 
     showCannotGetRetrospectivesError(err) {
         this.snackBar.open(
-            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getRetrospectivesError,
+            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong,
             '', {duration: SNACKBAR_DURATION});
     }
 
@@ -82,7 +82,7 @@ export class RetrospectiveListComponent implements OnInit, OnDestroy {
                 },
                 err => {
                     this.snackBar.open(
-                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.noSprintsError,
+                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong,
                         '', {duration: SNACKBAR_DURATION});
                     this.router.navigateByUrl(APP_ROUTE_URLS.retrospectiveDashboard
                         .replace(':retrospectiveID', row.ID));

@@ -192,7 +192,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                 err => {
                     this.gridApi.updateRowData({ add: [goalData], addIndex: index });
                     this.snackBar.open(
-                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.goalResolveFailed,
+                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong,
                         '', { duration: SNACKBAR_DURATION });
                 }
             );
@@ -211,7 +211,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                 err => {
                     this.gridApi.updateRowData({ add: [goalData], addIndex: index });
                     this.snackBar.open(
-                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.goalUnResolveFailed,
+                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong,
                         '', { duration: SNACKBAR_DURATION });
                 }
             );
@@ -242,7 +242,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                     },
                     err => {
                         this.snackBar.open(
-                            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintHighlightsUpdateError,
+                            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong,
                             '', { duration: SNACKBAR_DURATION });
                         if (params.colDef.field === 'Scope') {
                             // To revert the change of assigneeID with change in Scope
@@ -263,7 +263,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                     },
                     err => {
                         this.snackBar.open(
-                            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintNotesUpdateError,
+                            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong,
                             '', { duration: SNACKBAR_DURATION });
                         if (params.colDef.field === 'Scope') {
                             // To revert the change of assigneeID with change in Scope
@@ -284,7 +284,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                     },
                     err => {
                         this.snackBar.open(
-                            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintGoalsUpdateError,
+                            this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong,
                             '', { duration: SNACKBAR_DURATION });
                         if (params.colDef.field === 'Scope') {
                             // To revert the change of assigneeID with change in Scope
@@ -310,7 +310,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                         },
                         err => {
                             this.snackBar.open(
-                                this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintHighlightsAddError,
+                                this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong,
                                 '', { duration: SNACKBAR_DURATION });
                         }
                     );
@@ -324,7 +324,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                         },
                         err => {
                             this.snackBar.open(
-                                this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintNotesAddError,
+                                this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong,
                                 '', { duration: SNACKBAR_DURATION });
                         }
                     );
@@ -338,7 +338,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                         },
                         err => {
                             this.snackBar.open(
-                                this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintGoalsAddError,
+                                this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong,
                                 '', { duration: SNACKBAR_DURATION });
                         }
                     );
@@ -366,7 +366,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                             err => {
                                 this.gridApi.updateRowData({ add: [retroFeedback], addIndex: index });
                                 this.snackBar.open(
-                                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintHighlightDeletedError,
+                                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong,
                                     '', { duration: SNACKBAR_DURATION });
                             }
                         );
@@ -377,7 +377,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                             err => {
                                 this.gridApi.updateRowData({ add: [retroFeedback], addIndex: index });
                                 this.snackBar.open(
-                                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintNoteDeletedError,
+                                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong,
                                     '', { duration: SNACKBAR_DURATION });
                             }
                         );
@@ -388,7 +388,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                             err => {
                                 this.gridApi.updateRowData({ add: [retroFeedback], addIndex: index });
                                 this.snackBar.open(
-                                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintGoalDeletedError,
+                                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong,
                                     '', { duration: SNACKBAR_DURATION });
                             }
                         );

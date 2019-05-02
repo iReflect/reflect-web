@@ -120,7 +120,7 @@ export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
                             API_RESPONSE_MESSAGES.sprintNotesTabRefreshFailure,
                             '', {duration: SNACKBAR_DURATION});
                     } else {
-                        this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintAddedGoalsGetError,
+                        this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong,
                             '', {duration: SNACKBAR_DURATION});
                     }
                 }
@@ -140,7 +140,7 @@ export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
                             API_RESPONSE_MESSAGES.sprintNotesTabRefreshFailure,
                             '', {duration: SNACKBAR_DURATION});
                     } else {
-                        this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintNotesGetError,
+                        this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong,
                             '', {duration: SNACKBAR_DURATION});
                     }
                 }
@@ -160,7 +160,7 @@ export class SprintNotesComponent implements OnInit, OnChanges, OnDestroy {
                             API_RESPONSE_MESSAGES.sprintNotesTabRefreshFailure,
                             '', {duration: SNACKBAR_DURATION});
                     } else {
-                        this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.getRetrospectiveMembersError,
+                        this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.someThingWentWrong,
                             '', {duration: SNACKBAR_DURATION});
                     }
                 }
