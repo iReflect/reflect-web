@@ -77,6 +77,7 @@ export const API_RESPONSE_MESSAGES = {
     feedBackSubmitted: 'Feedback submitted successfully!',
     error: 'Some Error Occurred!',
     retroCreated: 'Retro Created successfully!',
+    retroUpdated: 'Retro Updated successfully!',
     sprintActivated: 'Sprint activated successfully!',
     sprintFrozen: 'Sprint frozen successfully!',
     sprintDiscarded: 'Sprint discarded successfully!',
@@ -116,6 +117,7 @@ export const API_RESPONSE_MESSAGES = {
     getTeamProviderOptionsError: 'Cannot get team provider options!',
     getTimeProviderOptionError: 'Cannot get time provider options!',
     createRetroError: 'Cannot Create Retro!',
+    updateRetroError: 'Cannot Update Retro!',
     getRetrospectivesError: 'Cannot get Retrospectives',
     getSprintsError: 'Cannot get Sprints',
     noSprintsError: 'Retro has no active or frozen sprints',
@@ -235,6 +237,12 @@ export const SPRINT_SYNC_STATES = {
     SYNCED: 2,
     SYNC_FAILED: 3,
     QUEUED: 4
+};
+
+export const EDIT_LEVELS = {
+    NOT_EDITABLE:  1,
+    PARTIALLY: 2,
+    FULLY: 3,
 };
 
 export const SPRINT_SYNC_STATES_LABEL = {

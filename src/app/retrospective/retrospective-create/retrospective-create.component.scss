@@ -1,6 +1,18 @@
 mat-form-field {
     width: 100%;
     box-sizing: border-box;
+
+    .mat-icon {
+        visibility: hidden;
+    }
+
+    &:hover {
+        background-color: #f4f5f7;
+
+        .mat-icon {
+            visibility: visible;
+        }
+    }
 }
 
 .larger-size-hint {
@@ -9,4 +21,10 @@ mat-form-field {
 
 .table-box.padded-container {
     padding: 30px;
+}
+
+/* stylelint-disable */
+::ng-deep .mat-form-field-underline {
+    /* stylelint-enable */
+    display: none;
 }

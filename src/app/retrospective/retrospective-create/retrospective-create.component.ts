@@ -6,7 +6,7 @@ import * as _ from 'lodash';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 
-import { API_RESPONSE_MESSAGES, SNACKBAR_DURATION, TRACKER_TICKET_TYPE_MAP } from '@constants/app-constants';
+import { API_RESPONSE_MESSAGES, COMMA_SEPARATED_STRING_PATTERN, SNACKBAR_DURATION, TRACKER_TICKET_TYPE_MAP, EDIT_LEVELS } from '@constants/app-constants';
 import { RetrospectiveService } from 'app/shared/services/retrospective.service';
 import { UtilsService } from 'app/shared/utils/utils.service';
 
@@ -19,6 +19,7 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
     retroFormGroup: FormGroup;
     isTeamOptionsLoaded = false;
     isProviderOptionsLoaded = false;
+    isRetrospectLoaded = false;
     disableButton = false;
 
     // These are the possible options for the teams and task providers
@@ -36,7 +37,13 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
     selectedTimeProvider = {};
     // Keys used for form controls and provider lookups
     taskProviderKey = 'taskProvider';
-
+    public retrospective: any;
+    public retrospectiveID: number;
+    public isUpdateMode: boolean;
+    public fieldsEditableMap: any;
+    private dummyPasswordValue = 'xxxxxxxxx';
+    private originalPassword: string;
+    commaSeparatedRegex = COMMA_SEPARATED_STRING_PATTERN;
     private destroy$: Subject<boolean> = new Subject<boolean>();
 
     constructor(
@@ -46,18 +53,72 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
         public dialogRef: MatDialogRef<RetrospectiveCreateComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any
     ) {
+        if (data && data['retrospectiveID']) {
+            this.retrospectiveID = data['retrospectiveID'];
+            this.isUpdateMode = true;
+        }
     }
 
     ngOnInit() {
-        this.getTeamList();
-        this.getTaskProviders();
         this.createRetroFormGroup();
+        this.getTaskProviders();
+        this.getTeamList();
         this.addTaskProvider();
+        if (this.isUpdateMode) {
+            this.getRetro();
+        }
     }
 
     ngOnDestroy() {
         this.destroy$.next(true);
         this.destroy$.complete();
+    }
+    get projectNameControl() {
+        return this.retroFormGroup.get('projectName');
+    }
+
+    getRetro() {
+        this.retrospectiveService.getRetrospectiveByID(this.retrospectiveID).subscribe(
+            response => {
+                this.retrospective = response.body;
+                // Replacing orginal password With dummy password
+                this.originalPassword = this.retrospective.TaskProviderConfig[0].data.credentials.password;
+                this.retrospective.TaskProviderConfig[0].data.credentials.password = this.dummyPasswordValue;
+                this.getFieldsEditLevel();
+            },
+          );
+    }
+
+    getFieldsEditLevel() {
+        this.retrospectiveService.getFieldEditLevel(this.retrospectiveID).subscribe(
+            response => {
+                this.fieldsEditableMap = response.data;
+                this.setValueAndDisableState('title', 'Title');
+                this.setValueAndDisableState('team', 'TeamID');
+                this.setValueAndDisableState('storyPointPerWeek', 'StoryPointPerWeek');
+                this.setValueAndDisableState('projectName', 'ProjectName');
+                this.isRetrospectLoaded = true;
+            },
+          );
+    }
+
+    getDisableState(name: string): boolean {
+        return !(this.isUpdateMode && this.fieldsEditableMap[name] === EDIT_LEVELS.NOT_EDITABLE);
+    }
+
+    setValueAndDisableState(formName: string, name: string) {
+        if (!(this.fieldsEditableMap[name] === EDIT_LEVELS.PARTIALLY)) {
+            this.retroFormGroup.patchValue({[formName]: this.retrospective[name]});
+        } else {
+            this.retroFormGroup.get([formName]).clearValidators();
+        }
+        if (this.fieldsEditableMap[name] === EDIT_LEVELS.NOT_EDITABLE) {
+            this.retroFormGroup.get(formName).disable();
+        }
+    }
+
+    getUnEditableDefaultValue(name: string) {
+        return this.retrospective[name];
     }
 
     getTeamList() {
@@ -102,12 +163,11 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
     }
 
     getTimeProviders() {
-        const team: string = this.retroFormGroup.value.team;
+        const team: string = this.retroFormGroup.getRawValue().team;
         let selectedTaskProvider: string;
         this.retroFormGroup.value.taskProvider.forEach(provider => {
             selectedTaskProvider = provider.selectedTaskProvider;
         });
-
         if (!team || !selectedTaskProvider) {
             return;
         }
@@ -115,7 +175,12 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
         .subscribe(
             (data) => {
                 this.timeProvidersList = data.body.TimeProviders;
-                this.selectedTimeProvider = this.timeProvidersList[0];
+                if (this.isUpdateMode) {
+                    this.setValueAndDisableState('timeProviderKey', 'TimeProviderName');
+                } else {
+                    this.selectedTimeProvider = this.timeProvidersList[0];
+                    this.retroFormGroup.controls['timeProviderKey'].enable();
+                }
                 this.disableTimeProviderField = false;
             },
             (err: Error) => {
@@ -142,7 +207,7 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
             'team': new FormControl('', Validators.required),
             'storyPointPerWeek': new FormControl('', Validators.required),
             'projectName': new FormControl('', Validators.required),
-            'timeProviderKey': new FormControl('', Validators.required),
+            'timeProviderKey': new FormControl({value: '', disable: true}, Validators.required),
         });
     }
 
@@ -156,7 +221,68 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
 
     createRetro(formValue) {
         this.disableButton = true;
-        const requestBody = {
+        const requestBody = this.parseRetroData(formValue);
+
+        this.retrospectiveService.createRetro(requestBody)
+            .takeUntil(this.destroy$)
+            .subscribe(
+                () => {
+                    this.snackBar.open(
+                        API_RESPONSE_MESSAGES.retroCreated,
+                        '', {duration: SNACKBAR_DURATION});
+                    this.dialogRef.close(true);
+                    this.disableButton = false;
+                },
+                err => {
+                    this.snackBar.open(
+                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.createRetroError,
+                        '', {duration: SNACKBAR_DURATION});
+                    this.disableButton = false;
+                }
+            );
+    }
+
+    updateRetro(formValue: any) {
+        this.disableButton = true;
+        const requestBody = this.parseRetroData(formValue);
+
+        // append project name to current project name.
+        requestBody.projectName = this.retrospective.ProjectName + (requestBody.projectName ? ',' : '') + requestBody.projectName;
+        // set credentialChanged key to true.
+        requestBody['credentialsChanged'] = true;
+        // add retroID in the request body.
+        requestBody['retroID'] = this.retrospective.ID;
+
+        // if credential are not changed we will set credentialChanged key to false and set original password back.
+        if (!this.isCredentialsChanged(requestBody.taskProvider[0].data.credentials)) {
+            requestBody.taskProvider[0].data.credentials.password = this.originalPassword;
+            requestBody['credentialsChanged'] = false;
+        }
+
+        this.retrospectiveService.updateRetro(this.retrospectiveID, requestBody)
+            .takeUntil(this.destroy$)
+            .subscribe(
+                () => {
+                    this.snackBar.open(
+                        API_RESPONSE_MESSAGES.retroUpdated,
+                        '', {duration: SNACKBAR_DURATION});
+                    this.dialogRef.close(true);
+                    this.disableButton = false;
+                },
+                err => {
+                    this.snackBar.open(
+                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.updateRetroError,
+                        '', {duration: SNACKBAR_DURATION});
+                    this.disableButton = false;
+                }
+            );
+    }
+    isCredentialsChanged(currentCredentials: any): boolean {
+        return currentCredentials.password !== this.dummyPasswordValue
+        || currentCredentials.username !== this.retrospective.TaskProviderConfig[0].data.credentials.username;
+    }
+    parseRetroData(formValue: any) {
+        return {
             'title': formValue.title,
             'team': formValue.team,
             'storyPointPerWeek': formValue.storyPointPerWeek,
@@ -186,26 +312,7 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
                 };
             })
         };
-
-        this.retrospectiveService.createRetro(requestBody)
-            .takeUntil(this.destroy$)
-            .subscribe(
-                () => {
-                    this.snackBar.open(
-                        API_RESPONSE_MESSAGES.retroCreated,
-                        '', {duration: SNACKBAR_DURATION});
-                    this.dialogRef.close(true);
-                    this.disableButton = false;
-                },
-                err => {
-                    this.snackBar.open(
-                        this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.createRetroError,
-                        '', {duration: SNACKBAR_DURATION});
-                    this.disableButton = false;
-                }
-            );
     }
-
     closeDialog(result = false) {
         this.dialogRef.close(result);
     }

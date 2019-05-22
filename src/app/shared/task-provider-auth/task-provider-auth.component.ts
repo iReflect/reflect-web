@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -6,10 +6,12 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
     templateUrl: './task-provider-auth.component.html',
     styleUrls: ['./task-provider-auth.component.scss']
 })
-export class TaskProviderAuthComponent implements OnChanges {
+export class TaskProviderAuthComponent implements OnInit, OnChanges {
 
     @Input() authFormGroup: FormGroup;
     @Input() supportedAuthTypes: any = [];
+    @Input() isUpdateMode: boolean;
+    @Input() taskProviderAuthData: any;
 
     selectedAuthType = '';
     supportedAuthTypeConfigList: any = [];
@@ -25,9 +27,16 @@ export class TaskProviderAuthComponent implements OnChanges {
         }
     ];
 
-    constructor() {
-    }
+    constructor() {}
 
+    ngOnInit() {
+        if (this.isUpdateMode) {
+                    this.onAuthTypeChange(this.taskProviderAuthData.type);
+        this.authFormGroup.patchValue({
+            'type': this.taskProviderAuthData.type,
+        });
+        }
+    }
     initializeSupportedAuthTypeConfig(supportedAuthTypes) {
         this.selectedAuthType = '';
         this.supportedAuthTypeConfigList = this.authTypeConfigList.filter(
@@ -45,10 +54,19 @@ export class TaskProviderAuthComponent implements OnChanges {
         fieldsGroup = {};
         this.selectedAuthType = selectedValue;
         if (selectedValue === 'apiToken') {
-            fieldsGroup['apiToken'] = new FormControl('', Validators.required);
+            fieldsGroup['apiToken'] = new FormControl(
+                this.isUpdateMode ? this.taskProviderAuthData['apiToken'] : '',
+                Validators.required
+            );
         } else if (selectedValue === 'basicAuth') {
-            fieldsGroup['username'] = new FormControl('', Validators.required);
-            fieldsGroup['password'] = new FormControl('', Validators.required);
+            fieldsGroup['username'] = new FormControl(
+                this.isUpdateMode ? this.taskProviderAuthData['username'] : '',
+                Validators.required
+            );
+            fieldsGroup['password'] = new FormControl(
+                this.isUpdateMode ? this.taskProviderAuthData['password'] : '',
+                Validators.required
+            );
         }
         this.authFormGroup.setControl('data', new FormGroup(fieldsGroup));
     }

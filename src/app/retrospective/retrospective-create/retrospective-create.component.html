@@ -1,5 +1,4 @@
-<div class="create-retro app-dialog" [formGroup]="retroFormGroup"
-     *ngIf="isTeamOptionsLoaded && isProviderOptionsLoaded">
+<div class="create-retro app-dialog" [formGroup]="retroFormGroup" *ngIf="isTeamOptionsLoaded && isProviderOptionsLoaded && (isRetrospectLoaded || !isUpdateMode)">
     <h2 mat-dialog-title>Create Team Retrospective</h2>
     <button mat-icon-button tabindex="-1" class="close-icon" (click)="closeDialog()">
         <mat-icon>clear</mat-icon>
@@ -12,12 +11,15 @@
             <div class="flex">
                 <mat-form-field>
                     <input matInput formControlName="title" placeholder="Retrospective Title">
+                    <mat-icon matSuffix *ngIf="getDisableState('Title')">edit</mat-icon>
+                    <mat-icon matSuffix *ngIf="!getDisableState('Title')">block</mat-icon>
                 </mat-form-field>
             </div>
             <div class="flex">
                 <mat-form-field>
-                    <input matInput type="number" min="0" formControlName="storyPointPerWeek"
-                           placeholder="Expected Points Per Week Per Person">
+                    <input matInput type="number" min="0" formControlName="storyPointPerWeek" placeholder="Expected Points Per Week Per Person">
+                    <mat-icon matSuffix *ngIf="getDisableState('StoryPointPerWeek')">edit</mat-icon>
+                    <mat-icon matSuffix *ngIf="!getDisableState('StoryPointPerWeek')">block</mat-icon>
                 </mat-form-field>
             </div>
         </div>
@@ -29,6 +31,8 @@
         <div class="flex-container layout-row">
             <div class="flex">
                 <mat-form-field>
+                    <mat-icon matSuffix *ngIf="getDisableState('TeamID')">edit</mat-icon>
+                    <mat-icon matSuffix *ngIf="!getDisableState('TeamID')">block</mat-icon>
                     <mat-select formControlName="team" placeholder="Select a Team" (selectionChange)="getTimeProviders()">
                         <mat-option *ngFor="let team of teamOptions" [value]="team.ID">{{team.Name}}</mat-option>
                     </mat-select>
@@ -43,7 +47,13 @@
         <div class="flex-container layout-row">
             <div class="flex">
                 <mat-form-field>
-                    <input matInput formControlName="projectName" placeholder="Specify Project Name (Comma Separated)">
+                    <input matInput formControlName="projectName" placeholder="Specify Project Name (Comma Separated)" [pattern]="commaSeparatedRegex">
+                    <span matPrefix *ngIf="isUpdateMode">{{getUnEditableDefaultValue("ProjectName")}} &nbsp;</span>
+                    <mat-error *ngIf="projectNameControl.errors && projectNameControl.errors['pattern']">
+                        It should be a comma separated string
+                    </mat-error>
+                    <mat-icon matSuffix *ngIf="getDisableState('ProjectName')">edit</mat-icon>
+                    <mat-icon matSuffix *ngIf="!getDisableState('ProjectName')">block</mat-icon>
                     <mat-hint class="larger-size-hint">Used by time provider</mat-hint>
                 </mat-form-field>
             </div>
@@ -56,10 +66,12 @@
         <div [formArrayName]="taskProviderKey">
             <div *ngFor="let _ of taskProvidersList; let providerIndex = index;">
                 <div [formGroupName]="providerIndex">
-                    <app-task-provider
-                        [taskProviderOptions]="taskProviderOptions"
-                        (initializedTaskProvider)="taskProviderInitialized(providerIndex)($event)"
-                        (onProviderChanged)="getTimeProviders()">
+                    <app-task-provider 
+                    [taskProviderOptions]="taskProviderOptions" 
+                    [isUpdateMode]="isUpdateMode" 
+                    [retrospectiveData]="retrospective" 
+                    (initializedTaskProvider)="taskProviderInitialized(providerIndex)($event)" 
+                    (onProviderChanged)="getTimeProviders()">
                     </app-task-provider>
                 </div>
             </div>
@@ -72,19 +84,23 @@
         <div class="flex-container layout-row">
             <div class="flex">
                 <mat-form-field>
-                        <mat-hint *ngIf="disableTimeProviderField" class="larger-size-hint">Choose a Task Provider and Team first</mat-hint>
-                        <mat-select formControlName="timeProviderKey" [(ngModel)]="selectedTimeProvider.Name" placeholder="Select a Time Provider" [disabled]="disableTimeProviderField">
-                            <mat-option *ngFor="let timeProvider of timeProvidersList;" [value]="timeProvider.Name">
+                    <mat-hint *ngIf="disableTimeProviderField" class="larger-size-hint">Choose a Task Provider and Team first
+                    </mat-hint>
+                    <mat-icon matSuffix *ngIf="getDisableState('TimeProviderName')">edit</mat-icon>
+                    <mat-icon matSuffix *ngIf="!getDisableState('TimeProviderName')">block</mat-icon>
+                    <mat-select formControlName="timeProviderKey" [(ngModel)]="selectedTimeProvider.Name" placeholder="Select a Time Provider">
+                        <mat-option *ngFor="let timeProvider of timeProvidersList;" [value]="timeProvider.Name">
                             {{timeProvider.DisplayName}}</mat-option>
-                        </mat-select>
+                    </mat-select>
                 </mat-form-field>
             </div>
         </div>
     </div>
     <mat-dialog-actions>
         <span class="fill-remaining-space"></span>
-        <button mat-raised-button color="primary" [disabled]="retroFormGroup.invalid || disableButton"
-                (click)="createRetro(retroFormGroup.value)">Create
+        <button *ngIf="!isUpdateMode" mat-raised-button color="primary" [disabled]="retroFormGroup.invalid || disableButton" (click)="createRetro(retroFormGroup.value)">Create
+        </button>
+        <button *ngIf="isUpdateMode" mat-raised-button color="primary" [disabled]="retroFormGroup.invalid || disableButton" (click)="updateRetro(retroFormGroup.getRawValue())">Update
         </button>
         <button mat-button mat-dialog-close>Cancel</button>
     </mat-dialog-actions>

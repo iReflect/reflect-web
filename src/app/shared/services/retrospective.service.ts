@@ -44,6 +44,16 @@ export class RetrospectiveService {
 
     }
 
+    getFieldEditLevel(retrospectiveID): Observable<any> {
+        return this.restangularWithLoader
+            .one(
+                API_URLS.retroFieldsEditLevels
+                    .replace(':retrospectiveID', retrospectiveID)
+                )
+            .get();
+
+    }
+
     listSprintsByRetrospectiveID(retrospectiveID, params = {}): Observable<any> {
         return this.restangularWithLoader
             .one(
@@ -76,6 +86,15 @@ export class RetrospectiveService {
         return this.restangularWithLoader
             .all('retrospectives')
             .post(retroConfig);
+    }
+
+    updateRetro(retrospectiveID: number, retroConfig: any): Observable<any> {
+        return this.restangularWithLoader
+            .one(
+                API_URLS.retroDetails
+                    .replace(':retrospectiveID', retrospectiveID.toString())
+                )
+            .customPUT(retroConfig);
     }
 
     getSprintDetails(retrospectiveID, sprintID, isAutoRefresh): Observable<any> {

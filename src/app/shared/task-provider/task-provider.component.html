@@ -18,6 +18,8 @@
         <div class="table-box padded-container">
             <div formGroupName="Credentials">
                 <app-task-provider-auth
+                    [isUpdateMode]="isUpdateMode"
+                    [taskProviderAuthData]="taskProviderAuthData"
                     [authFormGroup]="taskProviderFormGroup.controls['Credentials']"
                     [supportedAuthTypes]="selectedTaskProviderConfigOptions['supportedAuthTypes']"
                 ></app-task-provider-auth>
@@ -31,6 +33,7 @@
                 <div *ngFor="let field of selectedTaskProviderConfigOptions['fields']" class="layout-row">
                     <mat-form-field class="flex" [class.field-with-hint]="field.Hint">
                         <input matInput [placeholder]="field.FieldDisplayName" [formControlName]="field.FieldName"/>
+                        <mat-icon matSuffix >edit</mat-icon>
                         <mat-hint *ngIf="field.Hint">
                             <mat-icon>info</mat-icon>
                             <span [innerHTML]="field.Hint"></span>
@@ -46,6 +49,7 @@
             <div class="layout-row">
                 <mat-form-field class="flex field-with-hint">
                     <input matInput placeholder="Completed (Comma Separated)" [pattern]="commaSeparatedRegex" [formControlName]="trackerTicketStatusMap.DONE"/>
+                    <mat-icon matSuffix>edit</mat-icon>
                     <mat-error *ngIf="doneStatusControl.errors && doneStatusControl.errors['pattern']">
                         It should be a comma separated string
                     </mat-error> 
@@ -63,6 +67,7 @@
             <div class="layout-row">
                 <mat-form-field class="flex">
                     <input matInput placeholder="Feature (Comma Separated)" [pattern]="commaSeparatedRegex" [formControlName]="trackerTicketTypeMap.FEATURE"/>
+                    <mat-icon matSuffix>edit</mat-icon>
                     <mat-error *ngIf="featureTypeControl.errors && featureTypeControl.errors['pattern']">
                         It should be a comma separated string
                     </mat-error>
@@ -71,6 +76,7 @@
             <div class="layout-row">
                 <mat-form-field class="flex">
                     <input matInput placeholder="Task (Comma Separated)" [pattern]="commaSeparatedRegex" [formControlName]="trackerTicketTypeMap.TASK"/>
+                    <mat-icon matSuffix>edit</mat-icon>
                     <mat-error *ngIf="taskTypeControl.errors && taskTypeControl.errors['pattern']">
                         It should be a comma separated string
                     </mat-error>
@@ -79,6 +85,7 @@
             <div class="layout-row">
                 <mat-form-field class="flex">
                     <input matInput placeholder="Bug (Comma Separated)" [pattern]="commaSeparatedRegex" [formControlName]="trackerTicketTypeMap.BUG"/>
+                    <mat-icon matSuffix>edit</mat-icon>
                     <mat-error *ngIf="bugTypeControl.errors && bugTypeControl.errors['pattern']">
                         It should be a comma separated string
                     </mat-error>

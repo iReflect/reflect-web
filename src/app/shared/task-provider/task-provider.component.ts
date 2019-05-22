@@ -10,9 +10,13 @@ import { TRACKER_TICKET_TYPE_MAP, COMMA_SEPARATED_STRING_PATTERN, TRACKER_TICKET
 export class TaskProviderComponent implements OnInit {
 
     @Input() taskProviderOptions: any = [];
+    @Input() isUpdateMode: boolean;
+    @Input() retrospectiveData: any;
     @Output() initializedTaskProvider = new EventEmitter<FormGroup>();
     @Output() onProviderChanged = new EventEmitter<string>();
 
+    taskProviderData: any;
+    taskProviderAuthData: any;
     taskProviderConfigKey = 'taskProviderConfig';
     selectedTaskProviderKey = 'selectedTaskProvider';
     taskProviderFormGroup: FormGroup;
@@ -30,6 +34,9 @@ export class TaskProviderComponent implements OnInit {
 
     ngOnInit() {
         this.initializeTaskProvider();
+        if (this.isUpdateMode) {
+            this.setTaskProviderData();
+        }
     }
 
     initializeTaskProvider() {
@@ -44,6 +51,16 @@ export class TaskProviderComponent implements OnInit {
         }
     }
 
+    setTaskProviderData() {
+        this.taskProviderData = this.retrospectiveData.TaskProviderConfig[0];
+        this.taskProviderAuthData = this.taskProviderData.data.credentials || {};
+        this.taskProviderFormGroup.patchValue({
+            [this.selectedTaskProviderKey]: this.taskProviderData.type,
+            // [this.taskProviderConfigKey]: this.taskProviderData[0].data.credentials.type,
+        });
+        this.onProviderChange(this.taskProviderData.type);
+    }
+
     onProviderChange(selectedProvider) {
         this.onProviderChanged.emit(selectedProvider);
         let configFieldsGroup: any, credentialFieldsGroup: any, selectedTaskProvider: any;
@@ -53,18 +70,33 @@ export class TaskProviderComponent implements OnInit {
         this.showConfigFields = false;
 
         selectedTaskProvider['Fields'].forEach(field => {
-            configFieldsGroup[field.FieldName] = new FormControl('',
-                field.Required ? Validators.required : null);
+            configFieldsGroup[field.FieldName] = new FormControl({
+                value: this.isUpdateMode ? this.taskProviderData.data[field.FieldName] : '',
+                disabled: !field.Editable && this.isUpdateMode
+            },
+            field.Required ? Validators.required : null);
         });
 
         const ticketTypeMappingGroup = {
-            [TRACKER_TICKET_TYPE_MAP.FEATURE]: new FormControl('', Validators.required),
-            [TRACKER_TICKET_TYPE_MAP.TASK]: new FormControl('', Validators.required),
-            [TRACKER_TICKET_TYPE_MAP.BUG]: new FormControl('', Validators.required)
+            [TRACKER_TICKET_TYPE_MAP.FEATURE]: new FormControl(
+                this.isUpdateMode ? this.taskProviderData.data[TRACKER_TICKET_TYPE_MAP.FEATURE] : '',
+                Validators.required
+            ),
+            [TRACKER_TICKET_TYPE_MAP.TASK]: new FormControl(
+                this.isUpdateMode ? this.taskProviderData.data[TRACKER_TICKET_TYPE_MAP.TASK] : '',
+                Validators.required
+            ),
+            [TRACKER_TICKET_TYPE_MAP.BUG]: new FormControl(
+                this.isUpdateMode ? this.taskProviderData.data[TRACKER_TICKET_TYPE_MAP.BUG] : '',
+                Validators.required
+            )
         };
 
         const ticketStatusMappingGroup = {
-            [TRACKER_TICKET_STATUS_MAP.DONE]: new FormControl('', Validators.required)
+            [TRACKER_TICKET_STATUS_MAP.DONE]: new FormControl(
+                this.isUpdateMode ? this.taskProviderData.data[TRACKER_TICKET_STATUS_MAP.DONE] : '',
+                Validators.required
+            )
         };
 
         configFieldsGroup = {...configFieldsGroup, ...ticketTypeMappingGroup, ...ticketStatusMappingGroup};
@@ -73,7 +105,7 @@ export class TaskProviderComponent implements OnInit {
             new FormGroup(configFieldsGroup, Validators.required));
 
         credentialFieldsGroup = {
-            'type': new FormControl('', Validators.required),
+            'type': new FormControl({value: '', disabled: true}, Validators.required),
             'data': new FormGroup({})
         };
         this.taskProviderFormGroup.setControl('Credentials',

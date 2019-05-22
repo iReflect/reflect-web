@@ -1,13 +1,16 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RetrospectiveService } from 'app/shared/services/retrospective.service';
+
 import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
-import { SprintCreateComponent } from 'app/retrospective/sprint-create/sprint-create.component';
-import { API_RESPONSE_MESSAGES, APP_ROUTE_URLS, DATE_FORMAT, SNACKBAR_DURATION } from '@constants/app-constants';
-import { SprintListComponent } from 'app/retrospective/sprint-list/sprint-list.component';
-import { UtilsService } from 'app/shared/utils/utils.service';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
+
+import { API_RESPONSE_MESSAGES, APP_ROUTE_URLS, DATE_FORMAT, SNACKBAR_DURATION } from '@constants/app-constants';
+import { SprintCreateComponent } from 'app/retrospective/sprint-create/sprint-create.component';
+import { SprintListComponent } from 'app/retrospective/sprint-list/sprint-list.component';
+import { RetrospectiveCreateComponent } from 'app/retrospective/retrospective-create/retrospective-create.component';
+import { RetrospectiveService } from 'app/shared/services/retrospective.service';
+import { UtilsService } from 'app/shared/utils/utils.service';
 
 @Component({
     selector: 'app-retrospective-dashboard',
@@ -70,6 +73,23 @@ export class RetrospectiveDashboardComponent implements OnInit, OnDestroy {
 
     getCreatorName() {
         return (this.retrospectiveData.CreatedBy.FirstName + ' ' + this.retrospectiveData.CreatedBy.LastName).trim();
+    }
+
+    showUpdateRetroDialog() {
+        const dialogRef = this.dialog.open(RetrospectiveCreateComponent, {
+            width: '90%',
+            height: '90%',
+            maxWidth: 950,
+            data : {
+                retrospectiveID: this.retrospectiveID,
+            }
+        });
+
+        dialogRef.afterClosed().takeUntil(this.destroy$).subscribe(result => {
+            if (result) {
+                this.refreshSprintsList();
+            }
+        });
     }
 
     showNewSprintDialog() {
