@@ -105,7 +105,7 @@ export class TaskProviderComponent implements OnInit {
             new FormGroup(configFieldsGroup, Validators.required));
 
         credentialFieldsGroup = {
-            'type': new FormControl({value: '', disabled: true}, Validators.required),
+            'type': new FormControl({value: '', disabled: this.isUpdateMode}, Validators.required),
             'data': new FormGroup({})
         };
         this.taskProviderFormGroup.setControl('Credentials',

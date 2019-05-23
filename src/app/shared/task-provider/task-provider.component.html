@@ -1,9 +1,11 @@
 <div [formGroup]="taskProviderFormGroup" *ngIf="isInitialized">
     <div class="layout-row">
         <mat-form-field floatLabel="always" class="task-provider-select flex">
+            <mat-icon matSuffix *ngIf="!isUpdateMode">edit</mat-icon>
+            <mat-icon matSuffix *ngIf="isUpdateMode">block</mat-icon>
             <mat-label></mat-label>
             <mat-select [formControlName]="selectedTaskProviderKey" placeholder="Select a Task Provider"
-                        (selectionChange)="onProviderChange($event.value)">
+                        (selectionChange)="onProviderChange($event.value)" [disabled]="isUpdateMode">
                 <mat-option *ngFor="let provider of taskProviderOptions" [value]="provider.Type">
                     {{provider.DisplayTitle}}
                 </mat-option>

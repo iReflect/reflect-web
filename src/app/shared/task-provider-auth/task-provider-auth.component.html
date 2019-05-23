@@ -1,5 +1,7 @@
 <div [formGroup]="authFormGroup">
     <mat-form-field floatLabel="always">
+        <mat-icon matSuffix *ngIf="!isUpdateMode">edit</mat-icon>
+        <mat-icon matSuffix *ngIf="isUpdateMode">block</mat-icon>
         <mat-label></mat-label>
         <mat-select formControlName="type" placeholder="Select an Auth Type"
                     (selectionChange)="onAuthTypeChange($event.value)">

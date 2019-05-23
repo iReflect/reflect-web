@@ -31,7 +31,7 @@ export class TaskProviderAuthComponent implements OnInit, OnChanges {
 
     ngOnInit() {
         if (this.isUpdateMode) {
-                    this.onAuthTypeChange(this.taskProviderAuthData.type);
+        this.onAuthTypeChange(this.taskProviderAuthData.type);
         this.authFormGroup.patchValue({
             'type': this.taskProviderAuthData.type,
         });
