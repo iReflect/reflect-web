@@ -1,14 +1,16 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { RetrospectiveService } from 'app/shared/services/retrospective.service';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
-import { API_RESPONSE_MESSAGES, APP_ROUTE_URLS, SNACKBAR_DURATION } from '@constants/app-constants';
-import { MatDialog, MatSnackBar, SHOW_ANIMATION } from '@angular/material';
-import { RetrospectiveCreateComponent } from 'app/retrospective/retrospective-create/retrospective-create.component';
-import { UtilsService } from 'app/shared/utils/utils.service';
-import { RetrospectiveDataService } from 'app/shared/services/retrospective-data.service';
-import { UserService } from 'app/shared/services/user.service';
+
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
+
+import { API_RESPONSE_MESSAGES, APP_ROUTE_URLS, SNACKBAR_DURATION } from '@constants/app-constants';
+import { RetrospectiveCreateComponent } from 'app/retrospective/retrospective-create/retrospective-create.component';
+import { RetrospectiveService } from 'app/shared/services/retrospective.service';
+import { RetrospectiveDataService } from 'app/shared/services/retrospective-data.service';
+import { UserService } from 'app/shared/services/user.service';
+import { UtilsService } from 'app/shared/utils/utils.service';
 
 @Component({
     selector: 'app-retrospective-list',
@@ -16,11 +18,11 @@ import 'rxjs/add/operator/takeUntil';
     styleUrls: ['./retrospective-list.component.scss']
 })
 export class RetrospectiveListComponent implements OnInit, OnDestroy {
-    myRetroDataSource: any;
-    othersRetroDataSource: any;
-    displayedColumns = ['title', 'team', 'created_at', 'latest_sprint'];
-    showAll: boolean;
-    isAdmin: boolean;
+    public myRetroDataSource: any;
+    public othersRetroDataSource: any;
+    public displayedColumns = ['title', 'team', 'created_at', 'latest_sprint'];
+    public showAll: boolean;
+    public isAdmin: boolean;
     private destroy$: Subject<boolean> = new Subject<boolean>();
 
     constructor(
