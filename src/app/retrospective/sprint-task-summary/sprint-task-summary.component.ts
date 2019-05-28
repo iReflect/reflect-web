@@ -322,8 +322,11 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                         })
                     },
                     valueSetter: (cellParams) => {
-                        if (cellParams.newValue >= RESOLUTION_STATES.DONE &&
-                            cellParams.newValue <= RESOLUTION_STATES.CANT_REPRODUCE) {
+                        if (_.indexOf([RESOLUTION_STATES.DONE,
+                                RESOLUTION_STATES.CANT_REPRODUCE,
+                                RESOLUTION_STATES.DUPLICATE,
+                                RESOLUTION_STATES.WONT_DO],
+                                cellParams.newValue)) {
                             this.markDoneUnDone(cellParams, cellParams.newValue);
                         }
                     }
