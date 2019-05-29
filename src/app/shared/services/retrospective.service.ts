@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
-import { API_URLS } from '@constants/api-urls';
-import { RestApiHelperService } from 'app/shared/utils/rest-api-helper.service';
-import { Observable } from 'rxjs/Observable';
+
 import 'rxjs/add/observable/of';
 import { Restangular } from 'ngx-restangular';
+import { Observable } from 'rxjs/Observable';
+
+import { API_URLS } from '@constants/api-urls';
+import { RestApiHelperService } from 'app/shared/utils/rest-api-helper.service';
 
 @Injectable()
 export class RetrospectiveService {
