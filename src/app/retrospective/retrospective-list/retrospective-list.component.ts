@@ -47,8 +47,6 @@ export class RetrospectiveListComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this.destroy$.next(true);
         this.destroy$.complete();
-        this.myRetroDataSource = null;
-        this.othersRetroDataSource = null;
     }
 
     initializeDataSource() {

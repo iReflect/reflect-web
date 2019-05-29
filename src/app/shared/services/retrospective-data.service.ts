@@ -12,7 +12,7 @@ export class RetrospectiveDataService {
         return this.showAllRetro;
     }
 
-    clearRetroData() {
+    clearShowAllState() {
         this.showAllRetro = false;
     }
 }

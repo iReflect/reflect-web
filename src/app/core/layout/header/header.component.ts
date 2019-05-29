@@ -63,7 +63,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
             this.authService.logout().takeUntil(this.destroy$).subscribe(
                 () => {
                     this.userStoreService.clearUserData();
-                    this.retrospectiveDataService.clearRetroData();
+                    this.retrospectiveDataService.clearShowAllState();
                     this.logoutInProgress = false;
                     this.gridService.clearColumnState();
                     this.gridService.clearFilterState();
