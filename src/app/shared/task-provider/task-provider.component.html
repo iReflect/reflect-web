@@ -1,6 +1,6 @@
 <div [formGroup]="taskProviderFormGroup" *ngIf="isInitialized">
     <div class="layout-row">
-        <mat-form-field floatLabel="always" class="task-provider-select flex">
+        <mat-form-field floatLabel="always" class="task-provider-select flex" [ngClass]="{'block-cursor': isUpdateMode}">
             <mat-icon matSuffix *ngIf="!isUpdateMode">edit</mat-icon>
             <mat-icon matSuffix *ngIf="isUpdateMode">block</mat-icon>
             <mat-label></mat-label>
@@ -18,7 +18,7 @@
             Credentials
         </mat-toolbar>
         <div class="table-box padded-container">
-            <div formGroupName="Credentials">
+            <div formGroupName="Credentials" [ngClass]="{'block-cursor': isUpdateMode}">
                 <app-task-provider-auth
                     [isUpdateMode]="isUpdateMode"
                     [taskProviderAuthData]="taskProviderAuthData"
@@ -33,9 +33,10 @@
         <div class="table-box padded-container">
             <div [formGroupName]="taskProviderConfigKey">
                 <div *ngFor="let field of selectedTaskProviderConfigOptions['fields']" class="layout-row">
-                    <mat-form-field class="flex" [class.field-with-hint]="field.Hint">
+                    <mat-form-field class="flex" [ngClass]="{'block-cursor': isUpdateMode && !field.Editable}" [class.field-with-hint]="field.Hint">
                         <input matInput [placeholder]="field.FieldDisplayName" [formControlName]="field.FieldName"/>
-                        <mat-icon matSuffix >edit</mat-icon>
+                        <mat-icon *ngIf="!(isUpdateMode && !field.Editable)" matSuffix>edit</mat-icon>
+                        <mat-icon *ngIf="isUpdateMode && !field.Editable" matSuffix>block</mat-icon>
                         <mat-hint *ngIf="field.Hint">
                             <mat-icon>info</mat-icon>
                             <span [innerHTML]="field.Hint"></span>

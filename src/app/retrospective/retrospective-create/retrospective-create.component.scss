@@ -28,3 +28,16 @@ mat-form-field {
     /* stylelint-enable */
     display: none;
 }
+
+.block-cursor {
+    cursor: not-allowed;
+/* stylelint-disable */
+    ::ng-deep .mat-select-disabled .mat-select-trigger {
+    /* stylelint-enable */
+        cursor: not-allowed;
+    }
+
+    input {
+        cursor: not-allowed;
+    }
+}

@@ -9,14 +9,14 @@
     <div class="table-box padded-container">
         <div class="full-width-form">
             <div class="flex">
-                <mat-form-field>
+                <mat-form-field [ngClass]="{'block-cursor': !getDisableState('Title')}">
                     <input matInput formControlName="title" placeholder="Retrospective Title">
                     <mat-icon matSuffix *ngIf="getDisableState('Title')">edit</mat-icon>
                     <mat-icon matSuffix *ngIf="!getDisableState('Title')">block</mat-icon>
                 </mat-form-field>
             </div>
             <div class="flex">
-                <mat-form-field>
+                <mat-form-field [ngClass]="{'block-cursor': !getDisableState('StoryPointPerWeek')}">
                     <input matInput type="number" min="0" formControlName="storyPointPerWeek" placeholder="Expected Points Per Week Per Person">
                     <mat-icon matSuffix *ngIf="getDisableState('StoryPointPerWeek')">edit</mat-icon>
                     <mat-icon matSuffix *ngIf="!getDisableState('StoryPointPerWeek')">block</mat-icon>
@@ -30,7 +30,7 @@
     <div class="table-box padded-container">
         <div class="flex-container layout-row">
             <div class="flex">
-                <mat-form-field>
+                <mat-form-field [ngClass]="{'block-cursor': !getDisableState('TeamID')}">
                     <mat-icon matSuffix *ngIf="getDisableState('TeamID')">edit</mat-icon>
                     <mat-icon matSuffix *ngIf="!getDisableState('TeamID')">block</mat-icon>
                     <mat-select formControlName="team" placeholder="Select a Team" (selectionChange)="getTimeProviders()">
@@ -83,7 +83,7 @@
     <div class="table-box padded-container">
         <div class="flex-container layout-row">
             <div class="flex">
-                <mat-form-field>
+                <mat-form-field [ngClass]="{'block-cursor': !getDisableState('TimeProviderName')}">
                     <mat-hint *ngIf="disableTimeProviderField" class="larger-size-hint">Choose a Task Provider and Team first
                     </mat-hint>
                     <mat-icon matSuffix *ngIf="getDisableState('TimeProviderName')">edit</mat-icon>
