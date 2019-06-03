@@ -337,7 +337,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                             color: 'primary',
                             icon: (cellParams.data.DoneAt || this.doneFlag) ? 'check_box' : 'check_box_outline_blank',
                             onClick: (params) => {
-                                if (params.data.DoneAt) {
+                                if (params.data.DoneAt && params.data.IsTrackerTask) {
                                     this.markDoneUnDone(params, null);
                                 }
                             }
