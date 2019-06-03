@@ -1,6 +1,7 @@
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
+import { MAT_DIALOG_DATA, MatChipInputEvent, MatDialogRef, MatSnackBar } from '@angular/material';
 
 import * as _ from 'lodash';
 import { Subject } from 'rxjs/Subject';
@@ -41,9 +42,12 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
     public retrospectiveID: number;
     public isUpdateMode: boolean;
     public fieldsEditableMap: any;
-    private dummyPasswordValue = 'xxxxxxxxx';
+    public ProjectNames = new Map<string, boolean>();
+    private dummyHiddenValue = '********';
     private originalPassword: string;
     commaSeparatedRegex = COMMA_SEPARATED_STRING_PATTERN;
+    // Enter, comma
+    public separatorKeysCodes = [ENTER, COMMA];
     private destroy$: Subject<boolean> = new Subject<boolean>();
 
     constructor(
@@ -81,9 +85,15 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
         this.retrospectiveService.getRetrospectiveByID(this.retrospectiveID).subscribe(
             response => {
                 this.retrospective = response.body;
-                // Replacing orginal password With dummy password
-                this.originalPassword = this.retrospective.TaskProviderConfig[0].data.credentials.password;
-                this.retrospective.TaskProviderConfig[0].data.credentials.password = this.dummyPasswordValue;
+                if (this.retrospective.TaskProviderConfig[0].data.credentials.type === 'basicAuth') {
+                    // Replacing orginal password With dummy value
+                    this.originalPassword = this.retrospective.TaskProviderConfig[0].data.credentials.password;
+                    this.retrospective.TaskProviderConfig[0].data.credentials.password = this.dummyHiddenValue;
+                } else if (this.retrospective.TaskProviderConfig[0].data.credentials.type === 'apiToken') {
+                    // Replacing orginal API token With dummy value
+                    this.originalPassword = this.retrospective.TaskProviderConfig[0].data.credentials.apiToken;
+                    this.retrospective.TaskProviderConfig[0].data.credentials.apiToken = this.dummyHiddenValue;
+                }
                 this.getFieldsEditLevel();
             },
           );
@@ -97,6 +107,9 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
                 this.setValueAndDisableState('team', 'TeamID');
                 this.setValueAndDisableState('storyPointPerWeek', 'StoryPointPerWeek');
                 this.setValueAndDisableState('projectName', 'ProjectName');
+                this.projectNameControl.value.split(',').forEach((element: string) => {
+                    this.ProjectNames.set(element, false);
+                });
                 this.isRetrospectLoaded = true;
             },
           );
@@ -107,19 +120,36 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
     }
 
     setValueAndDisableState(formName: string, name: string) {
-        if (!(this.fieldsEditableMap[name] === EDIT_LEVELS.PARTIALLY)) {
-            this.retroFormGroup.patchValue({[formName]: this.retrospective[name]});
-        } else {
-            this.retroFormGroup.get([formName]).clearValidators();
-        }
+        this.retroFormGroup.patchValue({[formName]: this.retrospective[name]});
+
         if (this.fieldsEditableMap[name] === EDIT_LEVELS.NOT_EDITABLE) {
             this.retroFormGroup.get(formName).disable();
         }
     }
 
-    getUnEditableDefaultValue(name: string) {
-        return this.retrospective[name];
+    getProjectMap() {
+        return Array.from(this.ProjectNames.keys());
     }
+    addChip(event: MatChipInputEvent) {
+        const input = event.input;
+        const value = event.value;
+
+        // Reset the input value
+      if (input) { input.value = ''; }
+
+      if (this.ProjectNames.has(value)) {
+        return;
+      }
+      if ((value || '').trim()) {
+            // Add our project
+            this.ProjectNames.set(value.trim(), true);
+            this.projectNameControl.patchValue(Array.from(this.ProjectNames.keys()).toString());
+        }
+    }
+    removeChip(keyword: string): void {
+        this.ProjectNames.delete(keyword);
+        this.projectNameControl.patchValue(Array.from(this.ProjectNames.keys()).toString());
+      }
 
     getTeamList() {
         this.retrospectiveService.getTeamList()
@@ -246,8 +276,6 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
         this.disableButton = true;
         const requestBody = this.parseRetroData(formValue);
 
-        // append project name to current project name.
-        requestBody.projectName = this.retrospective.ProjectName + (requestBody.projectName ? ',' : '') + requestBody.projectName;
         // set credentialChanged key to true.
         requestBody['credentialsChanged'] = true;
         // add retroID in the request body.
@@ -255,7 +283,11 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
 
         // if credential are not changed we will set credentialChanged key to false and set original password back.
         if (!this.isCredentialsChanged(requestBody.taskProvider[0].data.credentials)) {
-            requestBody.taskProvider[0].data.credentials.password = this.originalPassword;
+            if (requestBody.taskProvider[0].data.credentials.type === 'apiToken') {
+                requestBody.taskProvider[0].data.credentials.apiToken = this.originalPassword;
+            } else {
+                requestBody.taskProvider[0].data.credentials.password = this.originalPassword;
+            }
             requestBody['credentialsChanged'] = false;
         }
 
@@ -278,8 +310,13 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
             );
     }
     isCredentialsChanged(currentCredentials: any): boolean {
-        return currentCredentials.password !== this.dummyPasswordValue
+        if (currentCredentials.type === 'basicAuth') {
+           return currentCredentials.password !== this.dummyHiddenValue
         || currentCredentials.username !== this.retrospective.TaskProviderConfig[0].data.credentials.username;
+        }
+        if (currentCredentials.type === 'apiToken') {
+            return currentCredentials.apiToken !== this.dummyHiddenValue;
+         }
     }
     parseRetroData(formValue: any) {
         return {

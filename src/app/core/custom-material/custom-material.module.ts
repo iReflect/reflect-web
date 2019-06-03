@@ -20,56 +20,38 @@ import {
     MatTableModule,
     MatTabsModule,
     MatToolbarModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatChipsModule
 } from '@angular/material';
 
+const modules = [
+    MatButtonModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatToolbarModule,
+    MatTabsModule,
+    MatTableModule,
+    MatExpansionModule,
+    MatSelectModule,
+    MatCardModule,
+    MatMenuModule,
+    MatIconModule,
+    MatListModule,
+    MatSidenavModule,
+    MatTooltipModule,
+    MatGridListModule,
+    MatRadioModule,
+    MatSnackBarModule,
+    MatDialogModule,
+    MatDatepickerModule,
+    MatProgressSpinnerModule,
+    MatSlideToggleModule,
+    MatChipsModule
+];
+
 @NgModule({
-    imports: [
-        MatButtonModule,
-        MatInputModule,
-        MatFormFieldModule,
-        MatToolbarModule,
-        MatTabsModule,
-        MatTableModule,
-        MatExpansionModule,
-        MatSelectModule,
-        MatCardModule,
-        MatMenuModule,
-        MatIconModule,
-        MatListModule,
-        MatSidenavModule,
-        MatTooltipModule,
-        MatGridListModule,
-        MatRadioModule,
-        MatSnackBarModule,
-        MatDialogModule,
-        MatDatepickerModule,
-        MatProgressSpinnerModule,
-        MatSlideToggleModule
-    ],
-    exports: [
-        MatButtonModule,
-        MatInputModule,
-        MatFormFieldModule,
-        MatToolbarModule,
-        MatTabsModule,
-        MatTableModule,
-        MatExpansionModule,
-        MatSelectModule,
-        MatCardModule,
-        MatMenuModule,
-        MatIconModule,
-        MatListModule,
-        MatSidenavModule,
-        MatTooltipModule,
-        MatGridListModule,
-        MatRadioModule,
-        MatSnackBarModule,
-        MatDialogModule,
-        MatDatepickerModule,
-        MatProgressSpinnerModule,
-        MatSlideToggleModule
-    ],
+    imports: modules,
+    exports: modules,
 })
 export class CustomMaterialModule {
 }

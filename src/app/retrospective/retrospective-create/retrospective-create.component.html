@@ -47,14 +47,26 @@
         <div class="flex-container layout-row">
             <div class="flex">
                 <mat-form-field>
-                    <input matInput formControlName="projectName" placeholder="Specify Project Name (Comma Separated)" [pattern]="commaSeparatedRegex">
-                    <span matPrefix *ngIf="isUpdateMode">{{getUnEditableDefaultValue("ProjectName")}} &nbsp;</span>
-                    <mat-error *ngIf="projectNameControl.errors && projectNameControl.errors['pattern']">
-                        It should be a comma separated string
+                    <mat-chip-list #projectChipList formControlName="projectName">
+                        <mat-chip *ngFor="let project  of getProjectMap()"
+                        [selectable]="false"
+                        [removable]="ProjectNames.get(project)"
+                        (remove)="removeChip(project)">
+                        {{project}}
+                        <mat-icon matChipRemove *ngIf="ProjectNames.get(project)">cancel</mat-icon>
+                        </mat-chip>
+                        <input matInput
+                        [matChipInputFor]="projectChipList"
+                        [matChipInputAddOnBlur]="true"
+                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                        (matChipInputTokenEnd)="addChip($event)"
+                        placeholder="Specify Projects' Name to be used by time provider"/>
+                    </mat-chip-list>
+                    <mat-error *ngIf="projectNameControl.errors">
+                        Project name is required
                     </mat-error>
                     <mat-icon matSuffix *ngIf="getDisableState('ProjectName')">edit</mat-icon>
                     <mat-icon matSuffix *ngIf="!getDisableState('ProjectName')">block</mat-icon>
-                    <mat-hint class="larger-size-hint">Used by time provider</mat-hint>
                 </mat-form-field>
             </div>
         </div>
