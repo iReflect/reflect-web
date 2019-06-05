@@ -1,5 +1,8 @@
+import {ENTER, COMMA} from '@angular/cdk/keycodes';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatChipInputEvent } from '@angular/material';
+
 import { TRACKER_TICKET_TYPE_MAP, COMMA_SEPARATED_STRING_PATTERN, TRACKER_TICKET_STATUS_MAP } from '@constants/app-constants';
 
 @Component({
@@ -25,7 +28,12 @@ export class TaskProviderComponent implements OnInit {
     trackerTicketTypeMap = TRACKER_TICKET_TYPE_MAP;
     trackerTicketStatusMap = TRACKER_TICKET_STATUS_MAP;
     commaSeparatedRegex = COMMA_SEPARATED_STRING_PATTERN;
-
+    public doneValues = [];
+    public featureValues = [];
+    public taskValues = [];
+    public bugValues = [];
+    // Enter, comma
+    separatorKeysCodes = [ENTER, COMMA];
     // Since we are dynamically generating the task provider's form, these are the possible fields
     selectedTaskProviderConfigOptions: any = {};
 
@@ -56,7 +64,6 @@ export class TaskProviderComponent implements OnInit {
         this.taskProviderAuthData = this.taskProviderData.data.credentials || {};
         this.taskProviderFormGroup.patchValue({
             [this.selectedTaskProviderKey]: this.taskProviderData.type,
-            // [this.taskProviderConfigKey]: this.taskProviderData[0].data.credentials.type,
         });
         this.onProviderChange(this.taskProviderData.type);
     }
@@ -98,6 +105,13 @@ export class TaskProviderComponent implements OnInit {
                 Validators.required
             )
         };
+        // Assigning value to the Chips.
+        if (this.isUpdateMode) {
+            this.doneValues = this.taskProviderData.data[TRACKER_TICKET_STATUS_MAP.DONE].split(',');
+            this.featureValues = this.taskProviderData.data[TRACKER_TICKET_TYPE_MAP.FEATURE].split(',');
+            this.taskValues = this.taskProviderData.data[TRACKER_TICKET_TYPE_MAP.TASK].split(',');
+            this.bugValues = this.taskProviderData.data[TRACKER_TICKET_TYPE_MAP.BUG].split(',');
+        }
 
         configFieldsGroup = {...configFieldsGroup, ...ticketTypeMappingGroup, ...ticketStatusMappingGroup};
 
@@ -131,5 +145,30 @@ export class TaskProviderComponent implements OnInit {
     }
     get doneStatusControl() {
         return this.taskProviderFormGroup.get([this.taskProviderConfigKey, TRACKER_TICKET_STATUS_MAP.DONE]);
+    }
+
+    addChip(event: MatChipInputEvent, array: string[], control: any): void {
+        const input = event.input;
+        const value = event.value;
+
+        // Reset the input value
+        if (input) { input.value = ''; }
+
+        if (array.indexOf(value) > -1) {
+            return;
+        }
+        // Add our keyword
+        if ((value || '').trim()) {
+          array.push(value.trim());
+          control.patchValue(array.toString());
+        }
+    }
+
+    removeChip(keyword: any, array: string[], control: any): void {
+        const index = array.indexOf(keyword);
+        if (index >= 0) {
+            array.splice(index, 1);
+            control.patchValue(array.toString());
+        }
     }
 }

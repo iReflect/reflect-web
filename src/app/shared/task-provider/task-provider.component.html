@@ -51,14 +51,27 @@
         <div class="table-box padded-container" [formGroupName]="taskProviderConfigKey">
             <div class="layout-row">
                 <mat-form-field class="flex field-with-hint">
-                    <input matInput placeholder="Completed (Comma Separated)" [pattern]="commaSeparatedRegex" [formControlName]="trackerTicketStatusMap.DONE"/>
+                    <mat-chip-list #doneStatusChipList [formControlName]="trackerTicketStatusMap.DONE">
+                        <mat-chip *ngFor="let doneValue of doneValues"
+                            [removable]="true"
+                            (remove)="removeChip(doneValue,doneValues,doneStatusControl)">
+                            {{doneValue}}
+                            <mat-icon matChipRemove *ngIf="true">cancel</mat-icon>
+                        </mat-chip>
+                        <input matInput
+                            [matChipInputFor]="doneStatusChipList"
+                            [matChipInputAddOnBlur]="true"
+                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                            (matChipInputTokenEnd)="addChip($event,doneValues,doneStatusControl)"
+                            placeholder="Completed"/>
+                    </mat-chip-list>
                     <mat-icon matSuffix>edit</mat-icon>
-                    <mat-error *ngIf="doneStatusControl.errors && doneStatusControl.errors['pattern']">
-                        It should be a comma separated string
-                    </mat-error> 
-                    <mat-hint> 
+                    <mat-error *ngIf="doneStatusControl.errors">
+                        This field is required
+                    </mat-error>
+                    <mat-hint>
                         <mat-icon>info</mat-icon>
-                        <span>Comma seperated list of task status representing completed task</span>
+                        <span>list of task status representing completed task</span>
                     </mat-hint>
                 </mat-form-field>
             </div>
@@ -69,28 +82,67 @@
         <div class="table-box padded-container" [formGroupName]="taskProviderConfigKey">
             <div class="layout-row">
                 <mat-form-field class="flex">
-                    <input matInput placeholder="Feature (Comma Separated)" [pattern]="commaSeparatedRegex" [formControlName]="trackerTicketTypeMap.FEATURE"/>
+                        <mat-chip-list #featureTicketTypeChipList [formControlName]="trackerTicketTypeMap.FEATURE">
+                            <mat-chip *ngFor="let featureValue of featureValues"
+                                [removable]="true"
+                                (remove)="removeChip(featureValue,featureValues,featureTypeControl)">
+                                {{featureValue}}
+                                <mat-icon matChipRemove *ngIf="true">cancel</mat-icon>
+                            </mat-chip>
+                            <input matInput
+                                [matChipInputFor]="featureTicketTypeChipList"
+                                [matChipInputAddOnBlur]="true"
+                                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                (matChipInputTokenEnd)="addChip($event,featureValues,featureTypeControl)"
+                                placeholder="Feature"/>
+                        </mat-chip-list>
+                        <mat-icon matSuffix>edit</mat-icon>
+                        <mat-error *ngIf="featureTypeControl.errors">
+                            This field is required
+                        </mat-error>
+                    </mat-form-field>
+            </div>
+            <div class="layout-row">
+                <mat-form-field class="flex">
+                    <mat-chip-list #taskTicketTypeChipList [formControlName]="trackerTicketTypeMap.TASK">
+                        <mat-chip *ngFor="let taskValue of taskValues"
+                            [removable]="true"
+                            (remove)="removeChip(taskValue,taskValues,taskTypeControl)">
+                            {{taskValue}}
+                            <mat-icon matChipRemove *ngIf="true">cancel</mat-icon>
+                        </mat-chip>
+                        <input matInput
+                            [matChipInputFor]="taskTicketTypeChipList"
+                            [matChipInputAddOnBlur]="true"
+                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                            (matChipInputTokenEnd)="addChip($event,taskValues,taskTypeControl)"
+                            placeholder="Task"/>
+                    </mat-chip-list>
                     <mat-icon matSuffix>edit</mat-icon>
-                    <mat-error *ngIf="featureTypeControl.errors && featureTypeControl.errors['pattern']">
-                        It should be a comma separated string
+                    <mat-error *ngIf="taskTypeControl.errors">
+                        This field is required
                     </mat-error>
                 </mat-form-field>
             </div>
             <div class="layout-row">
                 <mat-form-field class="flex">
-                    <input matInput placeholder="Task (Comma Separated)" [pattern]="commaSeparatedRegex" [formControlName]="trackerTicketTypeMap.TASK"/>
+                    <mat-chip-list #bugTicketTypeChipList [formControlName]="trackerTicketTypeMap.BUG">
+                        <mat-chip *ngFor="let bugValue of bugValues"
+                            [removable]="true"
+                            (remove)="removeChip(bugValue,bugValues,bugTypeControl)">
+                            {{bugValue}}
+                            <mat-icon matChipRemove *ngIf="true">cancel</mat-icon>
+                        </mat-chip>
+                        <input matInput
+                            [matChipInputFor]="bugTicketTypeChipList"
+                            [matChipInputAddOnBlur]="true"
+                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                            (matChipInputTokenEnd)="addChip($event,bugValues,bugTypeControl)"
+                            placeholder="Bug"/>
+                    </mat-chip-list>
                     <mat-icon matSuffix>edit</mat-icon>
-                    <mat-error *ngIf="taskTypeControl.errors && taskTypeControl.errors['pattern']">
-                        It should be a comma separated string
-                    </mat-error>
-                </mat-form-field>
-            </div>
-            <div class="layout-row">
-                <mat-form-field class="flex">
-                    <input matInput placeholder="Bug (Comma Separated)" [pattern]="commaSeparatedRegex" [formControlName]="trackerTicketTypeMap.BUG"/>
-                    <mat-icon matSuffix>edit</mat-icon>
-                    <mat-error *ngIf="bugTypeControl.errors && bugTypeControl.errors['pattern']">
-                        It should be a comma separated string
+                    <mat-error *ngIf="bugTypeControl.errors">
+                        This field is required
                     </mat-error>
                 </mat-form-field>
             </div>
