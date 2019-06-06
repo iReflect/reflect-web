@@ -81,7 +81,7 @@ export class RetrospectiveDashboardComponent implements OnInit, OnDestroy {
             height: '90%',
             maxWidth: 950,
             data : {
-                retrospectiveID: this.retrospectiveID,
+                retrospective: this.retrospectiveData,
             }
         });
 

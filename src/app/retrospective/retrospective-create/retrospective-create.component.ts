@@ -62,8 +62,9 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
         public dialogRef: MatDialogRef<RetrospectiveCreateComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any
     ) {
-        if (data && data['retrospectiveID']) {
-            this.retrospectiveID = data['retrospectiveID'];
+        if (data && data['retrospective']) {
+            this.retrospective = data['retrospective'];
+            this.retrospectiveID = this.retrospective.ID;
             this.isUpdateMode = true;
         }
     }
@@ -74,7 +75,8 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
         this.getTeamList();
         this.addTaskProvider();
         if (this.isUpdateMode) {
-            this.getRetro();
+            this.hidePassword();
+            this.getFieldsEditLevel();
         }
     }
 
@@ -86,22 +88,16 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
         return this.retroFormGroup.get('projectName');
     }
 
-    getRetro() {
-        this.retrospectiveService.getRetrospectiveByID(this.retrospectiveID).subscribe(
-            response => {
-                this.retrospective = response.body;
-                if (this.retrospective.TaskProviderConfig[0].data.credentials.type === 'basicAuth') {
-                    // Replacing orginal password With dummy value
-                    this.originalPassword = this.retrospective.TaskProviderConfig[0].data.credentials.password;
-                    this.retrospective.TaskProviderConfig[0].data.credentials.password = DUMMY_HIDDEN_VALUE;
-                } else if (this.retrospective.TaskProviderConfig[0].data.credentials.type === 'apiToken') {
-                    // Replacing orginal API token With dummy value
-                    this.originalPassword = this.retrospective.TaskProviderConfig[0].data.credentials.apiToken;
-                    this.retrospective.TaskProviderConfig[0].data.credentials.apiToken = DUMMY_HIDDEN_VALUE;
-                }
-                this.getFieldsEditLevel();
-            },
-          );
+    hidePassword() {
+        if (this.retrospective.TaskProviderConfig[0].data.credentials.type === 'basicAuth') {
+            // Replacing orginal password With dummy value
+            this.originalPassword = this.retrospective.TaskProviderConfig[0].data.credentials.password;
+            this.retrospective.TaskProviderConfig[0].data.credentials.password = DUMMY_HIDDEN_VALUE;
+        } else if (this.retrospective.TaskProviderConfig[0].data.credentials.type === 'apiToken') {
+            // Replacing orginal API token With dummy value
+            this.originalPassword = this.retrospective.TaskProviderConfig[0].data.credentials.apiToken;
+            this.retrospective.TaskProviderConfig[0].data.credentials.apiToken = DUMMY_HIDDEN_VALUE;
+        }
     }
 
     getFieldsEditLevel() {
@@ -120,15 +116,16 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
           );
     }
 
-    getDisableState(name: string): boolean {
+    getEditableState(name: string): boolean {
         return !(this.isUpdateMode && this.fieldsEditableMap[name] === EDIT_LEVELS.NOT_EDITABLE);
     }
 
-    setValueAndDisableState(formName: string, name: string) {
-        this.retroFormGroup.patchValue({[formName]: this.retrospective[name]});
+    // This function will set value and its edit states of form fields.
+    setValueAndDisableState(formFieldName: string, name: string) {
+        this.retroFormGroup.patchValue({[formFieldName]: this.retrospective[name]});
 
         if (this.fieldsEditableMap[name] === EDIT_LEVELS.NOT_EDITABLE) {
-            this.retroFormGroup.get(formName).disable();
+            this.retroFormGroup.get(formFieldName).disable();
         }
     }
 
@@ -214,7 +211,6 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
                     this.setValueAndDisableState('timeProviderKey', 'TimeProviderName');
                 } else {
                     this.selectedTimeProvider = this.timeProvidersList[0];
-                    this.retroFormGroup.controls['timeProviderKey'].enable();
                 }
                 this.disableTimeProviderField = false;
             },

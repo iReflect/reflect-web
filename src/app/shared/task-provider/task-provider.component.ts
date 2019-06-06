@@ -1,4 +1,4 @@
-import {ENTER, COMMA} from '@angular/cdk/keycodes';
+import { ENTER, COMMA } from '@angular/cdk/keycodes';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material';
@@ -61,10 +61,11 @@ export class TaskProviderComponent implements OnInit {
 
     setTaskProviderData() {
         this.taskProviderData = this.retrospectiveData.TaskProviderConfig[0];
-        this.taskProviderAuthData = this.taskProviderData.data.credentials || {};
+        this.taskProviderAuthData = this.taskProviderData.data.credentials;
         this.taskProviderFormGroup.patchValue({
             [this.selectedTaskProviderKey]: this.taskProviderData.type,
         });
+        this.taskProviderFormGroup.get(this.selectedTaskProviderKey).disable();
         this.onProviderChange(this.taskProviderData.type);
     }
 
