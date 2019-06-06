@@ -154,7 +154,7 @@ export class TaskProviderComponent implements OnInit {
         // Reset the input value
         if (input) { input.value = ''; }
 
-        if (array.indexOf(value) > -1) {
+        if (array.findIndex(element => value.toLowerCase() === element.toLowerCase()) > -1) {
             return;
         }
         // Add our keyword

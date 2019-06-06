@@ -137,7 +137,7 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
         // Reset the input value
       if (input) { input.value = ''; }
 
-      if (this.ProjectNames.has(value)) {
+      if (Array.from(this.ProjectNames.keys()).findIndex(element => value.toLowerCase() === element.toLowerCase()) > -1) {
         return;
       }
       if ((value || '').trim()) {
