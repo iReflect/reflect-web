@@ -11,6 +11,7 @@ export const API_URLS = {
         current: '/users/current'
     },
     taskProviderConfig: '/task-tracker/config-list',
+    timeProvidersList: '/task-tracker/supported-time-providers',
     retrospectives: '/retrospectives',
     teamsList: '/teams',
     teamMembers: '/retrospectives/:retrospectiveID/team-members',

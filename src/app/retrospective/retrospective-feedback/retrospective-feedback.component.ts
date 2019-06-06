@@ -2,7 +2,7 @@ import {
     Component, EventEmitter, HostListener, Input, OnChanges, OnDestroy, OnInit, Output,
     SimpleChanges
 } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import { ColumnApi, GridApi, GridOptions } from 'ag-grid';
 import * as _ from 'lodash';
 
@@ -10,6 +10,7 @@ import {
     API_RESPONSE_MESSAGES,
     RETRO_FEEDBACK_GOAL_TYPES,
     RETRO_FEEDBACK_SCOPE_LABELS,
+    RETRO_FEEDBACK_SCOPE_TYPES,
     RETRO_FEEDBACK_TYPES,
     SNACKBAR_DURATION,
     SPRINT_STATES
@@ -17,6 +18,7 @@ import {
 import { SelectCellEditorComponent } from 'app/shared/ag-grid-editors/select-cell-editor/select-cell-editor.component';
 import { DatePickerEditorComponent } from 'app/shared/ag-grid-editors/date-picker-editor/date-picker-editor.component';
 import { ClickableButtonRendererComponent } from 'app/shared/ag-grid-renderers/clickable-button-renderer/clickable-button-renderer.component';
+import { BasicModalComponent } from 'app/shared/basic-modal/basic-modal.component';
 import { GridService } from 'app/shared/services/grid.service';
 import { RetrospectiveService } from 'app/shared/services/retrospective.service';
 import { UtilsService } from 'app/shared/utils/utils.service';
@@ -71,6 +73,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
         private retrospectiveService: RetrospectiveService,
         private snackBar: MatSnackBar,
         private utils: UtilsService,
+        public dialog: MatDialog,
         private gridService: GridService,
     ) {
     }
@@ -123,6 +126,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                 'selectEditor': SelectCellEditorComponent,
                 'clickableButtonRenderer': ClickableButtonRendererComponent,
                 'datePicker': DatePickerEditorComponent,
+                'deleteButtonRenderer': ClickableButtonRendererComponent,
             },
             onCellEditingStarted: () => this.onCellEditingStarted(),
             onCellEditingStopped: () => this.onCellEditingStopped(),
@@ -214,12 +218,20 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
     }
 
     updateRetroFeedback(params: any) {
-        if (params.colDef.field === 'AssigneeID' && !params.newValue) {
-            params.newValue = 0;
-        }
+        let assigneeIDPrevValue: any;
         const updatedRetroFeedbackData = {
             [params.colDef.field]: params.newValue
         };
+        if (params.colDef.field === 'Scope') {
+            assigneeIDPrevValue = params.data.AssigneeID;
+            if (params.newValue === RETRO_FEEDBACK_SCOPE_TYPES.Team) {
+                params.data.AssigneeID = null;
+            } else {
+                params.data.AssigneeID = this.teamMembers[0].ID;
+                updatedRetroFeedbackData['AssigneeID'] = this.teamMembers[0].ID;
+            }
+            params.node.setData(params.data);
+        }
         if (this.feedbackType === RETRO_FEEDBACK_TYPES.HIGHLIGHT) {
             this.retrospectiveService.updateSprintHighlight(this.retrospectiveID, this.sprintID, params.data.ID, updatedRetroFeedbackData)
                 .takeUntil(this.destroy$)
@@ -232,7 +244,13 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                         this.snackBar.open(
                             this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintHighlightsUpdateError,
                             '', { duration: SNACKBAR_DURATION });
-                        this.revertCellValue(params);
+                        if (params.colDef.field === 'Scope') {
+                            // To revert the change of assigneeID with change in Scope
+                            this.revertCellValue(params, assigneeIDPrevValue);
+                        } else {
+                            // To revert the change of only changed field
+                            this.revertCellValue(params);
+                        }
                     }
                 );
         } else if (this.feedbackType === RETRO_FEEDBACK_TYPES.NOTE) {
@@ -247,7 +265,13 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                         this.snackBar.open(
                             this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintNotesUpdateError,
                             '', { duration: SNACKBAR_DURATION });
-                        this.revertCellValue(params);
+                        if (params.colDef.field === 'Scope') {
+                            // To revert the change of assigneeID with change in Scope
+                            this.revertCellValue(params, assigneeIDPrevValue);
+                        } else {
+                            // To revert the change of only changed field
+                            this.revertCellValue(params);
+                        }
                     }
                 );
         } else if (this.feedbackType === RETRO_FEEDBACK_TYPES.GOAL) {
@@ -262,7 +286,13 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                         this.snackBar.open(
                             this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintGoalsUpdateError,
                             '', { duration: SNACKBAR_DURATION });
-                        this.revertCellValue(params);
+                        if (params.colDef.field === 'Scope') {
+                            // To revert the change of assigneeID with change in Scope
+                            this.revertCellValue(params, assigneeIDPrevValue);
+                        } else {
+                            // To revert the change of only changed field
+                            this.revertCellValue(params);
+                        }
                     }
                 );
         }
@@ -315,20 +345,78 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
             }
         }
     }
+    deleteRetroFeedback(params: any) {
+        const retroFeedback = params.data;
+        const dialogRef = this.dialog.open(BasicModalComponent, {
+            data: {
+                content: 'Are you sure you want to delete this ?',
+                confirmBtn: 'Yes',
+                cancelBtn: 'Cancel'
+            },
+            disableClose: true
+        });
+        dialogRef.afterClosed().takeUntil(this.destroy$).subscribe(result => {
+            if (result) {
+                const index: number = params.node.rowIndex;
+                this.gridApi.updateRowData({ remove: [retroFeedback] });
+                if (this.feedbackType === RETRO_FEEDBACK_TYPES.HIGHLIGHT) {
+                    this.retrospectiveService.deleteSprintHighlight(this.retrospectiveID, this.sprintID, retroFeedback.ID)
+                        .takeUntil(this.destroy$)
+                        .subscribe(() => { },
+                            err => {
+                                this.gridApi.updateRowData({ add: [retroFeedback], addIndex: index });
+                                this.snackBar.open(
+                                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintHighlightDeletedError,
+                                    '', { duration: SNACKBAR_DURATION });
+                            }
+                        );
+                } else if (this.feedbackType === RETRO_FEEDBACK_TYPES.NOTE) {
+                    this.retrospectiveService.deleteRetroNote(this.retrospectiveID, this.sprintID, retroFeedback.ID)
+                        .takeUntil(this.destroy$)
+                        .subscribe(() => { },
+                            err => {
+                                this.gridApi.updateRowData({ add: [retroFeedback], addIndex: index });
+                                this.snackBar.open(
+                                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintNoteDeletedError,
+                                    '', { duration: SNACKBAR_DURATION });
+                            }
+                        );
+                } else if (this.feedbackType === RETRO_FEEDBACK_TYPES.GOAL) {
+                    this.retrospectiveService.deleteRetroGoal(this.retrospectiveID, this.sprintID, retroFeedback.ID)
+                        .takeUntil(this.destroy$)
+                        .subscribe(() => { },
+                            err => {
+                                this.gridApi.updateRowData({ add: [retroFeedback], addIndex: index });
+                                this.snackBar.open(
+                                    this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.sprintGoalDeletedError,
+                                    '', { duration: SNACKBAR_DURATION });
+                            }
+                        );
+                }
 
-    getTeamMemberOptions(teamMembers) {
+            }
+        });
+
+    }
+
+    getTeamMemberOptions() {
+        let teamMembers = this.teamMembers;
         teamMembers = _.map(teamMembers, (data: any) => {
             return {
                 id: _.parseInt(data.ID),
                 value: (data.FirstName + ' ' + data.LastName).trim(),
             };
         });
-        return [{ id: null, value: 'None' }, ...teamMembers];
+        return teamMembers;
     }
 
-    revertCellValue(params) {
+    revertCellValue(params, ...revertParams) {
         const rowData = params.data;
         rowData[params.colDef.field] = params.oldValue;
+        // To revert the value of assigneeId when Scope changes
+        if (params.colDef.field === 'Scope') {
+            rowData.AssigneeID = revertParams[0];
+        }
         this.gridApi.updateRowData({ update: [rowData] });
     }
 
@@ -406,7 +494,9 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                 headerName: 'Assignee',
                 field: 'AssigneeID',
                 minWidth: 160,
-                editable: editable,
+                editable: (cellParams) => {
+                    return editable && cellParams.data.Scope === RETRO_FEEDBACK_SCOPE_TYPES.Individual;
+                },
                 cellRenderer: (cellParams) => this.assigneeKeyCreator(cellParams),
                 keyCreator: (cellParams) => this.assigneeKeyCreator(cellParams),
                 onCellValueChanged: (cellParams) => {
@@ -416,8 +506,12 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                 },
 
                 cellEditor: 'selectEditor',
-                cellEditorParams: {
-                    selectOptions: this.getTeamMemberOptions(teamMembers),
+                cellEditorParams: (cellParams) => {
+                    if (cellParams.data.Scope === RETRO_FEEDBACK_SCOPE_TYPES.Individual) {
+                        return {
+                            selectOptions: this.getTeamMemberOptions(),
+                        };
+                    }
                 },
                 filter: 'agSetColumnFilter',
                 filterParams: {
@@ -563,6 +657,27 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
                 }
             }
         }
+
+        const deleteButtonColumnDef = {
+            colId: 'delete',
+            headerClass: 'custom-ag-grid-header',
+            cellRenderer: 'deleteButtonRenderer',
+            cellRendererParams: {
+                useIcon: true,
+                icon: 'delete',
+                onClick: this.deleteRetroFeedback.bind(this)
+            },
+            minWidth: 100,
+            cellClass: 'delete-column',
+            suppressMenu: true,
+            suppressSorting: true,
+            suppressFilter: true,
+        };
+
+        if (sprintStatus === SPRINT_STATES.ACTIVE) {
+            columnDefs.push(deleteButtonColumnDef);
+        }
+
         return columnDefs;
     }
 

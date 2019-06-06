@@ -11,6 +11,7 @@ export class TaskProviderComponent implements OnInit {
 
     @Input() taskProviderOptions: any = [];
     @Output() initializedTaskProvider = new EventEmitter<FormGroup>();
+    @Output() onProviderChanged = new EventEmitter<string>();
 
     taskProviderConfigKey = 'taskProviderConfig';
     selectedTaskProviderKey = 'selectedTaskProvider';
@@ -44,6 +45,7 @@ export class TaskProviderComponent implements OnInit {
     }
 
     onProviderChange(selectedProvider) {
+        this.onProviderChanged.emit(selectedProvider);
         let configFieldsGroup: any, credentialFieldsGroup: any, selectedTaskProvider: any;
         configFieldsGroup = {};
         selectedTaskProvider = this.taskProviderOptions.filter(provider => provider.Type === selectedProvider)[0];
