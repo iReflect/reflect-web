@@ -1,6 +1,8 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
+import { DUMMY_HIDDEN_VALUE } from '@constants/app-constants';
+
 @Component({
     selector: 'app-task-provider-auth',
     templateUrl: './task-provider-auth.component.html',
@@ -69,5 +71,17 @@ export class TaskProviderAuthComponent implements OnInit, OnChanges {
             );
         }
         this.authFormGroup.setControl('data', new FormGroup(fieldsGroup));
+    }
+
+    clearField(name: string) {
+        if (this.authFormGroup.get('data').value[name] === DUMMY_HIDDEN_VALUE) {
+            this.authFormGroup.get('data').patchValue({[name]: ''});
+        }
+    }
+
+    addDataToField(name: string) {
+        if (this.authFormGroup.get('data').value[name] === '') {
+            this.authFormGroup.get('data').patchValue({[name]: DUMMY_HIDDEN_VALUE});
+        }
     }
 }

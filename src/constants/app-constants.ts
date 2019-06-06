@@ -333,3 +333,5 @@ export const SALT_FOR_PASSWORD = '';
 export const MIN_PASSWORD_LENGTH = 8;
 
 export const COMPACT_SUMMARY_MAX_LENGTH = 200;
+
+export const DUMMY_HIDDEN_VALUE = '********';

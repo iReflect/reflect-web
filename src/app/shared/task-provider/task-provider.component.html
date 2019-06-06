@@ -18,7 +18,7 @@
             Credentials
         </mat-toolbar>
         <div class="table-box padded-container">
-            <div formGroupName="Credentials" [ngClass]="{'block-cursor': isUpdateMode}">
+            <div formGroupName="Credentials">
                 <app-task-provider-auth
                     [isUpdateMode]="isUpdateMode"
                     [taskProviderAuthData]="taskProviderAuthData"

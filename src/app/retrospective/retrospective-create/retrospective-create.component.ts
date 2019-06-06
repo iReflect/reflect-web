@@ -7,7 +7,13 @@ import * as _ from 'lodash';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 
-import { API_RESPONSE_MESSAGES, COMMA_SEPARATED_STRING_PATTERN, SNACKBAR_DURATION, TRACKER_TICKET_TYPE_MAP, EDIT_LEVELS } from '@constants/app-constants';
+import { 
+    API_RESPONSE_MESSAGES,
+    COMMA_SEPARATED_STRING_PATTERN,
+    DUMMY_HIDDEN_VALUE,
+    SNACKBAR_DURATION,
+    TRACKER_TICKET_TYPE_MAP,
+    EDIT_LEVELS } from '@constants/app-constants';
 import { RetrospectiveService } from 'app/shared/services/retrospective.service';
 import { UtilsService } from 'app/shared/utils/utils.service';
 
@@ -43,7 +49,6 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
     public isUpdateMode: boolean;
     public fieldsEditableMap: any;
     public ProjectNames = new Map<string, boolean>();
-    private dummyHiddenValue = '********';
     private originalPassword: string;
     commaSeparatedRegex = COMMA_SEPARATED_STRING_PATTERN;
     // Enter, comma
@@ -88,11 +93,11 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
                 if (this.retrospective.TaskProviderConfig[0].data.credentials.type === 'basicAuth') {
                     // Replacing orginal password With dummy value
                     this.originalPassword = this.retrospective.TaskProviderConfig[0].data.credentials.password;
-                    this.retrospective.TaskProviderConfig[0].data.credentials.password = this.dummyHiddenValue;
+                    this.retrospective.TaskProviderConfig[0].data.credentials.password = DUMMY_HIDDEN_VALUE;
                 } else if (this.retrospective.TaskProviderConfig[0].data.credentials.type === 'apiToken') {
                     // Replacing orginal API token With dummy value
                     this.originalPassword = this.retrospective.TaskProviderConfig[0].data.credentials.apiToken;
-                    this.retrospective.TaskProviderConfig[0].data.credentials.apiToken = this.dummyHiddenValue;
+                    this.retrospective.TaskProviderConfig[0].data.credentials.apiToken = DUMMY_HIDDEN_VALUE;
                 }
                 this.getFieldsEditLevel();
             },
@@ -311,11 +316,11 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
     }
     isCredentialsChanged(currentCredentials: any): boolean {
         if (currentCredentials.type === 'basicAuth') {
-           return currentCredentials.password !== this.dummyHiddenValue
+           return currentCredentials.password !== DUMMY_HIDDEN_VALUE
         || currentCredentials.username !== this.retrospective.TaskProviderConfig[0].data.credentials.username;
         }
         if (currentCredentials.type === 'apiToken') {
-            return currentCredentials.apiToken !== this.dummyHiddenValue;
+            return currentCredentials.apiToken !== DUMMY_HIDDEN_VALUE;
          }
     }
     parseRetroData(formValue: any) {

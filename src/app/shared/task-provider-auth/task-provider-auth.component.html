@@ -1,10 +1,12 @@
 <div [formGroup]="authFormGroup">
-    <mat-form-field floatLabel="always">
+    <mat-form-field floatLabel="always" [ngClass]="{'block-cursor': isUpdateMode}">
         <mat-icon matSuffix *ngIf="!isUpdateMode">edit</mat-icon>
         <mat-icon matSuffix *ngIf="isUpdateMode">block</mat-icon>
         <mat-label></mat-label>
-        <mat-select formControlName="type" placeholder="Select an Auth Type"
-                    (selectionChange)="onAuthTypeChange($event.value)">
+        <mat-select
+        formControlName="type" 
+        placeholder="Select an Auth Type"
+        (selectionChange)="onAuthTypeChange($event.value)">
             <mat-option *ngFor="let option of supportedAuthTypeConfigList" [value]="option.type">{{option.displayName}}
             </mat-option>
         </mat-select>
@@ -20,7 +22,12 @@
                 </div>
                 <div class="flex">
                     <mat-form-field>
-                        <input matInput type="password" placeholder="Password" formControlName="password"/>
+                        <input matInput 
+                        type="password" 
+                        placeholder="Password"
+                        formControlName="password" 
+                        (blur)="isUpdateMode && addDataToField('password')"
+                        (click)="isUpdateMode && clearField('password')"/>
                         <mat-icon matSuffix >edit</mat-icon>
                     </mat-form-field>
                 </div>
@@ -28,7 +35,11 @@
             <div class="flex layout-row" *ngIf="selectedAuthType === 'apiToken'">
                 <div class="flex">
                     <mat-form-field>
-                        <input matInput placeholder="API Token" formControlName="apiToken"/>
+                        <input matInput 
+                        placeholder="API Token"
+                        formControlName="apiToken" 
+                        (blur)="isUpdateMode && addDataToField('apiToken')"
+                        (click)="isUpdateMode && clearField('apiToken')"/>
                         <mat-icon matSuffix >edit</mat-icon>
                     </mat-form-field>
                 </div>
