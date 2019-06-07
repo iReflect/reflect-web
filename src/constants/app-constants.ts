@@ -197,6 +197,18 @@ export const RESYNC_REFRESH_DURATION = 30000;
 
 export const DATE_FORMAT = 'MMMM dd, yyyy';
 
+export const RESOLUTION_STATES = {
+    DONE: 1,
+    WONT_DO: 2,
+    DUPLICATE: 3,
+    CANT_REPRODUCE: 4,
+};
+export const RESOLUTION_STATES_LABEL = {
+    [RESOLUTION_STATES.DONE]: 'Done',
+    [RESOLUTION_STATES.WONT_DO]: 'Won\'t Do',
+    [RESOLUTION_STATES.DUPLICATE]: 'Duplicate',
+    [RESOLUTION_STATES.CANT_REPRODUCE]: 'Can\'t Reproduce',
+};
 export const RATING_STATES = {
     CONCERN: 0,
     IMPROVE: 1,
@@ -315,6 +327,8 @@ export const TRACKER_TICKET_TYPE_MAP = {
 export const TRACKER_TICKET_STATUS_MAP = {
     DONE: 'DoneStatus',
 };
+
+export const MINUTES_TO_HOURS = 60;
 
 // this is a basic regex for comma seperated fields.TODO more optimisation is needed.
 export const COMMA_SEPARATED_STRING_PATTERN = '([(a-zA-Z])([a-zA-Z-_\'\\s]+,\\s?)*([(a-zA-Z-_\'\\s]+)([(a-zA-Z])';

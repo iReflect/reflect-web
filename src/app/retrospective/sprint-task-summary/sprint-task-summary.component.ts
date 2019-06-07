@@ -14,6 +14,8 @@ import {
     RETRO_SUMMARY_TYPES,
     RATING_STATES,
     RATING_STATES_LABEL,
+    RESOLUTION_STATES,
+    RESOLUTION_STATES_LABEL,
     SNACKBAR_DURATION,
     SPRINT_STATES
 } from '@constants/app-constants';
@@ -145,7 +147,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 width: 10,
             },
             frameworkComponents: {
-                'ratingEditor': SelectCellEditorComponent,
+                'selectEditor': SelectCellEditorComponent,
                 'ratingRenderer': RatingRendererComponent,
                 'clickableButtonRenderer': ClickableButtonRendererComponent,
                 'deleteButtonRenderer': ClickableButtonRendererComponent,
@@ -303,13 +305,42 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                     headerName: 'Done',
                     headerClass: 'custom-ag-grid-header task-summary-done-icon-header',
                     colId: 'markDone',
+                    tooltip: (cellParams) => {
+                        return RESOLUTION_STATES_LABEL[cellParams.data.Resolution];
+                    },
+                    editable: (params) => {
+                        return isSprintEditable && !params.data.DoneAt;
+                    },
                     cellRenderer: 'clickableButtonRenderer',
-                    cellRendererParams: (params) => {
+                    cellEditor: 'selectEditor',
+                    cellEditorParams: {
+                        selectOptions: _.map(RESOLUTION_STATES_LABEL, (value, key) => {
+                            return {
+                                id: _.parseInt(key),
+                                value: value
+                            };
+                        })
+                    },
+                    valueSetter: (cellParams) => {
+                        if (_.indexOf([RESOLUTION_STATES.DONE,
+                                RESOLUTION_STATES.CANT_REPRODUCE,
+                                RESOLUTION_STATES.DUPLICATE,
+                                RESOLUTION_STATES.WONT_DO],
+                                cellParams.newValue) !== -1) {
+                            this.markDoneUnDone(cellParams, cellParams.newValue);
+                        }
+                    }
+                    ,
+                    cellRendererParams: (cellParams) => {
                         return {
                             useIcon: true,
                             color: 'primary',
-                            icon: (params.data.DoneAt || this.doneFlag) ? 'check_box' : 'check_box_outline_blank',
-                            onClick: this.markDoneUnDone.bind(this),
+                            icon: (cellParams.data.DoneAt || this.doneFlag) ? 'check_box' : 'check_box_outline_blank',
+                            onClick: (params) => {
+                                if (params.data.DoneAt && params.data.IsTrackerTask) {
+                                    this.markDoneUnDone(params, null);
+                                }
+                            }
                         };
                     },
                     pinned: true,
@@ -478,7 +509,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 field: 'Rating',
                 minWidth: 120,
                 editable: isSprintEditable,
-                cellEditor: 'ratingEditor',
+                cellEditor: 'selectEditor',
                 cellEditorParams: {
                     selectOptions: _.map(RATING_STATES_LABEL, (value, key) => {
                         return {
@@ -626,10 +657,11 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
         });
     }
 
-    markDoneUnDone(params) {
+    markDoneUnDone(params, resolution) {
         const sprintTaskSummaryData = params.data;
         if (sprintTaskSummaryData.DoneAt) {
             let currentDoneAt;
+            let currentResolution;
             const dialogRef = this.dialog.open(BasicModalComponent, {
                 data: {
                     content: 'Are you sure you want to mark this issue as Undone?',
@@ -642,7 +674,9 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
             dialogRef.afterClosed().takeUntil(this.destroy$).subscribe(result => {
                 if (result) {
                     currentDoneAt = sprintTaskSummaryData.DoneAt;
+                    currentResolution = sprintTaskSummaryData.Resolution;
                     sprintTaskSummaryData.DoneAt = null;
+                    sprintTaskSummaryData.Resolution = null;
                     params.node.setData(sprintTaskSummaryData);
                     // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
                     params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
@@ -660,6 +694,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                             },
                             err => {
                                 sprintTaskSummaryData.DoneAt = currentDoneAt;
+                                sprintTaskSummaryData.Resolution = currentResolution;
                                 params.node.setData(sprintTaskSummaryData);
                                 // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
                                 params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
@@ -670,31 +705,36 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 }
             });
         } else {
-            this.doneFlag = true;
-            // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
-            params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
-            this.retrospectiveService.markSprintTaskDone(this.retrospectiveID, this.sprintID, sprintTaskSummaryData.ID)
-                .takeUntil(this.destroy$)
-                .subscribe(
-                    response => {
-                        const sprintTaskSummary = response.data;
-                        params.node.setData(sprintTaskSummary);
-                        this.doneFlag = false;
-                        // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
-                        params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
-                        this.snackBar.open(API_RESPONSE_MESSAGES.getSprintIssueMarkedDoneSuccess, '', { duration: SNACKBAR_DURATION });
-                        this.refreshSprintDetails.emit();
-                    },
-                    err => {
-                        sprintTaskSummaryData.DoneAt = null;
-                        this.doneFlag = false;
-                        params.node.setData(sprintTaskSummaryData);
-                        // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
-                        params.refreshCell({ suppressFlash: false, newData: false, forceRefresh: true });
-                        this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.error,
-                            '', { duration: SNACKBAR_DURATION });
-                    }
-                );
+            if (resolution) {
+                this.doneFlag = true;
+                sprintTaskSummaryData.Resolution = resolution;
+                params.node.setData(sprintTaskSummaryData);
+                this.retrospectiveService.markSprintTaskDone(this.retrospectiveID, this.sprintID, sprintTaskSummaryData.ID, resolution)
+                    .takeUntil(this.destroy$)
+                    .subscribe(
+                        response => {
+                            const sprintTaskSummary = response.data;
+                            params.node.setData(sprintTaskSummary);
+                            this.doneFlag = false;
+                            this.snackBar.open(API_RESPONSE_MESSAGES.getSprintIssueMarkedDoneSuccess, '', { duration: SNACKBAR_DURATION });
+                            this.refreshSprintDetails.emit();
+                        },
+                        err => {
+                            sprintTaskSummaryData.DoneAt = null;
+                            sprintTaskSummaryData.Resolution = 0;
+                            this.doneFlag = false;
+                            params.node.setData(sprintTaskSummaryData);
+                            // Refresh the Mark Done/Undone cell to reflect the change in the 'Done' icon
+                            const cellRefreshParams = {
+                                force: true,
+                                rowNode: params.node
+                            };
+                            this.gridApi.refreshCells(cellRefreshParams);
+                            this.snackBar.open(this.utils.getApiErrorMessage(err) || API_RESPONSE_MESSAGES.error,
+                                '', { duration: SNACKBAR_DURATION });
+                        }
+                    );
+            }
         }
     }
 
