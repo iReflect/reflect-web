@@ -197,7 +197,7 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
     getTimeProviders() {
         const team: string = this.retroFormGroup.getRawValue().team;
         let selectedTaskProvider: string;
-        this.retroFormGroup.value.taskProvider.forEach(provider => {
+        this.retroFormGroup.getRawValue().taskProvider.forEach(provider => {
             selectedTaskProvider = provider.selectedTaskProvider;
         });
         if (!team || !selectedTaskProvider) {
