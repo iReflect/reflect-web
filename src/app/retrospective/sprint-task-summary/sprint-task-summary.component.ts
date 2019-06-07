@@ -490,7 +490,7 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 cellRenderer: 'ratingRenderer',
                 onCellValueChanged: (cellParams) => {
                     if ((cellParams.newValue !== cellParams.oldValue) &&
-                        (cellParams.newValue >= this.ratingStates.RED && cellParams.newValue <= this.ratingStates.NOTABLE)) {
+                        (cellParams.newValue >= this.ratingStates.CONCERN && cellParams.newValue <= this.ratingStates.NOTABLE)) {
                         this.updateSprintTask(cellParams);
                     }
                 },
@@ -526,6 +526,14 @@ export class SprintTaskSummaryComponent implements OnInit, OnChanges, OnDestroy 
                 valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value),
                 minWidth: 120,
                 suppressFilter: true,
+            },
+            {
+                headerName: 'My Hours',
+                headerClass: 'custom-ag-grid-header',
+                field: 'SprintCurrentMemberTime',
+                minWidth: 120,
+                suppressFilter: true,
+                valueFormatter: (cellParams) => this.utils.formatFloat(cellParams.value / 60),
             },
             {
                 headerName: 'Sprint Hours',
