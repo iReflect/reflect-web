@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
+
+import 'rxjs/add/observable/of';
+import { Restangular } from 'ngx-restangular';
+import { Observable } from 'rxjs/Observable';
+
 import { API_URLS } from '@constants/api-urls';
 import { RestApiHelperService } from 'app/shared/utils/rest-api-helper.service';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
-import {Restangular} from 'ngx-restangular';
 
 @Injectable()
 export class RetrospectiveService {
@@ -66,10 +68,10 @@ export class RetrospectiveService {
     }
 
     getTimeProvidersList(taskTrackerName: string, team: string): Observable<any> {
-        const params = {teamID: team, taskTrackerName: taskTrackerName};
+        const params = { teamID: team, taskTrackerName: taskTrackerName };
         return this.restangularWithLoader
-        .one(API_URLS.timeProvidersList)
-        .customGET('', params);
+            .one(API_URLS.timeProvidersList)
+            .customGET('', params);
     }
 
     createRetro(retroConfig: any): Observable<any> {
@@ -342,7 +344,7 @@ export class RetrospectiveService {
                     .replace(':retrospectiveID', retrospectiveID)
                     .replace(':sprintID', sprintID)
             )
-            .customGET('', {goalType: goalType});
+            .customGET('', { goalType: goalType });
     }
 
     resolveSprintGoal(retrospectiveID, sprintID, goalID) {
@@ -447,7 +449,10 @@ export class RetrospectiveService {
             .remove();
     }
 
-    markSprintTaskDone(retrospectiveID, sprintID, taskID): Observable<any> {
+    markSprintTaskDone(retrospectiveID, sprintID, taskID, resolution): Observable<any> {
+        const sprintTaskDoneData = {
+            Resolution: resolution
+        };
         return this.restangularWithLoader
             .one(
                 API_URLS.sprintTaskMarkDone
@@ -455,7 +460,7 @@ export class RetrospectiveService {
                     .replace(':sprintID', sprintID)
                     .replace(':taskID', taskID)
             )
-            .post('');
+            .post('', sprintTaskDoneData);
     }
 
     markSprintTaskUnDone(retrospectiveID, sprintID, taskID): Observable<any> {

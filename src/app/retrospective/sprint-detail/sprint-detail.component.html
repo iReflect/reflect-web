@@ -11,9 +11,12 @@
             {{sprintDetails.Title}}
             <i class="divider">|</i>
             <div>
-                <span>{{sprintDetails.StartDate | date: dateFormat}} to {{sprintDetails.EndDate | date: dateFormat}}</span>
-                <span class="small-text" *ngIf="sprintDetails.SyncStatus !== syncStates.SYNC_FAILED; else last_synced_failed">
-                    Status: {{sprintStatesLabel[sprintStatus]}} | Last Synced on: {{sprintDetails.LastSyncedAt | date: dateFormat}}
+                <span>{{sprintDetails.StartDate | date: dateFormat}} to
+                    {{sprintDetails.EndDate | date: dateFormat}}</span>
+                <span class="small-text"
+                    *ngIf="sprintDetails.SyncStatus !== syncStates.SYNC_FAILED; else last_synced_failed">
+                    Status: {{sprintStatesLabel[sprintStatus]}} | Last Synced on:
+                    {{sprintDetails.LastSyncedAt | date: dateFormat}}
                 </span>
                 <ng-template #last_synced_failed>
                     <span class="small-text">
@@ -27,19 +30,26 @@
                 && [syncStates.SYNCING, syncStates.QUEUED].indexOf(sprintDetails.SyncStatus) == -1">
             Re-Sync Sprint
         </button>
-        <button mat-raised-button class="layout-side-margin" color="primary" *ngIf="sprintStatus === sprintStates.DRAFT && sprintDetails.Editable" (click)="activateSprint()">
+        <button mat-raised-button class="layout-side-margin" color="primary"
+            *ngIf="sprintStatus === sprintStates.DRAFT && sprintDetails.Editable" (click)="activateSprint()">
             {{sprintActionsLabel[sprintActions.ACTIVATE]}}
         </button>
-        <button mat-raised-button class="layout-side-margin" color="primary" *ngIf="sprintStatus === sprintStates.ACTIVE" (click)="freezeSprint()">
+        <button mat-raised-button class="layout-side-margin" color="primary"
+            *ngIf="sprintStatus === sprintStates.ACTIVE" (click)="freezeSprint()">
             {{sprintActionsLabel[sprintActions.FREEZE]}}
         </button>
-        <button mat-raised-button class="layout-side-margin" color="primary" *ngIf="sprintStatus !== sprintStates.FROZEN && sprintDetails.Editable" (click)="discardSprint()" [disabled]="!sprintDetails.Deletable">
+        <button mat-raised-button class="layout-side-margin" color="primary"
+            *ngIf="sprintStatus !== sprintStates.FROZEN && sprintDetails.Editable" (click)="discardSprint()"
+            [disabled]="!sprintDetails.Deletable">
             {{sprintActionsLabel[sprintActions.DISCARD]}}
         </button>
-        <button mat-raised-button color="primary" [disabled]="!sprintDetailsRefreshComplete || !activeChildTabRefreshComplete" (click)="refreshSprintDetails()">
+        <button mat-raised-button color="primary"
+            [disabled]="!sprintDetailsRefreshComplete || !activeChildTabRefreshComplete"
+            (click)="refreshSprintDetails()">
             <mat-icon>refresh</mat-icon> Refresh
         </button>
-        <mat-slide-toggle labelPosition="before" (change)="toggleAutoRefresh()" [checked]="enableRefresh" class="layout-side-margin auto-refresh-toggle" color="primary">
+        <mat-slide-toggle labelPosition="before" (change)="toggleAutoRefresh()" [checked]="enableRefresh"
+            class="layout-side-margin auto-refresh-toggle" color="primary">
             Auto Refresh
         </mat-slide-toggle>
     </mat-toolbar>
@@ -86,6 +96,10 @@
                             <p>
                                 Sprint Points: <b>{{ sprintBugs.TotalPointsEarned | number:decimalFormat }}</b>
                             </p>
+                            <p>
+                                Actual Hours:
+                                <b>{{  sprintBugs.ActualHours / minutesToHours | number:decimalFormat}}</b>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -102,6 +116,10 @@
                             </p>
                             <p>
                                 Sprint Points: <b>{{ sprintFeatures.TotalPointsEarned | number:decimalFormat }}</b>
+                            </p>
+                            <p>
+                                Actual Hours:
+                                <b>{{  sprintFeatures.ActualHours / minutesToHours | number:decimalFormat}}</b>
                             </p>
                         </div>
                         <span class="fill-remaining-space"></span>
@@ -123,6 +141,10 @@
                             <p>
                                 Sprint Points: <b>{{ sprintTasks.TotalPointsEarned | number:decimalFormat }}</b>
                             </p>
+                            <p>
+                                Actual Hours:
+                                <b>{{  sprintTasks.ActualHours / minutesToHours | number:decimalFormat}}</b>
+                            </p>
                         </div>
                         <span class="fill-remaining-space"></span>
                         <div class="info-right">
@@ -139,45 +161,60 @@
                     <mat-tab-group [(selectedIndex)]="selectedTabIndex">
                         <mat-tab label="Highlights" *ngIf="sprintStatus !== sprintStates.DRAFT">
                             <div>
-                                <app-sprint-highlights [isTabActive]="selectedTabIndex === tabIndexMapping.highlights" [enableRefresh]="enableRefresh" [refreshOnChange]="toggleToTriggerRefresh" [sprintStatus]="sprintStatus" [sprintEndDate]="sprintDetails.EndDate" [retrospectiveID]="retrospectiveID"
-                                    [sprintID]="sprintID" (onRefreshStart)="onChildRefreshStart($event)" (onRefreshEnd)="onChildRefreshEnd($event)">
+                                <app-sprint-highlights [isTabActive]="selectedTabIndex === tabIndexMapping.highlights"
+                                    [enableRefresh]="enableRefresh" [refreshOnChange]="toggleToTriggerRefresh"
+                                    [sprintStatus]="sprintStatus" [sprintEndDate]="sprintDetails.EndDate"
+                                    [retrospectiveID]="retrospectiveID" [sprintID]="sprintID"
+                                    (onRefreshStart)="onChildRefreshStart($event)"
+                                    (onRefreshEnd)="onChildRefreshEnd($event)">
                                 </app-sprint-highlights>
                             </div>
                         </mat-tab>
                         <mat-tab label="Summary">
-                            <div *ngIf="sprintDetails.LastSyncedAt && [syncStates.SYNCING, syncStates.QUEUED].indexOf(sprintDetails.SyncStatus) === -1; else not_synced">
+                            <div
+                                *ngIf="sprintDetails.LastSyncedAt && [syncStates.SYNCING, syncStates.QUEUED].indexOf(sprintDetails.SyncStatus) === -1; else not_synced">
                                 <app-sprint-task-summary
                                     [isTabActive]="selectedTabIndex === tabIndexMapping.taskSummary"
-                                    [sprintStatus]="sprintStatus"
-                                    [retrospectiveID]="retrospectiveID"
-                                    [sprintID]="sprintID"
-                                    [isSprintEditable]="sprintDetails.Editable"
-                                    [sprintEndDate]="sprintDetails.EndDate"
-                                    [refreshOnChange]="toggleToTriggerRefresh"
-                                    [enableRefresh]="enableRefresh"
-                                    (onRefreshStart)="onChildRefreshStart($event)"
+                                    [sprintStatus]="sprintStatus" [retrospectiveID]="retrospectiveID"
+                                    [sprintID]="sprintID" [isSprintEditable]="sprintDetails.Editable"
+                                    [sprintEndDate]="sprintDetails.EndDate" [refreshOnChange]="toggleToTriggerRefresh"
+                                    [enableRefresh]="enableRefresh" (onRefreshStart)="onChildRefreshStart($event)"
                                     (onRefreshEnd)="onChildRefreshEnd($event)"
                                     (refreshSprintDetails)="refreshSprintDetails()">
                                 </app-sprint-task-summary>
                             </div>
                         </mat-tab>
                         <mat-tab label="Members Summary">
-                            <div *ngIf="sprintDetails.LastSyncedAt && [syncStates.SYNCING, syncStates.QUEUED].indexOf(sprintDetails.SyncStatus) === -1; else not_synced">
-                                <app-sprint-member-summary [isTabActive]="selectedTabIndex === tabIndexMapping.memberSummary" [sprintDays]="sprintDays" [retrospectiveID]="retrospectiveID" [sprintID]="sprintID" [isSprintEditable]="sprintDetails.Editable" [refreshOnChange]="toggleToTriggerRefresh"
-                                    [enableRefresh]="enableRefresh" (onRefreshStart)="onChildRefreshStart($event)" (onRefreshEnd)="onChildRefreshEnd($event)">
+                            <div
+                                *ngIf="sprintDetails.LastSyncedAt && [syncStates.SYNCING, syncStates.QUEUED].indexOf(sprintDetails.SyncStatus) === -1; else not_synced">
+                                <app-sprint-member-summary
+                                    [isTabActive]="selectedTabIndex === tabIndexMapping.memberSummary"
+                                    [sprintDays]="sprintDays" [retrospectiveID]="retrospectiveID" [sprintID]="sprintID"
+                                    [isSprintEditable]="sprintDetails.Editable"
+                                    [refreshOnChange]="toggleToTriggerRefresh" [enableRefresh]="enableRefresh"
+                                    (onRefreshStart)="onChildRefreshStart($event)"
+                                    (onRefreshEnd)="onChildRefreshEnd($event)">
                                 </app-sprint-member-summary>
                             </div>
                         </mat-tab>
                         <mat-tab label="Notes" *ngIf="sprintStatus !== sprintStates.DRAFT">
                             <div>
-                                <app-sprint-notes [isTabActive]="selectedTabIndex === tabIndexMapping.notes" [enableRefresh]="enableRefresh" [refreshOnChange]="toggleToTriggerRefresh" [sprintStatus]="sprintStatus" [sprintEndDate]="sprintDetails.EndDate" [retrospectiveID]="retrospectiveID"
-                                    [sprintID]="sprintID" (onRefreshStart)="onChildRefreshStart($event)" (onRefreshEnd)="onChildRefreshEnd($event)">
+                                <app-sprint-notes [isTabActive]="selectedTabIndex === tabIndexMapping.notes"
+                                    [enableRefresh]="enableRefresh" [refreshOnChange]="toggleToTriggerRefresh"
+                                    [sprintStatus]="sprintStatus" [sprintEndDate]="sprintDetails.EndDate"
+                                    [retrospectiveID]="retrospectiveID" [sprintID]="sprintID"
+                                    (onRefreshStart)="onChildRefreshStart($event)"
+                                    (onRefreshEnd)="onChildRefreshEnd($event)">
                                 </app-sprint-notes>
                             </div>
                         </mat-tab>
                         <mat-tab label="Activity Log">
                             <div>
-                                <app-sprint-activity-log [isTabActive]="selectedTabIndex === tabIndexMapping.activityLog" [enableRefresh]="enableRefresh" [refreshOnChange]="toggleToTriggerRefresh" [retrospectiveID]="retrospectiveID" [sprintID]="sprintID" (onRefreshStart)="onChildRefreshStart($event)"
+                                <app-sprint-activity-log
+                                    [isTabActive]="selectedTabIndex === tabIndexMapping.activityLog"
+                                    [enableRefresh]="enableRefresh" [refreshOnChange]="toggleToTriggerRefresh"
+                                    [retrospectiveID]="retrospectiveID" [sprintID]="sprintID"
+                                    (onRefreshStart)="onChildRefreshStart($event)"
                                     (onRefreshEnd)="onChildRefreshEnd($event)">
                                 </app-sprint-activity-log>
                             </div>
@@ -186,7 +223,8 @@
                 </div>
                 <ng-template #not_synced>
                     <mat-card class="sync-error-card">
-                        <div *ngIf="sprintDetails.SyncStatus === syncStates.SYNCING; then syncing else not_syncing"></div>
+                        <div *ngIf="sprintDetails.SyncStatus === syncStates.SYNCING; then syncing else not_syncing">
+                        </div>
                         <ng-template #syncing>
                             <mat-error>
                                 Please Wait! Sync in Progress!
