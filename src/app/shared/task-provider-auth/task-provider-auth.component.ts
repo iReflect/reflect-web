@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
-import { DUMMY_HIDDEN_VALUE } from '@constants/app-constants';
+import { AUTH_TYPE_CONFIG, DUMMY_HIDDEN_VALUE } from '@constants/app-constants';
 
 @Component({
     selector: 'app-task-provider-auth',
@@ -15,19 +15,10 @@ export class TaskProviderAuthComponent implements OnInit, OnChanges {
     @Input() isUpdateMode: boolean;
     @Input() taskProviderAuthData: any;
 
-    selectedAuthType = '';
-    supportedAuthTypeConfigList: any = [];
-
-    authTypeConfigList = [
-        {
-            'type': 'basicAuth',
-            'displayName': 'Basic Auth',
-        },
-        {
-            'type': 'apiToken',
-            'displayName': 'API Token',
-        }
-    ];
+    public selectedAuthType = '';
+    public supportedAuthTypeConfigList: any = [];
+    public authTypeConfig = AUTH_TYPE_CONFIG;
+    public authTypeConfigList = [AUTH_TYPE_CONFIG.BASIC_AUTH, AUTH_TYPE_CONFIG.API_TOKEN];
 
     constructor() {}
 
@@ -55,12 +46,12 @@ export class TaskProviderAuthComponent implements OnInit, OnChanges {
         let fieldsGroup: any;
         fieldsGroup = {};
         this.selectedAuthType = selectedValue;
-        if (selectedValue === 'apiToken') {
+        if (selectedValue === AUTH_TYPE_CONFIG.API_TOKEN.type) {
             fieldsGroup['apiToken'] = new FormControl(
                 this.isUpdateMode ? this.taskProviderAuthData['apiToken'] : '',
                 Validators.required
             );
-        } else if (selectedValue === 'basicAuth') {
+        } else if (selectedValue === AUTH_TYPE_CONFIG.BASIC_AUTH.type) {
             fieldsGroup['username'] = new FormControl(
                 this.isUpdateMode ? this.taskProviderAuthData['username'] : '',
                 Validators.required

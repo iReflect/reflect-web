@@ -9,6 +9,7 @@ import 'rxjs/add/operator/takeUntil';
 
 import {
     API_RESPONSE_MESSAGES,
+    AUTH_TYPE_CONFIG,
     COMMA_SEPARATED_STRING_PATTERN,
     DUMMY_HIDDEN_VALUE,
     SNACKBAR_DURATION,
@@ -50,7 +51,7 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
     public fieldsEditableMap: any;
     // projectNames is used to store chips value with its remove preference.
     public projectNames = new Map<string, boolean>();
-    private originalPassword: string;
+    private originalFieldValue: string;
     commaSeparatedRegex = COMMA_SEPARATED_STRING_PATTERN;
     // separatorKeysCodes are used in the chips as speration keys.
     public separatorKeysCodes = [ENTER, COMMA];
@@ -90,13 +91,13 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
     }
 
     hidePassword() {
-        if (this.retrospective.TaskProviderConfig[0].data.credentials.type === 'basicAuth') {
+        if (this.retrospective.TaskProviderConfig[0].data.credentials.type === AUTH_TYPE_CONFIG.BASIC_AUTH) {
             // Replacing orginal password With dummy value
-            this.originalPassword = this.retrospective.TaskProviderConfig[0].data.credentials.password;
+            this.originalFieldValue = this.retrospective.TaskProviderConfig[0].data.credentials.password;
             this.retrospective.TaskProviderConfig[0].data.credentials.password = DUMMY_HIDDEN_VALUE;
-        } else if (this.retrospective.TaskProviderConfig[0].data.credentials.type === 'apiToken') {
+        } else if (this.retrospective.TaskProviderConfig[0].data.credentials.type === AUTH_TYPE_CONFIG.API_TOKEN) {
             // Replacing orginal API token With dummy value
-            this.originalPassword = this.retrospective.TaskProviderConfig[0].data.credentials.apiToken;
+            this.originalFieldValue = this.retrospective.TaskProviderConfig[0].data.credentials.apiToken;
             this.retrospective.TaskProviderConfig[0].data.credentials.apiToken = DUMMY_HIDDEN_VALUE;
         }
     }
@@ -287,10 +288,10 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
 
         // if credential are not changed we will set credentialChanged key to false and set original password back.
         if (!this.isCredentialsChanged(requestBody.taskProvider[0].data.credentials)) {
-            if (requestBody.taskProvider[0].data.credentials.type === 'apiToken') {
-                requestBody.taskProvider[0].data.credentials.apiToken = this.originalPassword;
-            } else {
-                requestBody.taskProvider[0].data.credentials.password = this.originalPassword;
+            if (requestBody.taskProvider[0].data.credentials.type === AUTH_TYPE_CONFIG.API_TOKEN) {
+                requestBody.taskProvider[0].data.credentials.apiToken = this.originalFieldValue;
+            } else if (requestBody.taskProvider[0].data.credentials.type === AUTH_TYPE_CONFIG.BASIC_AUTH){
+                requestBody.taskProvider[0].data.credentials.password = this.originalFieldValue;
             }
             requestBody['credentialsChanged'] = false;
         }
@@ -314,11 +315,11 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
             );
     }
     isCredentialsChanged(currentCredentials: any): boolean {
-        if (currentCredentials.type === 'basicAuth') {
+        if (currentCredentials.type === AUTH_TYPE_CONFIG.BASIC_AUTH) {
            return currentCredentials.password !== DUMMY_HIDDEN_VALUE
         || currentCredentials.username !== this.retrospective.TaskProviderConfig[0].data.credentials.username;
         }
-        if (currentCredentials.type === 'apiToken') {
+        if (currentCredentials.type === AUTH_TYPE_CONFIG.API_TOKEN) {
             return currentCredentials.apiToken !== DUMMY_HIDDEN_VALUE;
          }
     }

@@ -349,3 +349,14 @@ export const MIN_PASSWORD_LENGTH = 8;
 export const COMPACT_SUMMARY_MAX_LENGTH = 200;
 
 export const DUMMY_HIDDEN_VALUE = '********';
+
+export const AUTH_TYPE_CONFIG = {
+    BASIC_AUTH : {
+        'type': 'basicAuth',
+        'displayName': 'Basic Auth',
+    },
+    API_TOKEN : {
+        'type': 'apiToken',
+        'displayName': 'API Token',
+    }
+};
