@@ -1,14 +1,14 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
-import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
+import { Subject } from 'rxjs/Subject';
 
 import { API_RESPONSE_MESSAGES, APP_ROUTE_URLS, DATE_FORMAT, SNACKBAR_DURATION } from '@constants/app-constants';
+import { RetrospectiveCreateComponent } from 'app/retrospective/retrospective-create/retrospective-create.component';
 import { SprintCreateComponent } from 'app/retrospective/sprint-create/sprint-create.component';
 import { SprintListComponent } from 'app/retrospective/sprint-list/sprint-list.component';
-import { RetrospectiveCreateComponent } from 'app/retrospective/retrospective-create/retrospective-create.component';
 import { RetrospectiveService } from 'app/shared/services/retrospective.service';
 import { UtilsService } from 'app/shared/utils/utils.service';
 
@@ -87,7 +87,7 @@ export class RetrospectiveDashboardComponent implements OnInit, OnDestroy {
 
         dialogRef.afterClosed().takeUntil(this.destroy$).subscribe(result => {
             if (result) {
-                this.refreshSprintsList();
+                this.getRetrospective();
             }
         });
     }

@@ -32,7 +32,7 @@ export class TaskProviderComponent implements OnInit {
     public featureValues = [];
     public taskValues = [];
     public bugValues = [];
-    // Enter, comma
+    // separatorKeysCodes are used in the chips as speration keys.
     separatorKeysCodes = [ENTER, COMMA];
     // Since we are dynamically generating the task provider's form, these are the possible fields
     selectedTaskProviderConfigOptions: any = {};
@@ -148,28 +148,28 @@ export class TaskProviderComponent implements OnInit {
         return this.taskProviderFormGroup.get([this.taskProviderConfigKey, TRACKER_TICKET_STATUS_MAP.DONE]);
     }
 
-    addChip(event: MatChipInputEvent, array: string[], control: any): void {
-        const input = event.input;
-        const value = event.value;
+    addChip(inputEvent: MatChipInputEvent, chipFieldArray: string[], chipFieldControl: any): void {
+        const input = inputEvent.input;
+        const value = inputEvent.value.trim();
 
         // Reset the input value
         if (input) { input.value = ''; }
 
-        if (array.findIndex(element => value.toLowerCase() === element.toLowerCase()) > -1) {
+        if (chipFieldArray.findIndex(element => value.toLowerCase() === element.toLowerCase()) > -1) {
             return;
         }
         // Add our keyword
-        if ((value || '').trim()) {
-          array.push(value.trim());
-          control.patchValue(array.toString());
+        if (value) {
+          chipFieldArray.push(value);
+          chipFieldControl.patchValue(chipFieldArray.toString());
         }
     }
 
-    removeChip(keyword: any, array: string[], control: any): void {
-        const index = array.indexOf(keyword);
+    removeChip(keyword: any, chipFieldArray: string[], chipFieldControl: any): void {
+        const index = chipFieldArray.indexOf(keyword);
         if (index >= 0) {
-            array.splice(index, 1);
-            control.patchValue(array.toString());
+            chipFieldArray.splice(index, 1);
+            chipFieldControl.patchValue(chipFieldArray.toString());
         }
     }
 }

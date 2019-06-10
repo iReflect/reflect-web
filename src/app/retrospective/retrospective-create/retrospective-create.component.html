@@ -47,10 +47,10 @@
                     <mat-chip-list #projectChipList formControlName="projectName">
                         <mat-chip *ngFor="let project  of getProjectMap()"
                         [selectable]="false"
-                        [removable]="ProjectNames.get(project)"
+                        [removable]="projectNames.get(project)"
                         (remove)="removeChip(project)">
                         {{project}}
-                        <mat-icon matChipRemove *ngIf="ProjectNames.get(project)">cancel</mat-icon>
+                        <mat-icon matChipRemove *ngIf="projectNames.get(project)">cancel</mat-icon>
                         </mat-chip>
                         <input matInput
                         [matChipInputFor]="projectChipList"
@@ -105,9 +105,11 @@
     </div>
     <mat-dialog-actions>
         <span class="fill-remaining-space"></span>
-        <button *ngIf="!isUpdateMode" mat-raised-button color="primary" [disabled]="retroFormGroup.invalid || disableButton" (click)="createRetro(retroFormGroup.value)">Create
-        </button>
-        <button *ngIf="isUpdateMode" mat-raised-button color="primary" [disabled]="retroFormGroup.invalid || disableButton" (click)="updateRetro(retroFormGroup.getRawValue())">Update
+        <button
+        mat-raised-button color="primary"
+        [disabled]="retroFormGroup.invalid || disableButton"
+        (click)="isUpdateMode ? updateRetro(retroFormGroup.getRawValue()) : createRetro(retroFormGroup.value)"
+        [innerHTML]="isUpdateMode ? 'Update' : 'Create'" >
         </button>
         <button mat-button mat-dialog-close>Cancel</button>
     </mat-dialog-actions>

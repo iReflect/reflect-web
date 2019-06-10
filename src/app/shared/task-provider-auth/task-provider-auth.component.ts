@@ -79,7 +79,7 @@ export class TaskProviderAuthComponent implements OnInit, OnChanges {
         }
     }
 
-    addDataToField(name: string) {
+    addDummyValueToField(name: string) {
         if (this.authFormGroup.get('data').value[name] === '') {
             this.authFormGroup.get('data').patchValue({[name]: DUMMY_HIDDEN_VALUE});
         }

@@ -7,7 +7,7 @@ import * as _ from 'lodash';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 
-import { 
+import {
     API_RESPONSE_MESSAGES,
     COMMA_SEPARATED_STRING_PATTERN,
     DUMMY_HIDDEN_VALUE,
@@ -48,10 +48,11 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
     public retrospectiveID: number;
     public isUpdateMode: boolean;
     public fieldsEditableMap: any;
-    public ProjectNames = new Map<string, boolean>();
+    // projectNames is used to store chips value with its remove preference.
+    public projectNames = new Map<string, boolean>();
     private originalPassword: string;
     commaSeparatedRegex = COMMA_SEPARATED_STRING_PATTERN;
-    // Enter, comma
+    // separatorKeysCodes are used in the chips as speration keys.
     public separatorKeysCodes = [ENTER, COMMA];
     private destroy$: Subject<boolean> = new Subject<boolean>();
 
@@ -109,7 +110,7 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
                 this.setValueAndDisableState('storyPointPerWeek', 'StoryPointPerWeek');
                 this.setValueAndDisableState('projectName', 'ProjectName');
                 this.projectNameControl.value.split(',').forEach((element: string) => {
-                    this.ProjectNames.set(element, false);
+                    this.projectNames.set(element, false);
                 });
                 this.isRetrospectLoaded = true;
             },
@@ -130,27 +131,29 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
     }
 
     getProjectMap() {
-        return Array.from(this.ProjectNames.keys());
+        return Array.from(this.projectNames.keys());
     }
+
     addChip(event: MatChipInputEvent) {
         const input = event.input;
-        const value = event.value;
+        const value = event.value.trim();
 
         // Reset the input value
       if (input) { input.value = ''; }
 
-      if (Array.from(this.ProjectNames.keys()).findIndex(element => value.toLowerCase() === element.toLowerCase()) > -1) {
+      if (Array.from(this.projectNames.keys()).findIndex(element => value.toLowerCase() === element.toLowerCase()) > -1) {
         return;
       }
-      if ((value || '').trim()) {
+      if (value) {
             // Add our project
-            this.ProjectNames.set(value.trim(), true);
-            this.projectNameControl.patchValue(Array.from(this.ProjectNames.keys()).toString());
+            this.projectNames.set(value, true);
+            this.projectNameControl.patchValue(Array.from(this.projectNames.keys()).toString());
         }
     }
+
     removeChip(keyword: string): void {
-        this.ProjectNames.delete(keyword);
-        this.projectNameControl.patchValue(Array.from(this.ProjectNames.keys()).toString());
+        this.projectNames.delete(keyword);
+        this.projectNameControl.patchValue(Array.from(this.projectNames.keys()).toString());
       }
 
     getTeamList() {
