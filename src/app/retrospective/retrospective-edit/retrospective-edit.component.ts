@@ -53,7 +53,7 @@ export class RetrospectiveEditComponent implements OnInit, OnDestroy {
     public projectNames = new Map<string, boolean>();
     private originalFieldValue: string;
     commaSeparatedRegex = COMMA_SEPARATED_STRING_PATTERN;
-    // separatorKeysCodes are used in the chips as sparation keys.
+    // separatorKeysCodes are used in the chips as separation keys.
     public separatorKeysCodes = [ENTER, COMMA];
     private destroy$: Subject<boolean> = new Subject<boolean>();
 
