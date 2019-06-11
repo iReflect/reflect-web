@@ -20,10 +20,10 @@ import { UtilsService } from 'app/shared/utils/utils.service';
 
 @Component({
     selector: 'app-retrospective-create',
-    templateUrl: './retrospective-create.component.html',
-    styleUrls: ['./retrospective-create.component.scss']
+    templateUrl: './retrospective-edit.component.html',
+    styleUrls: ['./retrospective-edit.component.scss']
 })
-export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
+export class RetrospectiveEditComponent implements OnInit, OnDestroy {
     retroFormGroup: FormGroup;
     isTeamOptionsLoaded = false;
     isProviderOptionsLoaded = false;
@@ -53,7 +53,7 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
     public projectNames = new Map<string, boolean>();
     private originalFieldValue: string;
     commaSeparatedRegex = COMMA_SEPARATED_STRING_PATTERN;
-    // separatorKeysCodes are used in the chips as speration keys.
+    // separatorKeysCodes are used in the chips as sparation keys.
     public separatorKeysCodes = [ENTER, COMMA];
     private destroy$: Subject<boolean> = new Subject<boolean>();
 
@@ -61,7 +61,7 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
         private retrospectiveService: RetrospectiveService,
         private snackBar: MatSnackBar,
         private utils: UtilsService,
-        public dialogRef: MatDialogRef<RetrospectiveCreateComponent>,
+        public dialogRef: MatDialogRef<RetrospectiveEditComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any
     ) {
         if (data && data['retrospective']) {
@@ -290,7 +290,7 @@ export class RetrospectiveCreateComponent implements OnInit, OnDestroy {
         if (!this.isCredentialsChanged(requestBody.taskProvider[0].data.credentials)) {
             if (requestBody.taskProvider[0].data.credentials.type === AUTH_TYPE_CONFIG.API_TOKEN) {
                 requestBody.taskProvider[0].data.credentials.apiToken = this.originalFieldValue;
-            } else if (requestBody.taskProvider[0].data.credentials.type === AUTH_TYPE_CONFIG.BASIC_AUTH){
+            } else if (requestBody.taskProvider[0].data.credentials.type === AUTH_TYPE_CONFIG.BASIC_AUTH) {
                 requestBody.taskProvider[0].data.credentials.password = this.originalFieldValue;
             }
             requestBody['credentialsChanged'] = false;

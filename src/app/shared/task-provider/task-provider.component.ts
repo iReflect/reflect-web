@@ -32,7 +32,7 @@ export class TaskProviderComponent implements OnInit {
     public featureValues = [];
     public taskValues = [];
     public bugValues = [];
-    // separatorKeysCodes are used in the chips as speration keys.
+    // separatorKeysCodes are used in the chips as sparation keys.
     separatorKeysCodes = [ENTER, COMMA];
     // Since we are dynamically generating the task provider's form, these are the possible fields
     selectedTaskProviderConfigOptions: any = {};
