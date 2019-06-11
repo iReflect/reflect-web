@@ -1,13 +1,16 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { RetrospectiveService } from 'app/shared/services/retrospective.service';
 import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
-import { SprintCreateComponent } from 'app/retrospective/sprint-create/sprint-create.component';
-import { API_RESPONSE_MESSAGES, APP_ROUTE_URLS, DATE_FORMAT, SNACKBAR_DURATION } from '@constants/app-constants';
-import { SprintListComponent } from 'app/retrospective/sprint-list/sprint-list.component';
-import { UtilsService } from 'app/shared/utils/utils.service';
-import { Subject } from 'rxjs/Subject';
+import { ActivatedRoute, Router } from '@angular/router';
+
 import 'rxjs/add/operator/takeUntil';
+import { Subject } from 'rxjs/Subject';
+
+import { API_RESPONSE_MESSAGES, APP_ROUTE_URLS, DATE_FORMAT, SNACKBAR_DURATION } from '@constants/app-constants';
+import { RetrospectiveEditComponent } from 'app/retrospective/retrospective-edit/retrospective-edit.component';
+import { SprintCreateComponent } from 'app/retrospective/sprint-create/sprint-create.component';
+import { SprintListComponent } from 'app/retrospective/sprint-list/sprint-list.component';
+import { RetrospectiveService } from 'app/shared/services/retrospective.service';
+import { UtilsService } from 'app/shared/utils/utils.service';
 
 @Component({
     selector: 'app-retrospective-dashboard',
@@ -70,6 +73,23 @@ export class RetrospectiveDashboardComponent implements OnInit, OnDestroy {
 
     getCreatorName() {
         return (this.retrospectiveData.CreatedBy.FirstName + ' ' + this.retrospectiveData.CreatedBy.LastName).trim();
+    }
+
+    showUpdateRetroDialog() {
+        const dialogRef = this.dialog.open(RetrospectiveEditComponent, {
+            width: '90%',
+            height: '90%',
+            maxWidth: 950,
+            data : {
+                retrospective: this.retrospectiveData,
+            }
+        });
+
+        dialogRef.afterClosed().takeUntil(this.destroy$).subscribe(result => {
+            if (result) {
+                this.getRetrospective();
+            }
+        });
     }
 
     showNewSprintDialog() {

@@ -13,6 +13,7 @@ export const API_URLS = {
     taskProviderConfig: '/task-tracker/config-list',
     timeProvidersList: '/task-tracker/supported-time-providers',
     retrospectives: '/retrospectives',
+    retroFieldsEditLevels: '/retrospectives/:retrospectiveID/edit-level',
     teamsList: '/teams',
     teamMembers: '/retrospectives/:retrospectiveID/team-members',
     retroDetails: '/retrospectives/:retrospectiveID',
