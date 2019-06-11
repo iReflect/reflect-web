@@ -91,11 +91,11 @@ export class RetrospectiveEditComponent implements OnInit, OnDestroy {
     }
 
     hidePassword() {
-        if (this.retrospective.TaskProviderConfig[0].data.credentials.type === AUTH_TYPE_CONFIG.BASIC_AUTH) {
+        if (this.retrospective.TaskProviderConfig[0].data.credentials.type === AUTH_TYPE_CONFIG.BASIC_AUTH.type) {
             // Replacing orginal password With dummy value
             this.originalFieldValue = this.retrospective.TaskProviderConfig[0].data.credentials.password;
             this.retrospective.TaskProviderConfig[0].data.credentials.password = DUMMY_HIDDEN_VALUE;
-        } else if (this.retrospective.TaskProviderConfig[0].data.credentials.type === AUTH_TYPE_CONFIG.API_TOKEN) {
+        } else if (this.retrospective.TaskProviderConfig[0].data.credentials.type === AUTH_TYPE_CONFIG.API_TOKEN.type) {
             // Replacing orginal API token With dummy value
             this.originalFieldValue = this.retrospective.TaskProviderConfig[0].data.credentials.apiToken;
             this.retrospective.TaskProviderConfig[0].data.credentials.apiToken = DUMMY_HIDDEN_VALUE;
@@ -288,9 +288,9 @@ export class RetrospectiveEditComponent implements OnInit, OnDestroy {
 
         // if credential are not changed we will set credentialChanged key to false and set original password back.
         if (!this.isCredentialsChanged(requestBody.taskProvider[0].data.credentials)) {
-            if (requestBody.taskProvider[0].data.credentials.type === AUTH_TYPE_CONFIG.API_TOKEN) {
+            if (requestBody.taskProvider[0].data.credentials.type === AUTH_TYPE_CONFIG.API_TOKEN.type) {
                 requestBody.taskProvider[0].data.credentials.apiToken = this.originalFieldValue;
-            } else if (requestBody.taskProvider[0].data.credentials.type === AUTH_TYPE_CONFIG.BASIC_AUTH) {
+            } else if (requestBody.taskProvider[0].data.credentials.type === AUTH_TYPE_CONFIG.BASIC_AUTH.type) {
                 requestBody.taskProvider[0].data.credentials.password = this.originalFieldValue;
             }
             requestBody['credentialsChanged'] = false;
@@ -315,11 +315,11 @@ export class RetrospectiveEditComponent implements OnInit, OnDestroy {
             );
     }
     isCredentialsChanged(currentCredentials: any): boolean {
-        if (currentCredentials.type === AUTH_TYPE_CONFIG.BASIC_AUTH) {
+        if (currentCredentials.type === AUTH_TYPE_CONFIG.BASIC_AUTH.type) {
            return currentCredentials.password !== DUMMY_HIDDEN_VALUE
         || currentCredentials.username !== this.retrospective.TaskProviderConfig[0].data.credentials.username;
         }
-        if (currentCredentials.type === AUTH_TYPE_CONFIG.API_TOKEN) {
+        if (currentCredentials.type === AUTH_TYPE_CONFIG.API_TOKEN.type) {
             return currentCredentials.apiToken !== DUMMY_HIDDEN_VALUE;
          }
     }
