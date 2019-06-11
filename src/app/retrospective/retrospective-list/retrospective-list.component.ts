@@ -6,7 +6,7 @@ import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 
 import { API_RESPONSE_MESSAGES, APP_ROUTE_URLS, SNACKBAR_DURATION } from '@constants/app-constants';
-import { RetrospectiveCreateComponent } from 'app/retrospective/retrospective-create/retrospective-create.component';
+import { RetrospectiveEditComponent } from 'app/retrospective/retrospective-edit/retrospective-edit.component';
 import { RetrospectiveService } from 'app/shared/services/retrospective.service';
 import { RetrospectiveDataService } from 'app/shared/services/retrospective-data.service';
 import { UserService } from 'app/shared/services/user.service';
@@ -79,7 +79,7 @@ export class RetrospectiveListComponent implements OnInit, OnDestroy {
     }
 
     showCreateRetroModal() {
-        const dialogRef = this.dialog.open(RetrospectiveCreateComponent, {
+        const dialogRef = this.dialog.open(RetrospectiveEditComponent, {
             width: '90%',
             height: '90%',
             maxWidth: 950

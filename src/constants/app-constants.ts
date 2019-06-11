@@ -77,6 +77,7 @@ export const API_RESPONSE_MESSAGES = {
     feedBackSubmitted: 'Feedback submitted successfully!',
     error: 'Some Error Occurred!',
     retroCreated: 'Retro Created successfully!',
+    retroUpdated: 'Retro Updated successfully!',
     sprintActivated: 'Sprint activated successfully!',
     sprintFrozen: 'Sprint frozen successfully!',
     sprintDiscarded: 'Sprint discarded successfully!',
@@ -116,6 +117,7 @@ export const API_RESPONSE_MESSAGES = {
     getTeamProviderOptionsError: 'Cannot get team provider options!',
     getTimeProviderOptionError: 'Cannot get time provider options!',
     createRetroError: 'Cannot Create Retro!',
+    updateRetroError: 'Cannot Update Retro!',
     getRetrospectivesError: 'Cannot get Retrospectives',
     getSprintsError: 'Cannot get Sprints',
     noSprintsError: 'Retro has no active or frozen sprints',
@@ -249,6 +251,12 @@ export const SPRINT_SYNC_STATES = {
     QUEUED: 4
 };
 
+export const EDIT_LEVELS = {
+    NOT_EDITABLE:  1,
+    PARTIALLY: 2,
+    FULLY: 3,
+};
+
 export const SPRINT_SYNC_STATES_LABEL = {
     [SPRINT_SYNC_STATES.NOT_SYNCED]: 'Not Synced',
     [SPRINT_SYNC_STATES.SYNCING]: 'Syncing',
@@ -339,3 +347,16 @@ export const SALT_FOR_PASSWORD = '';
 export const MIN_PASSWORD_LENGTH = 8;
 
 export const COMPACT_SUMMARY_MAX_LENGTH = 200;
+
+export const DUMMY_HIDDEN_VALUE = '********';
+
+export const AUTH_TYPE_CONFIG = {
+    BASIC_AUTH : {
+        'type': 'basicAuth',
+        'displayName': 'Basic Auth',
+    },
+    API_TOKEN : {
+        'type': 'apiToken',
+        'displayName': 'API Token',
+    }
+};

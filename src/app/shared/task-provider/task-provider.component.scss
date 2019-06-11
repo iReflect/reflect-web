@@ -3,10 +3,11 @@
 
     mat-hint {
         display: flex;
-    }
 
-    mat-icon {
-        font-size: 24px;
+        mat-icon {
+            font-size: 24px;
+            visibility: visible;
+        }
     }
 
     span {
@@ -20,6 +21,47 @@
         background-color: #f2f2f2;
         margin-top: 0;
         box-sizing: border-box;
-        padding: 7px 5px;
+        padding: 7px 4px;
+    }
+}
+
+.mat-form-field {
+    .mat-icon {
+        visibility: hidden;
+    }
+
+    .mat-chip-list .mat-icon {
+        visibility: visible;
+    }
+
+    .mat-chip {
+        margin: 3px !important;
+        background: #2196f3;
+        color: white;
+    }
+
+    .mat-chip-remove {
+        color: white;
+    }
+
+    &:hover {
+        background-color: #f4f5f7;
+
+        .mat-icon {
+            visibility: visible;
+        }
+    }
+}
+
+.block-cursor {
+    cursor: not-allowed;
+    /* stylelint-disable */
+    ::ng-deep .mat-select-disabled .mat-select-trigger {
+        /* stylelint-enable */
+        cursor: not-allowed;
+    }
+
+    input {
+        cursor: not-allowed;
     }
 }
