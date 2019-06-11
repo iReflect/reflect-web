@@ -5,6 +5,7 @@
             <span class="paddling-left">Team:  <b>{{ retrospectiveData.Team.Name }}</b></span>
             <span class="fill-remaining-space"></span>
             <div class="action-buttons">
+                <button mat-raised-button color="primary" (click)="showUpdateRetroDialog()"><mat-icon>edit</mat-icon> Update Retrospective</button>
                 <button mat-raised-button color="primary" (click)="refreshSprintsList()">Refresh Sprints List</button>
                 <button mat-raised-button color="primary" (click)="showNewSprintDialog()">Create Sprint</button>
             </div>

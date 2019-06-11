@@ -77,6 +77,7 @@ export const API_RESPONSE_MESSAGES = {
     feedBackSubmitted: 'Feedback submitted successfully!',
     error: 'Some Error Occurred!',
     retroCreated: 'Retro Created successfully!',
+    retroUpdated: 'Retro Updated successfully!',
     sprintActivated: 'Sprint activated successfully!',
     sprintFrozen: 'Sprint frozen successfully!',
     sprintDiscarded: 'Sprint discarded successfully!',
@@ -116,6 +117,7 @@ export const API_RESPONSE_MESSAGES = {
     getTeamProviderOptionsError: 'Cannot get team provider options!',
     getTimeProviderOptionError: 'Cannot get time provider options!',
     createRetroError: 'Cannot Create Retro!',
+    updateRetroError: 'Cannot Update Retro!',
     getRetrospectivesError: 'Cannot get Retrospectives',
     getSprintsError: 'Cannot get Sprints',
     noSprintsError: 'Retro has no active or frozen sprints',
@@ -208,7 +210,7 @@ export const RESOLUTION_STATES_LABEL = {
     [RESOLUTION_STATES.CANT_REPRODUCE]: 'Can\'t Reproduce',
 };
 export const RATING_STATES = {
-    RED: 0,
+    CONCERN: 0,
     IMPROVE: 1,
     DECENT: 2,
     GOOD: 3,
@@ -216,7 +218,7 @@ export const RATING_STATES = {
 };
 
 export const RATING_STATES_LABEL = {
-    [RATING_STATES.RED]: 'Red',
+    [RATING_STATES.CONCERN]: 'Concern',
     [RATING_STATES.IMPROVE]: 'Improve',
     [RATING_STATES.DECENT]: 'Decent',
     [RATING_STATES.GOOD]: 'Good',
@@ -228,7 +230,7 @@ export const RATING_COLORS = {
     [RATING_STATES_LABEL[RATING_STATES.GOOD]]: '#60A549',
     [RATING_STATES_LABEL[RATING_STATES.DECENT]]: '#F5E93A',
     [RATING_STATES_LABEL[RATING_STATES.IMPROVE]]: '#FF9900',
-    [RATING_STATES_LABEL[RATING_STATES.RED]]: '#FF3030'
+    [RATING_STATES_LABEL[RATING_STATES.CONCERN]]: '#FF3030'
 };
 
 export const MEMBER_TASK_ROLES = {
@@ -247,6 +249,12 @@ export const SPRINT_SYNC_STATES = {
     SYNCED: 2,
     SYNC_FAILED: 3,
     QUEUED: 4
+};
+
+export const EDIT_LEVELS = {
+    NOT_EDITABLE:  1,
+    PARTIALLY: 2,
+    FULLY: 3,
 };
 
 export const SPRINT_SYNC_STATES_LABEL = {
@@ -339,3 +347,16 @@ export const SALT_FOR_PASSWORD = '';
 export const MIN_PASSWORD_LENGTH = 8;
 
 export const COMPACT_SUMMARY_MAX_LENGTH = 200;
+
+export const DUMMY_HIDDEN_VALUE = '********';
+
+export const AUTH_TYPE_CONFIG = {
+    BASIC_AUTH : {
+        'type': 'basicAuth',
+        'displayName': 'Basic Auth',
+    },
+    API_TOKEN : {
+        'type': 'apiToken',
+        'displayName': 'API Token',
+    }
+};

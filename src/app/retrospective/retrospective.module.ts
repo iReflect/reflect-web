@@ -9,7 +9,7 @@ import { SharedModule } from 'app/shared/shared.module';
 import { RetrospectiveRoutingModule } from 'app/retrospective/retrospective-routing.module';
 // Import Components
 import { RetrospectiveListComponent } from 'app/retrospective/retrospective-list/retrospective-list.component';
-import { RetrospectiveCreateComponent } from 'app/retrospective/retrospective-create/retrospective-create.component';
+import { RetrospectiveEditComponent } from 'app/retrospective/retrospective-edit/retrospective-edit.component';
 import { SprintDetailComponent } from 'app/retrospective/sprint-detail/sprint-detail.component';
 import { SprintMemberSummaryComponent } from 'app/retrospective/sprint-member-summary/sprint-member-summary.component';
 import { SprintTaskSummaryComponent } from 'app/retrospective/sprint-task-summary/sprint-task-summary.component';
@@ -37,7 +37,7 @@ import { SprintActivityLogComponent } from 'app/retrospective/sprint-activity-lo
     declarations: [
         RetrospectiveListComponent,
         SprintDetailComponent,
-        RetrospectiveCreateComponent,
+        RetrospectiveEditComponent,
         SprintMemberSummaryComponent,
         SprintTaskSummaryComponent,
         RetrospectTaskModalComponent,
@@ -55,7 +55,7 @@ import { SprintActivityLogComponent } from 'app/retrospective/sprint-activity-lo
         {provide: MATERIAL_COMPATIBILITY_MODE, useValue: true},
     ],
     entryComponents: [
-        RetrospectiveCreateComponent,
+        RetrospectiveEditComponent,
         RetrospectTaskModalComponent,
         SprintCreateComponent
     ]
