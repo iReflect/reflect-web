@@ -134,8 +134,8 @@ export class TaskProviderComponent implements OnInit {
     }
 
     // split the string into array by comma as separator
-    splitString(array: string) {
-        return array && array.trim().length ? array.split(',') : [];
+    splitString(commaSeparatedString: string) {
+        return commaSeparatedString && commaSeparatedString.trim().length ? commaSeparatedString.split(',') : [];
     }
 
     get featureTypeControl() {
