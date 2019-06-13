@@ -1,5 +1,5 @@
 <div class="create-retro app-dialog" [formGroup]="retroFormGroup" *ngIf="isTeamOptionsLoaded && isProviderOptionsLoaded && (isRetrospectLoaded || !isUpdateMode)">
-    <h2 mat-dialog-title>Create Team Retrospective</h2>
+    <h2 mat-dialog-title [innerHTML]="isUpdateMode ? 'Update Team Retrospective' : 'Create Team Retrospective'"></h2>
     <button mat-icon-button tabindex="-1" class="close-icon" (click)="closeDialog()">
         <mat-icon>clear</mat-icon>
     </button>
