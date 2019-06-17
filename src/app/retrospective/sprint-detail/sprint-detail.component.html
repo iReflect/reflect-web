@@ -193,7 +193,8 @@
                                     [isSprintEditable]="sprintDetails.Editable"
                                     [refreshOnChange]="toggleToTriggerRefresh" [enableRefresh]="enableRefresh"
                                     (onRefreshStart)="onChildRefreshStart($event)"
-                                    (onRefreshEnd)="onChildRefreshEnd($event)">
+                                    (onRefreshEnd)="onChildRefreshEnd($event)"
+                                    (refreshSprintDetails)="refreshSprintDetails()">
                                 </app-sprint-member-summary>
                             </div>
                         </mat-tab>
