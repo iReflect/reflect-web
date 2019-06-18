@@ -221,6 +221,7 @@ export class SprintDetailComponent implements OnInit, OnDestroy {
                 this.retrospectiveService.freezeSprint(this.retrospectiveID, this.sprintID).subscribe(
                     () => {
                         this.sprintStatus = this.sprintStates.FROZEN;
+                        this.sprintDetails.Editable = false;
                         this.snackBar.open(
                             API_RESPONSE_MESSAGES.sprintFrozen,
                             '', { duration: SNACKBAR_DURATION });
