@@ -108,10 +108,10 @@ export class TaskProviderComponent implements OnInit {
         };
         // Assigning value to the Chips.
         if (this.isUpdateMode) {
-            this.doneValues = this.taskProviderData.data[TRACKER_TICKET_STATUS_MAP.DONE].split(',');
-            this.featureValues = this.taskProviderData.data[TRACKER_TICKET_TYPE_MAP.FEATURE].split(',');
-            this.taskValues = this.taskProviderData.data[TRACKER_TICKET_TYPE_MAP.TASK].split(',');
-            this.bugValues = this.taskProviderData.data[TRACKER_TICKET_TYPE_MAP.BUG].split(',');
+            this.doneValues = this.splitString(this.taskProviderData.data[TRACKER_TICKET_STATUS_MAP.DONE]);
+            this.featureValues = this.splitString(this.taskProviderData.data[TRACKER_TICKET_TYPE_MAP.FEATURE]);
+            this.taskValues = this.splitString(this.taskProviderData.data[TRACKER_TICKET_TYPE_MAP.TASK]);
+            this.bugValues = this.splitString(this.taskProviderData.data[TRACKER_TICKET_TYPE_MAP.BUG]);
         }
 
         configFieldsGroup = {...configFieldsGroup, ...ticketTypeMappingGroup, ...ticketStatusMappingGroup};
@@ -131,6 +131,11 @@ export class TaskProviderComponent implements OnInit {
             'supportedAuthTypes': selectedTaskProvider['SupportedAuthTypes']
         };
         this.showConfigFields = true;
+    }
+
+    // split the string into array by comma as separator
+    splitString(commaSeparatedString: string) {
+        return commaSeparatedString && commaSeparatedString.trim().length ? commaSeparatedString.split(',') : [];
     }
 
     get featureTypeControl() {
