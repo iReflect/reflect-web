@@ -4,7 +4,7 @@
             title="Accomplished Goals"
             (resumeRefresh)="resumeRefresh()"
             (pauseRefresh)="pauseRefresh()"
-            (refreshSprintHighlightTab)="getSprintHighlightsTab()"
+            (refreshRetrospectiveFeedbacks)="getSprintHighlightsTab()"
             [feedbackType]="retroFeedbackTypes.GOAL"
             [feedbackSubType]="goalTypes.COMPLETED"
             [data]="accomplishedGoals"
@@ -29,7 +29,7 @@
             [data]="sprintHighlights"></app-retrospective-feedback>
         <app-retrospective-feedback
             title="Pending Goals"
-            (refreshSprintHighlightTab)="getSprintHighlightsTab()"
+            (refreshRetrospectiveFeedbacks)="getSprintHighlightsTab()"
             (resumeRefresh)="resumeRefresh()"
             (pauseRefresh)="pauseRefresh()"
             [feedbackType]="retroFeedbackTypes.GOAL"
