@@ -50,6 +50,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
 
     @Output() onRefreshStart = new EventEmitter<boolean>();
     @Output() onRefreshEnd = new EventEmitter<boolean>();
+    @Output() refreshSprintDetails = new EventEmitter();
 
     private columnDefs: any;
     private params: any;
@@ -261,6 +262,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                     response => {
                         this.gridApi.updateRowData({ add: [response.data] });
                         this.memberIDs.push(this.selectedMemberID);
+                        this.refreshSprintDetails.emit();
                     },
                     err => {
                         this.snackBar.open(
@@ -280,6 +282,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
             .subscribe(
                 response => {
                     params.node.setData(response.data);
+                    this.refreshSprintDetails.emit();
                     this.snackBar.open(
                         API_RESPONSE_MESSAGES.memberUpdated,
                         '', { duration: SNACKBAR_DURATION });
@@ -319,6 +322,7 @@ export class SprintMemberSummaryComponent implements OnInit, OnChanges, OnDestro
                     .subscribe(
                         () => {
                             this.memberIDs = this.memberIDs.filter(ID => ID !== member.ID);
+                            this.refreshSprintDetails.emit();
                         },
                         err => {
                             this.gridApi.updateRowData({ add: [member], addIndex: index });
