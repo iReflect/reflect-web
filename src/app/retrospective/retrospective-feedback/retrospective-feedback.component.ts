@@ -52,6 +52,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
 
     @Output() resumeRefresh = new EventEmitter();
     @Output() pauseRefresh = new EventEmitter();
+    @Output() refreshSprintHighlightTab = new EventEmitter();
 
     private columnDefs: any;
     private params: any;
@@ -187,6 +188,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
             .takeUntil(this.destroy$)
             .subscribe(
                 () => {
+                    this.refreshSprintHighlightTab.emit();
                     this.snackBar.open(API_RESPONSE_MESSAGES.goalResolvedSuccessfully, '', { duration: SNACKBAR_DURATION });
                 },
                 err => {
@@ -206,6 +208,7 @@ export class RetrospectiveFeedbackComponent implements OnInit, OnChanges, OnDest
             .takeUntil(this.destroy$)
             .subscribe(
                 () => {
+                    this.refreshSprintHighlightTab.emit();
                     this.snackBar.open(API_RESPONSE_MESSAGES.goalUnResolvedSuccessfully, '', { duration: SNACKBAR_DURATION });
                 },
                 err => {
